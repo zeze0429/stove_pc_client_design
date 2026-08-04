@@ -164,9 +164,10 @@
       }
 
       var AUTO_DISMISS_MS = 5000;
+      var RICH_AUTO_DISMISS_MS = 15000;
 
       // 배너 혼합형(리치 알림)은 규칙이 다르다:
-      // - 5초 자동 소멸 없음, 유저가 X를 눌러야만 닫힘
+      // - 15초 뒤 자동 소멸 (일반 알림의 5초보다 길게 — 배너+버튼까지 읽을 시간 필요), 유저가 X를 눌러도 바로 닫힘
       // - 다른 알림이 새로 도착해도 항상 스택 맨 아래(가장 최근 자리)에 고정
       // - 동시에 최대 1개만 노출 — 새 배너 혼합형이 뜨면 기존 것을 먼저 닫음
       function pushNotice(data, delayMs) {
@@ -182,6 +183,7 @@
             existingRich.remove();
           }
           stack.appendChild(el); // 맨 아래 고정
+          el._autoDismissTimer = setTimeout(function () { dismiss(el); }, RICH_AUTO_DISMISS_MS);
         } else {
           var pinnedRich = stack.querySelector('.notice--rich');
           if (pinnedRich) {
