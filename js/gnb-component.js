@@ -205,21 +205,21 @@ var GnbComponent = {
         '<div class="gnb-divider"></div>' +
 
         '<section v-for="group in gameGroups" :key="group.id" class="game-group" :class="{ \'is-collapsed\': isCollapsed(group) }">' +
-          '<div class="game-group__title">' +
-            '<button class="game-group__btn-left-arrow" type="button" aria-label="펼치기/접기" @click="toggleGroup(group)">' +
+          '<div class="game-group__title" data-name="component/game_group/title">' +
+            '<button class="game-group__btn-left-arrow" type="button" aria-label="펼치기/접기" @click="toggleGroup(group)" data-name="component/game_group/title/btn_left_arrow">' +
               '<i class="ic-v2-control-select-arrow-down-fill"></i>' +
             '</button>' +
             '<span class="game-group__title-inner">' +
               '<span class="game-group__name stds-title8 fw-medium">{{ group.title }}</span>' +
-              '<span v-if="group.count" class="badge-menu-title">{{ group.count }}</span>' +
+              '<span v-if="group.count" class="badge-menu-title" data-name="component/badge/menu_title">{{ group.count }}</span>' +
             '</span>' +
           '</div>' +
-          '<ul class="game-group__list-group">' +
-            '<li v-for="game in group.games" :key="game.id" class="game-group__list" :class="{ \'is-selected\': selectedGameId === game.id }" @click="selectGame(game)">' +
-              '<span class="game-group__thumbnail" :style="{ backgroundImage: \'url(\' + game.thumb + \')\' }"></span>' +
+          '<ul class="game-group__list-group" data-name="component/game_group/list_group">' +
+            '<li v-for="game in group.games" :key="game.id" class="game-group__list" :class="{ \'is-selected\': selectedGameId === game.id }" @click="selectGame(game)" data-name="component/game_group/list">' +
+              '<span class="game-group__thumbnail" :style="{ backgroundImage: \'url(\' + game.thumb + \')\' }" data-name="component/thumbnail/game"></span>' +
               '<span class="game-group__list-name stds-cap1 fw-medium">{{ game.name }}</span>' +
               '<span v-if="game.badges && game.badges.length" class="game-group__badges">' +
-                '<span v-for="b in game.badges" :key="b" class="badge-game-list" :class="\'badge-game-list--\' + b">' +
+                '<span v-for="b in game.badges" :key="b" class="badge-game-list" :class="\'badge-game-list--\' + b" data-name="component/badge/game_list">' +
                   '<i :class="badgeIcon[b]"></i>' +
                 '</span>' +
               '</span>' +
