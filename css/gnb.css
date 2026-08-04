@@ -351,12 +351,12 @@ body { margin: 0; }
 
 /* 게임명 말줄임 툴팁 — 이름이 실제로 넘칠 때만 JS가 노출 (Figma node 5884:58851) */
 .game-group__list-tooltip {
+  /* left/width는 JS가 이름 라벨의 실제 렌더링 위치·폭에 맞춰 인라인으로 지정 —
+     뱃지 유무로 이름 칸 너비가 달라지므로 고정값을 쓰지 않음 (Figma: "리스트의 텍스트길이와 동일") */
   position: absolute;
   top: 100%;
-  left: 0;
   margin-top: 0.4rem;
   z-index: 20;
-  max-width: 16.6rem;
   padding: 0.4rem 0.8rem;
   border-radius: var(--radius-lg);
   background: var(--surface-layer);

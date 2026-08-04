@@ -81,6 +81,8 @@ var GnbComponent = {
       selectedId: 'store',
       selectedGameId: null,
       hoveredGameId: null,
+      tooltipLeft: 0,
+      tooltipWidth: 0,
       collapsedGroups: {},
       showScrollbar: false,
       showTopBtn: false,
@@ -93,6 +95,11 @@ var GnbComponent = {
     thumbStyle: function () {
       return { height: this.thumbHeight + 'px', top: this.thumbTop + 'px' };
     },
+    tooltipStyle: function () {
+      // 툴팁 좌우 위치·너비를 "리스트의 텍스트 길이"(이름 라벨의 실제 렌더링 폭)에 맞춤 —
+      // 뱃지 유무에 따라 이름 칸 너비가 달라지므로 고정값 대신 항목마다 실측해서 씀
+      return { left: this.tooltipLeft + 'px', width: this.tooltipWidth + 'px' };
+    },
   },
   methods: {
     selectMenu: function (item) {
@@ -103,9 +110,12 @@ var GnbComponent = {
     },
     // 이름이 말줄임(ellipsis) 처리된 경우에만 툴팁 노출 (Figma: "해당 리스트 마우스 호버 시 툴팁 노출")
     handleListMouseEnter: function (e, game) {
-      var nameEl = e.currentTarget.querySelector('.game-group__list-name');
+      var li = e.currentTarget;
+      var nameEl = li.querySelector('.game-group__list-name');
       if (nameEl && nameEl.scrollWidth > nameEl.clientWidth) {
         this.hoveredGameId = game.id;
+        this.tooltipLeft = nameEl.offsetLeft;
+        this.tooltipWidth = nameEl.offsetWidth;
       }
     },
     handleListMouseLeave: function () {
@@ -239,7 +249,7 @@ var GnbComponent = {
                   '<i :class="badgeIcon[b]"></i>' +
                 '</span>' +
               '</span>' +
-              '<div v-if="hoveredGameId === game.id" class="game-group__list-tooltip stds-cap2" data-name="menu">{{ game.name }}</div>' +
+              '<div v-if="hoveredGameId === game.id" class="game-group__list-tooltip stds-cap2" :style="tooltipStyle" data-name="menu">{{ game.name }}</div>' +
             '</li>' +
           '</ul>' +
         '</section>' +
