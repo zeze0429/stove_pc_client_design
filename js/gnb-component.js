@@ -82,6 +82,7 @@ var GnbComponent = {
       selectedGameId: null,
       hoveredGameId: null,
       tooltipLeft: 0,
+      tooltipTop: 0,
       tooltipWidth: 0,
       collapsedGroups: {},
       showScrollbar: false,
@@ -96,9 +97,11 @@ var GnbComponent = {
       return { height: this.thumbHeight + 'px', top: this.thumbTop + 'px' };
     },
     tooltipStyle: function () {
-      // 툴팁 좌우 위치·너비를 "리스트의 텍스트 길이"(이름 라벨의 실제 렌더링 폭)에 맞춤 —
-      // 뱃지 유무에 따라 이름 칸 너비가 달라지므로 고정값 대신 항목마다 실측해서 씀
-      return { left: this.tooltipLeft + 'px', width: this.tooltipWidth + 'px' };
+      // 좌/너비는 "리스트의 텍스트 길이"(이름 라벨의 실제 렌더링 폭)에 맞추고,
+      // 위쪽은 항목(li) 바닥이 아니라 텍스트 라벨 자체의 바닥에서 2px 밑 —
+      // 라벨이 li 안에서 세로 중앙 정렬돼 있어 li 바닥과 라벨 바닥이 다르기 때문에
+      // top:100%(li 기준) 대신 라벨 기준으로 직접 계산해야 정확함.
+      return { left: this.tooltipLeft + 'px', top: this.tooltipTop + 'px', width: this.tooltipWidth + 'px' };
     },
   },
   methods: {
@@ -116,6 +119,7 @@ var GnbComponent = {
         this.hoveredGameId = game.id;
         this.tooltipLeft = nameEl.offsetLeft;
         this.tooltipWidth = nameEl.offsetWidth;
+        this.tooltipTop = nameEl.offsetTop + nameEl.offsetHeight + 2; // 텍스트 라벨 바닥 + 2px
       }
     },
     handleListMouseLeave: function () {
