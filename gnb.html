@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/foundations.css?v=4" />
   <link rel="stylesheet" href="css/typography.css?v=4" />
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=4" />
-  <link rel="stylesheet" href="css/gnb.css?v=46" />
+  <link rel="stylesheet" href="css/gnb.css?v=47" />
 </head>
 <body>
   <div class="stage">
@@ -242,13 +242,10 @@
 
   <script>
     // 게임 그룹 접기/펼치기 — 클릭 영역은 화살표 아이콘 버튼에만 적용(Figma 스펙)
+    // 기본값 = 펼쳐진 상태. 아이콘은 그대로 두고 CSS에서 -90deg 회전만 적용(is-collapsed)
     document.querySelectorAll('.game-group__arrow').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        var collapsed = btn.closest('.game-group').classList.toggle('is-collapsed');
-        var icon = btn.querySelector('i');
-        icon.className = collapsed
-          ? 'ic-v2-control-select-arrow-right-fill'
-          : 'ic-v2-control-select-arrow-down-fill';
+        btn.closest('.game-group').classList.toggle('is-collapsed');
       });
     });
     // 1뎁스 메뉴 선택 상태 전환

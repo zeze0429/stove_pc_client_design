@@ -285,7 +285,9 @@ body { margin: 0; }
 }
 .game-group__arrow:hover { background: var(--interaction-hover); }
 .game-group__arrow:active { background: var(--interaction-pressed); }
-.game-group__arrow i { font-size: 1.2rem; }
+.game-group__arrow i { font-size: 1.2rem; transition: transform .15s; }
+/* 기본값 = 펼쳐진 상태(down-fill 그대로). 접히면 같은 아이콘을 -90deg 회전해 우측 화살표처럼 보이게 함 */
+.game-group.is-collapsed .game-group__arrow i { transform: rotate(-90deg); }
 .game-group__title-inner {
   display: flex;
   align-items: center;
