@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/foundations.css?v=7" />
   <link rel="stylesheet" href="css/typography.css?v=11" />
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=7" />
-  <link rel="stylesheet" href="css/gnb.css?v=45" />
+  <link rel="stylesheet" href="css/gnb.css?v=46" />
   <link rel="stylesheet" href="css/dashboard.css?v=16" />
   <style>
     /* 클라이언트 메인 = 실제 스토어 페이지(iframe). 원본 디자인 그대로. */
@@ -72,10 +72,14 @@
         <div class="gnb-divider"></div>
 
         <section class="game-group">
-          <div class="game-group__title" role="button" tabindex="0">
-            <span class="game-group__arrow"><i class="ic-v2-control-select-arrow-down-fill"></i></span>
-            <span class="game-group__name stds-title8 fw-medium">스토브게임</span>
-            <span class="count-badge">6</span>
+          <div class="game-group__title">
+            <button class="game-group__arrow" type="button" aria-label="펼치기/접기">
+              <i class="ic-v2-control-select-arrow-down-fill"></i>
+            </button>
+            <span class="game-group__title-inner">
+              <span class="game-group__name stds-title8 fw-medium">스토브게임</span>
+              <span class="count-badge">6</span>
+            </span>
           </div>
           <ul class="game-list">
             <li class="game-list__item">
@@ -110,10 +114,14 @@
         </section>
 
         <section class="game-group">
-          <div class="game-group__title" role="button" tabindex="0">
-            <span class="game-group__arrow"><i class="ic-v2-control-select-arrow-down-fill"></i></span>
-            <span class="game-group__name stds-title8 fw-medium">즐겨찾기</span>
-            <span class="count-badge">23</span>
+          <div class="game-group__title">
+            <button class="game-group__arrow" type="button" aria-label="펼치기/접기">
+              <i class="ic-v2-control-select-arrow-down-fill"></i>
+            </button>
+            <span class="game-group__title-inner">
+              <span class="game-group__name stds-title8 fw-medium">즐겨찾기</span>
+              <span class="count-badge">23</span>
+            </span>
           </div>
           <ul class="game-list">
             <li class="game-list__item">
@@ -236,9 +244,14 @@
 
   <script>
     // GNB — 게임 그룹 접기/펼치기
-    document.querySelectorAll('.game-group__title').forEach(function (t) {
-      t.addEventListener('click', function () {
-        t.closest('.game-group').classList.toggle('is-collapsed');
+    // 클릭 영역은 화살표 아이콘 버튼에만 적용(Figma 스펙) — 타이틀/뱃지 클릭은 무반응
+    document.querySelectorAll('.game-group__arrow').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var collapsed = btn.closest('.game-group').classList.toggle('is-collapsed');
+        var icon = btn.querySelector('i');
+        icon.className = collapsed
+          ? 'ic-v2-control-select-arrow-right-fill'
+          : 'ic-v2-control-select-arrow-down-fill';
       });
     });
     // GNB — 1뎁스 메뉴 선택 상태 전환
