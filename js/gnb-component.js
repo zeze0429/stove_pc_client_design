@@ -80,6 +80,7 @@ var GnbComponent = {
       gameGroups: GNB_GAME_GROUPS,
       selectedId: 'store',
       selectedGameId: null,
+      hoveredGameId: null,
       collapsedGroups: {},
       showScrollbar: false,
       showTopBtn: false,
@@ -99,6 +100,16 @@ var GnbComponent = {
     },
     selectGame: function (game) {
       this.selectedGameId = game.id;
+    },
+    // 이름이 말줄임(ellipsis) 처리된 경우에만 툴팁 노출 (Figma: "해당 리스트 마우스 호버 시 툴팁 노출")
+    handleListMouseEnter: function (e, game) {
+      var nameEl = e.currentTarget.querySelector('.game-group__list-name');
+      if (nameEl && nameEl.scrollWidth > nameEl.clientWidth) {
+        this.hoveredGameId = game.id;
+      }
+    },
+    handleListMouseLeave: function () {
+      this.hoveredGameId = null;
     },
     // 대부분의 1뎁스 메뉴 항목은 "component/GNB/menu/basic" 심볼이지만
     // 다운로드 관리 항목만 Figma에서 별도 심볼("download_manage")을 씀
@@ -220,7 +231,7 @@ var GnbComponent = {
             '</span>' +
           '</div>' +
           '<ul class="game-group__list-group" data-name="component/game_group/list_group">' +
-            '<li v-for="game in group.games" :key="game.id" class="game-group__list" :class="{ \'is-selected\': selectedGameId === game.id }" @click="selectGame(game)" data-name="component/game_group/list">' +
+            '<li v-for="game in group.games" :key="game.id" class="game-group__list" :class="{ \'is-selected\': selectedGameId === game.id }" @click="selectGame(game)" @mouseenter="handleListMouseEnter($event, game)" @mouseleave="handleListMouseLeave" data-name="component/game_group/list">' +
               '<span class="game-group__thumbnail" :style="{ backgroundImage: \'url(\' + game.thumb + \')\' }" data-name="component/thumbnail/game"></span>' +
               '<span class="game-group__list-name stds-cap1 fw-medium">{{ game.name }}</span>' +
               '<span v-if="game.badges && game.badges.length" class="game-group__badges">' +
@@ -228,6 +239,7 @@ var GnbComponent = {
                   '<i :class="badgeIcon[b]"></i>' +
                 '</span>' +
               '</span>' +
+              '<div v-if="hoveredGameId === game.id" class="game-group__list-tooltip stds-cap2" data-name="menu">{{ game.name }}</div>' +
             '</li>' +
           '</ul>' +
         '</section>' +

@@ -337,6 +337,7 @@ body { margin: 0; }
 .game-group.is-collapsed .game-group__list-group { display: none; }
 
 .game-group__list {
+  position: relative; /* 툴팁(.game-group__list-tooltip) 위치 기준 */
   display: flex;
   align-items: center;
   gap: 0.6rem; /* Figma 6px — 스케일에 없는 값 */
@@ -347,6 +348,27 @@ body { margin: 0; }
   transition: background .15s;
 }
 .game-group__list:hover { background: var(--interaction-hover); }
+
+/* 게임명 말줄임 툴팁 — 이름이 실제로 넘칠 때만 JS가 노출 (Figma node 5884:58851) */
+.game-group__list-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.4rem;
+  z-index: 20;
+  max-width: 16.6rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-lg);
+  background: var(--surface-layer);
+  box-shadow: 0 1.2rem 1.4rem rgba(0, 0, 0, 0.2); /* Figma drop-shadow 0/12/14/.2 근사 */
+  color: var(--on-surface-elevation-2);
+  white-space: normal; /* 부모의 nowrap을 상속하지 않고 툴팁 안에서는 줄바꿈 */
+  pointer-events: none; /* 툴팁이 아래쪽 항목 클릭을 막지 않도록 */
+}
+/* 라이트 모드에서만 보더 추가 (Figma 주석: "라이트모드에서는 보더 추가됨") */
+:root[data-theme="light"] .game-group__list-tooltip {
+  border: 1px solid var(--border);
+}
 .game-group__list.is-selected { background: var(--interaction-selected); }
 .game-group__list.is-selected .game-group__list-name { color: var(--on-surface-elevation-2); }
 .game-group__thumbnail {
