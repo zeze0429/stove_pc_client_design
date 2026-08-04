@@ -8,6 +8,16 @@
 body { margin: 0; }
 .stage ul { list-style: none; margin: 0; padding: 0; }
 
+/* ---- 지역 변수 (STDS 공식 토큰 아직 없음) ------------------
+   여기 값만 바꾸면 이 파일 전체에 일괄 반영됨. 토큰이 생기면
+   var(--실제토큰명)으로 값만 교체하면 됨 (사용하는 쪽은 안 건드림). */
+:root {
+  --game-list-text: #888;
+  --game-badge-link-bg: rgba(89, 138, 255, 0.2);
+  --game-badge-multiplay-bg: rgba(68, 224, 143, 0.2);
+  --game-badge-multiplay-fg: #44e08f;
+}
+
 /* ---- 페이지 캔버스 (컴포넌트 미리보기용) ----------------- */
 .stage {
   min-height: 100vh;
@@ -358,7 +368,7 @@ body { margin: 0; }
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #888; /* Figma Make 값 그대로 — 대응 토큰이 아직 없어서 하드코딩, 토큰 추가되면 교체 예정 */
+  color: var(--game-list-text);
 }
 .game-badges {
   /* 이름 텍스트와 4px 간격 — 기본 아이템 gap이 6px이라 2px만 당겨서 4px로 맞춤 */
@@ -376,8 +386,8 @@ body { margin: 0; }
   place-items: center;
 }
 .g-badge i { font-size: 1.2rem; }
-.g-badge--link { background: rgba(89, 138, 255, 0.2); color: var(--stove-blue-400); }
-.g-badge--multiplay { background: rgba(68, 224, 143, 0.2); color: #44e08f; }
+.g-badge--link { background: var(--game-badge-link-bg); color: var(--stove-blue-400); }
+.g-badge--multiplay { background: var(--game-badge-multiplay-bg); color: var(--game-badge-multiplay-fg); }
 
 /* ============================================================
    맨 위로(TOP) 버튼
@@ -418,10 +428,3 @@ body { margin: 0; }
 :root[data-theme="light"] .gnb-top-btn__img--dark { display: none; }
 :root[data-theme="light"] .gnb-top-btn__img--light { display: block; }
 
-/* 썸네일 색상 (실제 이미지 대체 placeholder) */
-.thumb-lostark  { background: linear-gradient(135deg, #b8860b, #4a3208); }
-.thumb-rodnine  { background: linear-gradient(135deg, #5b8def, #23407a); }
-.thumb-chaos    { background: linear-gradient(135deg, #7a3fd6, #2a1147); }
-.thumb-e7       { background: linear-gradient(135deg, #e0557a, #5a1030); }
-.thumb-bts      { background: linear-gradient(135deg, #f7c948, #c78a00); }
-.thumb-tales    { background: linear-gradient(135deg, #37a458, #124a26); }
