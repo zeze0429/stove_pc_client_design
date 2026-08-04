@@ -105,11 +105,14 @@ var GnbComponent = {
     },
   },
   methods: {
+    // GNB 전체에서 선택 상태는 항상 하나만 — 메뉴를 고르면 게임 선택은 풀리고, 반대도 마찬가지
     selectMenu: function (item) {
       this.selectedId = item.id;
+      this.selectedGameId = null;
     },
     selectGame: function (game) {
       this.selectedGameId = game.id;
+      this.selectedId = null;
     },
     // 이름이 말줄임(ellipsis) 처리된 경우에만 툴팁 노출 (Figma: "해당 리스트 마우스 호버 시 툴팁 노출")
     handleListMouseEnter: function (e, game) {
