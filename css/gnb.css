@@ -355,7 +355,7 @@ body { margin: 0; }
      뱃지 유무로 이름 칸 너비가 달라지므로 고정값을 쓰지 않음 (Figma: "리스트의 텍스트길이와 동일") */
   position: absolute;
   top: 100%;
-  margin-top: 0.4rem;
+  margin-top: 0.2rem; /* Figma: 텍스트(리스트 항목)와 툴팁 사이 2px */
   z-index: 20;
   padding: 0.4rem 0.8rem;
   border-radius: var(--radius-lg);
