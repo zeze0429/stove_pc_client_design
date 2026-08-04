@@ -79,6 +79,7 @@ var GnbComponent = {
       menuItems: GNB_MENU_ITEMS,
       gameGroups: GNB_GAME_GROUPS,
       selectedId: 'store',
+      selectedGameId: null,
       collapsedGroups: {},
       showScrollbar: false,
       showTopBtn: false,
@@ -95,6 +96,9 @@ var GnbComponent = {
   methods: {
     selectMenu: function (item) {
       this.selectedId = item.id;
+    },
+    selectGame: function (game) {
+      this.selectedGameId = game.id;
     },
     // group.collapsed을 직접 mutate하는 대신 id로 관리 —
     // gameGroups가 모듈 스코프의 공유 배열(GNB_GAME_GROUPS)이라
@@ -211,7 +215,7 @@ var GnbComponent = {
             '</span>' +
           '</div>' +
           '<ul class="game-list">' +
-            '<li v-for="game in group.games" :key="game.id" class="game-list__item">' +
+            '<li v-for="game in group.games" :key="game.id" class="game-list__item" :class="{ \'is-selected\': selectedGameId === game.id }" @click="selectGame(game)">' +
               '<span class="game-thumb" :style="{ backgroundImage: \'url(\' + game.thumb + \')\' }"></span>' +
               '<span class="game-list__name stds-cap1 fw-medium">{{ game.name }}</span>' +
               '<span v-if="game.badges && game.badges.length" class="game-badges">' +

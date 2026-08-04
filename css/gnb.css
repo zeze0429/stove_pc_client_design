@@ -347,6 +347,8 @@ body { margin: 0; }
   transition: background .15s;
 }
 .game-list__item:hover { background: var(--interaction-hover); }
+.game-list__item.is-selected { background: var(--interaction-selected); }
+.game-list__item.is-selected .game-list__name { color: var(--on-surface-elevation-2); }
 .game-thumb {
   width: 1.8rem;
   height: 1.8rem;
