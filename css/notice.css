@@ -3,7 +3,7 @@
    Figma: layout/desktop notice (node 66683:7471, 카드 스펙 66683:7474 — 360x104 고정)
    ============================================================= */
 
-/* client-window.html에는 dashboard.css/gnb.css의 전역 border-box 리셋이 없어서
+/* index.html(데스크탑 미리보기)에는 dashboard.css/gnb.css의 전역 border-box 리셋이 없어서
    여기서 직접 잡아준다 — 없으면 padding/border만큼 카드가 360x104보다 커진다 */
 .notice-stack, .notice-stack *, .notice-stack *::before, .notice-stack *::after {
   box-sizing: border-box;

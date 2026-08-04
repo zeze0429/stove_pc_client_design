@@ -1,338 +1,205 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="dark">
+<html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>STOVE 클라이언트</title>
-  <!-- 로드 순서: tokens → foundations → typography → 아이콘 → GNB → 셸 -->
+  <title>STOVE 클라이언트 — 데스크톱 미리보기</title>
   <link rel="stylesheet" href="css/tokens.css?v=7" />
   <link rel="stylesheet" href="css/foundations.css?v=7" />
   <link rel="stylesheet" href="css/typography.css?v=11" />
-  <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=7" />
-  <link rel="stylesheet" href="css/gnb.css?v=45" />
-  <link rel="stylesheet" href="css/dashboard.css?v=16" />
-  <style>
-    /* 클라이언트 메인 = 실제 스토어 페이지(iframe). 원본 디자인 그대로. */
-    .app > .main { overflow: hidden; }
-    .store-frame { width: 100%; height: 100vh; border: 0; display: block; background: var(--background-variant-2); }
-  </style>
+  <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=1" />
+  <link rel="stylesheet" href="css/desktop.css?v=11" />
+  <link rel="stylesheet" href="css/notice.css?v=9" />
 </head>
 <body>
-  <div class="app">
+  <div class="os-desktop">
 
-    <!-- ============ GNB (STOVE layout/GNB · Figma 5705:58393) ============ -->
-    <nav class="gnb" aria-label="주요 메뉴">
+    <!-- 클라이언트 창 (1280 x 800, 상단 상태표시줄 없음 — 커스텀 영역으로 대체 예정) -->
+    <div class="os-window">
+      <iframe class="os-content" src="app-shell.html" title="STOVE 클라이언트" width="1280" height="800"></iframe>
+    </div>
 
-      <header class="gnb-header">
-        <button class="gnb-logo" type="button" aria-label="스토어 홈">
-          <img class="logo-dark" src="assets/logo/stove_dark.png" alt="STOVE" />
-          <img class="logo-light" src="assets/logo/stove_light.png" alt="STOVE" />
+    <!-- 작업표시줄 (Figma Make 레퍼런스: https://quartz-unique-70171087.figma.site/ 그대로 재현) -->
+    <div class="os-taskbar os-taskbar--light">
+      <div class="os-taskbar__left">
+        <button class="os-taskbar__btn" title="시작">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" fill="currentColor"/><rect x="13" y="3" width="8" height="8" fill="currentColor"/><rect x="3" y="13" width="8" height="8" fill="currentColor"/><rect x="13" y="13" width="8" height="8" fill="currentColor"/></svg>
         </button>
-        <button class="update-badge" type="button" aria-label="업데이트">
-          <img class="update-badge__img update-badge__img--default" src="assets/update-btn/luncher_update_enabled.png" alt="" />
-          <img class="update-badge__img update-badge__img--active" src="assets/update-btn/luncher_update_hover_pressed.png" alt="" />
+        <button class="os-taskbar__btn" title="검색">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
         </button>
-      </header>
+        <button class="os-taskbar__btn" title="위젯">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="14" rx="1"></rect><rect width="7" height="7" x="3" y="14" rx="1"></rect></svg>
+        </button>
 
-      <div class="gnb-menu">
-        <div>
-          <ul class="menu-group">
-            <li class="menu-item is-selected">
-              <i class="ic-v2-navigation-home-fill"></i>
-              <span class="menu-item__label stds-title8">스토어</span>
-            </li>
-            <li class="menu-item">
-              <i class="ic-v2-community-board-fill"></i>
-              <span class="menu-item__label stds-title8">라운지</span>
-              <span class="badge-new">NEW</span>
-            </li>
-            <li class="menu-item">
-              <i class="ic-v2-navigation-community-event-fill"></i>
-              <span class="menu-item__label stds-title8">이벤트</span>
-            </li>
-            <li class="menu-item">
-              <i class="ic-v2-navigation-library-fill"></i>
-              <span class="menu-item__label stds-title8">라이브러리</span>
-            </li>
-            <li class="menu-item">
-              <i class="ic-v2-object-download-line"></i>
-              <span class="menu-item__label stds-title8">다운로드 관리</span>
-            </li>
-            <li class="menu-item">
-              <i class="ic-v2-navigation-studio-test-fill"></i>
-              <span class="menu-item__label stds-title8">스튜디오 테스트</span>
-            </li>
-          </ul>
+        <span class="os-taskbar__divider"></span>
 
-          <a class="gnb-ad" style="margin-top: var(--spacing-12);" role="link">
-            <img src="assets/ad-mystery.png" alt="미스테리 기획전 · 3월 26일 할인 종료!" />
-          </a>
-        </div>
-
-        <div class="gnb-divider"></div>
-
-        <section class="game-group">
-          <div class="game-group__title" role="button" tabindex="0">
-            <span class="game-group__arrow"><i class="ic-v2-control-select-arrow-down-fill"></i></span>
-            <span class="game-group__name stds-title8 fw-medium">스토브게임</span>
-            <span class="count-badge">6</span>
-          </div>
-          <ul class="game-list">
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-lostark.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">LOST ARK</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-rodnine.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">로드나인</span>
-              <span class="game-badges">
-                <span class="g-badge g-badge--link" title="바로가기"><i class="ic-v2-navigation-link-fill"></i></span>
-                <span class="g-badge g-badge--multiplay" title="PC방"><i class="ic-v2-navigation-pcbang-fill"></i></span>
-              </span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-chaos.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">카오스 제로 나이트메어</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-e7.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">에픽세븐</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-bts.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">BTS 쿠킹온 스토브 : 타이니탄 레스토랑</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-tales.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">테일즈런너</span>
-            </li>
-          </ul>
-        </section>
-
-        <section class="game-group">
-          <div class="game-group__title" role="button" tabindex="0">
-            <span class="game-group__arrow"><i class="ic-v2-control-select-arrow-down-fill"></i></span>
-            <span class="game-group__name stds-title8 fw-medium">즐겨찾기</span>
-            <span class="count-badge">23</span>
-          </div>
-          <ul class="game-list">
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-floppy-knight.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">플로피 나이트</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-hwayeonwol.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">화연월의</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-lostark.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">LOST ARK</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-rodnine.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">로드나인</span>
-              <span class="game-badges">
-                <span class="g-badge g-badge--link" title="바로가기"><i class="ic-v2-navigation-link-fill"></i></span>
-                <span class="g-badge g-badge--multiplay" title="PC방"><i class="ic-v2-navigation-pcbang-fill"></i></span>
-              </span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-deluvian-winds.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">딜루비안 윈즈</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-bus-world.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">버스 월드</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-happy-quest.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">해피 퀘스트</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-atom-rpg.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">아톰 RPG 트루도그라드 디럭스 컬렉션</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-under-blue-horizon.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">Under the blue horizon - Aquarium</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-chaos.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">카오스 제로 나이트메어</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-illips.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">일립스</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-cabbage.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">카베지</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-scarf.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">스카프</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-e7.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">에픽세븐</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-bts.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">BTS 쿠킹온 스토브 : 타이니탄 레스토랑</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-fog-detective.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">안개 탐정: 네온 바다의 이야기</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-bullet-delivery.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">총알배달 우주반점: 프리퀄 단편소설 (STOVE 한정)</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-four-lights.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">네개의 빛 : 제 1세계 [Iruka Route] 시크릿 플러스</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-ghostrunner.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">고스트러너</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-undying.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">언다잉</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-suicide-countdown.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">Suicide Countdown: 7 Days</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-novena-diabolos.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">노베나 디아볼로스</span>
-            </li>
-            <li class="game-list__item">
-              <span class="game-thumb" style="background-image:url('assets/game-yoryeong-village.png')"></span>
-              <span class="game-list__name stds-cap1 fw-medium">요령 마을: 요령사의 길</span>
-            </li>
-          </ul>
-        </section>
+        <button class="os-taskbar__btn is-active" title="STOVE">
+          <span class="os-taskbar__appicon">
+            <svg viewBox="0 0 256 256" fill="none"><circle cx="128" cy="128" r="128" fill="#FC4420"/><path d="M130.969 60.4746L128.749 60.4445C98.632 60.4445 77.5097 74.9797 77.5097 98.6281C77.5097 116.834 88.1032 126.644 100.991 132.918L103.043 133.88C104.768 134.658 106.524 135.38 108.294 136.055L110.423 136.845L112.558 137.596L115.754 138.656L118.921 139.651L128.958 142.681L131.719 143.56L133.472 144.151L135.147 144.751L136.737 145.365C139.827 146.609 142.362 147.96 144.08 149.571C145.595 151.061 146.542 152.44 146.542 154.861C146.542 159.929 141.131 162.362 129.685 162.362C118.961 162.362 110.634 159.731 103.942 157.181L97.4335 154.629C94.12 153.361 91.279 152.451 88.7555 152.451C80.0424 152.451 74.668 159.516 74.668 167.709C74.668 181.949 93.9618 190.044 112.535 192.748L114.9 193.064C115.686 193.16 116.47 193.246 117.249 193.322L119.571 193.522L121.857 193.664C123.368 193.74 124.848 193.778 126.287 193.778C156.782 193.778 181.335 180.558 181.335 152.44C181.335 131.286 167.823 121.675 152.787 116.086L150.729 115.348L148.658 114.656C148.312 114.544 147.966 114.434 147.62 114.325L145.544 113.693L143.473 113.096L141.413 112.53L138.359 111.73L131.522 110.013L127.883 109.073L125.323 108.362L123.71 107.877L122.178 107.378C121.93 107.294 121.686 107.208 121.446 107.122L120.051 106.595L118.756 106.043C117.305 105.384 116.071 104.666 115.102 103.859L114.471 103.331C113.91 102.826 113.451 102.307 113.096 101.783C112.187 100.447 111.874 99.3382 111.874 98.1898C111.874 93.9142 115.808 92.102 121.677 91.4762L123.324 91.334C123.888 91.2958 124.466 91.2664 125.058 91.2449L126.87 91.2031L127.802 91.1981C134.218 91.1981 139.93 92.2378 144.832 93.4023L147.425 94.0443L153.178 95.5411C155.613 96.1474 157.693 96.5685 159.39 96.5685C168.103 96.5685 173.526 90.7381 173.526 82.9173C173.526 77.8894 171.94 73.9794 168.72 70.8141C160.941 63.1666 141.938 60.7613 130.969 60.4746Z" fill="white"/></svg>
+          </span>
+        </button>
+        <button class="os-taskbar__btn" title="브라우저">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle><line x1="21.17" x2="12" y1="8" y2="8"></line><line x1="3.95" x2="8.54" y1="6.06" y2="14"></line><line x1="10.88" x2="15.46" y1="21.94" y2="14"></line></svg>
+        </button>
+        <button class="os-taskbar__btn" title="파일 탐색기">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"></path></svg>
+        </button>
+        <button class="os-taskbar__btn" title="채팅">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        </button>
       </div>
 
-      <!-- .gnb-menu 밖(스크롤 안 되는 .gnb의 자식)에 둬야 스크롤 시 헤더를 침범하지 않음 -->
-      <div class="gnb-scrollbar" id="gnbScrollbar" aria-hidden="true">
-        <div class="gnb-scrollbar__thumb" id="gnbScrollbarThumb"></div>
+      <div class="os-taskbar__right">
+        <button class="os-taskbar__tray" title="네트워크/소리/배터리">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h.01"></path><path d="M2 8.82a15 15 0 0 1 20 0"></path><path d="M5 12.859a10 10 0 0 1 14 0"></path><path d="M8.5 16.429a5 5 0 0 1 7 0"></path></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"></path><path d="M16 9a5 5 0 0 1 0 6"></path><path d="M19.364 18.364a9 9 0 0 0 0-12.728"></path></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="10" x="2" y="7" rx="2" ry="2"></rect><line x1="22" x2="22" y1="11" y2="13"></line></svg>
+        </button>
+        <button class="os-taskbar__clock" id="clock">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span id="clockTime">--:--</span>
+          <span class="os-taskbar__clock-divider"></span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>
+          <span id="clockDate" class="date">----‑--‑--</span>
+        </button>
+        <button class="os-taskbar__btn" title="알림">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>
+        </button>
       </div>
+    </div>
 
-      <!-- 맨 위로(TOP) 버튼: .gnb-menu 밖(스크롤 안 되는 .gnb의 자식)에 둬야
-           스크롤 바운스(elastic scroll)에 버튼이 같이 튕기지 않고 완전히 고정됨 -->
-      <button class="gnb-top-btn" id="gnbTopBtn" type="button" aria-label="맨 위로">
-        <img class="gnb-top-btn__img gnb-top-btn__img--dark" src="assets/top-btn/TOP_dark.png" alt="" />
-        <img class="gnb-top-btn__img gnb-top-btn__img--light" src="assets/top-btn/TOP_light.png" alt="" />
-      </button>
-    </nav>
-
-    <!-- ============ MAIN (비움 — 나중에 콘텐츠 삽입) ============ -->
-    <div class="main"></div>
-
+    <!-- 데스크탑 알림 스택 (Figma: layout/desktop notice · node 66683:7471) -->
+    <div class="notice-stack" id="noticeStack" aria-live="polite"></div>
   </div>
 
+  <!-- 프로토타입 데모 컨트롤: 알림이 도착하는 상황을 반복 재현하기 위한 버튼 (디자인 스펙 아님) -->
+  <button class="notice-demo-btn stds-btn2 fw-medium" id="noticeDemoBtn" type="button">
+    <i class="ic-v2-control-add-line"></i>
+    알림 추가
+  </button>
+
   <script>
-    // GNB — 게임 그룹 접기/펼치기
-    document.querySelectorAll('.game-group__title').forEach(function (t) {
-      t.addEventListener('click', function () {
-        t.closest('.game-group').classList.toggle('is-collapsed');
-      });
-    });
-    // GNB — 1뎁스 메뉴 선택 상태 전환
-    document.querySelectorAll('.menu-item').forEach(function (item) {
-      item.addEventListener('click', function () {
-        document.querySelectorAll('.menu-item').forEach(function (m) { m.classList.remove('is-selected'); });
-        item.classList.add('is-selected');
-      });
-    });
-
-    // GNB — 로고 클릭 시 스토어(홈)로 이동 + 선택 상태 반영
-    var gnbLogo = document.querySelector('.gnb-logo');
-    if (gnbLogo) {
-      gnbLogo.addEventListener('click', function () {
-        var storeItem = document.querySelector('.menu-item');
-        if (storeItem) {
-          document.querySelectorAll('.menu-item').forEach(function (m) { m.classList.remove('is-selected'); });
-          storeItem.classList.add('is-selected');
-        }
-      });
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function tick() {
+      var now = new Date();
+      var hour24 = now.getHours();
+      var meridiem = hour24 < 12 ? '오전' : '오후';
+      var hour12 = hour24 % 12 || 12;
+      document.getElementById('clockTime').textContent = meridiem + ' ' + pad(hour12) + ':' + pad(now.getMinutes());
+      document.getElementById('clockDate').textContent =
+        now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
     }
+    tick();
+    setInterval(tick, 1000 * 30);
+  </script>
 
-    // GNB — 커스텀 스크롤바: 위치/크기 계산 + 사이드바 hover 시 노출
-    // (네이티브 스크롤바는 CSS에서 완전히 숨김 — OS/브라우저 오버레이 스크롤바의
-    //  자동 숨김·굵기 변화 등 우리가 제어할 수 없는 동작과 충돌하기 때문에
-    //  이 div 2개(track/thumb)로 전부 직접 그리고 제어함)
+  <script>
+    // 데스크탑 알림(토스트) — 등장/스택/닫기 인터랙션 프로토타입
     (function () {
-      var sidebar = document.querySelector('.gnb');
-      var scrollEl = document.querySelector('.gnb-menu');
-      var track = document.getElementById('gnbScrollbar');
-      var thumb = document.getElementById('gnbScrollbarThumb');
-      if (!sidebar || !scrollEl || !track || !thumb) return;
+      var NOTICES = [
+        { title: '로스트 아크', desc: '플레이 준비가 되었습니다.', thumb: 'assets/notice/thumb-loa.png' },
+        { title: '2026 LOA ON SUMMER', desc: '2026 LOA ON SUMMER를 기념하여 모험가님들께 감사의 선물을 드립니다.', thumb: 'assets/notice/thumb-loa.png' },
+        { desc: '<b>스테퍼 레트로 출시기념 10% 중복 할인 쿠폰</b> 사용이 가능합니다. 쿠폰함에서 확인하세요.', thumb: 'assets/notice/thumb-coupon.png' },
+        { desc: '<b>스토브 공식 커뮤니티</b>의 <b>OFFICIAL 스토브</b> 님이 쪽지를 보냈습니다.', thumb: 'assets/notice/thumb-stove.png' },
+        { title: 'BTS 쿠킹온 스토브 : 타이니탄 레스토랑', desc: '플레이 준비가 되었습니다. 플레이 준비가 되었습니다. 플레이 준비가 되었습니다.', thumb: 'assets/notice/thumb-bts.png' },
+        { rich: true, banner: 'assets/notice/banner-summer-festa.png', title: '2026 LOA ON SUMMER', desc: '2026 LOA ON SUMMER를 기념하여 모험가님들께 감사의 선물을 드립니다.', thumb: 'assets/notice/thumb-loa.png', cta: '쿠폰 등록' },
+      ];
 
-      function updateThumb() {
-        var contentHeight = scrollEl.scrollHeight;
-        var visibleHeight = scrollEl.clientHeight;
-        if (contentHeight <= visibleHeight) {
-          track.style.display = 'none';
-          return;
+      var stack = document.getElementById('noticeStack');
+      var addBtn = document.getElementById('noticeDemoBtn');
+      var cursor = 0;
+
+      function closeBtnHtml() {
+        return '<button class="notice__close" type="button" aria-label="알림 닫기"><i class="ic-v2-control-close-line"></i></button>';
+      }
+
+      function buildNotice(data) {
+        var el = document.createElement('div');
+        el.className = 'notice' + (data.rich ? ' notice--rich' : '') + (!data.rich && !data.title ? ' notice--desc-only' : '');
+
+        if (data.rich) {
+          el.innerHTML =
+            '<div class="notice--rich__banner">' +
+              '<img src="' + data.banner + '" alt="" />' +
+              closeBtnHtml() +
+            '</div>' +
+            '<div class="notice--rich__content">' +
+              '<div class="notice--rich__row">' +
+                '<div class="notice__thumb"><img src="' + data.thumb + '" alt="" /></div>' +
+                '<div class="notice__body">' +
+                  '<p class="notice__title stds-text2 fw-bold">' + data.title + '</p>' +
+                  '<p class="notice__desc stds-text3">' + data.desc + '</p>' +
+                '</div>' +
+              '</div>' +
+              '<button class="notice__cta stds-btn2 fw-medium" type="button">' + data.cta + '</button>' +
+            '</div>';
+        } else {
+          el.innerHTML =
+            '<div class="notice__thumb"><img src="' + data.thumb + '" alt="" /></div>' +
+            '<div class="notice__body">' +
+              (data.title ? '<p class="notice__title stds-text2 fw-bold">' + data.title + '</p>' : '') +
+              '<p class="notice__desc stds-text3">' + data.desc + '</p>' +
+            '</div>' +
+            closeBtnHtml();
         }
-        track.style.display = 'block';
-        // track.clientHeight는 반드시 display:block 이후에 읽어야 함 —
-        // display:none 상태에서 읽으면 항상 0이라 thumb이 최솟값(24px)으로만 그려짐
-        var trackHeight = track.clientHeight;
-        var thumbHeight = Math.max((visibleHeight / contentHeight) * trackHeight, 24);
-        var maxThumbTop = trackHeight - thumbHeight;
-        var scrollRatio = scrollEl.scrollTop / (contentHeight - visibleHeight);
-        thumb.style.height = thumbHeight + 'px';
-        thumb.style.top = (maxThumbTop * scrollRatio) + 'px';
+
+        el.querySelector('.notice__close').addEventListener('click', function () {
+          clearTimeout(el._autoDismissTimer); // 유저가 직접 닫으면 예약된 자동 소멸은 취소
+          dismiss(el);
+        });
+        return el;
       }
 
-      scrollEl.addEventListener('scroll', updateThumb);
-      window.addEventListener('resize', updateThumb);
-      updateThumb();
-
-      // 게임 그룹 접기/펼치기 등으로 콘텐츠 높이가 바뀔 때도 재계산
-      // (class 토글로 game-list가 display:none 되는 걸 감지)
-      new MutationObserver(updateThumb).observe(scrollEl, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        attributeFilter: ['class', 'style'],
-      });
-
-      // 사이드바 영역에 마우스가 있는 동안 스크롤바 노출
-      // (mouseenter/mouseleave 페어링은 불안정하게 끊길 수 있어,
-      //  mousemove로 커서 좌표를 직접 계산해 영역 안/밖을 판단)
-      document.addEventListener('mousemove', function (e) {
-        var r = sidebar.getBoundingClientRect();
-        var inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
-        track.classList.toggle('is-visible', inside);
-      });
-      // 이 페이지가 iframe으로 삽입된 경우, 커서가 iframe 밖(부모 페이지의 바탕화면 등)으로
-      // 나가면 이 문서에는 더 이상 mousemove가 들어오지 않아 마지막 상태(보임)에 그대로 멈춘다.
-      // document 자체에서 커서가 완전히 빠져나가는 시점을 mouseleave로 잡아 강제로 숨긴다.
-      document.addEventListener('mouseleave', function () {
-        track.classList.remove('is-visible');
-      });
-    })();
-
-    // GNB — 맨 위로(TOP) 버튼: 맨 위가 아닌 동안(스크롤 40px 초과) 계속 노출.
-    // 버튼이므로 일정 시간 지난다고 사라지지 않고, 맨 위로 돌아가야 사라짐.
-    // (스크롤 컨테이너는 .gnb가 아니라 .gnb-menu — 헤더는 스크롤 영역 밖)
-    (function () {
-      var scrollEl = document.querySelector('.gnb-menu');
-      var topBtn = document.getElementById('gnbTopBtn');
-      if (!scrollEl || !topBtn) return;
-      function handleScroll() {
-        topBtn.classList.toggle('is-visible', scrollEl.scrollTop > 40);
+      // 닫기: is-leaving 애니메이션이 끝난 뒤에만 DOM에서 제거해야
+      // height 축소 트랜지션이 끝까지 재생된다 (즉시 remove하면 잘려 보임)
+      function dismiss(el) {
+        if (el.classList.contains('is-leaving')) return; // 자동 소멸과 수동 닫기가 겹쳐도 중복 실행 방지
+        el.style.animationDelay = '0s'; // 입장 애니메이션에 붙인 지연을 닫기 애니메이션까지 끌고 가지 않도록 초기화
+        el.classList.add('is-leaving');
+        el.addEventListener('animationend', function handler() {
+          el.removeEventListener('animationend', handler);
+          el.remove();
+        });
       }
-      scrollEl.addEventListener('scroll', handleScroll);
-      topBtn.addEventListener('click', function () {
-        scrollEl.scrollTo({ top: 0, behavior: 'smooth' });
-      });
+
+      var AUTO_DISMISS_MS = 5000;
+
+      // 배너 혼합형(리치 알림)은 규칙이 다르다:
+      // - 5초 자동 소멸 없음, 유저가 X를 눌러야만 닫힘
+      // - 다른 알림이 새로 도착해도 항상 스택 맨 아래(가장 최근 자리)에 고정
+      // - 동시에 최대 1개만 노출 — 새 배너 혼합형이 뜨면 기존 것을 먼저 닫음
+      function pushNotice(data, delayMs) {
+        var el = buildNotice(data);
+        if (delayMs) el.style.animationDelay = delayMs + 'ms';
+
+        if (data.rich) {
+          // 페이드아웃을 기다리지 않고 즉시 제거 — 짧은 시간에 여러 번 트리거돼도
+          // 배너 혼합형이 두 개 이상 동시에 DOM에 남아있는 경우가 절대 생기지 않도록 함
+          var existingRich = stack.querySelector('.notice--rich');
+          if (existingRich) {
+            clearTimeout(existingRich._autoDismissTimer);
+            existingRich.remove();
+          }
+          stack.appendChild(el); // 맨 아래 고정
+        } else {
+          var pinnedRich = stack.querySelector('.notice--rich');
+          if (pinnedRich) {
+            stack.insertBefore(el, pinnedRich); // 리치 알림보다 항상 위에 쌓임
+          } else {
+            stack.appendChild(el);
+          }
+          el._autoDismissTimer = setTimeout(function () { dismiss(el); }, AUTO_DISMISS_MS);
+        }
+      }
+
+      // 진입 시엔 알림이 하나도 없는 상태로 시작 — "알림 추가" 버튼을 눌러야만 뜨기 시작한다
+      if (addBtn) {
+        addBtn.addEventListener('click', function () {
+          pushNotice(NOTICES[cursor % NOTICES.length]);
+          cursor += 1;
+        });
+      }
     })();
   </script>
 </body>
