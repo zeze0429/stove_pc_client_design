@@ -16,7 +16,7 @@ var GNB_MENU_ITEMS = [
   { id: 'lounge', label: '라운지', icon: 'ic-v2-community-board-fill', badge: 'new' },
   { id: 'event', label: '이벤트', icon: 'ic-v2-navigation-community-event-fill' },
   { id: 'library', label: '라이브러리', icon: 'ic-v2-navigation-library-fill' },
-  { id: 'download', label: '다운로드 관리', icon: 'ic-v2-object-download-line' },
+  { id: 'download', label: '다운로드 관리', icon: 'ic-v2-object-download-line', symbol: 'component/GNB/menu/download_manage' },
   { id: 'studio', label: '스튜디오 테스트', icon: 'ic-v2-navigation-studio-test-fill' },
 ];
 
@@ -100,6 +100,11 @@ var GnbComponent = {
     selectGame: function (game) {
       this.selectedGameId = game.id;
     },
+    // 대부분의 1뎁스 메뉴 항목은 "component/GNB/menu/basic" 심볼이지만
+    // 다운로드 관리 항목만 Figma에서 별도 심볼("download_manage")을 씀
+    menuItemSymbol: function (item) {
+      return item.symbol || 'component/GNB/menu/basic';
+    },
     // group.collapsed을 직접 mutate하는 대신 id로 관리 —
     // gameGroups가 모듈 스코프의 공유 배열(GNB_GAME_GROUPS)이라
     // 중첩 속성을 직접 바꾸면 프로덕션 빌드에서 리렌더가 누락되는
@@ -176,13 +181,13 @@ var GnbComponent = {
     if (this._resizeObserver) this._resizeObserver.disconnect();
   },
   template:
-    '<nav ref="gnbEl" class="gnb" aria-label="주요 메뉴">' +
-      '<header class="gnb-header">' +
-        '<button class="gnb-logo" type="button" aria-label="스토어 홈" @click="selectMenu(menuItems[0])">' +
+    '<nav ref="gnbEl" class="gnb" aria-label="주요 메뉴" data-name="layout/GNB">' +
+      '<header class="gnb-header" data-name="component/GNB/header">' +
+        '<button class="gnb-logo" type="button" aria-label="스토어 홈" @click="selectMenu(menuItems[0])" data-name="img/logo/stove">' +
           '<img class="logo-dark" src="assets/logo/stove_dark.png" alt="STOVE" />' +
           '<img class="logo-light" src="assets/logo/stove_light.png" alt="STOVE" />' +
         '</button>' +
-        '<button class="update-badge" type="button" aria-label="업데이트">' +
+        '<button class="update-badge" type="button" aria-label="업데이트" data-name="img/badge/luncher_update">' +
           '<img class="update-badge__img update-badge__img--default" src="assets/update-btn/luncher_update_enabled.png" alt="" />' +
           '<img class="update-badge__img update-badge__img--active" src="assets/update-btn/luncher_update_hover_pressed.png" alt="" />' +
         '</button>' +
@@ -190,19 +195,19 @@ var GnbComponent = {
 
       '<div ref="scrollEl" class="gnb-menu">' +
         '<div>' +
-          '<ul class="menu-group">' +
-            '<li v-for="item in menuItems" :key="item.id" class="menu-item" :class="{ \'is-selected\': selectedId === item.id }" @click="selectMenu(item)">' +
+          '<ul class="menu-group" data-name="component/GNB/menu_group">' +
+            '<li v-for="item in menuItems" :key="item.id" class="menu-item" :class="{ \'is-selected\': selectedId === item.id }" @click="selectMenu(item)" :data-name="menuItemSymbol(item)">' +
               '<i :class="item.icon"></i>' +
               '<span class="menu-item__label stds-title8">{{ item.label }}</span>' +
-              '<span v-if="item.badge === \'new\'" class="badge-new">NEW</span>' +
+              '<span v-if="item.badge === \'new\'" class="badge-new" data-name="component/badge/menu_title">NEW</span>' +
             '</li>' +
           '</ul>' +
-          '<a class="gnb-ad" style="margin-top: var(--spacing-12);" role="link">' +
+          '<a class="gnb-ad" style="margin-top: var(--spacing-12);" role="link" data-name="img/GNB/AD">' +
             '<img src="assets/ad-mystery.png" alt="미스테리 기획전 · 3월 26일 할인 종료!" />' +
           '</a>' +
         '</div>' +
 
-        '<div class="gnb-divider"></div>' +
+        '<div class="gnb-divider" data-name="element/div"></div>' +
 
         '<section v-for="group in gameGroups" :key="group.id" class="game-group" :class="{ \'is-collapsed\': isCollapsed(group) }">' +
           '<div class="game-group__title" data-name="component/game_group/title">' +
@@ -232,7 +237,7 @@ var GnbComponent = {
         '<div class="gnb-scrollbar__thumb" :style="thumbStyle"></div>' +
       '</div>' +
 
-      '<button class="gnb-top-btn" :class="{ \'is-visible\': showTopBtn }" type="button" aria-label="맨 위로" @click="scrollToTop">' +
+      '<button class="gnb-top-btn" :class="{ \'is-visible\': showTopBtn }" type="button" aria-label="맨 위로" @click="scrollToTop" data-name="component/GNB/bottom">' +
         '<img class="gnb-top-btn__img gnb-top-btn__img--dark" src="assets/top-btn/TOP_dark.png" alt="" />' +
         '<img class="gnb-top-btn__img gnb-top-btn__img--light" src="assets/top-btn/TOP_light.png" alt="" />' +
       '</button>' +
