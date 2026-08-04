@@ -1,0 +1,297 @@
+/* =============================================================
+   STOVE Design System — Color Tokens
+   Layer 1. GLOBAL (Primitive) Color Tokens
+   -------------------------------------------------------------
+   ※ 원시 팔레트입니다. 컴포넌트에서 직접 참조하지 마세요.
+     반드시 시멘틱 토큰(Layer 2)을 통해 사용합니다.
+   ============================================================= */
+
+:root {
+  /* ---- 01_stove_orange ---------------------------------- */
+  --stove-orange-50:  #fff5e7;
+  --stove-orange-100: #ffeac9;
+  --stove-orange-200: #ffcc98;
+  --stove-orange-300: #ff915a;
+  --stove-orange-400: #fd6734;
+  --stove-orange-500: #fc4420;
+  --stove-orange-600: #e83f1d;
+  --stove-orange-700: #d63a1b;
+  --stove-orange-800: #ca361a;
+  --stove-orange-900: #b03016;
+
+  /* ---- 02_stove_blue ------------------------------------ */
+  --stove-blue-50:  #e2eaff;
+  --stove-blue-100: #ceddff;
+  --stove-blue-200: #b1c8ff;
+  --stove-blue-300: #80a5ff;
+  --stove-blue-400: #598aff;
+  --stove-blue-500: #3c75ff;
+  --stove-blue-600: #3669e6;
+  --stove-blue-700: #3363d9;
+  --stove-blue-800: #2f5bc7;
+  --stove-blue-900: #2a52b3;
+
+  /* ---- 03_stove_gray / white (흰색 + 불투명도) ---------- */
+  --stove-white:    #ffffff;
+  --stove-white-02: rgba(255, 255, 255, 0.02);
+  --stove-white-04: rgba(255, 255, 255, 0.04);
+  --stove-white-06: rgba(255, 255, 255, 0.06);
+  --stove-white-08: rgba(255, 255, 255, 0.08);
+  --stove-white-10: rgba(255, 255, 255, 0.10);
+  --stove-white-15: rgba(255, 255, 255, 0.15);
+  --stove-white-20: rgba(255, 255, 255, 0.20);
+  --stove-white-25: rgba(255, 255, 255, 0.25);
+  --stove-white-30: rgba(255, 255, 255, 0.30);
+  --stove-white-40: rgba(255, 255, 255, 0.40);
+  --stove-white-50: rgba(255, 255, 255, 0.50);
+  --stove-white-60: rgba(255, 255, 255, 0.60);
+  --stove-white-70: rgba(255, 255, 255, 0.70);
+  --stove-white-80: rgba(255, 255, 255, 0.80);
+  --stove-white-90: rgba(255, 255, 255, 0.90);
+
+  /* ---- 03_stove_gray / gray (solid) --------------------- */
+  --stove-gray-20:  #fafafa;
+  --stove-gray-40:  #f5f5f5;
+  --stove-gray-60:  #f0f0f0;
+  --stove-gray-80:  #ebebeb;
+  --stove-gray-100: #e5e5e5;
+  --stove-gray-150: #d9d9d9;
+  --stove-gray-200: #cccccc;
+  --stove-gray-300: #b2b2b2;
+  --stove-gray-400: #999999;
+  --stove-gray-500: #7f7f7f;
+  --stove-gray-600: #666666;
+  --stove-gray-650: #595959;
+  --stove-gray-700: #4c4c4c;
+  --stove-gray-750: #404040;
+  --stove-gray-780: #383838;
+  --stove-gray-800: #333333;
+  --stove-gray-820: #2e2e2e;
+  --stove-gray-840: #292929;
+  --stove-gray-860: #232323;
+  --stove-gray-880: #1f1f1f;
+  --stove-gray-900: #191919;
+  --stove-gray-940: #0f0f0f;
+
+  /* ---- 03_stove_gray / black (검정 + 불투명도) ---------- */
+  --stove-black:    #000000;
+  --stove-black-02: rgba(0, 0, 0, 0.02);
+  --stove-black-04: rgba(0, 0, 0, 0.04);
+  --stove-black-06: rgba(0, 0, 0, 0.06);
+  --stove-black-08: rgba(0, 0, 0, 0.08);
+  --stove-black-10: rgba(0, 0, 0, 0.10);
+  --stove-black-15: rgba(0, 0, 0, 0.15);
+  --stove-black-20: rgba(0, 0, 0, 0.20);
+  --stove-black-25: rgba(0, 0, 0, 0.25);
+  --stove-black-30: rgba(0, 0, 0, 0.30);
+  --stove-black-40: rgba(0, 0, 0, 0.40);
+  --stove-black-50: rgba(0, 0, 0, 0.50);
+  --stove-black-60: rgba(0, 0, 0, 0.60);
+  --stove-black-70: rgba(0, 0, 0, 0.70);
+  --stove-black-80: rgba(0, 0, 0, 0.80);
+  --stove-black-90: rgba(0, 0, 0, 0.90);
+
+  /* ---- 04_system ---------------------------------------- */
+  --stove-error:       #d53430;
+  --stove-warning:     #f27d23;
+  --stove-success:     #37a458;
+  --stove-information: #1e88e5;
+}
+
+/* =============================================================
+   Layer 2. SEMANTIC (Alias) Color Tokens
+   -------------------------------------------------------------
+   ※ 컴포넌트는 이 시멘틱 토큰만 참조합니다.
+   ※ 기본값 = 다크 모드. 라이트 모드는 :root[data-theme="light"]
+     에서 덮어씁니다. (Pinia → <html data-theme="dark|light">)
+   ============================================================= */
+
+/* ---- DARK (기본값) ------------------------------------- */
+:root {
+  /* brand-primary */
+  --brand-primary-enabled: var(--stove-orange-500);
+  --brand-primary-hover:   var(--stove-orange-400);
+  --brand-primary-pressed: var(--stove-orange-300);
+
+  /* brand-blue */
+  --brand-blue-enabled: var(--stove-blue-500);
+  --brand-blue-hover:   var(--stove-blue-400);
+  --brand-blue-pressed: var(--stove-blue-300);
+
+  /* background */
+  --background-variant-1: var(--stove-gray-900);
+  --background-variant-2: var(--stove-gray-880);
+
+  /* surface */
+  --surface-layer:       var(--stove-gray-780);
+  --surface-elevation-1: var(--stove-gray-840);
+  --surface-elevation-2: var(--stove-gray-820);
+  --surface-elevation-3: var(--stove-gray-800);
+  --surface-gnb:         var(--stove-gray-900);
+  --surface-gnb-gray:    var(--stove-gray-900);
+  --surface-footer:      var(--stove-black);
+  --surface-highlight:   var(--stove-white-10);
+  --surface-highlight-2: var(--stove-gray-860);
+  --surface-fab:         var(--stove-gray-750);
+  --surface-fab-pressed: var(--stove-gray-650);
+  --surface-variant-1:   var(--stove-gray-860);
+  --surface-variant-2:   var(--stove-gray-840);
+
+  /* on-surface / elevation (표면 위 콘텐츠) */
+  --on-surface-elevation-1:         var(--stove-gray-80);
+  --on-surface-elevation-1-pressed: var(--stove-white);
+  --on-surface-elevation-2:         var(--stove-gray-200);
+  --on-surface-elevation-2-pressed: var(--stove-gray-80);
+  --on-surface-elevation-3:         var(--stove-gray-300);
+  --on-surface-elevation-3-pressed: var(--stove-gray-100);
+  --on-surface-elevation-4:         var(--stove-gray-500);
+  --on-surface-elevation-4-pressed: var(--stove-gray-300);
+
+  /* interaction (상태 오버레이) */
+  --interaction-hover:    var(--stove-white-04);
+  --interaction-pressed:  var(--stove-white-10);
+  --interaction-selected: var(--stove-white-08);
+  --interaction-focused:  var(--stove-white-08);
+
+  /* inverse */
+  --inverse-elevation-1: var(--stove-white-30);
+  --inverse-elevation-2: var(--stove-white-15);
+  --inverse-elevation-3: var(--stove-white-10);
+  --inverse-elevation-4: var(--stove-white-08);
+  --inverse-elevation-5: var(--stove-white-06);
+  --inverse-elevation-6: var(--stove-white-04);
+  --inverse-elevation-7: var(--stove-white-04);
+  --inverse-elevation-8: var(--stove-white-02);
+  --inverse-variant-1:   var(--stove-white-15);
+  --inverse-variant-2:   var(--stove-white-06);
+  --inverse-variant-3:   var(--stove-white-04);
+
+  /* disabled */
+  --disabled-variant-1: var(--stove-gray-600);
+  --disabled-variant-2: var(--stove-gray-600);
+  --disabled-variant-3: var(--stove-gray-750);
+  --disabled-variant-4: var(--stove-gray-500);
+  --disabled-variant-5: var(--stove-gray-200);
+  --disabled-variant-6: var(--stove-gray-80);
+  --disabled-variant-7: var(--stove-white-20);
+  --disabled-variant-8: var(--stove-white-10);
+
+  /* border */
+  --border: var(--stove-gray-650);
+
+  /* placeholder */
+  --placeholder: var(--stove-gray-600);
+
+  /* neutral */
+  --neutral-variant-1:         var(--stove-gray-600);
+  --neutral-variant-1-hover:   var(--stove-gray-500);
+  --neutral-variant-1-pressed: var(--stove-gray-400);
+  --neutral-variant-2:         var(--stove-gray-800);
+  --neutral-variant-2-hover:   var(--stove-gray-750);
+  --neutral-variant-2-pressed: var(--stove-gray-700);
+  --neutral-variant-3:         var(--stove-gray-840);
+  --neutral-variant-3-hover:   var(--stove-gray-800);
+  --neutral-variant-3-pressed: var(--stove-gray-750);
+  --neutral-variant-4:         var(--stove-gray-700);
+
+  /* system (다크/라이트 동일) */
+  --system-error:       var(--stove-error);
+  --system-information: var(--stove-information);
+  --system-success:     var(--stove-success);
+  --system-warning:     var(--stove-warning);
+}
+
+/* ---- LIGHT (data-theme="light"에서 덮어쓰기) ----------- */
+:root[data-theme="light"] {
+  /* brand-primary */
+  --brand-primary-enabled: var(--stove-orange-500);
+  --brand-primary-hover:   var(--stove-orange-600);
+  --brand-primary-pressed: var(--stove-orange-700);
+
+  /* brand-blue */
+  --brand-blue-enabled: var(--stove-blue-500);
+  --brand-blue-hover:   var(--stove-blue-600);
+  --brand-blue-pressed: var(--stove-blue-700);
+
+  /* background */
+  --background-variant-1: var(--stove-gray-60);
+  --background-variant-2: var(--stove-white);
+
+  /* surface */
+  --surface-layer:       var(--stove-white);
+  --surface-elevation-1: var(--stove-white);
+  --surface-elevation-2: var(--stove-gray-20);
+  --surface-elevation-3: var(--stove-gray-40);
+  --surface-gnb:         var(--stove-white);
+  --surface-gnb-gray:    var(--stove-gray-900);
+  --surface-footer:      var(--stove-gray-880);
+  --surface-highlight:   var(--stove-orange-50);
+  --surface-highlight-2: var(--stove-orange-50);
+  --surface-fab:         var(--stove-white);
+  --surface-fab-pressed: var(--stove-gray-100);
+  --surface-variant-1:   var(--stove-white);
+  --surface-variant-2:   var(--stove-gray-20);
+
+  /* on-surface / elevation */
+  --on-surface-elevation-1:         var(--stove-gray-880);
+  --on-surface-elevation-1-pressed: var(--stove-black);
+  --on-surface-elevation-2:         var(--stove-gray-800);
+  --on-surface-elevation-2-pressed: var(--stove-gray-880);
+  --on-surface-elevation-3:         var(--stove-gray-600);
+  --on-surface-elevation-3-pressed: var(--stove-gray-700);
+  --on-surface-elevation-4:         var(--stove-gray-400);
+  --on-surface-elevation-4-pressed: var(--stove-gray-500);
+
+  /* interaction */
+  --interaction-hover:    var(--stove-black-04);
+  --interaction-pressed:  var(--stove-black-10);
+  --interaction-selected: var(--stove-black-08);
+  --interaction-focused:  var(--stove-black-08);
+
+  /* inverse */
+  --inverse-elevation-1: var(--stove-black-30);
+  --inverse-elevation-2: var(--stove-black-15);
+  --inverse-elevation-3: var(--stove-black-10);
+  --inverse-elevation-4: var(--stove-black-08);
+  --inverse-elevation-5: var(--stove-black-06);
+  --inverse-elevation-6: var(--stove-black-04);
+  --inverse-elevation-7: var(--stove-black-10);
+  --inverse-elevation-8: var(--stove-black-02);
+  --inverse-variant-1:   var(--stove-black-30);
+  --inverse-variant-2:   var(--stove-black-15);
+  --inverse-variant-3:   var(--stove-black-06);
+
+  /* disabled */
+  --disabled-variant-1: var(--stove-gray-200);
+  --disabled-variant-2: var(--stove-gray-150);
+  --disabled-variant-3: var(--stove-gray-80);
+  --disabled-variant-4: var(--stove-gray-40);
+  --disabled-variant-5: var(--stove-gray-200);
+  --disabled-variant-6: var(--stove-gray-80);
+  --disabled-variant-7: var(--stove-white-20);
+  --disabled-variant-8: var(--stove-black-08);
+
+  /* border */
+  --border: var(--stove-gray-150);
+
+  /* placeholder */
+  --placeholder: var(--stove-gray-300);
+
+  /* neutral */
+  --neutral-variant-1:         var(--stove-gray-700);
+  --neutral-variant-1-hover:   var(--stove-gray-750);
+  --neutral-variant-1-pressed: var(--stove-gray-800);
+  --neutral-variant-2:         var(--stove-gray-40);
+  --neutral-variant-2-hover:   var(--stove-gray-60);
+  --neutral-variant-2-pressed: var(--stove-gray-80);
+  --neutral-variant-3:         var(--stove-white);
+  --neutral-variant-3-hover:   var(--stove-gray-20);
+  --neutral-variant-3-pressed: var(--stove-gray-40);
+  --neutral-variant-4:         var(--stove-gray-150);
+
+  /* system (모드 동일) */
+  --system-error:       var(--stove-error);
+  --system-information: var(--stove-information);
+  --system-success:     var(--stove-success);
+  --system-warning:     var(--stove-warning);
+}

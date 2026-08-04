@@ -1,0 +1,70 @@
+/* =============================================================
+   STOVE Design System — Typography
+   ※ 루트 폰트 = 10px → 1rem = 10px
+   ※ 유틸 클래스: .stds-{name} + 굵기 .fw-regular/.fw-medium/.fw-bold
+   ============================================================= */
+
+/* ---- Spoqa Han Sans Neo (로컬 woff2) ---------------------- */
+@font-face {
+  font-family: "Spoqa Han Sans Neo";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("../fonts/SpoqaHanSansNeo-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Spoqa Han Sans Neo";
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url("../fonts/SpoqaHanSansNeo-Medium.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Spoqa Han Sans Neo";
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url("../fonts/SpoqaHanSansNeo-Bold.woff2") format("woff2");
+}
+
+html {
+  font-size: 10px; /* 1rem = 10px */
+}
+
+body {
+  font-family: "Spoqa Han Sans Neo", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", "Apple SD Gothic Neo",
+    "Malgun Gothic", sans-serif;
+  word-break: keep-all; /* 어절 단위 자동 줄바꿈 */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- 굵기 --------------------------------------------------- */
+.fw-regular { font-weight: 400; }
+.fw-medium  { font-weight: 500; }
+.fw-bold    { font-weight: 700; }
+
+/* ---- Title ------------------------------------------------- */
+.stds-title1 { font-size: 5.0rem; line-height: 7.0rem; letter-spacing: -0.03em; }
+.stds-title2 { font-size: 4.2rem; line-height: 5.6rem; letter-spacing: -0.03em; }
+.stds-title3 { font-size: 3.2rem; line-height: 4.4rem; letter-spacing: -0.03em; }
+.stds-title4 { font-size: 2.4rem; line-height: 3.4rem; letter-spacing: -0.03em; }
+.stds-title5 { font-size: 2.0rem; line-height: 3.0rem; letter-spacing: -0.03em; }
+.stds-title6 { font-size: 1.8rem; line-height: 2.6rem; letter-spacing: -0.03em; }
+.stds-title7 { font-size: 1.6rem; line-height: 2.4rem; letter-spacing: -0.03em; }
+.stds-title8 { font-size: 1.4rem; line-height: 2.0rem; letter-spacing: -0.03em; }
+
+/* ---- Text -------------------------------------------------- */
+.stds-text1 { font-size: 1.6rem; line-height: 2.6rem; letter-spacing: -0.03em; }
+.stds-text2 { font-size: 1.5rem; line-height: 2.4rem; letter-spacing: -0.03em; }
+.stds-text3 { font-size: 1.4rem; line-height: 2.4rem; letter-spacing: -0.03em; }
+.stds-text4 { font-size: 1.3rem; line-height: 2.2rem; letter-spacing: -0.025em; }
+
+/* ---- Button ------------------------------------------------ */
+.stds-btn1 { font-size: 1.6rem; line-height: 2.4rem; letter-spacing: -0.03em; }
+.stds-btn2 { font-size: 1.4rem; line-height: 2.0rem; letter-spacing: -0.03em; }
+.stds-btn3 { font-size: 1.2rem; line-height: 1.8rem; letter-spacing: -0.02em; }
+
+/* ---- Caption ----------------------------------------------- */
+.stds-cap1 { font-size: 1.2rem; line-height: 1.8rem; letter-spacing: -0.02em; }
+.stds-cap2 { font-size: 1.1rem; line-height: 1.8rem; letter-spacing: -0.02em; }

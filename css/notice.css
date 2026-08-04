@@ -1,0 +1,216 @@
+/* =============================================================
+   데스크탑 알림 (Windows 토스트 스타일)
+   Figma: layout/desktop notice (node 66683:7471, 카드 스펙 66683:7474 — 360x104 고정)
+   ============================================================= */
+
+/* client-window.html에는 dashboard.css/gnb.css의 전역 border-box 리셋이 없어서
+   여기서 직접 잡아준다 — 없으면 padding/border만큼 카드가 360x104보다 커진다 */
+.notice-stack, .notice-stack *, .notice-stack *::before, .notice-stack *::after {
+  box-sizing: border-box;
+}
+
+/* <button> 기본 UA 스타일(배경/테두리/패딩) 리셋 — 없으면 닫기 버튼이 흰 원으로 보임 */
+.notice__close,
+.notice__cta,
+.notice-demo-btn {
+  -webkit-appearance: none;
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font-family: inherit; /* font-size/weight까지 건드리는 `font` 축약형은 쓰지 않는다 — .stds-btn2/.fw-medium 유틸리티가 정한 크기를 덮어써버림 */
+  cursor: pointer;
+}
+
+.notice-stack {
+  position: fixed;
+  right: 2.0rem; /* 20px 고정 */
+  bottom: calc(48px + 2.0rem); /* 작업표시줄(48px) 위로 20px 띄움 */
+  z-index: 50;
+  display: flex;
+  flex-direction: column; /* JS에서 appendChild로 넣으므로 마지막에 추가된(최신) 알림이 자연히 맨 아래로 */
+  gap: var(--spacing-4);
+  width: 36rem;
+  max-height: calc(100vh - 48px - 4.0rem);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.notice {
+  pointer-events: auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12);
+  width: 100%;
+  height: 10.4rem;
+  padding: var(--spacing-16) var(--spacing-40) var(--spacing-16) var(--spacing-20);
+  background: var(--surface-elevation-1);
+  border-radius: 1.6rem; /* STDS 스케일에 없는 값 — Figma 원본값 유지 */
+  box-shadow: var(--shadow-12);
+  overflow: hidden;
+
+  animation: notice-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.notice.is-leaving {
+  animation: notice-out 0.2s ease-in both;
+}
+
+@keyframes notice-in {
+  from { opacity: 0; transform: translateX(2.4rem); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes notice-out {
+  from { opacity: 1; height: 10.4rem; margin-bottom: 0; }
+  to   { opacity: 0; height: 0; margin-bottom: calc(-1 * var(--spacing-4)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notice, .notice.is-leaving { animation: none; }
+}
+
+.notice__thumb {
+  flex: 0 0 auto;
+  width: 6.4rem;
+  height: 6.4rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--inverse-variant-3);
+  overflow: hidden;
+  background: var(--surface-elevation-2);
+}
+.notice__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.notice__body {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.notice__title {
+  margin: 0; /* <p> 기본 마진 리셋 — 없으면 flex gap(4px) 위에 브라우저 기본 마진이 겹쳐 간격이 벌어짐 */
+  color: var(--on-surface-elevation-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notice__desc {
+  margin: 0; /* 위와 동일한 이유 */
+  color: var(--on-surface-elevation-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  /* body에 전역으로 걸린 word-break:keep-all(어절 단위)을 여기서 해제.
+     Figma 원본은 음절 단위로 줄바꿈(필요하면 단어 중간도 끊음)하므로 그것과 맞춘다. */
+  word-break: normal;
+}
+.notice__desc b { color: var(--on-surface-elevation-2); font-weight: 700; }
+
+/* 제목 없이 본문만 있는 알림 — 제목 줄이 없는 만큼 카드 높이(104px) 안에서 3줄까지 확보 가능 */
+.notice--desc-only .notice__desc { -webkit-line-clamp: 3; }
+
+.notice__close {
+  position: absolute;
+  top: var(--spacing-8);
+  right: var(--spacing-8);
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: var(--radius-full);
+  display: grid;
+  place-items: center;
+  color: var(--on-surface-elevation-2);
+  transition: background 0.12s, color 0.12s;
+}
+.notice__close i { font-size: 1.6rem; }
+.notice__close:hover { background: var(--interaction-hover); color: var(--on-surface-elevation-1); }
+
+/* ---- 리치 알림 (배너 이미지 + 버튼) ------------------------- */
+.notice--rich {
+  flex-direction: column;
+  align-items: stretch;
+  height: auto;
+  padding: 0;
+  gap: 0;
+}
+
+.notice--rich__banner {
+  position: relative;
+  width: 100%;
+  height: 20rem;
+  overflow: hidden;
+  background: var(--stove-white);
+}
+.notice--rich__banner img {
+  /* object-fit:cover 대신 Figma 원본 좌표(594x251, -96/-33)를 그대로 재현
+     — 배너 안의 로고가 정확히 의도된 위치(중앙)에 오도록 임의 크롭 대신 고정값 사용 */
+  position: absolute;
+  left: -9.6rem;
+  top: -3.3rem;
+  width: 59.4rem;
+  height: 25.1rem;
+  max-width: none;
+}
+.notice--rich__banner .notice__close {
+  top: var(--spacing-8);
+  right: var(--spacing-8);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--stove-white);
+}
+.notice--rich__banner .notice__close:hover { background: rgba(0, 0, 0, 0.45); }
+
+.notice--rich__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  padding: var(--spacing-16) var(--spacing-20) var(--spacing-20);
+}
+
+.notice--rich__row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12);
+  height: 7.6rem;
+}
+.notice--rich__row .notice__body { align-self: center; }
+
+.notice__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 4.4rem;
+  padding: var(--spacing-12) var(--spacing-20);
+  border: 1px solid var(--stove-white-50);
+  border-radius: var(--radius-lg);
+  color: var(--stove-white);
+  background: transparent;
+  transition: background 0.12s;
+}
+.notice__cta:hover { background: rgba(255, 255, 255, 0.08); }
+
+/* ---- 프로토타입 데모 컨트롤 (디자인 스펙 아님) --------------- */
+.notice-demo-btn {
+  position: fixed;
+  left: var(--spacing-24);
+  bottom: calc(48px + var(--spacing-24));
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  height: 4rem;
+  padding: 0 var(--spacing-20) 0 var(--spacing-16);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--brand-primary-enabled);
+  color: var(--stove-white);
+  box-shadow: var(--shadow-4);
+  transition: background 0.12s;
+}
+.notice-demo-btn i { font-size: 2rem; } /* 아이콘은 텍스트보다 크게 — icon-btn 등 기존 아이콘 버튼 비례와 동일 */
+.notice-demo-btn:hover { background: var(--brand-primary-hover); }
+.notice-demo-btn:active { background: var(--brand-primary-pressed); }

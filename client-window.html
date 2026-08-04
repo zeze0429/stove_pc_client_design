@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STOVE 클라이언트 — 데스크톱 미리보기</title>
+  <link rel="stylesheet" href="css/tokens.css?v=7" />
+  <link rel="stylesheet" href="css/foundations.css?v=7" />
+  <link rel="stylesheet" href="css/typography.css?v=11" />
+  <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=1" />
+  <link rel="stylesheet" href="css/desktop.css?v=11" />
+  <link rel="stylesheet" href="css/notice.css?v=9" />
+</head>
+<body>
+  <div class="os-desktop">
+
+    <!-- 클라이언트 창 (1280 x 800, 상단 상태표시줄 없음 — 커스텀 영역으로 대체 예정) -->
+    <div class="os-window">
+      <iframe class="os-content" src="index.html" title="STOVE 클라이언트" width="1280" height="800"></iframe>
+    </div>
+
+    <!-- 작업표시줄 (Figma Make 레퍼런스: https://quartz-unique-70171087.figma.site/ 그대로 재현) -->
+    <div class="os-taskbar os-taskbar--light">
+      <div class="os-taskbar__left">
+        <button class="os-taskbar__btn" title="시작">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" fill="currentColor"/><rect x="13" y="3" width="8" height="8" fill="currentColor"/><rect x="3" y="13" width="8" height="8" fill="currentColor"/><rect x="13" y="13" width="8" height="8" fill="currentColor"/></svg>
+        </button>
+        <button class="os-taskbar__btn" title="검색">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        </button>
+        <button class="os-taskbar__btn" title="위젯">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="14" rx="1"></rect><rect width="7" height="7" x="3" y="14" rx="1"></rect></svg>
+        </button>
+
+        <span class="os-taskbar__divider"></span>
+
+        <button class="os-taskbar__btn is-active" title="STOVE">
+          <span class="os-taskbar__appicon">
+            <svg viewBox="0 0 256 256" fill="none"><circle cx="128" cy="128" r="128" fill="#FC4420"/><path d="M130.969 60.4746L128.749 60.4445C98.632 60.4445 77.5097 74.9797 77.5097 98.6281C77.5097 116.834 88.1032 126.644 100.991 132.918L103.043 133.88C104.768 134.658 106.524 135.38 108.294 136.055L110.423 136.845L112.558 137.596L115.754 138.656L118.921 139.651L128.958 142.681L131.719 143.56L133.472 144.151L135.147 144.751L136.737 145.365C139.827 146.609 142.362 147.96 144.08 149.571C145.595 151.061 146.542 152.44 146.542 154.861C146.542 159.929 141.131 162.362 129.685 162.362C118.961 162.362 110.634 159.731 103.942 157.181L97.4335 154.629C94.12 153.361 91.279 152.451 88.7555 152.451C80.0424 152.451 74.668 159.516 74.668 167.709C74.668 181.949 93.9618 190.044 112.535 192.748L114.9 193.064C115.686 193.16 116.47 193.246 117.249 193.322L119.571 193.522L121.857 193.664C123.368 193.74 124.848 193.778 126.287 193.778C156.782 193.778 181.335 180.558 181.335 152.44C181.335 131.286 167.823 121.675 152.787 116.086L150.729 115.348L148.658 114.656C148.312 114.544 147.966 114.434 147.62 114.325L145.544 113.693L143.473 113.096L141.413 112.53L138.359 111.73L131.522 110.013L127.883 109.073L125.323 108.362L123.71 107.877L122.178 107.378C121.93 107.294 121.686 107.208 121.446 107.122L120.051 106.595L118.756 106.043C117.305 105.384 116.071 104.666 115.102 103.859L114.471 103.331C113.91 102.826 113.451 102.307 113.096 101.783C112.187 100.447 111.874 99.3382 111.874 98.1898C111.874 93.9142 115.808 92.102 121.677 91.4762L123.324 91.334C123.888 91.2958 124.466 91.2664 125.058 91.2449L126.87 91.2031L127.802 91.1981C134.218 91.1981 139.93 92.2378 144.832 93.4023L147.425 94.0443L153.178 95.5411C155.613 96.1474 157.693 96.5685 159.39 96.5685C168.103 96.5685 173.526 90.7381 173.526 82.9173C173.526 77.8894 171.94 73.9794 168.72 70.8141C160.941 63.1666 141.938 60.7613 130.969 60.4746Z" fill="white"/></svg>
+          </span>
+        </button>
+        <button class="os-taskbar__btn" title="브라우저">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle><line x1="21.17" x2="12" y1="8" y2="8"></line><line x1="3.95" x2="8.54" y1="6.06" y2="14"></line><line x1="10.88" x2="15.46" y1="21.94" y2="14"></line></svg>
+        </button>
+        <button class="os-taskbar__btn" title="파일 탐색기">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"></path></svg>
+        </button>
+        <button class="os-taskbar__btn" title="채팅">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        </button>
+      </div>
+
+      <div class="os-taskbar__right">
+        <button class="os-taskbar__tray" title="네트워크/소리/배터리">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h.01"></path><path d="M2 8.82a15 15 0 0 1 20 0"></path><path d="M5 12.859a10 10 0 0 1 14 0"></path><path d="M8.5 16.429a5 5 0 0 1 7 0"></path></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"></path><path d="M16 9a5 5 0 0 1 0 6"></path><path d="M19.364 18.364a9 9 0 0 0 0-12.728"></path></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="10" x="2" y="7" rx="2" ry="2"></rect><line x1="22" x2="22" y1="11" y2="13"></line></svg>
+        </button>
+        <button class="os-taskbar__clock" id="clock">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span id="clockTime">--:--</span>
+          <span class="os-taskbar__clock-divider"></span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>
+          <span id="clockDate" class="date">----‑--‑--</span>
+        </button>
+        <button class="os-taskbar__btn" title="알림">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 데스크탑 알림 스택 (Figma: layout/desktop notice · node 66683:7471) -->
+    <div class="notice-stack" id="noticeStack" aria-live="polite"></div>
+  </div>
+
+  <!-- 프로토타입 데모 컨트롤: 알림이 도착하는 상황을 반복 재현하기 위한 버튼 (디자인 스펙 아님) -->
+  <button class="notice-demo-btn stds-btn2 fw-medium" id="noticeDemoBtn" type="button">
+    <i class="ic-v2-control-add-line"></i>
+    알림 추가
+  </button>
+
+  <script>
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function tick() {
+      var now = new Date();
+      var hour24 = now.getHours();
+      var meridiem = hour24 < 12 ? '오전' : '오후';
+      var hour12 = hour24 % 12 || 12;
+      document.getElementById('clockTime').textContent = meridiem + ' ' + pad(hour12) + ':' + pad(now.getMinutes());
+      document.getElementById('clockDate').textContent =
+        now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+    }
+    tick();
+    setInterval(tick, 1000 * 30);
+  </script>
+
+  <script>
+    // 데스크탑 알림(토스트) — 등장/스택/닫기 인터랙션 프로토타입
+    (function () {
+      var NOTICES = [
+        { title: '로스트 아크', desc: '플레이 준비가 되었습니다.', thumb: 'assets/notice/thumb-loa.png' },
+        { title: '2026 LOA ON SUMMER', desc: '2026 LOA ON SUMMER를 기념하여 모험가님들께 감사의 선물을 드립니다.', thumb: 'assets/notice/thumb-loa.png' },
+        { desc: '<b>스테퍼 레트로 출시기념 10% 중복 할인 쿠폰</b> 사용이 가능합니다. 쿠폰함에서 확인하세요.', thumb: 'assets/notice/thumb-coupon.png' },
+        { desc: '<b>스토브 공식 커뮤니티</b>의 <b>OFFICIAL 스토브</b> 님이 쪽지를 보냈습니다.', thumb: 'assets/notice/thumb-stove.png' },
+        { title: 'BTS 쿠킹온 스토브 : 타이니탄 레스토랑', desc: '플레이 준비가 되었습니다. 플레이 준비가 되었습니다. 플레이 준비가 되었습니다.', thumb: 'assets/notice/thumb-bts.png' },
+        { rich: true, banner: 'assets/notice/banner-summer-festa.png', title: '2026 LOA ON SUMMER', desc: '2026 LOA ON SUMMER를 기념하여 모험가님들께 감사의 선물을 드립니다.', thumb: 'assets/notice/thumb-loa.png', cta: '쿠폰 등록' },
+      ];
+
+      var stack = document.getElementById('noticeStack');
+      var addBtn = document.getElementById('noticeDemoBtn');
+      var cursor = 0;
+
+      function closeBtnHtml() {
+        return '<button class="notice__close" type="button" aria-label="알림 닫기"><i class="ic-v2-control-close-line"></i></button>';
+      }
+
+      function buildNotice(data) {
+        var el = document.createElement('div');
+        el.className = 'notice' + (data.rich ? ' notice--rich' : '') + (!data.rich && !data.title ? ' notice--desc-only' : '');
+
+        if (data.rich) {
+          el.innerHTML =
+            '<div class="notice--rich__banner">' +
+              '<img src="' + data.banner + '" alt="" />' +
+              closeBtnHtml() +
+            '</div>' +
+            '<div class="notice--rich__content">' +
+              '<div class="notice--rich__row">' +
+                '<div class="notice__thumb"><img src="' + data.thumb + '" alt="" /></div>' +
+                '<div class="notice__body">' +
+                  '<p class="notice__title stds-text2 fw-bold">' + data.title + '</p>' +
+                  '<p class="notice__desc stds-text3">' + data.desc + '</p>' +
+                '</div>' +
+              '</div>' +
+              '<button class="notice__cta stds-btn2 fw-medium" type="button">' + data.cta + '</button>' +
+            '</div>';
+        } else {
+          el.innerHTML =
+            '<div class="notice__thumb"><img src="' + data.thumb + '" alt="" /></div>' +
+            '<div class="notice__body">' +
+              (data.title ? '<p class="notice__title stds-text2 fw-bold">' + data.title + '</p>' : '') +
+              '<p class="notice__desc stds-text3">' + data.desc + '</p>' +
+            '</div>' +
+            closeBtnHtml();
+        }
+
+        el.querySelector('.notice__close').addEventListener('click', function () {
+          clearTimeout(el._autoDismissTimer); // 유저가 직접 닫으면 예약된 자동 소멸은 취소
+          dismiss(el);
+        });
+        return el;
+      }
+
+      // 닫기: is-leaving 애니메이션이 끝난 뒤에만 DOM에서 제거해야
+      // height 축소 트랜지션이 끝까지 재생된다 (즉시 remove하면 잘려 보임)
+      function dismiss(el) {
+        if (el.classList.contains('is-leaving')) return; // 자동 소멸과 수동 닫기가 겹쳐도 중복 실행 방지
+        el.style.animationDelay = '0s'; // 입장 애니메이션에 붙인 지연을 닫기 애니메이션까지 끌고 가지 않도록 초기화
+        el.classList.add('is-leaving');
+        el.addEventListener('animationend', function handler() {
+          el.removeEventListener('animationend', handler);
+          el.remove();
+        });
+      }
+
+      var AUTO_DISMISS_MS = 5000;
+
+      // 배너 혼합형(리치 알림)은 규칙이 다르다:
+      // - 5초 자동 소멸 없음, 유저가 X를 눌러야만 닫힘
+      // - 다른 알림이 새로 도착해도 항상 스택 맨 아래(가장 최근 자리)에 고정
+      // - 동시에 최대 1개만 노출 — 새 배너 혼합형이 뜨면 기존 것을 먼저 닫음
+      function pushNotice(data, delayMs) {
+        var el = buildNotice(data);
+        if (delayMs) el.style.animationDelay = delayMs + 'ms';
+
+        if (data.rich) {
+          // 페이드아웃을 기다리지 않고 즉시 제거 — 짧은 시간에 여러 번 트리거돼도
+          // 배너 혼합형이 두 개 이상 동시에 DOM에 남아있는 경우가 절대 생기지 않도록 함
+          var existingRich = stack.querySelector('.notice--rich');
+          if (existingRich) {
+            clearTimeout(existingRich._autoDismissTimer);
+            existingRich.remove();
+          }
+          stack.appendChild(el); // 맨 아래 고정
+        } else {
+          var pinnedRich = stack.querySelector('.notice--rich');
+          if (pinnedRich) {
+            stack.insertBefore(el, pinnedRich); // 리치 알림보다 항상 위에 쌓임
+          } else {
+            stack.appendChild(el);
+          }
+          el._autoDismissTimer = setTimeout(function () { dismiss(el); }, AUTO_DISMISS_MS);
+        }
+      }
+
+      // 진입 시엔 알림이 하나도 없는 상태로 시작 — "알림 추가" 버튼을 눌러야만 뜨기 시작한다
+      if (addBtn) {
+        addBtn.addEventListener('click', function () {
+          pushNotice(NOTICES[cursor % NOTICES.length]);
+          cursor += 1;
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

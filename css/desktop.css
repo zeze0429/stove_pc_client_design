@@ -1,0 +1,123 @@
+/* =============================================================
+   Windows 11 데스크톱 목업 — 클라이언트 창(1280x800) 미리보기용
+   ※ 실제 MS 배경화면 파일이 아닌 CSS 근사(Bloom 스타일) 재현.
+   ============================================================= */
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: stds-font-kr, "system-ui", -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ---- 데스크톱 배경 ------------------------------------------ */
+.os-desktop {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  /* cover 대비 확대 — 이미지가 뷰포트보다 가로로 긴 비율이라 세로(height) 기준으로
+     퍼센트를 줘야 잘림 없이 확대된다. width 기준 %는 이미지 비율에 따라 위아래가
+     뷰포트를 못 채우는 여백이 생길 수 있어 피함. */
+  background: url("../assets/BG.jpeg") center / auto 140% no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 48px; /* 작업표시줄 높이만큼 창을 위로 띄움 */
+}
+
+/* ---- 창(window) ------------------------------------------- */
+.os-window {
+  position: relative;
+  width: 1280px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
+  background: #1f1f1f;
+}
+
+.os-content {
+  width: 1280px;
+  height: 800px;
+  border: 0;
+  display: block;
+  background: #1f1f1f;
+}
+
+/* ---- 작업표시줄 -----------------------------------------------
+   레퍼런스: https://quartz-unique-70171087.figma.site/ 실제 DOM/클래스를
+   그대로 옮김 (반투명 화이트 유리효과 + Lucide 라인 아이콘, 전부 흰색) */
+.os-taskbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+.os-taskbar--light {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(40px) saturate(150%);
+  -webkit-backdrop-filter: blur(40px) saturate(150%);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.os-taskbar__left { display: flex; align-items: center; gap: 4px; }
+
+.os-taskbar__btn {
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: transparent;
+  transition: background 0.12s;
+  flex: 0 0 auto;
+}
+.os-taskbar__btn svg { width: 20px; height: 20px; display: block; }
+.os-taskbar__btn:hover { background: rgba(255, 255, 255, 0.1); }
+.os-taskbar__btn.is-active { background: rgba(255, 255, 255, 0.2); border-color: #fff; }
+
+.os-taskbar__divider {
+  width: 1px;
+  height: 24px;
+  margin: 0 4px;
+  background: rgba(255, 255, 255, 0.2);
+  flex: 0 0 auto;
+}
+.os-taskbar__appicon { width: 24px; height: 24px; display: block; }
+.os-taskbar__appicon svg { width: 100%; height: 100%; display: block; }
+
+.os-taskbar__right { display: flex; align-items: center; gap: 8px; }
+
+.os-taskbar__tray {
+  box-sizing: border-box;
+  display: flex; align-items: center; gap: 8px;
+  height: 32px; padding: 0 12px; border-radius: 8px;
+  border: 0; background: transparent; color: #fff;
+  transition: background 0.12s;
+  flex: 0 0 auto;
+}
+.os-taskbar__tray svg { width: 16px; height: 16px; display: block; }
+.os-taskbar__tray:hover { background: rgba(255, 255, 255, 0.1); }
+
+.os-taskbar__clock {
+  box-sizing: border-box;
+  display: flex; align-items: center; gap: 8px;
+  height: 40px; padding: 0 12px; border-radius: 8px;
+  border: 0; background: transparent;
+  color: #fff; font-size: 12.5px; font-weight: 500;
+  transition: background 0.12s;
+  flex: 0 0 auto;
+}
+.os-taskbar__clock svg { width: 14px; height: 14px; display: block; flex: 0 0 auto; }
+.os-taskbar__clock:hover { background: rgba(255, 255, 255, 0.1); }
+.os-taskbar__clock-divider { width: 1px; height: 12px; background: rgba(255, 255, 255, 0.3); flex: 0 0 auto; }
+.os-taskbar__clock .date { color: rgba(255, 255, 255, 0.9); }
