@@ -215,6 +215,8 @@ body { margin: 0; }
 .menu-item > i {
   font-size: 1.8rem;
   flex: 0 0 auto;
+  position: relative;
+  top: -1px; /* 아이콘 글리프 광학 보정 — 피그마메이크 대비 시각적 중앙 정렬 */
 }
 .menu-item__label {
   /* 텍스트는 선택 여부와 무관하게 항상 밝게, 굵기만 상태에 따라 전환 */
