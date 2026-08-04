@@ -12,10 +12,10 @@ body { margin: 0; }
    여기 값만 바꾸면 이 파일 전체에 일괄 반영됨. 토큰이 생기면
    var(--실제토큰명)으로 값만 교체하면 됨 (사용하는 쪽은 안 건드림). */
 :root {
-  --game-list-text: #888;
-  --game-badge-link-bg: rgba(89, 138, 255, 0.2);
-  --game-badge-multiplay-bg: rgba(68, 224, 143, 0.2);
-  --game-badge-multiplay-fg: #44e08f;
+  --game-group-list-text: #888;
+  --badge-game-list-link-bg: rgba(89, 138, 255, 0.2);
+  --badge-game-list-multiplay-bg: rgba(68, 224, 143, 0.2);
+  --badge-game-list-multiplay-fg: #44e08f;
 }
 
 /* ---- 페이지 캔버스 (컴포넌트 미리보기용) ----------------- */
@@ -279,7 +279,7 @@ body { margin: 0; }
   height: 2.8rem;
   padding: 0 0.5rem; /* Figma 5px — 스케일에 없는 값 */
 }
-.game-group__arrow {
+.game-group__btn-left-arrow {
   box-sizing: border-box;
   width: 1.8rem;
   height: 1.8rem;
@@ -293,11 +293,11 @@ body { margin: 0; }
   cursor: pointer; /* 클릭 영역은 화살표 버튼에만 적용 (Figma 스펙) */
   transition: background .12s;
 }
-.game-group__arrow:hover { background: var(--interaction-hover); }
-.game-group__arrow:active { background: var(--interaction-pressed); }
-.game-group__arrow i { font-size: 1.2rem; transition: transform .15s; }
+.game-group__btn-left-arrow:hover { background: var(--interaction-hover); }
+.game-group__btn-left-arrow:active { background: var(--interaction-pressed); }
+.game-group__btn-left-arrow i { font-size: 1.2rem; transition: transform .15s; }
 /* 기본값 = 펼쳐진 상태(down-fill 그대로). 접히면 같은 아이콘을 -90deg 회전해 우측 화살표처럼 보이게 함 */
-.game-group.is-collapsed .game-group__arrow i { transform: rotate(-90deg); }
+.game-group.is-collapsed .game-group__btn-left-arrow i { transform: rotate(-90deg); }
 .game-group__title-inner {
   display: flex;
   align-items: center;
@@ -312,7 +312,7 @@ body { margin: 0; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.count-badge {
+.badge-menu-title {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -328,15 +328,15 @@ body { margin: 0; }
 }
 
 /* 게임 목록 */
-.game-list {
+.game-group__list-group {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
   padding-left: 1.4rem;
 }
-.game-group.is-collapsed .game-list { display: none; }
+.game-group.is-collapsed .game-group__list-group { display: none; }
 
-.game-list__item {
+.game-group__list {
   display: flex;
   align-items: center;
   gap: 0.6rem; /* Figma 6px — 스케일에 없는 값 */
@@ -346,10 +346,10 @@ body { margin: 0; }
   cursor: pointer;
   transition: background .15s;
 }
-.game-list__item:hover { background: var(--interaction-hover); }
-.game-list__item.is-selected { background: var(--interaction-selected); }
-.game-list__item.is-selected .game-list__name { color: var(--on-surface-elevation-2); }
-.game-thumb {
+.game-group__list:hover { background: var(--interaction-hover); }
+.game-group__list.is-selected { background: var(--interaction-selected); }
+.game-group__list.is-selected .game-group__list-name { color: var(--on-surface-elevation-2); }
+.game-group__thumbnail {
   width: 1.8rem;
   height: 1.8rem;
   border-radius: var(--radius-md);
@@ -362,7 +362,7 @@ body { margin: 0; }
   background-size: cover;
   background-position: center;
 }
-.game-list__name {
+.game-group__list-name {
   /* flex-grow 없음: 이름이 짧아도 박스가 늘어나 배지가 멀리 밀리지 않도록 함.
      min-width:0 + flex-shrink으로 긴 이름은 그대로 줄임표 처리됨. */
   flex: 0 1 auto;
@@ -370,9 +370,9 @@ body { margin: 0; }
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--game-list-text);
+  color: var(--game-group-list-text);
 }
-.game-badges {
+.game-group__badges {
   /* 이름 텍스트와 4px 간격 — 기본 아이템 gap이 6px이라 2px만 당겨서 4px로 맞춤 */
   margin-left: -0.2rem;
   display: inline-flex;
@@ -380,16 +380,16 @@ body { margin: 0; }
   gap: var(--spacing-4);
   flex: 0 0 auto;
 }
-.g-badge {
+.badge-game-list {
   width: 1.6rem;
   height: 1.6rem;
   border-radius: var(--radius-md);
   display: grid;
   place-items: center;
 }
-.g-badge i { font-size: 1.2rem; }
-.g-badge--link { background: var(--game-badge-link-bg); color: var(--stove-blue-400); }
-.g-badge--multiplay { background: var(--game-badge-multiplay-bg); color: var(--game-badge-multiplay-fg); }
+.badge-game-list i { font-size: 1.2rem; }
+.badge-game-list--link { background: var(--badge-game-list-link-bg); color: var(--stove-blue-400); }
+.badge-game-list--multiplay { background: var(--badge-game-list-multiplay-bg); color: var(--badge-game-list-multiplay-fg); }
 
 /* ============================================================
    맨 위로(TOP) 버튼

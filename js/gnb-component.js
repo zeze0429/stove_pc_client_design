@@ -206,20 +206,20 @@ var GnbComponent = {
 
         '<section v-for="group in gameGroups" :key="group.id" class="game-group" :class="{ \'is-collapsed\': isCollapsed(group) }">' +
           '<div class="game-group__title">' +
-            '<button class="game-group__arrow" type="button" aria-label="펼치기/접기" @click="toggleGroup(group)">' +
+            '<button class="game-group__btn-left-arrow" type="button" aria-label="펼치기/접기" @click="toggleGroup(group)">' +
               '<i class="ic-v2-control-select-arrow-down-fill"></i>' +
             '</button>' +
             '<span class="game-group__title-inner">' +
               '<span class="game-group__name stds-title8 fw-medium">{{ group.title }}</span>' +
-              '<span v-if="group.count" class="count-badge">{{ group.count }}</span>' +
+              '<span v-if="group.count" class="badge-menu-title">{{ group.count }}</span>' +
             '</span>' +
           '</div>' +
-          '<ul class="game-list">' +
-            '<li v-for="game in group.games" :key="game.id" class="game-list__item" :class="{ \'is-selected\': selectedGameId === game.id }" @click="selectGame(game)">' +
-              '<span class="game-thumb" :style="{ backgroundImage: \'url(\' + game.thumb + \')\' }"></span>' +
-              '<span class="game-list__name stds-cap1 fw-medium">{{ game.name }}</span>' +
-              '<span v-if="game.badges && game.badges.length" class="game-badges">' +
-                '<span v-for="b in game.badges" :key="b" class="g-badge" :class="\'g-badge--\' + b">' +
+          '<ul class="game-group__list-group">' +
+            '<li v-for="game in group.games" :key="game.id" class="game-group__list" :class="{ \'is-selected\': selectedGameId === game.id }" @click="selectGame(game)">' +
+              '<span class="game-group__thumbnail" :style="{ backgroundImage: \'url(\' + game.thumb + \')\' }"></span>' +
+              '<span class="game-group__list-name stds-cap1 fw-medium">{{ game.name }}</span>' +
+              '<span v-if="game.badges && game.badges.length" class="game-group__badges">' +
+                '<span v-for="b in game.badges" :key="b" class="badge-game-list" :class="\'badge-game-list--\' + b">' +
                   '<i :class="badgeIcon[b]"></i>' +
                 '</span>' +
               '</span>' +
