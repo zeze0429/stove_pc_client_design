@@ -34,6 +34,8 @@ body { margin: 0; }
    침범하지 않도록 헤더/스크롤 영역을 분리) */
 .gnb {
   width: 24rem;
+  height: 100%; /* 부모(.app/.stage) 높이만큼 항상 채움 — 없으면 그룹을 접어 콘텐츠가
+    짧아졌을 때 min-height(720px) 바닥까지만 채우고 그 아래는 배경이 잘려 보임 */
   min-height: 72rem;
   max-height: 100vh;
   overflow: hidden;
