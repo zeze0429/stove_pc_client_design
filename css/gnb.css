@@ -358,7 +358,7 @@ body { margin: 0; }
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--on-surface-elevation-4);
+  color: #888; /* Figma Make 값 그대로 — 대응 토큰이 아직 없어서 하드코딩, 토큰 추가되면 교체 예정 */
 }
 .game-badges {
   /* 이름 텍스트와 4px 간격 — 기본 아이템 gap이 6px이라 2px만 당겨서 4px로 맞춤 */
