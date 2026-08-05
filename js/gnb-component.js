@@ -237,30 +237,31 @@ var GnbComponent = {
         self._activeSpring.show();
       });
     },
-    // 호버 인디케이터 노출: mouseenter 시 대기 중이던 50ms 소멸 타이머를 취소하고
-    // 즉시 새 위치로 스프링 이동 — 인접 항목 사이를 옮겨 다닐 때 깜빡이지 않고
-    // 계속 슬라이딩하는 느낌을 유지하기 위함 (Figma Make 가이드의 50ms 디바운스).
-    // 단, 이미 선택된(active) 항목 위에서는 호버 인디케이터를 띄우지 않음 —
+    // 호버 인디케이터 노출: mouseenter 시 대기 중이던 50ms 소멸 타이머를 취소.
+    // ※ 슬라이딩(스프링)은 "이미 보이는 상태에서 다른 항목으로 옮겨갈 때"만
+    // 적용하고, "숨겨져 있다가 다시 나타날 때"는 슬라이딩 없이 그 자리에 바로
+    // 나타나야 함(Figma 가이드의 "조건부 렌더링, entrance 애니메이션 없음"과
+    // 동일한 원리) — 안 그러면 숨어있던 위치(예전 목표 자리, 혹은 선택된 항목
+    // 자리)에서 잠깐 보였다가 슬라이딩해오는 것처럼 보여서, 그 자리에 있던
+    // 다른 인디케이터(선택 등)와 한 프레임 겹쳐 보이는 버그가 생김.
+    // 이미 선택된(active) 항목 위에서는 호버 인디케이터를 아예 띄우지 않음 —
     // 두 인디케이터 배경이 같은 자리에 겹쳐 그려져 색이 진해 보이는 문제 방지.
-    // ※ 숨길 때도 위치는 그 항목으로 즉시(instant) 갱신해둠 — 안 그러면 마우스가
-    // 선택된 항목을 빠르게 스쳐 지나갈 때, 숨겨진 채로 예전 목표를 향해 계속
-    // 움직이다가 다음 항목에서 다시 나타나는 순간 "뒤처진 위치"에 잠깐 겹쳐
-    // 보이는 버그가 생김 — 숨어있는 동안에도 위치를 마우스 경로에 맞게 계속
-    // 최신 상태로 유지해야 다음에 다시 나타날 때 겹침 없이 그 자리에서 시작함.
     handleHoverEnter: function (targetEl) {
       clearTimeout(this._hoverLeaveTimer);
       if (targetEl.classList.contains('is-selected')) {
-        this.moveIndicatorTo(this._hoverSpring, targetEl, 'instant');
         this._hoverSpring.hide();
+        this._hoverVisible = false;
         return;
       }
-      this.moveIndicatorTo(this._hoverSpring, targetEl);
+      this.moveIndicatorTo(this._hoverSpring, targetEl, this._hoverVisible ? undefined : 'instant');
       this._hoverSpring.show();
+      this._hoverVisible = true;
     },
     handleHoverLeave: function () {
       var self = this;
       this._hoverLeaveTimer = setTimeout(function () {
         self._hoverSpring.hide();
+        self._hoverVisible = false;
       }, 50);
     },
     handleMenuMouseEnter: function (e) {
