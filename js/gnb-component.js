@@ -87,8 +87,8 @@ var GNB_SPRING_DAMPING = 28;
 // 호버와 같은 정도로 느리게 흐르면 손맛이 없음. 그래서 뻣뻣할 정도로 빠르고
 // 오버슈트가 거의 없는(임계감쇠에 가까운) 별도의 "스냅" 스프링을 씀 —
 // 아주 짧지만 분명히 존재하는 모션이라 "부드럽게 탁 붙는" 느낌이 남.
-var GNB_SNAP_STIFFNESS = 1000;
-var GNB_SNAP_DAMPING = 60;
+var GNB_SNAP_STIFFNESS = 1800;
+var GNB_SNAP_DAMPING = 85;
 
 function createSpringBox(el) {
   var x = 0, y = 0, w = 0, h = 0;
@@ -224,6 +224,12 @@ var GnbComponent = {
     hideHoverIndicator: function () {
       clearTimeout(this._hoverLeaveTimer);
       this._hoverSpring.hide();
+      // 이걸 안 하면: 클릭 직후 마우스가 (이제 선택된) 그 항목을 벗어나 다른
+      // 항목으로 갈 때, "호버가 여전히 보이는 중"이라고 착각해서 스프링
+      // 슬라이딩을 시도함 — 그런데 실제 위치는 방금 선택된 자리(active
+      // 인디케이터와 같은 자리)에 멈춰있던 상태라, 거기서부터 슬라이딩을
+      // 시작하는 첫 프레임에 또 겹쳐 보임.
+      this._hoverVisible = false;
     },
     // 선택 인디케이터를 현재 선택된 항목(.is-selected) 위치로 이동 — DOM이
     // 갱신된 다음 프레임에 위치를 읽어야 하므로 $nextTick으로 한 틱 미룸.
