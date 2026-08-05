@@ -79,13 +79,22 @@ var GNB_BADGE_ICON = {
 // (React/Framer Motion의 layoutId 공유 레이아웃 애니메이션과 동일한 개념을
 // 프레임워크 없이 순수 JS로 재현한 것 — 매 프레임 위치를 스프링 방정식으로
 // 적분해서 transform/width/height에 직접 반영)
+// 호버 중 탐색할 때는 살짝 탄성 있게 흐르듯 슬라이딩(언더댐핑, 약간의 오버슈트).
 var GNB_SPRING_STIFFNESS = 250;
 var GNB_SPRING_DAMPING = 28;
+// 클릭으로 확정될 때는 "탁 붙는" 느낌이어야 함 — 0ms 즉시 이동(텔레포트)은
+// 오히려 "인터랙션이 아예 안 먹은 것" 같은 끊긴 느낌을 줘서 안 됨. 그렇다고
+// 호버와 같은 정도로 느리게 흐르면 손맛이 없음. 그래서 뻣뻣할 정도로 빠르고
+// 오버슈트가 거의 없는(임계감쇠에 가까운) 별도의 "스냅" 스프링을 씀 —
+// 아주 짧지만 분명히 존재하는 모션이라 "부드럽게 탁 붙는" 느낌이 남.
+var GNB_SNAP_STIFFNESS = 1000;
+var GNB_SNAP_DAMPING = 60;
 
 function createSpringBox(el) {
   var x = 0, y = 0, w = 0, h = 0;
   var vx = 0, vy = 0, vw = 0, vh = 0;
   var tx = 0, ty = 0, tw = 0, th = 0;
+  var stiffness = GNB_SPRING_STIFFNESS, damping = GNB_SPRING_DAMPING;
   var raf = null;
 
   function apply() {
@@ -97,10 +106,10 @@ function createSpringBox(el) {
   function step() {
     var dt = 1 / 60;
     var dx = tx - x, dy = ty - y, dw = tw - w, dh = th - h;
-    vx += (GNB_SPRING_STIFFNESS * dx - GNB_SPRING_DAMPING * vx) * dt;
-    vy += (GNB_SPRING_STIFFNESS * dy - GNB_SPRING_DAMPING * vy) * dt;
-    vw += (GNB_SPRING_STIFFNESS * dw - GNB_SPRING_DAMPING * vw) * dt;
-    vh += (GNB_SPRING_STIFFNESS * dh - GNB_SPRING_DAMPING * vh) * dt;
+    vx += (stiffness * dx - damping * vx) * dt;
+    vy += (stiffness * dy - damping * vy) * dt;
+    vw += (stiffness * dw - damping * vw) * dt;
+    vh += (stiffness * dh - damping * vh) * dt;
     x += vx * dt; y += vy * dt; w += vw * dt; h += vh * dt;
     apply();
 
@@ -119,16 +128,20 @@ function createSpringBox(el) {
 
   return {
     // rect: { left, top, width, height } — .gnb-menu 기준 좌표
-    // immediate: true면 스프링 없이 즉시 그 위치로 점프 (최초 마운트 시 사용)
-    setTarget: function (rect, immediate) {
+    // mode: 'instant'면 스프링 없이 즉시 점프(최초 마운트/리사이즈처럼 애니메이션이
+    // 아예 없어야 하는 경우). 'snap'이면 빠르고 뻣뻣한 스냅 스프링(클릭 확정용).
+    // 생략하면 기본 호버용 흐르는 스프링.
+    setTarget: function (rect, mode) {
       tx = rect.left; ty = rect.top; tw = rect.width; th = rect.height;
-      if (immediate) {
+      if (mode === 'instant') {
         x = tx; y = ty; w = tw; h = th;
         vx = vy = vw = vh = 0;
         apply();
         if (raf) { cancelAnimationFrame(raf); raf = null; }
         return;
       }
+      stiffness = mode === 'snap' ? GNB_SNAP_STIFFNESS : GNB_SPRING_STIFFNESS;
+      damping = mode === 'snap' ? GNB_SNAP_DAMPING : GNB_SPRING_DAMPING;
       if (!raf) raf = requestAnimationFrame(step);
     },
     show: function () { el.style.opacity = '1'; },
@@ -172,9 +185,10 @@ var GnbComponent = {
   methods: {
     // 인디케이터(호버/선택 공용)를 targetEl 위치로 옮긴다. 좌표는 .gnb-menu
     // (스크롤 컨테이너) 기준으로 계산 — 그래야 인디케이터가 .gnb-menu의 자식으로
-    // 스크롤과 함께 자연스럽게 움직인다. immediate=true면 스프링 없이 즉시 이동
-    // (최초 마운트 시 "어디선가 날아오는" 느낌 없이 바로 그 자리에 있어야 하므로).
-    moveIndicatorTo: function (spring, targetEl, immediate) {
+    // 스크롤과 함께 자연스럽게 움직인다. mode: 'instant'(스프링 없이 즉시 점프,
+    // 최초 마운트/리사이즈용) | 'snap'(빠르고 뻣뻣한 스냅, 클릭 확정용) |
+    // 생략(기본 호버용 흐르는 스프링).
+    moveIndicatorTo: function (spring, targetEl, mode) {
       var container = this.$refs.scrollEl;
       if (!spring || !container || !targetEl) return;
       var cRect = container.getBoundingClientRect();
@@ -184,25 +198,25 @@ var GnbComponent = {
         top: tRect.top - cRect.top + container.scrollTop,
         width: tRect.width,
         height: tRect.height,
-      }, immediate);
+      }, mode);
     },
     // GNB 전체에서 선택 상태는 항상 하나만 — 메뉴를 고르면 게임 선택은 풀리고, 반대도 마찬가지
     // 클릭은 항상 그 항목을 호버한 상태에서 일어나므로, 액티브 인디케이터를
-    // 스프링으로 이전 위치에서 슬라이딩시키지 않고(immediate=true) 클릭한 자리에
-    // 바로 스냅시킴 — 그래야 호버 컬러가 사라지는 자리에 곧바로 선택 컬러가
-    // 들어와서 자연스럽고, 스프링이 짧은 거리를 이동할 때 생기는 오버슈트(살짝
-    // 튕기며 옆/아래 행에 잠깐 겹쳐 보이는 현상)도 아예 생기지 않는다.
+    // 호버와 같은 느린 스프링으로 이전 위치에서 슬라이딩시키지 않고 빠른
+    // "스냅" 스프링으로 확정 — 0ms 즉시 점프는 오히려 "인터랙션이 안 먹은"
+    // 느낌이라 안 되고, 그렇다고 호버만큼 느긋하게 흐르면 손맛이 없어서
+    // 빠르고 오버슈트 없는 별도 스프링을 씀(GNB_SNAP_STIFFNESS/DAMPING).
     selectMenu: function (item) {
       this.selectedId = item.id;
       this.selectedGameId = null;
       this.hideHoverIndicator();
-      this.moveActiveIndicator(true);
+      this.moveActiveIndicator('snap');
     },
     selectGame: function (game) {
       this.selectedGameId = game.id;
       this.selectedId = null;
       this.hideHoverIndicator();
-      this.moveActiveIndicator(true);
+      this.moveActiveIndicator('snap');
     },
     // 클릭해서 선택되는 순간 마우스는 아직 그 항목 위에 있는 채라 호버
     // 인디케이터가 남아있는데, 선택 인디케이터가 같은 자리로 오면서 잠깐
@@ -213,13 +227,13 @@ var GnbComponent = {
     },
     // 선택 인디케이터를 현재 선택된 항목(.is-selected) 위치로 이동 — DOM이
     // 갱신된 다음 프레임에 위치를 읽어야 하므로 $nextTick으로 한 틱 미룸.
-    moveActiveIndicator: function (immediate) {
+    moveActiveIndicator: function (mode) {
       var self = this;
       this.$nextTick(function () {
         var container = self.$refs.scrollEl;
         var el = container && container.querySelector('.menu-item.is-selected, .game-group__list.is-selected');
         if (!el) { self._activeSpring && self._activeSpring.hide(); return; }
-        self.moveIndicatorTo(self._activeSpring, el, immediate);
+        self.moveIndicatorTo(self._activeSpring, el, mode);
         self._activeSpring.show();
       });
     },
@@ -228,13 +242,19 @@ var GnbComponent = {
     // 계속 슬라이딩하는 느낌을 유지하기 위함 (Figma Make 가이드의 50ms 디바운스).
     // 단, 이미 선택된(active) 항목 위에서는 호버 인디케이터를 띄우지 않음 —
     // 두 인디케이터 배경이 같은 자리에 겹쳐 그려져 색이 진해 보이는 문제 방지.
+    // ※ 숨길 때도 위치는 그 항목으로 즉시(instant) 갱신해둠 — 안 그러면 마우스가
+    // 선택된 항목을 빠르게 스쳐 지나갈 때, 숨겨진 채로 예전 목표를 향해 계속
+    // 움직이다가 다음 항목에서 다시 나타나는 순간 "뒤처진 위치"에 잠깐 겹쳐
+    // 보이는 버그가 생김 — 숨어있는 동안에도 위치를 마우스 경로에 맞게 계속
+    // 최신 상태로 유지해야 다음에 다시 나타날 때 겹침 없이 그 자리에서 시작함.
     handleHoverEnter: function (targetEl) {
       clearTimeout(this._hoverLeaveTimer);
       if (targetEl.classList.contains('is-selected')) {
+        this.moveIndicatorTo(this._hoverSpring, targetEl, 'instant');
         this._hoverSpring.hide();
         return;
       }
-      this.moveIndicatorTo(this._hoverSpring, targetEl, false);
+      this.moveIndicatorTo(this._hoverSpring, targetEl);
       this._hoverSpring.show();
     },
     handleHoverLeave: function () {
@@ -279,7 +299,7 @@ var GnbComponent = {
       this.$nextTick(this.updateThumb);
       // 접기/펼치기로 선택된 항목이 사라지거나 위치가 크게 바뀔 수 있어
       // 스프링 없이 즉시 재배치(또는 대상이 없으면 인디케이터 숨김)
-      this.moveActiveIndicator(true);
+      this.moveActiveIndicator('instant');
     },
     updateThumb: function () {
       var scrollEl = this.$refs.scrollEl;
@@ -333,9 +353,9 @@ var GnbComponent = {
     this._activeSpring = createSpringBox(this.$refs.activeIndicator);
     // 최초 진입 시엔 "어디선가 날아오는" 느낌 없이 바로 기본 선택 위치(스토어)에
     // 있어야 하므로 immediate=true로 스프링 없이 즉시 배치.
-    this.moveActiveIndicator(true);
+    this.moveActiveIndicator('instant');
     var self = this;
-    this._onIndicatorResize = function () { self.moveActiveIndicator(true); };
+    this._onIndicatorResize = function () { self.moveActiveIndicator('instant'); };
     window.addEventListener('resize', this._onIndicatorResize);
 
     this._resizeObserver = new MutationObserver(function () { self.updateThumb(); });
