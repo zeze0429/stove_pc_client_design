@@ -97,11 +97,15 @@ var GnbComponent = {
       return { height: this.thumbHeight + 'px', top: this.thumbTop + 'px' };
     },
     tooltipStyle: function () {
-      // 좌/너비는 "리스트의 텍스트 길이"(이름 라벨의 실제 렌더링 폭)에 맞추고,
+      // 좌/줄바꿈 기준 너비는 "리스트의 텍스트 길이"(이름 라벨의 실제 렌더링 폭)에 맞추고,
       // 위쪽은 항목(li) 바닥이 아니라 텍스트 라벨 자체의 바닥에서 2px 밑 —
       // 라벨이 li 안에서 세로 중앙 정렬돼 있어 li 바닥과 라벨 바닥이 다르기 때문에
       // top:100%(li 기준) 대신 라벨 기준으로 직접 계산해야 정확함.
-      return { left: this.tooltipLeft + 'px', top: this.tooltipTop + 'px', width: this.tooltipWidth + 'px' };
+      // width가 아니라 max-width로 줘야 함 — width로 고정하면 실제 줄바꿈된
+      // 텍스트가 그 너비를 다 못 채울 때 옆에 빈 공간이 남는다(단어 단위로만
+      // 줄바꿈되기 때문). max-width + shrink-to-fit이어야 박스가 줄바꿈된
+      // 텍스트 중 가장 긴 줄에 맞게 좁아진다.
+      return { left: this.tooltipLeft + 'px', top: this.tooltipTop + 'px', maxWidth: this.tooltipWidth + 'px' };
     },
   },
   methods: {
