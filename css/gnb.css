@@ -367,6 +367,10 @@ body { margin: 0; }
   box-shadow: 0 1.2rem 1.4rem rgba(0, 0, 0, 0.2); /* Figma drop-shadow 0/12/14/.2 근사 */
   color: var(--on-surface-elevation-2);
   white-space: normal; /* 부모의 nowrap을 상속하지 않고 툴팁 안에서는 줄바꿈 */
+  /* 단어(공백) 단위가 아니라 글자 단위로 줄바꿈 — Figma 스펙: 박스 너비는
+     항상 고정(라벨 폭과 동일)이고, 그 안에서 한 줄을 최대한 채운 뒤 남는
+     부분만 다음 줄로 내려야 함(예: "레스토랑"도 "레" / "스토랑"으로 분리). */
+  word-break: break-all;
   pointer-events: none; /* 툴팁이 아래쪽 항목 클릭을 막지 않도록 */
 }
 /* 라이트 모드에서만 보더 추가 (Figma 주석: "라이트모드에서는 보더 추가됨") */
