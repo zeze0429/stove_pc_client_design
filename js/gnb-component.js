@@ -212,8 +212,14 @@ var GnbComponent = {
     // 호버 인디케이터 노출: mouseenter 시 대기 중이던 50ms 소멸 타이머를 취소하고
     // 즉시 새 위치로 스프링 이동 — 인접 항목 사이를 옮겨 다닐 때 깜빡이지 않고
     // 계속 슬라이딩하는 느낌을 유지하기 위함 (Figma Make 가이드의 50ms 디바운스).
+    // 단, 이미 선택된(active) 항목 위에서는 호버 인디케이터를 띄우지 않음 —
+    // 두 인디케이터 배경이 같은 자리에 겹쳐 그려져 색이 진해 보이는 문제 방지.
     handleHoverEnter: function (targetEl) {
       clearTimeout(this._hoverLeaveTimer);
+      if (targetEl.classList.contains('is-selected')) {
+        this._hoverSpring.hide();
+        return;
+      }
       this.moveIndicatorTo(this._hoverSpring, targetEl, false);
       this._hoverSpring.show();
     },
