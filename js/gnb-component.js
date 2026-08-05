@@ -87,8 +87,8 @@ var GNB_SPRING_DAMPING = 28;
 // 호버와 같은 정도로 느리게 흐르면 손맛이 없음. 그래서 뻣뻣할 정도로 빠르고
 // 오버슈트가 거의 없는(임계감쇠에 가까운) 별도의 "스냅" 스프링을 씀 —
 // 아주 짧지만 분명히 존재하는 모션이라 "부드럽게 탁 붙는" 느낌이 남.
-var GNB_SNAP_STIFFNESS = 1800;
-var GNB_SNAP_DAMPING = 85;
+var GNB_SNAP_STIFFNESS = 600;
+var GNB_SNAP_DAMPING = 49;
 
 function createSpringBox(el) {
   var x = 0, y = 0, w = 0, h = 0;
