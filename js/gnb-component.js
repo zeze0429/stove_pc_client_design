@@ -187,17 +187,22 @@ var GnbComponent = {
       }, immediate);
     },
     // GNB 전체에서 선택 상태는 항상 하나만 — 메뉴를 고르면 게임 선택은 풀리고, 반대도 마찬가지
+    // 클릭은 항상 그 항목을 호버한 상태에서 일어나므로, 액티브 인디케이터를
+    // 스프링으로 이전 위치에서 슬라이딩시키지 않고(immediate=true) 클릭한 자리에
+    // 바로 스냅시킴 — 그래야 호버 컬러가 사라지는 자리에 곧바로 선택 컬러가
+    // 들어와서 자연스럽고, 스프링이 짧은 거리를 이동할 때 생기는 오버슈트(살짝
+    // 튕기며 옆/아래 행에 잠깐 겹쳐 보이는 현상)도 아예 생기지 않는다.
     selectMenu: function (item) {
       this.selectedId = item.id;
       this.selectedGameId = null;
       this.hideHoverIndicator();
-      this.moveActiveIndicator();
+      this.moveActiveIndicator(true);
     },
     selectGame: function (game) {
       this.selectedGameId = game.id;
       this.selectedId = null;
       this.hideHoverIndicator();
-      this.moveActiveIndicator();
+      this.moveActiveIndicator(true);
     },
     // 클릭해서 선택되는 순간 마우스는 아직 그 항목 위에 있는 채라 호버
     // 인디케이터가 남아있는데, 선택 인디케이터가 같은 자리로 오면서 잠깐
