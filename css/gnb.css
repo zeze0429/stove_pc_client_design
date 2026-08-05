@@ -131,6 +131,7 @@ body { margin: 0; }
    Menu 영역
    ============================================================ */
 .gnb-menu {
+  position: relative; /* 호버/선택 인디케이터(.gnb-hover-indicator 등) 위치 기준 */
   width: 100%;
   flex: 1 1 auto;
   min-height: 0;
@@ -199,8 +200,16 @@ body { margin: 0; }
   width: 100%;
 }
 
-/* 메뉴 항목 (기본) */
+/* 메뉴 항목 (기본)
+   배경(호버/선택)은 이 항목 자신이 아니라 공유 인디케이터(.gnb-hover-indicator /
+   .gnb-active-indicator, 스프링 물리로 항목 사이를 슬라이딩)가 담당 — 그래서
+   position:relative만 줘서(z-index는 auto 그대로) 인디케이터보다 뒤에 있는
+   DOM 순서로 자연스럽게 내용이 위에 그려지게 함.
+   ※ 여기에 z-index 숫자를 주면 안 됨 — 그러면 이 항목이 새 스태킹 컨텍스트를
+   만들어버려서, 다른 곳(게임 리스트 툴팁 등)에서 z-index로 위로 띄우려는
+   엘리먼트가 이 항목 안에 갇혀 옆/아래 형제 항목에 가려지는 문제가 생김. */
 .menu-item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -210,7 +219,7 @@ body { margin: 0; }
   /* 아이콘 색 (기본 = dim). 아이콘은 color 상속, 텍스트는 아래에서 항상 밝게 고정 */
   color: var(--on-surface-elevation-4);
   cursor: pointer;
-  transition: background .15s, color .15s;
+  transition: color .15s;
 }
 .menu-item > i {
   font-size: 1.8rem;
@@ -230,9 +239,7 @@ body { margin: 0; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.menu-item:hover { background: var(--interaction-hover); }
 .menu-item.is-selected {
-  background: var(--interaction-selected);
   color: var(--on-surface-elevation-1); /* 선택 시 아이콘도 밝게 */
 }
 .menu-item.is-selected .menu-item__label {
@@ -340,6 +347,12 @@ body { margin: 0; }
 }
 .game-group.is-collapsed .game-group__list-group { display: none; }
 
+/* 배경(호버/선택)은 공유 인디케이터(.gnb-hover-indicator / .gnb-active-indicator)가
+   담당 — position:relative만으로(z-index는 auto) DOM 순서상 인디케이터
+   뒤에 있어서 내용이 자연스럽게 위에 그려짐.
+   ※ 여기에 z-index 숫자를 주면 안 됨 — 새 스태킹 컨텍스트가 생겨서 아래
+   .game-group__list-tooltip의 z-index:20이 이 행 안에 갇혀버리고, 그 결과
+   다음 형제 행(z-index 없는 같은 레벨)에 툴팁이 가려지는 버그가 생김. */
 .game-group__list {
   position: relative; /* 툴팁(.game-group__list-tooltip) 위치 기준 */
   display: flex;
@@ -349,9 +362,7 @@ body { margin: 0; }
   padding: 0.6rem 0.5rem; /* Figma py-6 px-5 — 스케일에 없는 값 */
   border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: background .15s;
 }
-.game-group__list:hover { background: var(--interaction-hover); }
 
 /* 게임명 말줄임 툴팁 — 이름이 실제로 넘칠 때만 JS가 노출 (Figma node 5884:58851) */
 .game-group__list-tooltip {
@@ -377,8 +388,27 @@ body { margin: 0; }
 :root[data-theme="light"] .game-group__list-tooltip {
   border: 1px solid var(--border);
 }
-.game-group__list.is-selected { background: var(--interaction-selected); }
 .game-group__list.is-selected .game-group__list-name { color: var(--on-surface-elevation-2); }
+
+/* ============================================================
+   호버/선택 인디케이터 (공유 레이어, 스프링 물리로 슬라이딩)
+   메인 메뉴 항목과 게임 리스트 항목 전체에서 공유 — 메뉴 선택과 게임 선택은
+   항상 배타적이라(하나 고르면 다른 쪽은 풀림) 인디케이터도 세트당 1개면 충분.
+   .gnb-menu(스크롤 컨테이너) 기준 좌표로 JS가 위치를 계산해서 이동시킨다.
+   (Figma Make 인터랙션 가이드: layoutId 공유 레이아웃 애니메이션과 동일한 개념을
+   순수 JS 스프링 물리로 재현 — stiffness:250, damping:28) */
+.gnb-hover-indicator,
+.gnb-active-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  border-radius: var(--radius-lg);
+  pointer-events: none;
+  opacity: 0;
+}
+.gnb-hover-indicator { background: var(--interaction-hover); }
+.gnb-active-indicator { background: var(--interaction-selected); }
 .game-group__thumbnail {
   width: 1.8rem;
   height: 1.8rem;
@@ -448,7 +478,9 @@ body { margin: 0; }
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s;
-  z-index: 5;
+  /* 게임 리스트 행에 transform이 적용된 인디케이터가 있어 GPU 컴포지팅 레이어가
+     새로 생기는데, 그때 쌓임 순서가 예상과 달라질 수 있어 명시적으로 높게 지정 */
+  z-index: 20;
 }
 .gnb-top-btn.is-visible {
   opacity: 1;

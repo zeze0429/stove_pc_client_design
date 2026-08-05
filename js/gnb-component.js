@@ -73,6 +73,69 @@ var GNB_BADGE_ICON = {
   multiplay: 'ic-v2-navigation-pcbang-fill',
 };
 
+// ── 호버/선택 인디케이터: 스프링 물리 (Figma Make 인터랙션 가이드 재현) ──
+// 항목마다 배경을 넣는 대신, 인디케이터 엘리먼트 하나를 실제 항목 위치로
+// 스프링 물리(stiffness/damping)로 이동시켜 "물 흐르듯" 슬라이딩하는 느낌을 낸다.
+// (React/Framer Motion의 layoutId 공유 레이아웃 애니메이션과 동일한 개념을
+// 프레임워크 없이 순수 JS로 재현한 것 — 매 프레임 위치를 스프링 방정식으로
+// 적분해서 transform/width/height에 직접 반영)
+var GNB_SPRING_STIFFNESS = 250;
+var GNB_SPRING_DAMPING = 28;
+
+function createSpringBox(el) {
+  var x = 0, y = 0, w = 0, h = 0;
+  var vx = 0, vy = 0, vw = 0, vh = 0;
+  var tx = 0, ty = 0, tw = 0, th = 0;
+  var raf = null;
+
+  function apply() {
+    el.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+    el.style.width = w + 'px';
+    el.style.height = h + 'px';
+  }
+
+  function step() {
+    var dt = 1 / 60;
+    var dx = tx - x, dy = ty - y, dw = tw - w, dh = th - h;
+    vx += (GNB_SPRING_STIFFNESS * dx - GNB_SPRING_DAMPING * vx) * dt;
+    vy += (GNB_SPRING_STIFFNESS * dy - GNB_SPRING_DAMPING * vy) * dt;
+    vw += (GNB_SPRING_STIFFNESS * dw - GNB_SPRING_DAMPING * vw) * dt;
+    vh += (GNB_SPRING_STIFFNESS * dh - GNB_SPRING_DAMPING * vh) * dt;
+    x += vx * dt; y += vy * dt; w += vw * dt; h += vh * dt;
+    apply();
+
+    var settled = Math.abs(tx - x) < 0.5 && Math.abs(ty - y) < 0.5 &&
+      Math.abs(tw - w) < 0.5 && Math.abs(th - h) < 0.5 &&
+      Math.abs(vx) < 0.5 && Math.abs(vy) < 0.5 && Math.abs(vw) < 0.5 && Math.abs(vh) < 0.5;
+    if (settled) {
+      x = tx; y = ty; w = tw; h = th;
+      vx = vy = vw = vh = 0;
+      apply();
+      raf = null;
+    } else {
+      raf = requestAnimationFrame(step);
+    }
+  }
+
+  return {
+    // rect: { left, top, width, height } — .gnb-menu 기준 좌표
+    // immediate: true면 스프링 없이 즉시 그 위치로 점프 (최초 마운트 시 사용)
+    setTarget: function (rect, immediate) {
+      tx = rect.left; ty = rect.top; tw = rect.width; th = rect.height;
+      if (immediate) {
+        x = tx; y = ty; w = tw; h = th;
+        vx = vy = vw = vh = 0;
+        apply();
+        if (raf) { cancelAnimationFrame(raf); raf = null; }
+        return;
+      }
+      if (!raf) raf = requestAnimationFrame(step);
+    },
+    show: function () { el.style.opacity = '1'; },
+    hide: function () { el.style.opacity = '0'; },
+  };
+}
+
 var GnbComponent = {
   data: function () {
     return {
@@ -107,18 +170,66 @@ var GnbComponent = {
     },
   },
   methods: {
+    // 인디케이터(호버/선택 공용)를 targetEl 위치로 옮긴다. 좌표는 .gnb-menu
+    // (스크롤 컨테이너) 기준으로 계산 — 그래야 인디케이터가 .gnb-menu의 자식으로
+    // 스크롤과 함께 자연스럽게 움직인다. immediate=true면 스프링 없이 즉시 이동
+    // (최초 마운트 시 "어디선가 날아오는" 느낌 없이 바로 그 자리에 있어야 하므로).
+    moveIndicatorTo: function (spring, targetEl, immediate) {
+      var container = this.$refs.scrollEl;
+      if (!spring || !container || !targetEl) return;
+      var cRect = container.getBoundingClientRect();
+      var tRect = targetEl.getBoundingClientRect();
+      spring.setTarget({
+        left: tRect.left - cRect.left + container.scrollLeft,
+        top: tRect.top - cRect.top + container.scrollTop,
+        width: tRect.width,
+        height: tRect.height,
+      }, immediate);
+    },
     // GNB 전체에서 선택 상태는 항상 하나만 — 메뉴를 고르면 게임 선택은 풀리고, 반대도 마찬가지
     selectMenu: function (item) {
       this.selectedId = item.id;
       this.selectedGameId = null;
+      this.moveActiveIndicator();
     },
     selectGame: function (game) {
       this.selectedGameId = game.id;
       this.selectedId = null;
+      this.moveActiveIndicator();
+    },
+    // 선택 인디케이터를 현재 선택된 항목(.is-selected) 위치로 이동 — DOM이
+    // 갱신된 다음 프레임에 위치를 읽어야 하므로 $nextTick으로 한 틱 미룸.
+    moveActiveIndicator: function (immediate) {
+      var self = this;
+      this.$nextTick(function () {
+        var container = self.$refs.scrollEl;
+        var el = container && container.querySelector('.menu-item.is-selected, .game-group__list.is-selected');
+        if (!el) { self._activeSpring && self._activeSpring.hide(); return; }
+        self.moveIndicatorTo(self._activeSpring, el, immediate);
+        self._activeSpring.show();
+      });
+    },
+    // 호버 인디케이터 노출: mouseenter 시 대기 중이던 50ms 소멸 타이머를 취소하고
+    // 즉시 새 위치로 스프링 이동 — 인접 항목 사이를 옮겨 다닐 때 깜빡이지 않고
+    // 계속 슬라이딩하는 느낌을 유지하기 위함 (Figma Make 가이드의 50ms 디바운스).
+    handleHoverEnter: function (targetEl) {
+      clearTimeout(this._hoverLeaveTimer);
+      this.moveIndicatorTo(this._hoverSpring, targetEl, false);
+      this._hoverSpring.show();
+    },
+    handleHoverLeave: function () {
+      var self = this;
+      this._hoverLeaveTimer = setTimeout(function () {
+        self._hoverSpring.hide();
+      }, 50);
+    },
+    handleMenuMouseEnter: function (e) {
+      this.handleHoverEnter(e.currentTarget);
     },
     // 이름이 말줄임(ellipsis) 처리된 경우에만 툴팁 노출 (Figma: "해당 리스트 마우스 호버 시 툴팁 노출")
     handleListMouseEnter: function (e, game) {
       var li = e.currentTarget;
+      this.handleHoverEnter(li);
       var nameEl = li.querySelector('.game-group__list-name');
       if (nameEl && nameEl.scrollWidth > nameEl.clientWidth) {
         this.hoveredGameId = game.id;
@@ -129,6 +240,7 @@ var GnbComponent = {
     },
     handleListMouseLeave: function () {
       this.hoveredGameId = null;
+      this.handleHoverLeave();
     },
     // 대부분의 1뎁스 메뉴 항목은 "component/GNB/menu/basic" 심볼이지만
     // 다운로드 관리 항목만 Figma에서 별도 심볼("download_manage")을 씀
@@ -145,6 +257,9 @@ var GnbComponent = {
     toggleGroup: function (group) {
       this.collapsedGroups[group.id] = !this.collapsedGroups[group.id];
       this.$nextTick(this.updateThumb);
+      // 접기/펼치기로 선택된 항목이 사라지거나 위치가 크게 바뀔 수 있어
+      // 스프링 없이 즉시 재배치(또는 대상이 없으면 인디케이터 숨김)
+      this.moveActiveIndicator(true);
     },
     updateThumb: function () {
       var scrollEl = this.$refs.scrollEl;
@@ -194,7 +309,15 @@ var GnbComponent = {
     window.addEventListener('resize', this.updateThumb);
     this.updateThumb();
 
+    this._hoverSpring = createSpringBox(this.$refs.hoverIndicator);
+    this._activeSpring = createSpringBox(this.$refs.activeIndicator);
+    // 최초 진입 시엔 "어디선가 날아오는" 느낌 없이 바로 기본 선택 위치(스토어)에
+    // 있어야 하므로 immediate=true로 스프링 없이 즉시 배치.
+    this.moveActiveIndicator(true);
     var self = this;
+    this._onIndicatorResize = function () { self.moveActiveIndicator(true); };
+    window.addEventListener('resize', this._onIndicatorResize);
+
     this._resizeObserver = new MutationObserver(function () { self.updateThumb(); });
     if (scrollEl) {
       this._resizeObserver.observe(scrollEl, {
@@ -208,6 +331,8 @@ var GnbComponent = {
     document.removeEventListener('mousemove', this.handleDocumentMouseMove);
     document.removeEventListener('mouseleave', this.handleDocumentMouseLeave);
     window.removeEventListener('resize', this.updateThumb);
+    if (this._onIndicatorResize) window.removeEventListener('resize', this._onIndicatorResize);
+    clearTimeout(this._hoverLeaveTimer);
     if (this._resizeObserver) this._resizeObserver.disconnect();
   },
   template:
@@ -224,9 +349,11 @@ var GnbComponent = {
       '</header>' +
 
       '<div ref="scrollEl" class="gnb-menu">' +
+        '<div ref="hoverIndicator" class="gnb-hover-indicator" aria-hidden="true"></div>' +
+        '<div ref="activeIndicator" class="gnb-active-indicator" aria-hidden="true"></div>' +
         '<div>' +
           '<ul class="menu-group" data-name="component/GNB/menu_group">' +
-            '<li v-for="item in menuItems" :key="item.id" class="menu-item" :class="{ \'is-selected\': selectedId === item.id }" @click="selectMenu(item)" :data-name="menuItemSymbol(item)">' +
+            '<li v-for="item in menuItems" :key="item.id" class="menu-item" :class="{ \'is-selected\': selectedId === item.id }" @click="selectMenu(item)" @mouseenter="handleMenuMouseEnter" @mouseleave="handleHoverLeave" :data-name="menuItemSymbol(item)">' +
               '<i :class="item.icon"></i>' +
               '<span class="menu-item__label stds-title8">{{ item.label }}</span>' +
               '<span v-if="item.badge === \'new\'" class="badge-new" data-name="component/badge/menu_title">NEW</span>' +
