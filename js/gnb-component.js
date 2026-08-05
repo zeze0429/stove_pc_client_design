@@ -190,12 +190,21 @@ var GnbComponent = {
     selectMenu: function (item) {
       this.selectedId = item.id;
       this.selectedGameId = null;
+      this.hideHoverIndicator();
       this.moveActiveIndicator();
     },
     selectGame: function (game) {
       this.selectedGameId = game.id;
       this.selectedId = null;
+      this.hideHoverIndicator();
       this.moveActiveIndicator();
+    },
+    // 클릭해서 선택되는 순간 마우스는 아직 그 항목 위에 있는 채라 호버
+    // 인디케이터가 남아있는데, 선택 인디케이터가 같은 자리로 오면서 잠깐
+    // 겹쳐 보이는 문제 방지 — 선택 시 호버 인디케이터를 바로 치움.
+    hideHoverIndicator: function () {
+      clearTimeout(this._hoverLeaveTimer);
+      this._hoverSpring.hide();
     },
     // 선택 인디케이터를 현재 선택된 항목(.is-selected) 위치로 이동 — DOM이
     // 갱신된 다음 프레임에 위치를 읽어야 하므로 $nextTick으로 한 틱 미룸.
