@@ -355,6 +355,7 @@ var GnbComponent = {
     // ── 우클릭 컨텍스트 메뉴 (Figma Make 레퍼런스 재현) ──────────
     openGameContextMenu: function (e, game, group) {
       this.contextMenu = { visible: true, x: e.clientX, y: e.clientY, game: game, isFavorite: group.id === 'favorites' };
+      this.selectGame(game); // 메뉴가 열린 항목은 선택된(active indicator) 상태로 표시 (Figma 4-5 GNB 컨텍스트 메뉴 스펙)
       var self = this;
       this.$nextTick(function () {
         var menuEl = self.$refs.contextMenuEl;
