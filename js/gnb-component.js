@@ -166,6 +166,10 @@ var GnbComponent = {
       thumbHeight: 0,
       thumbTop: 0,
       badgeIcon: GNB_BADGE_ICON,
+      // 우클릭 컨텍스트 메뉴 (Figma Make 레퍼런스: 스토브게임="즐겨찾기 추가", 즐겨찾기="즐겨찾기에서 제거")
+      contextMenu: { visible: false, x: 0, y: 0, game: null, isFavorite: false },
+      // 즐겨찾기 롱프레스 드래그 순서변경 중인 항목 (진행 중엔 is-dragging 클래스로 시각 피드백)
+      dragging: null,
     };
   },
   computed: {
@@ -347,12 +351,100 @@ var GnbComponent = {
       // mousemove가 더 안 들어와 스크롤바가 마지막 상태에 멈추는 문제 방지
       this.showScrollbar = false;
     },
+
+    // ── 우클릭 컨텍스트 메뉴 (Figma Make 레퍼런스 재현) ──────────
+    openGameContextMenu: function (e, game, group) {
+      this.contextMenu = { visible: true, x: e.clientX, y: e.clientY, game: game, isFavorite: group.id === 'favorites' };
+    },
+    closeContextMenu: function () {
+      this.contextMenu.visible = false;
+    },
+    contextMenuAction: function () {
+      if (this.contextMenu.isFavorite) this.removeFromFavorites(this.contextMenu.game);
+      else this.addToFavorites(this.contextMenu.game);
+      this.closeContextMenu();
+    },
+    addToFavorites: function (game) {
+      var favGroup = this.gameGroups.find(function (g) { return g.id === 'favorites'; });
+      if (!favGroup) return;
+      var favId = 'fav-' + game.id;
+      if (favGroup.games.some(function (g) { return g.id === favId; })) return; // 이미 즐겨찾기에 있음
+      favGroup.games.unshift({ id: favId, name: game.name, thumb: game.thumb, badges: game.badges });
+      favGroup.count = favGroup.games.length;
+    },
+    removeFromFavorites: function (game) {
+      var favGroup = this.gameGroups.find(function (g) { return g.id === 'favorites'; });
+      if (!favGroup) return;
+      favGroup.games = favGroup.games.filter(function (g) { return g.id !== game.id; });
+      favGroup.count = favGroup.games.length;
+    },
+
+    // ── 즐겨찾기 롱프레스 드래그 순서변경 ────────────────────────
+    // 일반 드래그(누르자마자 이동)는 순서변경을 발동하지 않음 — 실제
+    // Figma Make 레퍼런스도 꾹 누르고 있어야만 드래그가 활성화됨.
+    // 짧게 움직이면(클릭/스크롤 의도) 타이머를 취소해 오동작을 막는다.
+    onFavoriteMouseDown: function (e, group, index) {
+      if (group.id !== 'favorites' || e.button !== 0) return;
+      var self = this;
+      var startX = e.clientX, startY = e.clientY;
+      clearTimeout(this._longPressTimer);
+
+      function cleanup() {
+        clearTimeout(self._longPressTimer);
+        document.removeEventListener('mouseup', onEarlyUp);
+        document.removeEventListener('mousemove', onEarlyMove);
+      }
+      function onEarlyUp() { cleanup(); }
+      function onEarlyMove(ev) {
+        if (Math.abs(ev.clientX - startX) > 6 || Math.abs(ev.clientY - startY) > 6) cleanup();
+      }
+      document.addEventListener('mouseup', onEarlyUp);
+      document.addEventListener('mousemove', onEarlyMove);
+
+      this._longPressTimer = setTimeout(function () {
+        document.removeEventListener('mouseup', onEarlyUp);
+        document.removeEventListener('mousemove', onEarlyMove);
+        self.beginFavoriteDrag(group, index);
+      }, 450);
+    },
+    beginFavoriteDrag: function (group, index) {
+      var self = this;
+      this.dragging = { groupId: group.id, gameId: group.games[index].id };
+      function onMove(ev) { self.handleFavoriteDragMove(ev, group); }
+      function onUp() {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        self.dragging = null;
+      }
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    },
+    handleFavoriteDragMove: function (ev, group) {
+      if (!this.dragging) return;
+      var groupIndex = this.gameGroups.indexOf(group);
+      var listEl = this.$refs.listGroupEl && this.$refs.listGroupEl[groupIndex];
+      if (!listEl) return;
+      var draggedId = this.dragging.gameId;
+      var fromIndex = group.games.findIndex(function (g) { return g.id === draggedId; });
+      if (fromIndex === -1) return;
+      var items = listEl.children;
+      var toIndex = group.games.length - 1;
+      for (var i = 0; i < items.length; i++) {
+        var rect = items[i].getBoundingClientRect();
+        if (ev.clientY < rect.top + rect.height / 2) { toIndex = i; break; }
+      }
+      if (toIndex !== fromIndex) {
+        var moved = group.games.splice(fromIndex, 1)[0];
+        group.games.splice(toIndex, 0, moved);
+      }
+    },
   },
   mounted: function () {
     var scrollEl = this.$refs.scrollEl;
     if (scrollEl) scrollEl.addEventListener('scroll', this.handleGnbScroll);
     document.addEventListener('mousemove', this.handleDocumentMouseMove);
     document.addEventListener('mouseleave', this.handleDocumentMouseLeave);
+    document.addEventListener('click', this.closeContextMenu);
     window.addEventListener('resize', this.updateThumb);
     this.updateThumb();
 
@@ -377,9 +469,11 @@ var GnbComponent = {
     if (scrollEl) scrollEl.removeEventListener('scroll', this.handleGnbScroll);
     document.removeEventListener('mousemove', this.handleDocumentMouseMove);
     document.removeEventListener('mouseleave', this.handleDocumentMouseLeave);
+    document.removeEventListener('click', this.closeContextMenu);
     window.removeEventListener('resize', this.updateThumb);
     if (this._onIndicatorResize) window.removeEventListener('resize', this._onIndicatorResize);
     clearTimeout(this._hoverLeaveTimer);
+    clearTimeout(this._longPressTimer);
     if (this._resizeObserver) this._resizeObserver.disconnect();
   },
   template:
@@ -423,8 +517,12 @@ var GnbComponent = {
               '<span v-if="group.count" class="badge-menu-title" data-name="component/badge/menu_title">{{ group.count }}</span>' +
             '</span>' +
           '</div>' +
-          '<ul class="game-group__list-group" data-name="component/game_group/list_group">' +
-            '<li v-for="game in group.games" :key="game.id" class="game-group__list" :class="{ \'is-selected\': selectedGameId === game.id }" @click="selectGame(game)" @mouseenter="handleListMouseEnter($event, game)" @mouseleave="handleListMouseLeave" data-name="component/game_group/list">' +
+          '<ul ref="listGroupEl" class="game-group__list-group" data-name="component/game_group/list_group">' +
+            '<li v-for="(game, gameIndex) in group.games" :key="game.id" class="game-group__list" ' +
+              ':class="{ \'is-selected\': selectedGameId === game.id, \'is-dragging\': dragging && dragging.gameId === game.id }" ' +
+              '@click="selectGame(game)" @mouseenter="handleListMouseEnter($event, game)" @mouseleave="handleListMouseLeave" ' +
+              '@contextmenu.prevent="openGameContextMenu($event, game, group)" @mousedown="onFavoriteMouseDown($event, group, gameIndex)" ' +
+              'data-name="component/game_group/list">' +
               '<span class="game-group__thumbnail" :style="{ backgroundImage: \'url(\' + game.thumb + \')\' }" data-name="component/thumbnail/game"></span>' +
               '<span class="game-group__list-name stds-cap1 fw-medium">{{ game.name }}</span>' +
               '<span v-if="game.badges && game.badges.length" class="game-group__badges">' +
@@ -446,6 +544,12 @@ var GnbComponent = {
         '<img class="gnb-top-btn__img gnb-top-btn__img--dark" src="assets/top-btn/TOP_dark.png" alt="" />' +
         '<img class="gnb-top-btn__img gnb-top-btn__img--light" src="assets/top-btn/TOP_light.png" alt="" />' +
       '</button>' +
+
+      '<div v-if="contextMenu.visible" class="gnb-context-menu" :style="{ left: contextMenu.x + \'px\', top: contextMenu.y + \'px\' }" data-name="component/GNB/context_menu">' +
+        '<button class="gnb-context-menu__item stds-cap1" type="button" @click="contextMenuAction">' +
+          '{{ contextMenu.isFavorite ? \'즐겨찾기에서 제거\' : \'즐겨찾기 추가\' }}' +
+        '</button>' +
+      '</div>' +
     '</nav>',
 };
 
