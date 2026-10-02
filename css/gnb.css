@@ -401,14 +401,12 @@ body { margin: 0; }
 .gnb-context-menu {
   position: fixed;
   z-index: 30;
-  min-width: 14.4rem;
+  width: max-content;
   padding: 0.4rem;
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--surface-layer);
   box-shadow: 0 1.2rem 1.4rem rgba(0, 0, 0, 0.2);
-}
-:root[data-theme="light"] .gnb-context-menu {
-  border: 1px solid var(--border);
 }
 .gnb-context-menu__item {
   display: block;
@@ -419,6 +417,7 @@ body { margin: 0; }
   border-radius: var(--radius-md);
   color: var(--on-surface-elevation-2);
   text-align: left;
+  white-space: nowrap;
   cursor: pointer;
 }
 .gnb-context-menu__item:hover { background: var(--interaction-hover); }

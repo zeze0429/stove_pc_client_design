@@ -355,6 +355,18 @@ var GnbComponent = {
     // ── 우클릭 컨텍스트 메뉴 (Figma Make 레퍼런스 재현) ──────────
     openGameContextMenu: function (e, game, group) {
       this.contextMenu = { visible: true, x: e.clientX, y: e.clientY, game: game, isFavorite: group.id === 'favorites' };
+      var self = this;
+      this.$nextTick(function () {
+        var menuEl = self.$refs.contextMenuEl;
+        var navEl = self.$refs.gnbEl;
+        if (!menuEl || !navEl) return;
+        var margin = 16;
+        var navRect = navEl.getBoundingClientRect();
+        var menuRect = menuEl.getBoundingClientRect();
+        var minX = navRect.left + margin;
+        var maxX = navRect.right - margin - menuRect.width;
+        self.contextMenu.x = Math.max(minX, Math.min(e.clientX, maxX));
+      });
     },
     closeContextMenu: function () {
       this.contextMenu.visible = false;
@@ -545,7 +557,7 @@ var GnbComponent = {
         '<img class="gnb-top-btn__img gnb-top-btn__img--light" src="assets/top-btn/TOP_light.png" alt="" />' +
       '</button>' +
 
-      '<div v-if="contextMenu.visible" class="gnb-context-menu" :style="{ left: contextMenu.x + \'px\', top: contextMenu.y + \'px\' }" data-name="component/GNB/context_menu">' +
+      '<div v-if="contextMenu.visible" ref="contextMenuEl" class="gnb-context-menu" :style="{ left: contextMenu.x + \'px\', top: contextMenu.y + \'px\' }" data-name="component/GNB/context_menu">' +
         '<button class="gnb-context-menu__item stds-cap1" type="button" @click="contextMenuAction">' +
           '{{ contextMenu.isFavorite ? \'즐겨찾기에서 제거\' : \'즐겨찾기 추가\' }}' +
         '</button>' +
