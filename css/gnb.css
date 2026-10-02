@@ -362,6 +362,7 @@ body { margin: 0; }
   padding: 0.6rem 0.5rem; /* Figma py-6 px-5 — 스케일에 없는 값 */
   border-radius: var(--radius-lg);
   cursor: pointer;
+  user-select: none; /* 즐겨찾기 롱프레스 드래그 중 텍스트가 파랗게 선택되는 것 방지 */
 }
 
 /* 게임명 말줄임 툴팁 — 이름이 실제로 넘칠 때만 JS가 노출 (Figma node 5884:58851) */
