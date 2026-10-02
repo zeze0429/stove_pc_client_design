@@ -399,10 +399,9 @@ body { margin: 0; }
 
 /* 컨텍스트 메뉴가 열려있는 항목 — "선택"이 아니라 "메뉴가 이 항목 거"라는
    표시만 하는 용도라, is-selected(--interaction-selected)보다 옅은
-   --interaction-hover(white 4%)를 씀 */
+   --interaction-hover(white 4%)만 씀, 보더 없음 */
 .game-group__list.is-context-open {
   background: var(--interaction-hover);
-  border: 1px solid var(--inverse-variant-1); /* Figma: inverse/variant-1 = #FFF 15% */
 }
 
 /* 우클릭 컨텍스트 메뉴 (Figma 4-5 GNB 컨텍스트 메뉴 스펙:
