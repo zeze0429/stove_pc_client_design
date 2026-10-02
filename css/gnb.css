@@ -397,6 +397,13 @@ body { margin: 0; }
   cursor: grabbing;
 }
 
+/* 컨텍스트 메뉴가 열려있는 항목 — "선택"이 아니라 "메뉴가 이 항목 거"라는
+   표시만 하는 용도라, is-selected(--interaction-selected)보다 옅은
+   --interaction-hover(white 4%)를 씀 */
+.game-group__list.is-context-open {
+  background: var(--interaction-hover);
+}
+
 /* 우클릭 컨텍스트 메뉴 (Figma Make 레퍼런스: 스토브게임="즐겨찾기 추가", 즐겨찾기="즐겨찾기에서 제거") */
 .gnb-context-menu {
   position: fixed;

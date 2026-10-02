@@ -355,7 +355,6 @@ var GnbComponent = {
     // ── 우클릭 컨텍스트 메뉴 (Figma Make 레퍼런스 재현) ──────────
     openGameContextMenu: function (e, game, group) {
       this.contextMenu = { visible: true, x: e.clientX, y: e.clientY, game: game, isFavorite: group.id === 'favorites' };
-      this.selectGame(game); // 메뉴가 열린 항목은 선택된(active indicator) 상태로 표시 (Figma 4-5 GNB 컨텍스트 메뉴 스펙)
       var self = this;
       this.$nextTick(function () {
         var menuEl = self.$refs.contextMenuEl;
@@ -532,7 +531,7 @@ var GnbComponent = {
           '</div>' +
           '<ul ref="listGroupEl" class="game-group__list-group" data-name="component/game_group/list_group">' +
             '<li v-for="(game, gameIndex) in group.games" :key="game.id" class="game-group__list" ' +
-              ':class="{ \'is-selected\': selectedGameId === game.id, \'is-dragging\': dragging && dragging.gameId === game.id }" ' +
+              ':class="{ \'is-selected\': selectedGameId === game.id, \'is-dragging\': dragging && dragging.gameId === game.id, \'is-context-open\': contextMenu.visible && contextMenu.game && contextMenu.game.id === game.id }" ' +
               '@click="selectGame(game)" @mouseenter="handleListMouseEnter($event, game)" @mouseleave="handleListMouseLeave" ' +
               '@contextmenu.prevent="openGameContextMenu($event, game, group)" @mousedown="onFavoriteMouseDown($event, group, gameIndex)" ' +
               'data-name="component/game_group/list">' +
