@@ -278,7 +278,10 @@ var GnbComponent = {
       this.handleHoverEnter(e.currentTarget);
     },
     // 이름이 말줄임(ellipsis) 처리된 경우에만 툴팁 노출 (Figma: "해당 리스트 마우스 호버 시 툴팁 노출")
+    // 컨텍스트 메뉴가 떠 있는 동안은 호버 인디케이터/툴팁 전부 비활성 — 메뉴 버튼
+    // 쪽으로 마우스가 이동하면서 지나치는 다른 행이 반응하면 안 됨.
     handleListMouseEnter: function (e, game) {
+      if (this.contextMenu.visible) return;
       var li = e.currentTarget;
       this.handleHoverEnter(li);
       var nameEl = li.querySelector('.game-group__list-name');
@@ -355,6 +358,12 @@ var GnbComponent = {
     // ── 우클릭 컨텍스트 메뉴 (Figma Make 레퍼런스 재현) ──────────
     openGameContextMenu: function (e, game, group) {
       this.contextMenu = { visible: true, x: e.clientX, y: e.clientY, game: game, isFavorite: group.id === 'favorites' };
+      // 우클릭한 행 자신의 호버 인디케이터/툴팁도 치움 — is-context-open 배경과
+      // 겹쳐서 진해 보이는 것 방지, 그리고 메뉴가 뜬 동안은 호버 표시 자체를 안 함
+      clearTimeout(this._hoverLeaveTimer);
+      this._hoverSpring.hide();
+      this._hoverVisible = false;
+      this.hoveredGameId = null;
       var self = this;
       this.$nextTick(function () {
         var menuEl = self.$refs.contextMenuEl;
