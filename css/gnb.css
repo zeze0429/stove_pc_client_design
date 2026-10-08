@@ -184,12 +184,20 @@ body { margin: 0; }
 .gnb-scrollbar.is-visible {
   opacity: 1;
 }
+/* 스크롤바 썸 컬러 — 공통 규칙: default=inverse-elevation-2,
+   hover/press=inverse-elevation-1. 앞으로 다른 곳에 스크롤바가
+   노출되면 이 두 토큰으로 맞출 것. */
 .gnb-scrollbar__thumb {
   position: absolute;
   left: 0;
   width: 100%;
   border-radius: var(--radius-full);
-  background: var(--inverse-elevation-4);
+  background: var(--inverse-elevation-2);
+  pointer-events: auto;
+}
+.gnb-scrollbar__thumb:hover,
+.gnb-scrollbar__thumb:active {
+  background: var(--inverse-elevation-1);
 }
 
 /* 1뎁스 그룹 */
