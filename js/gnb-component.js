@@ -497,7 +497,7 @@ var GnbComponent = {
       var scrollEl = this.$refs.scrollEl;
       if (!scrollEl || !this.dragging) return;
       var rect = scrollEl.getBoundingClientRect();
-      var edge = 40, maxSpeed = 14;
+      var edge = 64, maxSpeed = 18;
       var y = this.dragging.lastClientY;
       var dir = 0, dist = 0;
       if (y < rect.top + edge) { dir = -1; dist = (rect.top + edge) - y; }
