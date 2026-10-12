@@ -482,14 +482,14 @@ var GnbComponent = {
       var listEl = this.$refs.listGroupEl && this.$refs.listGroupEl[groupIndex];
       if (!listEl) return;
 
-      // 플로팅 프리뷰 위치 — 사이드바 컨테이너(nav) 기준 좌우 최소 여백 16
-      // (Figma: 컨텍스트메뉴와 동일한 규칙)
+      // 플로팅 프리뷰 / 드롭 표시선 공통 기준 — 사이드바 컨테이너(nav) 좌우
+      // 최소 여백 16 (Figma: 컨텍스트메뉴와 동일한 규칙)
       var navEl = this.$refs.gnbEl;
+      var margin = 16;
+      var navRect = navEl ? navEl.getBoundingClientRect() : null;
       var x = ev.clientX - this.dragging.grabOffsetX;
       var y = ev.clientY - this.dragging.grabOffsetY;
-      if (navEl) {
-        var margin = 16;
-        var navRect = navEl.getBoundingClientRect();
+      if (navRect) {
         var minX = navRect.left + margin;
         var maxX = navRect.right - margin - this.dragging.width;
         x = Math.max(minX, Math.min(x, maxX));
@@ -511,8 +511,9 @@ var GnbComponent = {
       this.dragging.targetIndex = rawIndex > fromIndex ? rawIndex - 1 : rawIndex;
 
       // 드롭 표시선(2px 흰 라인, position:fixed라 뷰포트 좌표 그대로 씀) —
-      // rawIndex번째 행 바로 위(끝이면 마지막 행 아래)
-      var listRect = listEl.getBoundingClientRect();
+      // rawIndex번째 행 바로 위(끝이면 마지막 행 아래). 좌우는 리스트
+      // 컨텐츠 폭이 아니라 사이드바 컨테이너 기준 여백 16 (위 플로팅
+      // 프리뷰와 동일한 규칙).
       var lineTop;
       if (rawIndex >= items.length) {
         var lastRect = items[items.length - 1].getBoundingClientRect();
@@ -522,8 +523,14 @@ var GnbComponent = {
         lineTop = targetRect.top - 1;
       }
       this.dragging.lineTop = lineTop;
-      this.dragging.lineLeft = listRect.left;
-      this.dragging.lineWidth = listRect.width;
+      if (navRect) {
+        this.dragging.lineLeft = navRect.left + margin;
+        this.dragging.lineWidth = navRect.width - margin * 2;
+      } else {
+        var listRect = listEl.getBoundingClientRect();
+        this.dragging.lineLeft = listRect.left;
+        this.dragging.lineWidth = listRect.width;
+      }
       this.dragging.lineVisible = true;
     },
   },
