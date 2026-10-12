@@ -338,12 +338,8 @@ var GnbComponent = {
       if (!scrollEl) return;
       this.showTopBtn = scrollEl.scrollTop > 40;
       this.updateThumb();
-      // 컨텍스트 메뉴가 떠 있는 동안 스크롤하면 메뉴도 행과 같이 이동 —
-      // scrollTop이 늘어난(아래로 스크롤) 만큼 화면상으로는 위로 올라가야 함
-      if (this.contextMenu.visible) {
-        var delta = scrollEl.scrollTop - this._contextMenuScrollTop;
-        this.contextMenu.y = this._contextMenuBaseY - delta;
-      }
+      // 컨텍스트 메뉴가 떠 있는 동안 스크롤하면 따라가지 않고 그냥 닫힘
+      if (this.contextMenu.visible) this.closeContextMenu();
     },
     scrollToTop: function () {
       var scrollEl = this.$refs.scrollEl;
@@ -364,11 +360,6 @@ var GnbComponent = {
     // ── 우클릭 컨텍스트 메뉴 (Figma Make 레퍼런스 재현) ──────────
     openGameContextMenu: function (e, game, group) {
       this.contextMenu = { visible: true, x: e.clientX, y: e.clientY, game: game, isFavorite: group.id === 'favorites' };
-      // 리스트 스크롤 중 메뉴가 행과 같이 움직이도록, 뜬 시점의 스크롤
-      // 위치와 화면상 y좌표를 기준점으로 저장 (handleGnbScroll에서 사용)
-      var scrollEl = this.$refs.scrollEl;
-      this._contextMenuScrollTop = scrollEl ? scrollEl.scrollTop : 0;
-      this._contextMenuBaseY = e.clientY;
       // 우클릭한 행 자신의 호버 인디케이터/툴팁도 치움 — is-context-open 배경과
       // 겹쳐서 진해 보이는 것 방지, 그리고 메뉴가 뜬 동안은 호버 표시 자체를 안 함
       clearTimeout(this._hoverLeaveTimer);
