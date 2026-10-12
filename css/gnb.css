@@ -425,6 +425,7 @@ body { margin: 0; }
   display: flex;
   align-items: center;
   gap: 0.6rem;
+  height: 2.8rem; /* 기존 항목(.game-group__list)과 동일한 높이로 고정 — 보더 두께만큼 더 커지지 않게 */
   padding: 0.6rem 0.5rem 0.6rem 0.8rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
