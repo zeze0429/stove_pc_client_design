@@ -378,13 +378,16 @@ var GnbComponent = {
       var self = this;
       this.$nextTick(function () {
         var menuEl = self.$refs.contextMenuEl;
-        var navEl = self.$refs.gnbEl;
-        if (!menuEl || !navEl) return;
+        // 사이드바 "컨테이너"는 nav 자체(패딩 포함 240폭)가 아니라 리스트가
+        // 실제로 차지하는 컨텐츠 영역(.gnb-menu, 200폭) 기준 — 좌우 여백 16은
+        // 거기서부터 고정.
+        var containerEl = self.$refs.scrollEl;
+        if (!menuEl || !containerEl) return;
         var margin = 16;
-        var navRect = navEl.getBoundingClientRect();
+        var containerRect = containerEl.getBoundingClientRect();
         var menuRect = menuEl.getBoundingClientRect();
-        var minX = navRect.left + margin;
-        var maxX = navRect.right - margin - menuRect.width;
+        var minX = containerRect.left + margin;
+        var maxX = containerRect.right - margin - menuRect.width;
         self.contextMenu.x = Math.max(minX, Math.min(e.clientX, maxX));
       });
     },

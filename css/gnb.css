@@ -432,7 +432,7 @@ body { margin: 0; }
   padding: 0.6rem 1rem;
   border: 0;
   background: transparent; /* enabled = 오버레이 없음 */
-  border-radius: var(--radius-md);
+  border-radius: 0; /* 호버/프레스 오버레이는 곡률 없이 일직선 — 둥근 모서리는 바깥 컨테이너만 */
   color: var(--on-surface-elevation-2);
   text-align: left;
   white-space: nowrap;
