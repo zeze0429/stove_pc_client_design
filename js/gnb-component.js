@@ -412,6 +412,7 @@ var GnbComponent = {
       if (group.id !== 'favorites' || e.button !== 0) return;
       var self = this;
       var startX = e.clientX, startY = e.clientY;
+      var rowEl = e.currentTarget;
       clearTimeout(this._longPressTimer);
 
       function cleanup() {
@@ -429,16 +430,40 @@ var GnbComponent = {
       this._longPressTimer = setTimeout(function () {
         document.removeEventListener('mouseup', onEarlyUp);
         document.removeEventListener('mousemove', onEarlyMove);
-        self.beginFavoriteDrag(group, index);
+        self.beginFavoriteDrag(group, index, rowEl, startX, startY);
       }, 450);
     },
-    beginFavoriteDrag: function (group, index) {
+    // 드래그 중엔 배열을 바로 바꾸지 않음 — 원래 자리엔 30% 투명도 +
+    // 점선 테두리 "고스트"만 남기고(Figma: 기존 위치), 실제 항목은 커서를
+    // 따라다니는 별도 플로팅 프리뷰(Figma: 타겟 컴포넌트)로 보여주다가
+    // 마우스를 떼는 순간에만 한 번 splice해서 최종 순서를 확정한다.
+    beginFavoriteDrag: function (group, index, rowEl, startX, startY) {
       var self = this;
-      this.dragging = { groupId: group.id, gameId: group.games[index].id };
+      var rect = rowEl.getBoundingClientRect();
+      this.dragging = {
+        groupId: group.id,
+        gameId: group.games[index].id,
+        game: group.games[index],
+        fromIndex: index,
+        targetIndex: index,
+        rawIndex: index,
+        grabOffsetX: startX - rect.left,
+        grabOffsetY: startY - rect.top,
+        width: rect.width,
+        x: rect.left,
+        y: rect.top,
+        lineTop: 0,
+        lineVisible: false,
+      };
       function onMove(ev) { self.handleFavoriteDragMove(ev, group); }
       function onUp() {
         document.removeEventListener('mousemove', onMove);
         document.removeEventListener('mouseup', onUp);
+        var d = self.dragging;
+        if (d && d.targetIndex !== d.fromIndex) {
+          var moved = group.games.splice(d.fromIndex, 1)[0];
+          group.games.splice(d.targetIndex, 0, moved);
+        }
         self.dragging = null;
       }
       document.addEventListener('mousemove', onMove);
@@ -449,19 +474,50 @@ var GnbComponent = {
       var groupIndex = this.gameGroups.indexOf(group);
       var listEl = this.$refs.listGroupEl && this.$refs.listGroupEl[groupIndex];
       if (!listEl) return;
-      var draggedId = this.dragging.gameId;
-      var fromIndex = group.games.findIndex(function (g) { return g.id === draggedId; });
-      if (fromIndex === -1) return;
+
+      // 플로팅 프리뷰 위치 — 사이드바 컨테이너(nav) 기준 좌우 최소 여백 16
+      // (Figma: 컨텍스트메뉴와 동일한 규칙)
+      var navEl = this.$refs.gnbEl;
+      var x = ev.clientX - this.dragging.grabOffsetX;
+      var y = ev.clientY - this.dragging.grabOffsetY;
+      if (navEl) {
+        var margin = 16;
+        var navRect = navEl.getBoundingClientRect();
+        var minX = navRect.left + margin;
+        var maxX = navRect.right - margin - this.dragging.width;
+        x = Math.max(minX, Math.min(x, maxX));
+      }
+      this.dragging.x = x;
+      this.dragging.y = y;
+
+      // 드롭 위치 계산 — 현재 DOM 순서(고스트 포함) 기준으로 커서가 어느
+      // 행의 중간선보다 위에 있는지로 rawIndex를 구하고, 그 값이 원래
+      // 자리(fromIndex)보다 뒤면 1을 빼서 "제거 후 배열" 기준 인덱스로 보정.
       var items = listEl.children;
-      var toIndex = group.games.length - 1;
+      var rawIndex = items.length;
       for (var i = 0; i < items.length; i++) {
         var rect = items[i].getBoundingClientRect();
-        if (ev.clientY < rect.top + rect.height / 2) { toIndex = i; break; }
+        if (ev.clientY < rect.top + rect.height / 2) { rawIndex = i; break; }
       }
-      if (toIndex !== fromIndex) {
-        var moved = group.games.splice(fromIndex, 1)[0];
-        group.games.splice(toIndex, 0, moved);
+      var fromIndex = this.dragging.fromIndex;
+      this.dragging.rawIndex = rawIndex;
+      this.dragging.targetIndex = rawIndex > fromIndex ? rawIndex - 1 : rawIndex;
+
+      // 드롭 표시선(2px 흰 라인, position:fixed라 뷰포트 좌표 그대로 씀) —
+      // rawIndex번째 행 바로 위(끝이면 마지막 행 아래)
+      var listRect = listEl.getBoundingClientRect();
+      var lineTop;
+      if (rawIndex >= items.length) {
+        var lastRect = items[items.length - 1].getBoundingClientRect();
+        lineTop = lastRect.bottom + 1;
+      } else {
+        var targetRect = items[rawIndex].getBoundingClientRect();
+        lineTop = targetRect.top - 1;
       }
+      this.dragging.lineTop = lineTop;
+      this.dragging.lineLeft = listRect.left;
+      this.dragging.lineWidth = listRect.width;
+      this.dragging.lineVisible = true;
     },
   },
   mounted: function () {
@@ -574,6 +630,23 @@ var GnbComponent = {
         '<button class="gnb-context-menu__item stds-cap1" type="button" @click="contextMenuAction">' +
           '{{ contextMenu.isFavorite ? \'즐겨찾기에서 제거\' : \'즐겨찾기 추가\' }}' +
         '</button>' +
+      '</div>' +
+
+      // 즐겨찾기 순서변경 드래그 중에만 노출 (Figma 4-4 GNB 즐겨찾기 순서 변경 스펙:
+      // 드롭 위치 표시선 + 커서를 따라다니는 플로팅 프리뷰. 원래 자리는
+      // .game-group__list.is-dragging(점선/30% 투명도)가 그대로 담당.
+      '<div v-if="dragging && dragging.lineVisible" class="game-group__drop-line" ' +
+        ':style="{ top: dragging.lineTop + \'px\', left: dragging.lineLeft + \'px\', width: dragging.lineWidth + \'px\' }" aria-hidden="true"></div>' +
+      '<div v-if="dragging" class="game-group__drag-preview" ' +
+        ':style="{ top: dragging.y + \'px\', left: dragging.x + \'px\', width: dragging.width + \'px\' }" aria-hidden="true">' +
+        '<i class="ic-v2-navigation-menu-line game-group__drag-handle"></i>' +
+        '<span class="game-group__thumbnail" :style="{ backgroundImage: \'url(\' + dragging.game.thumb + \')\' }"></span>' +
+        '<span class="game-group__list-name stds-cap1 fw-medium">{{ dragging.game.name }}</span>' +
+        '<span v-if="dragging.game.badges && dragging.game.badges.length" class="game-group__badges">' +
+          '<span v-for="b in dragging.game.badges" :key="b" class="badge-game-list" :class="\'badge-game-list--\' + b">' +
+            '<i :class="badgeIcon[b]"></i>' +
+          '</span>' +
+        '</span>' +
       '</div>' +
     '</nav>',
 };

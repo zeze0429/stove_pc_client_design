@@ -400,9 +400,44 @@ body { margin: 0; }
 .game-group__list.is-selected .game-group__list-name { color: var(--on-surface-elevation-2); }
 
 /* 드래그 중인 즐겨찾기 항목(롱프레스 후 순서변경) — 살짝 반투명 + 잡기 커서 */
+/* 드래그 중 원래 자리에 남는 "고스트" (Figma: 기존 위치 — 투명도 30% + 점선) */
 .game-group__list.is-dragging {
-  opacity: 0.5;
+  opacity: 0.3;
+  border: 1px dashed var(--disabled-variant-1);
   cursor: grabbing;
+}
+
+/* 드롭 위치 표시선 (Figma: 변경 예정 위치 표기 — 2px 흰 라인, 슬랙 UI 참고) */
+.game-group__drop-line {
+  position: fixed;
+  z-index: 35;
+  height: 2px;
+  background: #fff;
+  border-radius: var(--radius-full);
+  pointer-events: none;
+}
+
+/* 커서를 따라다니는 드래그 플로팅 프리뷰 (Figma: 타겟 컴포넌트 —
+   interaction/pressed + background/variant-2, drop shadow, 전체 투명도 90%) */
+.game-group__drag-preview {
+  position: fixed;
+  z-index: 35;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.5rem 0.6rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(var(--interaction-hover), var(--interaction-hover)), var(--surface-layer);
+  box-shadow: 0 0.4rem 0.4rem rgba(0, 0, 0, 0.32);
+  opacity: 0.9;
+  pointer-events: none;
+  cursor: grabbing;
+}
+.game-group__drag-handle {
+  flex: 0 0 auto;
+  font-size: 1.2rem;
+  color: var(--on-surface-elevation-4);
 }
 
 /* 컨텍스트 메뉴가 열려있는 항목 — "선택"이 아니라 "메뉴가 이 항목 거"라는
