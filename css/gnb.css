@@ -440,6 +440,10 @@ body { margin: 0; }
   font-size: 1.2rem;
   color: var(--on-surface-elevation-4);
 }
+/* Figma: 드래그 프리뷰의 게임명은 평소(dim #888)와 달리 on-surface-elevation-2(#ccc) */
+.game-group__drag-preview .game-group__list-name {
+  color: var(--on-surface-elevation-2);
+}
 
 /* 컨텍스트 메뉴가 열려있는 항목 — "선택"이 아니라 "메뉴가 이 항목 거"라는
    표시만 하는 용도라, is-selected(--interaction-selected)보다 옅은

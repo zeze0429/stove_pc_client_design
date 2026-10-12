@@ -450,6 +450,7 @@ var GnbComponent = {
         grabOffsetX: startX - rect.left,
         grabOffsetY: startY - rect.top,
         width: rect.width,
+        height: rect.height,
         x: rect.left,
         y: rect.top,
         lineTop: 0,
@@ -488,6 +489,7 @@ var GnbComponent = {
       var navEl = this.$refs.gnbEl;
       var margin = 16;
       var navRect = navEl ? navEl.getBoundingClientRect() : null;
+      var listRect = listEl.getBoundingClientRect();
       var x = ev.clientX - this.dragging.grabOffsetX;
       var y = ev.clientY - this.dragging.grabOffsetY;
       if (navRect) {
@@ -495,6 +497,11 @@ var GnbComponent = {
         var maxX = navRect.right - margin - this.dragging.width;
         x = Math.max(minX, Math.min(x, maxX));
       }
+      // 순서변경 컴포넌트가 이 그룹(즐겨찾기)의 리스트 영역 밖(제목 위/다음
+      // 섹션 아래)으로 넘어가지 않게 세로로도 클램프
+      var minY = listRect.top;
+      var maxY = listRect.bottom - this.dragging.height;
+      y = Math.max(minY, Math.min(y, maxY));
       this.dragging.x = x;
       this.dragging.y = y;
 
@@ -528,7 +535,6 @@ var GnbComponent = {
         this.dragging.lineLeft = navRect.left + margin;
         this.dragging.lineWidth = navRect.width - margin * 2;
       } else {
-        var listRect = listEl.getBoundingClientRect();
         this.dragging.lineLeft = listRect.left;
         this.dragging.lineWidth = listRect.width;
       }
