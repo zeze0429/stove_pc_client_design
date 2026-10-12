@@ -570,8 +570,10 @@ body { margin: 0; }
   pointer-events: none;
   transition: opacity 0.2s;
   /* 게임 리스트 행에 transform이 적용된 인디케이터가 있어 GPU 컴포지팅 레이어가
-     새로 생기는데, 그때 쌓임 순서가 예상과 달라질 수 있어 명시적으로 높게 지정 */
-  z-index: 20;
+     새로 생기는데, 그때 쌓임 순서가 예상과 달라질 수 있어 명시적으로 높게 지정.
+     즐겨찾기 드래그 중 자동 스크롤로 맨 아래까지 가도 고스트/프리뷰/표시선
+     (z-index 35)에 가려지면 안 되므로 그보다 높게 둠. */
+  z-index: 36;
 }
 .gnb-top-btn.is-visible {
   opacity: 1;
