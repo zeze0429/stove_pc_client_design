@@ -455,6 +455,12 @@ var GnbComponent = {
         lineTop: 0,
         lineVisible: false,
       };
+      // 순서변경 컴포넌트(고스트/프리뷰/라인)가 떠 있는 동안은 기존 항목의
+      // 선택/호버 상태값(공유 인디케이터)이 고스트 배경에 비쳐 보이면 안 됨
+      clearTimeout(this._hoverLeaveTimer);
+      this._hoverSpring.hide();
+      this._hoverVisible = false;
+      this._activeSpring.hide();
       function onMove(ev) { self.handleFavoriteDragMove(ev, group); }
       function onUp() {
         document.removeEventListener('mousemove', onMove);
@@ -465,6 +471,7 @@ var GnbComponent = {
           group.games.splice(d.targetIndex, 0, moved);
         }
         self.dragging = null;
+        self.moveActiveIndicator('instant');
       }
       document.addEventListener('mousemove', onMove);
       document.addEventListener('mouseup', onUp);
