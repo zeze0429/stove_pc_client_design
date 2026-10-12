@@ -536,9 +536,16 @@ var GnbComponent = {
         x = Math.max(minX, Math.min(x, maxX));
       }
       // 순서변경 컴포넌트가 이 그룹(즐겨찾기)의 리스트 영역 밖(제목 위/다음
-      // 섹션 아래)으로 넘어가지 않게 세로로도 클램프
+      // 섹션 아래)으로 넘어가지 않게, 그리고 탑 버튼(.gnb-top-btn, 하단
+      // 고정 오버레이) 영역도 침범하지 않게 세로로 클램프 — z-index로
+      // 가리는 대신 애초에 그 자리에 못 들어가게 위치 자체를 막음
       var minY = listRect.top;
       var maxY = listRect.bottom - this.dragging.height;
+      var topBtnEl = navEl && navEl.querySelector('.gnb-top-btn');
+      if (topBtnEl) {
+        var topBtnTop = topBtnEl.getBoundingClientRect().top;
+        maxY = Math.min(maxY, topBtnTop - this.dragging.height);
+      }
       y = Math.max(minY, Math.min(y, maxY));
       this.dragging.x = x;
       this.dragging.y = y;
