@@ -281,7 +281,7 @@ var GnbComponent = {
     // 컨텍스트 메뉴가 떠 있는 동안은 호버 인디케이터/툴팁 전부 비활성 — 메뉴 버튼
     // 쪽으로 마우스가 이동하면서 지나치는 다른 행이 반응하면 안 됨.
     handleListMouseEnter: function (e, game) {
-      if (this.contextMenu.visible) return;
+      if (this.contextMenu.visible || this.dragging) return;
       var li = e.currentTarget;
       this.handleHoverEnter(li);
       var nameEl = li.querySelector('.game-group__list-name');
@@ -456,11 +456,12 @@ var GnbComponent = {
         lineVisible: false,
       };
       // 순서변경 컴포넌트(고스트/프리뷰/라인)가 떠 있는 동안은 기존 항목의
-      // 선택/호버 상태값(공유 인디케이터)이 고스트 배경에 비쳐 보이면 안 됨
+      // 선택/호버/컨텍스트메뉴 상태값이 전부 비쳐 보이면 안 됨
       clearTimeout(this._hoverLeaveTimer);
       this._hoverSpring.hide();
       this._hoverVisible = false;
       this._activeSpring.hide();
+      this.closeContextMenu();
       function onMove(ev) { self.handleFavoriteDragMove(ev, group); }
       function onUp() {
         document.removeEventListener('mousemove', onMove);
