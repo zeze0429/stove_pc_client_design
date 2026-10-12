@@ -455,6 +455,8 @@ var GnbComponent = {
         y: rect.top,
         lineTop: 0,
         lineVisible: false,
+        lastClientX: startX,
+        lastClientY: startY,
       };
       // 순서변경 컴포넌트(고스트/프리뷰/라인)가 떠 있는 동안은 기존 항목의
       // 선택/호버/컨텍스트메뉴 상태값이 전부 비쳐 보이면 안 됨
@@ -463,10 +465,15 @@ var GnbComponent = {
       this._hoverVisible = false;
       this._activeSpring.hide();
       this.closeContextMenu();
-      function onMove(ev) { self.handleFavoriteDragMove(ev, group); }
+      function onMove(ev) {
+        self.dragging.lastClientX = ev.clientX;
+        self.dragging.lastClientY = ev.clientY;
+        self.handleFavoriteDragMove(ev, group);
+      }
       function onUp() {
         document.removeEventListener('mousemove', onMove);
         document.removeEventListener('mouseup', onUp);
+        cancelAnimationFrame(self._autoScrollRaf);
         var d = self.dragging;
         if (d && d.targetIndex !== d.fromIndex) {
           var moved = group.games.splice(d.fromIndex, 1)[0];
@@ -477,6 +484,31 @@ var GnbComponent = {
       }
       document.addEventListener('mousemove', onMove);
       document.addEventListener('mouseup', onUp);
+      // 드래그 중 리스트 스크롤 영역 위/아래 끝 근처에 머무르면 마우스가
+      // 멈춰있어도 계속 자동 스크롤 — 커서 움직임 없이도 매 프레임 체크해야
+      // 해서 mousemove가 아니라 rAF 루프로 돌림
+      (function autoScrollTick() {
+        if (!self.dragging) return;
+        self.runFavoriteAutoScroll(group);
+        self._autoScrollRaf = requestAnimationFrame(autoScrollTick);
+      })();
+    },
+    runFavoriteAutoScroll: function (group) {
+      var scrollEl = this.$refs.scrollEl;
+      if (!scrollEl || !this.dragging) return;
+      var rect = scrollEl.getBoundingClientRect();
+      var edge = 40, maxSpeed = 14;
+      var y = this.dragging.lastClientY;
+      var dir = 0, dist = 0;
+      if (y < rect.top + edge) { dir = -1; dist = (rect.top + edge) - y; }
+      else if (y > rect.bottom - edge) { dir = 1; dist = y - (rect.bottom - edge); }
+      if (dir === 0) return;
+      var speed = Math.min(maxSpeed, 4 + dist * 0.3);
+      var prevTop = scrollEl.scrollTop;
+      scrollEl.scrollTop += dir * speed;
+      if (scrollEl.scrollTop !== prevTop) {
+        this.handleFavoriteDragMove({ clientX: this.dragging.lastClientX, clientY: this.dragging.lastClientY }, group);
+      }
     },
     handleFavoriteDragMove: function (ev, group) {
       if (!this.dragging) return;
