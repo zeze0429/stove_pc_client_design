@@ -378,10 +378,9 @@ var GnbComponent = {
       var self = this;
       this.$nextTick(function () {
         var menuEl = self.$refs.contextMenuEl;
-        // 사이드바 "컨테이너"는 nav 자체(패딩 포함 240폭)가 아니라 리스트가
-        // 실제로 차지하는 컨텐츠 영역(.gnb-menu, 200폭) 기준 — 좌우 여백 16은
-        // 거기서부터 고정.
-        var containerEl = self.$refs.scrollEl;
+        // 사이드바 "컨테이너" = nav 전체(240폭, 패딩 포함) 기준 — 좌우 여백
+        // 16은 거기서부터 고정 (리스트 컨텐츠 영역 기준 아님).
+        var containerEl = self.$refs.gnbEl;
         if (!menuEl || !containerEl) return;
         var margin = 16;
         var containerRect = containerEl.getBoundingClientRect();
