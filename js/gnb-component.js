@@ -336,7 +336,13 @@ var GnbComponent = {
     handleGnbScroll: function () {
       var scrollEl = this.$refs.scrollEl;
       if (!scrollEl) return;
-      this.showTopBtn = scrollEl.scrollTop > 40;
+      // 탑 버튼은 "40px 스크롤되면"이 아니라, 상단 메뉴 6개(.menu-group)가
+      // 완전히 가려지는 시점(그 바닥이 스크롤 영역 상단을 지나는 순간) 노출
+      var menuGroupEl = scrollEl.querySelector('.menu-group');
+      var threshold = menuGroupEl
+        ? menuGroupEl.getBoundingClientRect().bottom - scrollEl.getBoundingClientRect().top + scrollEl.scrollTop
+        : 40;
+      this.showTopBtn = scrollEl.scrollTop >= threshold;
       this.updateThumb();
       // 컨텍스트 메뉴가 떠 있는 동안 스크롤하면 따라가지 않고 그냥 닫힘
       if (this.contextMenu.visible) this.closeContextMenu();
