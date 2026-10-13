@@ -12,13 +12,24 @@
 
 // ── 데이터 (실제로는 props/스토어/API로 주입) ────────────────
 var GNB_MENU_ITEMS = [
-  { id: 'store', label: '스토어', icon: 'ic-v2-navigation-home-fill' },
-  { id: 'lounge', label: '라운지', icon: 'ic-v2-community-board-fill', badge: 'new' },
-  { id: 'event', label: '이벤트', icon: 'ic-v2-navigation-community-event-fill' },
-  { id: 'library', label: '라이브러리', icon: 'ic-v2-navigation-library-fill' },
-  { id: 'download', label: '다운로드 관리', icon: 'ic-v2-object-download-line', symbol: 'component/GNB/menu/download_manage' },
-  { id: 'studio', label: '스튜디오 테스트', icon: 'ic-v2-navigation-studio-test-fill' },
+  { id: 'store', label: '스토어', icon: 'ic-v2-navigation-home-fill', pageUrl: 'app-shell.html' },
+  { id: 'lounge', label: '라운지', icon: 'ic-v2-community-board-fill', badge: 'new', pageUrl: 'lounge.html' },
+  { id: 'event', label: '이벤트', icon: 'ic-v2-navigation-community-event-fill', pageUrl: 'event.html' },
+  { id: 'library', label: '라이브러리', icon: 'ic-v2-navigation-library-fill', pageUrl: 'library.html' },
+  { id: 'download', label: '다운로드 관리', icon: 'ic-v2-object-download-line', symbol: 'component/GNB/menu/download_manage', pageUrl: 'download.html' },
+  { id: 'studio', label: '스튜디오 테스트', icon: 'ic-v2-navigation-studio-test-fill', pageUrl: 'studio.html' },
 ];
+
+// 현재 페이지 파일명으로 어떤 메뉴가 active 상태여야 하는지 추론 —
+// 각 메뉴가 실제로 별도 HTML 문서(멀티 페이지)라서, 페이지가 열릴 때마다
+// 사이드바가 자기 자신을 맞게 하이라이트하려면 이렇게 역으로 찾아야 함.
+function gnbInferActiveMenuId() {
+  var file = (location.pathname.split('/').pop() || 'app-shell.html');
+  for (var i = 0; i < GNB_MENU_ITEMS.length; i++) {
+    if (GNB_MENU_ITEMS[i].pageUrl === file) return GNB_MENU_ITEMS[i].id;
+  }
+  return 'store';
+}
 
 var GNB_GAME_GROUPS = [
   {
@@ -154,7 +165,7 @@ var GnbComponent = {
     return {
       menuItems: GNB_MENU_ITEMS,
       gameGroups: GNB_GAME_GROUPS,
-      selectedId: 'store',
+      selectedId: gnbInferActiveMenuId(),
       selectedGameId: null,
       hoveredGameId: null,
       tooltipLeft: 0,
@@ -211,6 +222,13 @@ var GnbComponent = {
     // 느낌이라 안 되고, 그렇다고 호버만큼 느긋하게 흐르면 손맛이 없어서
     // 빠르고 오버슈트 없는 별도 스프링을 씀(GNB_SNAP_STIFFNESS/DAMPING).
     selectMenu: function (item) {
+      // 메뉴마다 실제 페이지(HTML 문서)가 따로 있으므로, 다른 메뉴를
+      // 고르면 그 문서로 이동. 지금 보고 있는 페이지를 다시 누른
+      // 경우에만 이동 없이 선택 상태만 갱신.
+      if (item.pageUrl && gnbInferActiveMenuId() !== item.id) {
+        location.href = item.pageUrl;
+        return;
+      }
       this.selectedId = item.id;
       this.selectedGameId = null;
       this.hideHoverIndicator();
