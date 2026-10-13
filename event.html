@@ -12,9 +12,30 @@
   <link rel="stylesheet" href="css/gnb.css?v=79" />
   <link rel="stylesheet" href="css/dashboard.css?v=16" />
   <style>
-    /* 아직 제작 전 — 사이드바(GNB) 동작 확인용 빈 페이지.
-       배경은 store.onstove.com 실제 body 배경(rgb(25,25,25))과 동일 토큰. */
-    .app > .main { background: var(--background-variant-1); }
+    /* 클라이언트 메인 = 이벤트 페이지 정적 스크린샷(다크모드).
+       app-shell.html(스토어)과 동일한 방식 — 라이브 임베드 대신 헤드리스
+       크롬으로 1040px/2x 레티나 다크모드 캡처, 최상단 공유 GNB(64px)와
+       실제 사이트 자체 푸터(Smilegate)는 제거. 상단 48px / 하단 200px 여백,
+       배경은 실제 body 배경(rgb(25,25,25))과 동일 토큰(--background-variant-1),
+       스크롤바도 store.onstove.com 실제 구조(트랙 2.4rem, 보이는 썸 0.8rem)
+       그대로 재현 — app-shell.html 참고. */
+    .app > .main {
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: var(--background-variant-1);
+      padding: 4.8rem 0 20rem;
+    }
+    .event-preview { display: block; width: 1040px; height: auto; }
+
+    .app > .main::-webkit-scrollbar { width: 2.4rem; }
+    .app > .main::-webkit-scrollbar-track { border-radius: var(--radius-full); }
+    .app > .main::-webkit-scrollbar-thumb {
+      border-radius: var(--radius-full);
+      border: 0.8rem solid transparent;
+      background-color: var(--inverse-elevation-2);
+      background-clip: content-box;
+    }
+    .app > .main::-webkit-scrollbar-thumb:hover { background-color: var(--inverse-elevation-1); }
   </style>
 </head>
 <body>
@@ -25,8 +46,10 @@
          마크업은 이제 여기 하드코딩하지 않음 — 구조를 고치려면 그 파일 하나만 수정. -->
     <div id="gnb-mount"></div>
 
-    <!-- ============ MAIN (빈 페이지) ============ -->
-    <div class="main"></div>
+    <!-- ============ MAIN (이벤트 정적 스크린샷 — 다크모드 고정) ============ -->
+    <div class="main">
+      <img class="event-preview" src="assets/event-preview-dark.jpg" alt="STOVE 이벤트 (다크모드 미리보기)" />
+    </div>
 
   </div>
 
