@@ -25,6 +25,7 @@ var GNB_MENU_ITEMS = [
 // 사이드바가 자기 자신을 맞게 하이라이트하려면 이렇게 역으로 찾아야 함.
 function gnbInferActiveMenuId() {
   var file = (location.pathname.split('/').pop() || 'app-shell.html');
+  if (file === 'game-detail.html') return null; // 게임이 선택된 상태라 메뉴 쪽은 선택 없음
   for (var i = 0; i < GNB_MENU_ITEMS.length; i++) {
     if (GNB_MENU_ITEMS[i].pageUrl === file) return GNB_MENU_ITEMS[i].id;
   }
@@ -83,6 +84,25 @@ var GNB_BADGE_ICON = {
   link: 'ic-v2-navigation-link-fill',
   multiplay: 'ic-v2-navigation-pcbang-fill',
 };
+
+// id로 게임 하나 찾기 — 스토브게임/즐겨찾기 그룹을 가리지 않고 전체에서 검색
+// (게임 상세 페이지가 자기 id로 어떤 게임인지 알아내는 데 씀).
+function gnbFindGameById(id) {
+  for (var i = 0; i < GNB_GAME_GROUPS.length; i++) {
+    var games = GNB_GAME_GROUPS[i].games;
+    for (var j = 0; j < games.length; j++) {
+      if (games[j].id === id) return games[j];
+    }
+  }
+  return null;
+}
+
+// 현재 페이지가 게임 상세 페이지(game-detail.html?id=...)일 때 그 id를 반환.
+function gnbCurrentGameIdFromUrl() {
+  var file = (location.pathname.split('/').pop() || '');
+  if (file !== 'game-detail.html') return null;
+  return new URLSearchParams(location.search).get('id');
+}
 
 // ── 호버/선택 인디케이터: 스프링 물리 (Figma Make 인터랙션 가이드 재현) ──
 // 항목마다 배경을 넣는 대신, 인디케이터 엘리먼트 하나를 실제 항목 위치로
@@ -166,7 +186,7 @@ var GnbComponent = {
       menuItems: GNB_MENU_ITEMS,
       gameGroups: GNB_GAME_GROUPS,
       selectedId: gnbInferActiveMenuId(),
-      selectedGameId: null,
+      selectedGameId: gnbCurrentGameIdFromUrl(),
       hoveredGameId: null,
       tooltipLeft: 0,
       tooltipTop: 0,
@@ -235,6 +255,14 @@ var GnbComponent = {
       this.moveActiveIndicator('snap');
     },
     selectGame: function (game) {
+      if (this._justDragged) { this._justDragged = false; return; }
+      // 메뉴 항목처럼 게임도 각자 상세 페이지(game-detail.html?id=...)로
+      // 이동 — 지금 보고 있는 바로 그 게임을 다시 누른 경우에만 이동 없이
+      // 선택 상태만 갱신(같은 페이지 리로드 방지).
+      if (gnbCurrentGameIdFromUrl() !== game.id) {
+        location.href = 'game-detail.html?id=' + encodeURIComponent(game.id);
+        return;
+      }
       this.selectedGameId = game.id;
       this.selectedId = null;
       this.hideHoverIndicator();
@@ -505,6 +533,11 @@ var GnbComponent = {
         }
         self.dragging = null;
         self.moveActiveIndicator('instant');
+        // mouseup 뒤에 브라우저가 같은 자리에서 click 이벤트를 한 번 더
+        // 쏘는데, 전엔 selectGame이 로컬 선택 상태만 바꿔서 티가 안 났지만
+        // 이제 selectGame이 실제 페이지 이동이라 드래그 직후 원치 않는
+        // 상세 페이지 이동이 발생함 — 그 트레일링 click 한 번만 무시.
+        self._justDragged = true;
       }
       document.addEventListener('mousemove', onMove);
       document.addEventListener('mouseup', onUp);
