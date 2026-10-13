@@ -39,10 +39,16 @@
          마크업은 이제 여기 하드코딩하지 않음 — 구조를 고치려면 그 파일 하나만 수정. -->
     <div id="gnb-mount"></div>
 
-    <!-- ============ MAIN (store.onstove.com 임베드, 최상단 지엔비는 크롭) ============ -->
+    <!-- ============ MAIN (store.onstove.com 임베드, 최상단 지엔비는 크롭) ============
+         credentialless: 이 스토어 사이트를 실제 브라우저에서 따로 방문해서
+         라이트모드로 바꿔본 적 있는 사람은 COLOR_MODE=light 쿠키가 남아있어서
+         임베드에도 그 쿠키가 그대로 전달돼 라이트로 뜸. credentialless면
+         iframe이 그 도메인 쿠키를 아예 안 가져가고 "쿠키 없는 새 세션"으로
+         취급돼서, 사이트 자체 기본값(다크)으로 항상 뜸 — 클라이언트는 다크
+         기본이라는 요구사항과 맞음. -->
     <div class="main">
       <div class="store-frame-wrap">
-        <iframe class="store-frame" src="https://store.onstove.com/ko" title="STOVE 스토어"></iframe>
+        <iframe class="store-frame" src="https://store.onstove.com/ko" title="STOVE 스토어" credentialless></iframe>
       </div>
     </div>
 
