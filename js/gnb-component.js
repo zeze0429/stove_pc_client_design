@@ -506,19 +506,32 @@ var GnbComponent = {
       // 너무 빠르면 드롭 표시선이 행 사이를 한 프레임에 여러 칸씩 건너뛰면서
       // 잔상처럼 여러 개로 보이는 문제가 있어 속도를 전체적으로 낮춤
       var edge = 64, maxSpeed = 7;
+      // 아래쪽 기준점은 스크롤 영역 바닥이 아니라 탑 버튼 상단 — 탑 버튼의
+      // 80px 예약 영역 자체가 edge(64px)보다 넓어서, scrollEl 바닥 기준으로
+      // 하면 트리거 구간이 통째로 "프리뷰가 더 못 내려가는" 클램프 구간과
+      // 겹쳐버려 프리뷰가 바로 멈춰버리고 표시선만 계속 움직이는 문제가 있었음.
+      var navEl = this.$refs.gnbEl;
+      var topBtnEl = navEl && navEl.querySelector('.gnb-top-btn');
+      var bottomBound = topBtnEl ? topBtnEl.getBoundingClientRect().top : rect.bottom;
       var y = this.dragging.lastClientY;
       var dir = 0, dist = 0;
       if (y < rect.top + edge) { dir = -1; dist = (rect.top + edge) - y; }
-      else if (y > rect.bottom - edge) { dir = 1; dist = y - (rect.bottom - edge); }
+      else if (y > bottomBound - edge) { dir = 1; dist = y - (bottomBound - edge); }
       if (dir === 0) return;
       var speed = Math.min(maxSpeed, 1.5 + dist * 0.1);
       var prevTop = scrollEl.scrollTop;
       scrollEl.scrollTop += dir * speed;
-      if (scrollEl.scrollTop !== prevTop) {
-        this.handleFavoriteDragMove({ clientX: this.dragging.lastClientX, clientY: this.dragging.lastClientY }, group);
+      var delta = scrollEl.scrollTop - prevTop;
+      if (delta !== 0) {
+        this.handleFavoriteDragMove({ clientX: this.dragging.lastClientX, clientY: this.dragging.lastClientY }, group, delta);
       }
     },
-    handleFavoriteDragMove: function (ev, group) {
+    // scrollDelta가 있으면(자동 스크롤 중 호출) 커서 좌표 대신 "스크롤된
+    // 만큼만" 프리뷰를 이동시켜 드롭 표시선(실제 행 위치 기준이라 스크롤과
+    // 같은 속도로 움직임)과 정확히 같은 속도로 맞춤 — 커서 기준으로 다시
+    // 계산하면 커서가 멈춰있는 동안 프리뷰도 멈춰 보여서 둘이 따로 노는
+    // 것처럼 보이는 문제가 있었음.
+    handleFavoriteDragMove: function (ev, group, scrollDelta) {
       if (!this.dragging) return;
       var groupIndex = this.gameGroups.indexOf(group);
       var listEl = this.$refs.listGroupEl && this.$refs.listGroupEl[groupIndex];
@@ -531,7 +544,9 @@ var GnbComponent = {
       var navRect = navEl ? navEl.getBoundingClientRect() : null;
       var listRect = listEl.getBoundingClientRect();
       var x = ev.clientX - this.dragging.grabOffsetX;
-      var y = ev.clientY - this.dragging.grabOffsetY;
+      var y = typeof scrollDelta === 'number'
+        ? this.dragging.y + scrollDelta
+        : ev.clientY - this.dragging.grabOffsetY;
       if (navRect) {
         var minX = navRect.left + margin;
         var maxX = navRect.right - margin - this.dragging.width;
@@ -552,14 +567,17 @@ var GnbComponent = {
       this.dragging.x = x;
       this.dragging.y = y;
 
-      // 드롭 위치 계산 — 현재 DOM 순서(고스트 포함) 기준으로 커서가 어느
-      // 행의 중간선보다 위에 있는지로 rawIndex를 구하고, 그 값이 원래
-      // 자리(fromIndex)보다 뒤면 1을 빼서 "제거 후 배열" 기준 인덱스로 보정.
+      // 드롭 위치 계산 — (화면상 커서 위치가 아니라) 방금 클램프까지 끝낸
+      // 프리뷰 자신의 세로 중심을 기준으로 어느 행의 중간선을 지났는지
+      // 비교. 커서(ev.clientY) 기준으로 하면 프리뷰가 탑 버튼 클램프에
+      // 걸려 멈춘 뒤에도 표시선만 계속 움직여서 둘이 따로 노는 것처럼
+      // 보였음 — 프리뷰 기준으로 통일해서 항상 같은 속도로 움직이게 함.
+      var refY = y + this.dragging.height / 2;
       var items = listEl.children;
       var rawIndex = items.length;
       for (var i = 0; i < items.length; i++) {
         var rect = items[i].getBoundingClientRect();
-        if (ev.clientY < rect.top + rect.height / 2) { rawIndex = i; break; }
+        if (refY < rect.top + rect.height / 2) { rawIndex = i; break; }
       }
       var fromIndex = this.dragging.fromIndex;
       this.dragging.rawIndex = rawIndex;
