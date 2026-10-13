@@ -50,11 +50,15 @@
     .lounge-col-center { flex: 0 0 auto; }
     .lounge-col-left,
     .lounge-col-right { flex: 0 0 auto; height: 253.6rem; }
-    .lounge-col-right { margin-left: 5.6rem; } /* 가운데·우측 열 사이 56px 간격 */
+    /* 가운데·우측 열 사이 간격 — 창이 넓어질수록 우측 열이 화면 오른쪽
+       끝에 외따로 떠 보이지 않도록(최소 56px 유지하되, 창이 넓으면 이
+       간격 자체가 늘어나며 우측 열을 오른쪽에 붙여줌) 고정폭 대신
+       flex-grow 스페이서로 처리. */
+    .lounge-col-gap { flex: 1 1 auto; min-width: 5.6rem; }
     .lounge-col-left img,
     .lounge-col-right img { position: sticky; top: 0; display: block; }
     .lounge-col-left img { width: 7.2rem; }
-    .lounge-col-center img { display: block; width: 52rem; }
+    .lounge-col-center img { display: block; width: 60rem; }
     .lounge-col-right img { width: 28rem; }
 
     .app > .main::-webkit-scrollbar { width: 2.4rem; }
@@ -84,6 +88,7 @@
       <div class="lounge-col-center">
         <img src="assets/lounge-center-dark.jpg" alt="STOVE 라운지 (다크모드 미리보기)" />
       </div>
+      <div class="lounge-col-gap" aria-hidden="true"></div>
       <div class="lounge-col-right">
         <img src="assets/lounge-right-dark.jpg" alt="" aria-hidden="true" />
       </div>
