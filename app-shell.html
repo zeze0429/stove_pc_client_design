@@ -12,30 +12,19 @@
   <link rel="stylesheet" href="css/gnb.css?v=79" />
   <link rel="stylesheet" href="css/dashboard.css?v=16" />
   <style>
-    /* 클라이언트 메인 = 실제 스토어 페이지(iframe). 원본 디자인 그대로.
-       store.onstove.com 최상단 지엔비(.stove-gnb, 64px — 스토어/라운지/이벤트 등
-       우리 사이드바 GNB와 중복되는 상단바)만 가려서 숨김: 크로스 오리진
-       iframe이라 안쪽 DOM은 건드릴 수 없어서, iframe 자체를 -64px 위로
-       올리고 그만큼 높이를 더 키운 다음 바깥 wrap에서 overflow:hidden으로
-       잘라내는 방식(그 아래 카테고리 탭/본문은 그대로 보임).
-
-       하단 푸터는 "콘텐츠 끝 + 200px"에서 고정 높이로 잘라봤다가 되돌림 —
-       그 콘텐츠 끝 지점이 화면 폭에 따라 달라져서(반응형 그리드라 줄 수가
-       바뀜), 테스트했던 폭보다 넓은 화면에서는 실제 콘텐츠 중간을 잘라버리는
-       문제가 생겼음. 크로스 오리진이라 실제 콘텐츠 높이를 동적으로 알 방법이
-       없어서, 자연스럽게 끝까지 스크롤되게 두고(맨 아래 스크롤하면 푸터도
-       보임) 상단 크롭만 유지. */
-    .app > .main { overflow-y: auto; overflow-x: hidden; }
-    .store-frame-wrap { width: 100%; height: 100vh; overflow: hidden; position: relative; background: var(--background-variant-2); }
-    .store-frame {
-      position: absolute;
-      top: -64px;
-      left: 0;
-      width: 100%;
-      height: calc(100% + 64px);
-      border: 0;
-      display: block;
-    }
+    /* 클라이언트 메인 = 스토어 페이지 정적 스크린샷(다크모드).
+       처음엔 실제 store.onstove.com을 iframe으로 라이브 임베드했었는데:
+       1) 최상단 지엔비·푸터는 크로스 오리진이라 크롭이 불가능하거나(푸터는
+          콘텐츠 길이가 화면 폭마다 달라져서 고정 크롭이 다른 폭에서 깨짐),
+       2) 다크모드도 "보는 사람 시스템 설정"을 그대로 따라가서, 시스템이
+          라이트면 라이트로 뜨는 걸 부모 페이지에서 강제로 못 바꿈(크로스
+          오리진 iframe 보안 경계라 CSS/쿠키 어느 쪽으로도 우회 불가, CORS도
+          안 열려 있어 HTML을 가져와 고쳐 넣는 것도 불가능했음).
+       → 라이브 임베드를 포기하고, 다크모드로 직접 캡처한 화면(최상단
+       지엔비·광고 배너 제거, assets/store-preview-dark.png)을 정적 이미지로
+       넣음 — 이러면 테마/크롭 둘 다 항상 의도한 대로 고정됨. */
+    .app > .main { overflow-y: auto; overflow-x: hidden; background: var(--background-variant-2); }
+    .store-preview { display: block; width: 100%; height: auto; }
   </style>
 </head>
 <body>
@@ -46,17 +35,9 @@
          마크업은 이제 여기 하드코딩하지 않음 — 구조를 고치려면 그 파일 하나만 수정. -->
     <div id="gnb-mount"></div>
 
-    <!-- ============ MAIN (store.onstove.com 임베드, 최상단 지엔비는 크롭) ============
-         credentialless: 이 스토어 사이트를 실제 브라우저에서 따로 방문해서
-         라이트모드로 바꿔본 적 있는 사람은 COLOR_MODE=light 쿠키가 남아있어서
-         임베드에도 그 쿠키가 그대로 전달돼 라이트로 뜸. credentialless면
-         iframe이 그 도메인 쿠키를 아예 안 가져가고 "쿠키 없는 새 세션"으로
-         취급돼서, 사이트 자체 기본값(다크)으로 항상 뜸 — 클라이언트는 다크
-         기본이라는 요구사항과 맞음. -->
+    <!-- ============ MAIN (store 정적 스크린샷 — 다크모드 고정) ============ -->
     <div class="main">
-      <div class="store-frame-wrap">
-        <iframe class="store-frame" src="https://store.onstove.com/ko" title="STOVE 스토어" credentialless></iframe>
-      </div>
+      <img class="store-preview" src="assets/store-preview-dark.png" alt="STOVE 스토어 (다크모드 미리보기)" />
     </div>
 
   </div>
