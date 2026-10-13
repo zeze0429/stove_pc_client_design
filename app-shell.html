@@ -21,10 +21,15 @@
           오리진 iframe 보안 경계라 CSS/쿠키 어느 쪽으로도 우회 불가, CORS도
           안 열려 있어 HTML을 가져와 고쳐 넣는 것도 불가능했음).
        → 라이브 임베드를 포기하고, 다크모드로 직접 캡처한 화면(최상단
-       지엔비·광고 배너 제거, assets/store-preview-dark.png)을 정적 이미지로
-       넣음 — 이러면 테마/크롭 둘 다 항상 의도한 대로 고정됨. */
+       지엔비 제거, assets/store-preview-dark.png)을 정적 이미지로 넣음 —
+       이러면 테마/크롭 둘 다 항상 의도한 대로 고정됨.
+       클라이언트 최소 폭(1280, 사이드바 240 제외 1040)에 맞춰 1040px
+       뷰포트로 캡처했고, width도 1040 고정 — 100%로 늘려서 더 넓은 화면에
+       맞게 늘어나면(실제로 해보니 블러지고 내용도 부족해 보임) 안 되므로
+       항상 이 1040 고정 크기로만 보여주고, 더 넓은 창에서는 옆에 배경색만
+       추가로 보임(사이드바 폭이 고정인 것과 같은 방식). */
     .app > .main { overflow-y: auto; overflow-x: hidden; background: var(--background-variant-2); }
-    .store-preview { display: block; width: 100%; height: auto; }
+    .store-preview { display: block; width: 1040px; height: auto; }
   </style>
 </head>
 <body>
