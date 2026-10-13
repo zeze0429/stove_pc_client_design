@@ -48,8 +48,10 @@
       overflow-x: hidden;
       background: var(--background-variant-2);
       /* 좌: 사이드바-아이콘레일 4px / 우: 우측열 뒤 64px — 실제 네이티브
-         클라이언트 캡처에 직접 그려서 받은 정확한 수치 */
-      padding: 4.8rem 6.4rem 20rem 0.4rem;
+         클라이언트 캡처에 직접 그려서 받은 정확한 수치. 하단은 0 —
+         라운지는 실제로 무한 스크롤 피드라서 스토어/이벤트처럼 "콘텐츠
+         끝 + 200px 여백"을 두면 어색함(끝이 있는 것처럼 보임). */
+      padding: 4.8rem 6.4rem 0 0.4rem;
       display: flex;
       flex-direction: row; /* 공통 셸 기본값(column)을 3단 레이아웃용으로 덮어씀 */
     }
