@@ -503,13 +503,15 @@ var GnbComponent = {
       var scrollEl = this.$refs.scrollEl;
       if (!scrollEl || !this.dragging) return;
       var rect = scrollEl.getBoundingClientRect();
-      var edge = 64, maxSpeed = 18;
+      // 너무 빠르면 드롭 표시선이 행 사이를 한 프레임에 여러 칸씩 건너뛰면서
+      // 잔상처럼 여러 개로 보이는 문제가 있어 속도를 전체적으로 낮춤
+      var edge = 64, maxSpeed = 7;
       var y = this.dragging.lastClientY;
       var dir = 0, dist = 0;
       if (y < rect.top + edge) { dir = -1; dist = (rect.top + edge) - y; }
       else if (y > rect.bottom - edge) { dir = 1; dist = y - (rect.bottom - edge); }
       if (dir === 0) return;
-      var speed = Math.min(maxSpeed, 4 + dist * 0.3);
+      var speed = Math.min(maxSpeed, 1.5 + dist * 0.1);
       var prevTop = scrollEl.scrollTop;
       scrollEl.scrollTop += dir * speed;
       if (scrollEl.scrollTop !== prevTop) {
