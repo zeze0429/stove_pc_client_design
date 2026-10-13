@@ -47,19 +47,21 @@
       overflow-y: auto;
       overflow-x: hidden;
       background: var(--background-variant-2);
-      padding: 4.8rem 0 20rem;
+      /* 좌: 사이드바-아이콘레일 4px / 우: 우측열 뒤 64px — 실제 네이티브
+         클라이언트 캡처에 직접 그려서 받은 정확한 수치 */
+      padding: 4.8rem 6.4rem 20rem 0.4rem;
       display: flex;
       flex-direction: row; /* 공통 셸 기본값(column)을 3단 레이아웃용으로 덮어씀 */
     }
-    /* 1단-2단, 2단-3단 간격 둘 다 56px 고정 */
-    .lounge-col-center { flex: 0 0 auto; margin-left: 5.6rem; }
+    /* 1단-2단 간격 52px, 2단-3단 간격 56px — 실측 결과 둘이 다름 */
+    .lounge-col-center { flex: 0 0 auto; margin-left: 5.2rem; }
     .lounge-col-right { flex: 0 0 auto; margin-left: 5.6rem; }
     .lounge-col-left,
     .lounge-col-right { height: 253.6rem; }
     .lounge-col-left img,
     .lounge-col-right img { position: sticky; top: 0; display: block; }
-    .lounge-col-left img { width: 7.2rem; }
-    .lounge-col-center img { display: block; width: 56rem; }
+    .lounge-col-left img { width: 6.4rem; }
+    .lounge-col-center img { display: block; width: 52rem; }
     .lounge-col-right img { width: 28rem; }
 
     .app > .main::-webkit-scrollbar { width: 2.4rem; }
