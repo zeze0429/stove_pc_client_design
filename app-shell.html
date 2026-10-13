@@ -19,28 +19,20 @@
        올리고 그만큼 높이를 더 키운 다음 바깥 wrap에서 overflow:hidden으로
        잘라내는 방식(그 아래 카테고리 탭/본문은 그대로 보임).
 
-       하단 푸터도 같은 이유(크로스 오리진이라 안쪽을 못 건드림)로 "콘텐츠
-       끝 + 200px 여백"에서 그냥 잘라버림 — iframe 자체 높이를 실제 콘텐츠가
-       끝나는 지점(오늘 기준 측정값, 2089px)으로 고정하고 scrolling="no"로
-       그 밑(푸터)은 아예 렌더링 안 되게 한 다음, wrap을 그보다 200px 더
-       크게 잡아서 빈 여백만 보이게 함.
-       ※ 이 2089px는 오늘 store.onstove.com 콘텐츠 기준 하드코딩값이라, 저쪽
-       프로모션 배너/섹션이 늘거나 줄면 다시 측정해서 바꿔줘야 함. */
+       하단 푸터는 "콘텐츠 끝 + 200px"에서 고정 높이로 잘라봤다가 되돌림 —
+       그 콘텐츠 끝 지점이 화면 폭에 따라 달라져서(반응형 그리드라 줄 수가
+       바뀜), 테스트했던 폭보다 넓은 화면에서는 실제 콘텐츠 중간을 잘라버리는
+       문제가 생겼음. 크로스 오리진이라 실제 콘텐츠 높이를 동적으로 알 방법이
+       없어서, 자연스럽게 끝까지 스크롤되게 두고(맨 아래 스크롤하면 푸터도
+       보임) 상단 크롭만 유지. */
     .app > .main { overflow-y: auto; overflow-x: hidden; }
-    .store-frame-wrap {
-      width: 100%;
-      height: calc(2089px - 64px + 200px); /* 콘텐츠 끝(2089) - 위에서 크롭한 64 + 여백 200 */
-      flex-shrink: 0; /* .main이 flex column이라 기본값(shrink:1)이면 768px짜리 뷰포트에 눌려버림 */
-      overflow: hidden;
-      position: relative;
-      background: var(--background-variant-2);
-    }
+    .store-frame-wrap { width: 100%; height: 100vh; overflow: hidden; position: relative; background: var(--background-variant-2); }
     .store-frame {
       position: absolute;
       top: -64px;
       left: 0;
       width: 100%;
-      height: 2089px; /* 푸터 시작 지점에서 끊어서 그 아래(푸터)는 렌더링 자체가 안 되게 함 */
+      height: calc(100% + 64px);
       border: 0;
       display: block;
     }
@@ -63,7 +55,7 @@
          기본이라는 요구사항과 맞음. -->
     <div class="main">
       <div class="store-frame-wrap">
-        <iframe class="store-frame" src="https://store.onstove.com/ko" title="STOVE 스토어" credentialless scrolling="no"></iframe>
+        <iframe class="store-frame" src="https://store.onstove.com/ko" title="STOVE 스토어" credentialless></iframe>
       </div>
     </div>
 
