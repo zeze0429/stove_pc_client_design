@@ -10,7 +10,8 @@
   <link rel="stylesheet" href="css/typography.css?v=12" />
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=8" />
   <link rel="stylesheet" href="css/gnb.css?v=79" />
-  <link rel="stylesheet" href="css/dashboard.css?v=16" />
+  <link rel="stylesheet" href="css/dashboard.css?v=17" />
+  <link rel="stylesheet" href="css/utility-bar.css?v=1" />
   <style>
     /* 클라이언트 메인 = 라운지 페이지 정적 스크린샷(다크모드).
        app-shell.html(스토어)과 동일한 방식 — 라이브 임베드 대신 헤드리스
@@ -85,6 +86,11 @@
          마크업은 이제 여기 하드코딩하지 않음 — 구조를 고치려면 그 파일 하나만 수정. -->
     <div id="gnb-mount"></div>
 
+    <!-- ============ 유틸리티 바 (Figma layout/utility_bar · 3031:50773) ============
+         콘텐츠 영역 위에 떠 있는 레이어. 공통 Vue 컴포넌트
+         (js/utility-bar-component.js)가 마운트되는 자리. -->
+    <div id="utility-bar-mount"></div>
+
     <!-- ============ MAIN (라운지 정적 스크린샷 — 3단 분할, 좌/우 고정) ============ -->
     <div class="main">
       <div class="lounge-col-left">
@@ -102,8 +108,10 @@
 
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <script src="js/gnb-component.js?v=43"></script>
+  <script src="js/utility-bar-component.js?v=1"></script>
   <script>
     mountGnb('#gnb-mount');
+    mountUtilityBar('#utility-bar-mount');
   </script>
 </body>
 </html>

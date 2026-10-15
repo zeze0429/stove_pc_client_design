@@ -1,0 +1,171 @@
+/* =============================================================
+   STOVE 클라이언트 — 유틸리티 바 (Figma layout/utility_bar · 3031:50773)
+   ※ 반드시 시멘틱 토큰만 참조 (글로벌 --stove-* 직접 사용 금지)
+      — 예외는 Figma가 애초에 글로벌 토큰을 쓴 자리뿐(프로필 링, 툴팁 글자).
+   ============================================================= */
+
+/* Vue가 마운트 지점(<div id="utility-bar-mount">)을 남겨두기 때문에, 그냥
+   두면 이 래퍼가 .app 그리드의 아이템으로 잡혀 .main을 다음 행으로 밀어낸다.
+   display:contents로 래퍼는 박스를 만들지 않게 하고, 실제 레이어는 아래
+   .utility-bar가 .app 기준 absolute로 직접 띄운다. */
+#utility-bar-mount { display: contents; }
+
+/* 콘텐츠 영역 위에 한 층 더 쌓이는 플로팅 레이어.
+   .main 안에 넣으면 .main이 스크롤 컨테이너라서 바가 콘텐츠와 같이
+   밀려 올라가 버린다. 그래서 그리드 셸(.app) 기준 absolute로 띄우고
+   사이드바 폭(24rem)만큼 왼쪽을 비워 콘텐츠 영역 위에만 겹치게 한다.
+   각 페이지 .main의 상단 여백이 이 바 높이(4.8rem)와 같아서 콘텐츠는
+   바에 가리지 않고 바로 아래에서 시작한다. */
+.utility-bar {
+  position: absolute;
+  top: 0;
+  left: 24rem;
+  right: 0;
+  z-index: 100;
+  height: 4.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1.6rem;
+  background: var(--background-variant-1);
+}
+
+.utility-bar__group { display: flex; align-items: center; }
+.utility-bar__left { gap: 0.8rem; }
+.utility-bar__right { gap: 1.2rem; }
+/* Figma: 좌 2px / 우 6px 비대칭 패딩 (시각보정) */
+.utility-bar__account { gap: 1.6rem; padding: 0 0.6rem 0 0.2rem; }
+.utility-bar__window { gap: 0.8rem; }
+
+.utility-bar__divider {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 2rem;
+  background: var(--inverse-elevation-3);
+}
+
+/* ---- 아이콘 버튼 (component/btn/utility_bar_icon) ----------
+   enabled는 배경이 없어서 radius가 보이지 않고, hover/press/selected
+   에서만 원형(999px) 배경이 깔린다 — Figma 스펙 그대로. */
+.utility-bar-icon-btn {
+  position: relative;
+  flex: 0 0 auto;
+  width: 3.2rem;
+  height: 3.2rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: var(--radius-lg);
+  color: var(--on-surface-elevation-1);
+  transition: background .15s, color .15s;
+}
+.utility-bar-icon-btn i { font-size: 1.6rem; }
+/* 스토브챗·알림은 아이콘만 20px (Figma ic-v2-sample 20) */
+.utility-bar-icon-btn--lg i { font-size: 2rem; }
+
+.utility-bar-icon-btn:hover { background: var(--interaction-hover); border-radius: var(--radius-full); }
+.utility-bar-icon-btn:active { background: var(--interaction-pressed); border-radius: var(--radius-full); }
+/* selected = 이 버튼이 띄운 팝업이 열려 있는 상태 */
+.utility-bar-icon-btn.is-selected { background: var(--interaction-selected); border-radius: var(--radius-full); }
+.utility-bar-icon-btn:disabled {
+  background: none;
+  border-radius: var(--radius-lg);
+  color: var(--disabled-variant-4);
+  cursor: default;
+}
+
+/* 신규 표시 점 — 32px 박스 기준 left 19px / top 7px / 6px 원 */
+.utility-bar-icon-btn__new {
+  position: absolute;
+  left: 1.9rem;
+  top: 0.7rem;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: var(--radius-full);
+  background: var(--brand-primary-enabled);
+}
+
+/* ---- PC방 혜택 안내 (component/btn/pc_cafe) ---------------- */
+.utility-bar-pc-cafe {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  border-radius: var(--radius-lg);
+  transition: background .15s;
+}
+.utility-bar-pc-cafe:hover { background: var(--interaction-hover); }
+.utility-bar-pc-cafe:active { background: var(--interaction-pressed); }
+.utility-bar-pc-cafe.is-selected { background: var(--interaction-selected); }
+.utility-bar-pc-cafe__badge { display: block; width: 6rem; height: 1.2rem; }
+/* 워드마크 오른쪽 어깨에 붙는 신규 표시 — Figma left 74px / top 7px */
+.utility-bar-pc-cafe__new {
+  position: absolute;
+  left: 7.4rem;
+  top: 0.7rem;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: var(--radius-full);
+  background: var(--brand-primary-enabled);
+}
+
+/* ---- 프로필 (component/btn/profile) ------------------------
+   hover/press 배경은 28px 썸네일 바깥 2px 링으로 보인다. Figma가
+   시멘틱이 아닌 글로벌 white/15·white/50을 쓴 자리라 테마가 바뀌어도
+   흰색이 유지돼야 해서 여기서만 글로벌 토큰을 그대로 쓴다. */
+.utility-bar-profile {
+  position: relative;
+  flex: 0 0 auto;
+  width: 3.2rem;
+  height: 3.2rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: var(--radius-full);
+  transition: background .15s, box-shadow .15s;
+}
+.utility-bar-profile__thumb {
+  display: block;
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: var(--radius-full);
+}
+.utility-bar-profile:hover { background: var(--stove-white-15); }
+.utility-bar-profile:active { background: var(--stove-white-50); }
+.utility-bar-profile.is-selected { box-shadow: inset 0 0 0 2px var(--stove-white); }
+
+/* ---- 툴팁 (Tooltip/iconbtn) --------------------------------
+   버튼 바닥에서 1px 아래, 가로 중앙. hover에서만 노출. */
+.utility-bar-tooltip {
+  position: absolute;
+  top: calc(100% + 1px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .15s, visibility .15s;
+}
+.utility-bar-icon-btn:hover > .utility-bar-tooltip,
+.utility-bar-pc-cafe:hover > .utility-bar-tooltip,
+.utility-bar-profile:hover > .utility-bar-tooltip { opacity: 1; visibility: visible; }
+.utility-bar-icon-btn:disabled > .utility-bar-tooltip { display: none; }
+
+.utility-bar-tooltip__tail {
+  width: 0;
+  height: 0;
+  border-left: 0.3rem solid transparent;
+  border-right: 0.3rem solid transparent;
+  border-bottom: 0.4rem solid var(--neutral-variant-1);
+}
+.utility-bar-tooltip__body {
+  padding: 0.5rem 0.8rem;
+  border-radius: 0.6rem; /* Figma 6px — radius 스케일에 없는 값 */
+  background: var(--neutral-variant-1);
+  color: var(--stove-white);
+  white-space: nowrap;
+}

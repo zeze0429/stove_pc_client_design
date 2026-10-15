@@ -1,0 +1,117 @@
+/**
+ * STOVE 유틸리티 바 — 공통 Vue 컴포넌트 (빌드 없이 CDN Vue로 동작)
+ * -------------------------------------------------------------
+ * Figma: layout/utility_bar (3031:50773)
+ * GNB(js/gnb-component.js)와 같은 방식 — 구조를 바꿀 일이 생기면
+ * 여기 template 한 곳만 고치면 모든 페이지에 반영된다.
+ *
+ * 색상/치수는 css/utility-bar.css의 토큰만 참조하고 이 파일에는
+ * 직접 넣지 않는다.
+ */
+
+// 아이콘 버튼 + 툴팁 한 벌을 매번 똑같이 쓰므로 템플릿 조각으로 뺐다.
+function utilityBarTooltip(label) {
+  return (
+    '<span class="utility-bar-tooltip stds-cap1 fw-medium" aria-hidden="true">' +
+      '<span class="utility-bar-tooltip__tail"></span>' +
+      '<span class="utility-bar-tooltip__body">' + label + '</span>' +
+    '</span>'
+  );
+}
+
+var UtilityBarComponent = {
+  data: function () {
+    return {
+      // 창 최대화 여부 — 최대화 상태에서는 "이전 크기로 복원" 버튼으로 바뀐다
+      maximized: false,
+      // 팝업을 띄우는 버튼들(스토브챗/알림/내 정보/PC방)은 팝업이 열려 있는
+      // 동안 selected 상태로 남는다 — Figma 주석 "팝업 노출되는 아이콘 버튼에 사용"
+      openPopupId: null,
+      // 신규 내용 유무 — 한 번 열어보면 점이 사라진다
+      newBadges: { chat: true, alarm: true, pcCafe: true },
+    };
+  },
+  methods: {
+    goBack: function () { history.back(); },
+    goForward: function () { history.forward(); },
+    reload: function () { location.reload(); },
+    toggleMaximize: function () { this.maximized = !this.maximized; },
+    togglePopup: function (id) {
+      this.openPopupId = this.openPopupId === id ? null : id;
+      if (this.openPopupId && this.newBadges[id]) this.newBadges[id] = false;
+    },
+  },
+  template:
+    '<div class="utility-bar" data-name="layout/utility_bar">' +
+
+      '<div class="utility-bar__group utility-bar__left" data-name="left_btn">' +
+        '<button class="utility-bar-icon-btn" type="button" aria-label="뒤로" @click="goBack">' +
+          '<i class="ic-v2-control-long-arrow-left-line"></i>' + utilityBarTooltip('뒤로') +
+        '</button>' +
+        '<button class="utility-bar-icon-btn" type="button" aria-label="앞으로" @click="goForward">' +
+          '<i class="ic-v2-control-long-arrow-right-line"></i>' + utilityBarTooltip('앞으로') +
+        '</button>' +
+        '<button class="utility-bar-icon-btn" type="button" aria-label="새로고침" @click="reload">' +
+          '<i class="ic-v2-control-refresh-line"></i>' + utilityBarTooltip('새로고침') +
+        '</button>' +
+      '</div>' +
+
+      '<div class="utility-bar__group utility-bar__right" data-name="right">' +
+
+        '<button class="utility-bar-pc-cafe" type="button" aria-label="PC방 혜택 안내" ' +
+          ':class="{ \'is-selected\': openPopupId === \'pcCafe\' }" @click="togglePopup(\'pcCafe\')" ' +
+          'data-name="component/btn/pc_cafe">' +
+          '<img class="utility-bar-pc-cafe__badge" src="assets/utility-bar/pc-cafe-on-ko.svg" alt="PC방 ON" />' +
+          '<span v-if="newBadges.pcCafe" class="utility-bar-pc-cafe__new"></span>' +
+          utilityBarTooltip('PC방 혜택 안내') +
+        '</button>' +
+
+        '<span class="utility-bar__divider" aria-hidden="true"></span>' +
+
+        '<div class="utility-bar__group utility-bar__account" data-name="btn">' +
+          '<button class="utility-bar-icon-btn utility-bar-icon-btn--lg" type="button" aria-label="스토브챗" ' +
+            ':class="{ \'is-selected\': openPopupId === \'chat\' }" @click="togglePopup(\'chat\')">' +
+            '<i class="ic-v2-community-comment-fill"></i>' +
+            '<span v-if="newBadges.chat" class="utility-bar-icon-btn__new"></span>' +
+            utilityBarTooltip('스토브챗') +
+          '</button>' +
+          '<button class="utility-bar-icon-btn utility-bar-icon-btn--lg" type="button" aria-label="알림" ' +
+            ':class="{ \'is-selected\': openPopupId === \'alarm\' }" @click="togglePopup(\'alarm\')">' +
+            '<i class="ic-v2-navigation-alarm-fill"></i>' +
+            '<span v-if="newBadges.alarm" class="utility-bar-icon-btn__new"></span>' +
+            utilityBarTooltip('알림') +
+          '</button>' +
+          '<button class="utility-bar-profile" type="button" aria-label="내 정보" ' +
+            ':class="{ \'is-selected\': openPopupId === \'profile\' }" @click="togglePopup(\'profile\')" ' +
+            'data-name="component/btn/profile">' +
+            '<img class="utility-bar-profile__thumb" src="assets/utility-bar/profile-thumb.png" alt="" />' +
+            utilityBarTooltip('내 정보') +
+          '</button>' +
+        '</div>' +
+
+        '<span class="utility-bar__divider" aria-hidden="true"></span>' +
+
+        '<div class="utility-bar__group utility-bar__window" data-name="btn">' +
+          '<button class="utility-bar-icon-btn" type="button" aria-label="최소화">' +
+            '<i class="ic-v2-control-minimize-line"></i>' + utilityBarTooltip('최소화') +
+          '</button>' +
+          '<button class="utility-bar-icon-btn" type="button" @click="toggleMaximize" ' +
+            ':aria-label="maximized ? \'이전 크기로 복원\' : \'최대화\'">' +
+            '<i :class="maximized ? \'ic-v2-control-recover-line\' : \'ic-v2-control-maximize-line\'"></i>' +
+            '<span class="utility-bar-tooltip stds-cap1 fw-medium" aria-hidden="true">' +
+              '<span class="utility-bar-tooltip__tail"></span>' +
+              '<span class="utility-bar-tooltip__body">{{ maximized ? \'이전 크기로 복원\' : \'최대화\' }}</span>' +
+            '</span>' +
+          '</button>' +
+          '<button class="utility-bar-icon-btn" type="button" aria-label="닫기">' +
+            '<i class="ic-v2-control-close-line"></i>' + utilityBarTooltip('닫기') +
+          '</button>' +
+        '</div>' +
+
+      '</div>' +
+    '</div>',
+};
+
+function mountUtilityBar(selector) {
+  return Vue.createApp(UtilityBarComponent).mount(selector);
+}

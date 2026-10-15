@@ -21,6 +21,7 @@ ul { list-style: none; margin: 0; padding: 0; }
    앱 셸 (STOVE GNB 240px + main)
    ============================================================ */
 .app {
+  position: relative; /* 유틸리티 바(.utility-bar) 플로팅 레이어의 위치 기준 */
   display: grid;
   grid-template-columns: 24rem 1fr;
   height: 100vh;
