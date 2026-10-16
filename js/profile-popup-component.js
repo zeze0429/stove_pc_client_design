@@ -14,14 +14,17 @@ var PROFILE_USER = {
   avatar: 'assets/profile-popup/avatar.jpg',
 };
 
-// 재화 — 캐시만 충전 버튼이 붙고 행이 강조된다.
+// 재화 — 캐시에만 충전 버튼이 붙는다. value는 카운트업을 돌려야 해서 숫자.
 var PROFILE_MONEY = [
-  { id: 'cash', label: '캐시', value: '13,000', img: 'assets/profile-popup/ic-cash.svg', primary: true, charge: true },
+  { id: 'cash', label: '캐시', value: 13000, img: 'assets/profile-popup/ic-cash.svg', charge: true },
   // 포인트 마크는 Figma 쪽 레이어 이름이 flake로 잘못 올라가 있어서
   // ic-point.svg로 바꿔 받았다(파일명/변수명은 point 기준).
-  { id: 'point', label: '포인트', value: '345,670', img: 'assets/profile-popup/ic-point.svg' },
-  { id: 'flake', label: '플레이크', value: '999,999,999', img: 'assets/profile-popup/ic-flake.svg' },
+  { id: 'point', label: '포인트', value: 345670, img: 'assets/profile-popup/ic-point.svg' },
+  { id: 'flake', label: '플레이크', value: 999999999, img: 'assets/profile-popup/ic-flake.svg' },
 ];
+
+// 재화 숫자 카운트업 (Figma "재화 숫자 카운트업 인터렉션 가이드" 5300:49840)
+var PROFILE_COUNTUP_MS = 900;
 
 var PROFILE_MENU = [
   [
@@ -43,9 +46,16 @@ var PROFILE_MENU = [
 var ProfilePopup = {
   emits: ['close'],
   data: function () {
-    return { user: PROFILE_USER, money: PROFILE_MONEY, menu: PROFILE_MENU };
+    return {
+      user: PROFILE_USER,
+      money: PROFILE_MONEY,
+      menu: PROFILE_MENU,
+      // 카운트업 중 화면에 찍히는 값. 0에서 시작해 실제 잔액까지 올라간다.
+      shown: { cash: 0, point: 0, flake: 0 },
+    };
   },
   mounted: function () {
+    this.startCountUp();
     this.onKeydown = function (e) { if (e.key === 'Escape') this.$emit('close'); }.bind(this);
     document.addEventListener('keydown', this.onKeydown);
     // 바깥을 누르면 닫는다. 프로필 버튼도 앵커 안이라 여기서는 무시되고,
@@ -58,6 +68,32 @@ var ProfilePopup = {
   beforeUnmount: function () {
     document.removeEventListener('keydown', this.onKeydown);
     document.removeEventListener('click', this.onDocClick);
+    if (this.raf) cancelAnimationFrame(this.raf);
+  },
+  methods: {
+    // 팝업이 뜨는 순간 0부터 실제 잔액까지 900ms ease-out cubic으로 올린다.
+    // 세 항목 모두 같은 타이머로 동시에 — 닫았다 열면 컴포넌트가 새로
+    // 마운트되므로 자동으로 처음부터 다시 재생된다.
+    startCountUp: function () {
+      var self = this;
+      var startTime = null;
+      function frame(timestamp) {
+        if (startTime === null) startTime = timestamp;
+        var progress = Math.min(1, (timestamp - startTime) / PROFILE_COUNTUP_MS);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        self.money.forEach(function (m) {
+          self.shown[m.id] = Math.floor(eased * m.value);
+        });
+        if (progress < 1) {
+          self.raf = requestAnimationFrame(frame);
+        } else {
+          // 마지막 프레임은 목표값을 그대로 — floor 때문에 1 모자라게
+          // 끝나는 걸 막아야 한다(가이드 주의사항).
+          self.money.forEach(function (m) { self.shown[m.id] = m.value; });
+        }
+      }
+      this.raf = requestAnimationFrame(frame);
+    },
   },
   template:
     '<div class="profile-popup" role="dialog" aria-label="내 정보" ' +
@@ -89,7 +125,6 @@ var ProfilePopup = {
 
           '<div class="profile-money" data-name="재화">' +
             '<div v-for="m in money" :key="m.id" class="profile-money__row" ' +
-              ':class="{ \'profile-money__row--primary\': m.primary }" ' +
               'data-name="component/list/user_money">' +
               '<div class="profile-money__left">' +
                 '<span class="profile-money__title" data-name="title">' +
@@ -98,7 +133,7 @@ var ProfilePopup = {
                 '</span>' +
                 '<button v-if="m.charge" class="profile-money__charge stds-cap1 fw-medium" type="button">충전</button>' +
               '</div>' +
-              '<p class="profile-money__value stds-title8 fw-medium">{{ m.value }}</p>' +
+              '<p class="profile-money__value stds-title8 fw-medium">{{ shown[m.id].toLocaleString() }}</p>' +
             '</div>' +
           '</div>' +
 
