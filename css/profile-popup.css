@@ -115,9 +115,6 @@
 .profile-money__left { display: flex; align-items: center; gap: 1rem; min-width: 0; }
 .profile-money__title { display: flex; align-items: center; gap: 0.6rem; min-width: 0; }
 .profile-money__title img { width: 2rem; height: 2rem; display: block; flex: 0 0 auto; }
-/* 포인트 마크(주황 육각형 P)를 아직 못 받아 폰트 아이콘을 임시로 쓰는 자리 —
-   실제 마크와 같은 계열로 보이게 브랜드 오렌지를 입힌다. */
-.profile-money__title i { font-size: 2rem; flex: 0 0 auto; color: var(--stove-orange-400); }
 .profile-money__label {
   margin: 0;
   color: var(--on-surface-elevation-1);

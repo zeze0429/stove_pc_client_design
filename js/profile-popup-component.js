@@ -17,10 +17,9 @@ var PROFILE_USER = {
 // 재화 — 캐시만 충전 버튼이 붙고 행이 강조된다.
 var PROFILE_MONEY = [
   { id: 'cash', label: '캐시', value: '13,000', img: 'assets/profile-popup/ic-cash.svg', primary: true, charge: true },
-  // TODO: 포인트 마크(주황 육각형 P)는 Figma 에셋 서버가 캐시 아이콘을 대신
-  // 내려줘서 아직 못 받았다. 받는 대로 img로 교체 — 지금은 폰트 아이콘을
-  // 브랜드 오렌지로 세워둔 임시 표시.
-  { id: 'point', label: '포인트', value: '345,670', icon: 'ic-v2-navigation-point-fill' },
+  // 포인트 마크는 Figma 쪽 레이어 이름이 flake로 잘못 올라가 있어서
+  // ic-point.svg로 바꿔 받았다(파일명/변수명은 point 기준).
+  { id: 'point', label: '포인트', value: '345,670', img: 'assets/profile-popup/ic-point.svg' },
   { id: 'flake', label: '플레이크', value: '999,999,999', img: 'assets/profile-popup/ic-flake.svg' },
 ];
 
@@ -94,8 +93,7 @@ var ProfilePopup = {
               'data-name="component/list/user_money">' +
               '<div class="profile-money__left">' +
                 '<span class="profile-money__title" data-name="title">' +
-                  '<img v-if="m.img" :src="m.img" alt="" aria-hidden="true" />' +
-                  '<i v-else :class="m.icon"></i>' +
+                  '<img :src="m.img" alt="" aria-hidden="true" />' +
                   '<span class="profile-money__label stds-title8 fw-bold">{{ m.label }}</span>' +
                 '</span>' +
                 '<button v-if="m.charge" class="profile-money__charge stds-cap1 fw-medium" type="button">충전</button>' +
