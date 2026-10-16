@@ -47,6 +47,7 @@ var UtilityBarComponent = {
   components: {
     PcbangBenefitsDialog: PcbangBenefitsDialog,
     NotificationPopup: NotificationPopup,
+    ProfilePopup: ProfilePopup,
   },
   data: function () {
     return {
@@ -147,12 +148,15 @@ var UtilityBarComponent = {
             '</button>' +
             '<notification-popup v-if="openPopupId === \'alarm\'" @close="openPopupId = null" />' +
           '</span>' +
-          '<button class="utility-bar-profile" type="button" aria-label="내 정보" ' +
-            ':class="{ \'is-selected\': openPopupId === \'profile\' }" @click="togglePopup(\'profile\')" ' +
-            'data-name="component/btn/profile">' +
-            '<img class="utility-bar-profile__thumb" src="assets/utility-bar/profile-thumb.png" alt="" />' +
-            utilityBarTooltip('내 정보') +
-          '</button>' +
+          '<span class="utility-bar__popup-anchor">' +
+            '<button class="utility-bar-profile" type="button" aria-label="내 정보" ' +
+              ':class="{ \'is-selected\': openPopupId === \'profile\' }" @click="togglePopup(\'profile\')" ' +
+              'data-name="component/btn/profile">' +
+              '<img class="utility-bar-profile__thumb" src="assets/utility-bar/profile-thumb.png" alt="" />' +
+              utilityBarTooltip('내 정보') +
+            '</button>' +
+            '<profile-popup v-if="openPopupId === \'profile\'" @close="openPopupId = null" />' +
+          '</span>' +
         '</div>' +
 
         '<span class="utility-bar__divider" aria-hidden="true"></span>' +

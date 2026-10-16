@@ -1,0 +1,204 @@
+/* =============================================================
+   내 정보 팝업 (Figma layout/utility_bar/layer_popup/profile · 3376:51880)
+   유틸리티 바의 프로필 버튼에 붙는 팝업. 알림 팝업과 같이 딤 없이
+   아이콘 아래 4px·오른쪽 끝 맞춤으로 뜬다(앵커는 css/notification.css의
+   .utility-bar__popup-anchor와 동일한 역할을 utility-bar.css가 맡음).
+   ============================================================= */
+
+.profile-popup {
+  position: absolute;
+  top: calc(100% + 0.4rem); /* 아이콘 영역 아래 4px */
+  right: 0;
+  z-index: 150; /* 유틸리티 바(100)보다 위, 센터 레이어 팝업(200)보다 아래 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.4rem;
+  width: 60rem;
+  padding: 3.2rem 2.4rem; /* 안쪽 콘텐츠 폭 55.2rem */
+  border-radius: 2rem;
+  background: var(--surface-elevation-1);
+  box-shadow: 0 1.2rem 2.8rem rgba(0, 0, 0, 0.2); /* Figma shadow/12 */
+  overflow: hidden;
+}
+
+/* ---- header ------------------------------------------------ */
+.profile-popup__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.2rem;
+  width: 100%;
+}
+.profile-popup__user { display: flex; align-items: center; gap: 1.2rem; min-width: 0; }
+.profile-popup__avatar {
+  flex: 0 0 auto;
+  width: 5.6rem;
+  height: 5.6rem;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  display: block;
+}
+.profile-popup__info { min-width: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+.profile-popup__name {
+  margin: 0;
+  color: var(--on-surface-elevation-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.profile-popup__links { display: flex; align-items: center; gap: 1rem; }
+.profile-popup__divider {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 1.6rem;
+  background: var(--stove-white-06); /* Figma가 글로벌 white/6 지정 */
+}
+
+/* 아이콘+글자만 있는 텍스트 버튼 — 배경 없이 글자색만 단계적으로 흐려진다 */
+.profile-popup__link {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0;
+  border-radius: var(--radius-md);
+  white-space: nowrap;
+  color: var(--on-surface-elevation-1);
+  transition: color .15s;
+}
+.profile-popup__link i { font-size: 1.6rem; }
+.profile-popup__link:hover { color: var(--on-surface-elevation-2); }
+.profile-popup__link:active { color: var(--on-surface-elevation-3); }
+
+/* 설정 — 유일하게 채워진 버튼이라 Figma도 글로벌 흰색/gray880을 지정 */
+.profile-popup__setting {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: var(--radius-full);
+  background: var(--stove-white);
+  color: var(--stove-gray-880);
+  white-space: nowrap;
+  transition: background .15s;
+}
+.profile-popup__setting i { font-size: 1.6rem; }
+.profile-popup__setting:hover { background: var(--stove-white-80); }
+.profile-popup__setting:active { background: var(--stove-white-70); }
+
+/* ---- 위계1: 재화 + 보안 안내 -------------------------------- */
+.profile-popup__contents { display: flex; flex-direction: column; gap: 3.2rem; width: 100%; }
+.profile-popup__row1 { display: flex; align-items: flex-start; gap: 1.2rem; }
+
+.profile-money {
+  flex: 0 0 auto;
+  width: 27rem;
+  display: flex;
+  flex-direction: column;
+  padding: 0.8rem;
+  border-radius: 1.6rem;
+  background: var(--surface-elevation-2);
+}
+.profile-money__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  height: 4.4rem;
+  padding: 1rem 1.6rem;
+  border-radius: 1.2rem;
+}
+/* 캐시 행만 강조 — 충전 버튼이 붙는 행 */
+.profile-money__row--primary { background: var(--interaction-hover); }
+.profile-money__left { display: flex; align-items: center; gap: 1rem; min-width: 0; }
+.profile-money__title { display: flex; align-items: center; gap: 0.6rem; min-width: 0; }
+.profile-money__title img { width: 2rem; height: 2rem; display: block; flex: 0 0 auto; }
+/* 포인트 마크(주황 육각형 P)를 아직 못 받아 폰트 아이콘을 임시로 쓰는 자리 —
+   실제 마크와 같은 계열로 보이게 브랜드 오렌지를 입힌다. */
+.profile-money__title i { font-size: 2rem; flex: 0 0 auto; color: var(--stove-orange-400); }
+.profile-money__label {
+  margin: 0;
+  color: var(--on-surface-elevation-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.profile-money__value { margin: 0; color: var(--on-surface-elevation-1); white-space: nowrap; }
+.profile-money__charge {
+  flex: 0 0 auto;
+  padding: 0.3rem 0.8rem;
+  border-radius: var(--radius-full);
+  background: var(--neutral-variant-2);
+  color: var(--on-surface-elevation-2);
+  white-space: nowrap;
+  transition: background .15s;
+}
+.profile-money__charge:hover { background: var(--neutral-variant-2-hover); }
+.profile-money__charge:active { background: var(--neutral-variant-2-pressed); }
+
+.profile-security {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  width: 27rem;
+  height: 14.8rem;
+  padding: 1.6rem;
+  border-radius: 1.6rem;
+  background: var(--surface-elevation-2);
+}
+.profile-security__badge { flex: 0 0 auto; width: 6.4rem; display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+.profile-security__icon {
+  display: grid;
+  place-items: center;
+  width: 4.4rem;
+  height: 4.4rem;
+  border-radius: var(--radius-full);
+  /* Figma가 토큰이 아닌 blue400 10%를 직접 지정 */
+  background: color-mix(in srgb, var(--stove-blue-400) 10%, transparent);
+  color: var(--stove-blue-400);
+}
+.profile-security__icon i { font-size: 2.4rem; }
+.profile-security__grade { margin: 0; color: var(--stove-blue-400); white-space: nowrap; }
+.profile-security__line { flex: 0 0 auto; width: 1px; align-self: stretch; background: var(--inverse-elevation-5); }
+.profile-security__body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 1.2rem; }
+.profile-security__texts { display: flex; flex-direction: column; gap: 0.2rem; }
+.profile-security__title { margin: 0; color: var(--stove-blue-400); }
+.profile-security__desc { margin: 0; color: var(--on-surface-elevation-2); }
+.profile-security__more {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0;
+  border-radius: var(--radius-md);
+  color: var(--on-surface-elevation-4);
+  white-space: nowrap;
+  transition: color .15s;
+}
+.profile-security__more i { font-size: 1.2rem; }
+.profile-security__more:hover { color: var(--on-surface-elevation-3); }
+.profile-security__more:active { color: var(--on-surface-elevation-2); }
+
+/* ---- 위계2: 메뉴 -------------------------------------------- */
+.profile-popup__menu { display: flex; flex-direction: column; gap: 2.4rem; }
+.profile-popup__menu-row { display: flex; align-items: center; gap: 0.8rem; }
+.profile-menu-item {
+  flex: 0 0 auto;
+  width: 10.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0 0.8rem;
+  border-radius: var(--radius-lg);
+  color: var(--on-surface-elevation-4);
+  transition: background .15s, color .15s;
+}
+.profile-menu-item i { font-size: 2.8rem; }
+.profile-menu-item span { text-align: center; }
+.profile-menu-item:hover { background: var(--interaction-hover); color: var(--on-surface-elevation-2); }
+.profile-menu-item:active { background: var(--interaction-pressed); }
