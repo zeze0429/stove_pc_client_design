@@ -1,0 +1,141 @@
+/* =============================================================
+   알림 팝업 (Figma Notification · 3502:55539)
+   유틸리티 바의 알림 버튼에 붙는 팝업. 센터 레이어 팝업(layer-dialog)과
+   달리 딤이 없고, 버튼 아래 4px·오른쪽 끝 맞춤으로 뜬다.
+   ============================================================= */
+
+/* 버튼과 팝업을 함께 감싸는 기준점 — 버튼만 감싸므로 right:0이 곧
+   버튼 오른쪽 끝에 맞추는 것이 된다. */
+.utility-bar__popup-anchor { position: relative; display: flex; }
+
+.notification-popup {
+  position: absolute;
+  /* 버튼 아래가 아니라 바 아래에서 4px — 버튼(3.2rem)과 바(4.8rem)의
+     차이인 하단 패딩 0.8rem을 더해준다. */
+  top: calc(100% + 0.8rem + 0.4rem);
+  right: 0;
+  z-index: 150; /* 유틸리티 바(100)보다 위, 센터 레이어 팝업(200)보다 아래 */
+  display: flex;
+  flex-direction: column;
+  width: 40rem;
+  max-height: 48.5rem;
+  border-radius: 2rem; /* Figma radius/3xl 20px — 스케일에 없는 값 */
+  background: var(--surface-elevation-1);
+  box-shadow: 0 1.2rem 1.4rem rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+/* ---- Layer Title ------------------------------------------- */
+.notification-popup__header {
+  flex: 0 0 auto;
+  height: 6.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  padding: 2.4rem 3.2rem 1.2rem;
+}
+.notification-popup__title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  min-width: 0;
+}
+.notification-popup__title-label {
+  max-width: 16rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--on-surface-elevation-1);
+}
+.notification-popup__count { flex: 0 0 auto; color: var(--brand-primary-enabled); }
+
+/* 상단 텍스트 버튼 — 배경 없이 글자색만 단계적으로 흐려진다 */
+.notification-popup__actions { flex: 0 0 auto; display: flex; align-items: center; gap: 1.2rem; }
+.notification-popup__action {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0;
+  white-space: nowrap;
+  color: var(--on-surface-elevation-1);
+  transition: color .15s;
+}
+.notification-popup__action i { font-size: 1.6rem; }
+.notification-popup__action:hover { color: var(--on-surface-elevation-2); }
+.notification-popup__action:active { color: var(--on-surface-elevation-3); }
+.notification-popup__action:disabled { color: var(--disabled-variant-2); cursor: default; }
+
+/* ---- 목록 --------------------------------------------------
+   스크롤바는 레이어 팝업 공통 방식(썸 4px, 오른쪽 끝에서 8px).
+   목록의 오른쪽 패딩을 2rem으로 줄여 스크롤바가 먹는 폭을 상쇄하면
+   글 영역이 Figma와 같은 자리(좌 3.2rem ~ 우 3.2rem)에 떨어진다. */
+.notification-popup__list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: scroll;
+  margin-right: 0.8rem;
+}
+.notification-popup__list::-webkit-scrollbar { width: 0.4rem; }
+.notification-popup__list::-webkit-scrollbar-track { margin: 0.8rem 0; }
+.notification-popup__list::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-full);
+  background-color: var(--inverse-elevation-2);
+}
+.notification-popup__list::-webkit-scrollbar-thumb:hover { background-color: var(--inverse-elevation-1); }
+
+/* ---- Notification List Item -------------------------------- */
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  width: 100%;
+  padding: 1.6rem 2rem 1.6rem 3.2rem;
+  text-align: left;
+  transition: background .15s;
+}
+/* 안 읽은 항목만 파란 틴트 — Figma가 지정한 blue 6% */
+.notification-item--unread { background: color-mix(in srgb, var(--brand-blue-enabled) 6%, transparent); }
+.notification-item:hover { background: var(--interaction-hover); }
+.notification-item:active { background: var(--interaction-pressed); }
+
+.notification-item__avatar {
+  flex: 0 0 auto;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  display: block;
+}
+/* 상품 알림은 프로필 사진 대신 아이콘 썸네일 — 실제 아트가 따로 정의되기
+   전까지 브랜드 블루 계열로 세워둔다. */
+.notification-item__avatar--icon {
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--brand-blue-enabled) 35%, var(--stove-white));
+  color: var(--brand-blue-enabled);
+}
+.notification-item__avatar--icon i { font-size: 1.8rem; }
+
+.notification-item__text { min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 0.2rem; }
+/* 메시지는 최대 3줄까지 보이고 넘치면 말줄임 */
+.notification-item__message {
+  margin: 0;
+  color: var(--on-surface-elevation-1);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+.notification-item__message b { font-weight: 700; }
+.notification-item__time { margin: 0; color: var(--on-surface-elevation-4); }
+
+/* ---- 알림 없음 ---------------------------------------------- */
+.notification-popup__empty {
+  flex: 1 1 auto;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  color: var(--on-surface-elevation-4);
+}

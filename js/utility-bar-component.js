@@ -44,7 +44,10 @@ function utilityBarTooltip(label) {
 }
 
 var UtilityBarComponent = {
-  components: { PcbangBenefitsDialog: PcbangBenefitsDialog },
+  components: {
+    PcbangBenefitsDialog: PcbangBenefitsDialog,
+    NotificationPopup: NotificationPopup,
+  },
   data: function () {
     return {
       // 창 최대화 여부 — 최대화 상태에서는 "이전 크기로 복원" 버튼으로 바뀐다
@@ -132,12 +135,17 @@ var UtilityBarComponent = {
             '<span v-if="newBadges.chat" class="utility-bar-icon-btn__new"></span>' +
             utilityBarTooltip('스토브챗') +
           '</button>' +
-          '<button class="utility-bar-icon-btn utility-bar-icon-btn--lg" type="button" aria-label="알림" ' +
-            ':class="{ \'is-selected\': openPopupId === \'alarm\' }" @click="togglePopup(\'alarm\')">' +
-            '<i class="ic-v2-navigation-alarm-fill"></i>' +
-            '<span v-if="newBadges.alarm" class="utility-bar-icon-btn__new"></span>' +
-            utilityBarTooltip('알림') +
-          '</button>' +
+          // 알림 팝업은 센터가 아니라 이 버튼에 붙어서 뜬다 — 앵커가 버튼만
+          // 감싸고 있어서 팝업의 right:0이 곧 버튼 오른쪽 끝 맞춤이 된다.
+          '<span class="utility-bar__popup-anchor">' +
+            '<button class="utility-bar-icon-btn utility-bar-icon-btn--lg" type="button" aria-label="알림" ' +
+              ':class="{ \'is-selected\': openPopupId === \'alarm\' }" @click="togglePopup(\'alarm\')">' +
+              '<i class="ic-v2-navigation-alarm-fill"></i>' +
+              '<span v-if="newBadges.alarm" class="utility-bar-icon-btn__new"></span>' +
+              utilityBarTooltip('알림') +
+            '</button>' +
+            '<notification-popup v-if="openPopupId === \'alarm\'" @close="openPopupId = null" />' +
+          '</span>' +
           '<button class="utility-bar-profile" type="button" aria-label="내 정보" ' +
             ':class="{ \'is-selected\': openPopupId === \'profile\' }" @click="togglePopup(\'profile\')" ' +
             'data-name="component/btn/profile">' +
