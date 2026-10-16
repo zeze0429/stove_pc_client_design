@@ -29,7 +29,21 @@ var UtilityBarComponent = {
       openPopupId: null,
       // 신규 내용 유무 — 한 번 열어보면 점이 사라진다
       newBadges: { chat: true, alarm: true, pcCafe: true },
+      // 콘텐츠가 바 밑으로 지나가기 시작했는지 (배경 70% + 블러로 전환)
+      scrolled: false,
     };
+  },
+  mounted: function () {
+    // 바는 .main 바깥에 떠 있어서 자기 스크롤이 없다 — 실제 스크롤 컨테이너인
+    // .main을 직접 구독해야 상태를 알 수 있다.
+    this.scroller = document.querySelector('.app > .main');
+    if (!this.scroller) return;
+    this.onScroll = function () { this.scrolled = this.scroller.scrollTop > 0; }.bind(this);
+    this.scroller.addEventListener('scroll', this.onScroll, { passive: true });
+    this.onScroll();
+  },
+  beforeUnmount: function () {
+    if (this.scroller) this.scroller.removeEventListener('scroll', this.onScroll);
   },
   methods: {
     goBack: function () { history.back(); },
@@ -42,7 +56,7 @@ var UtilityBarComponent = {
     },
   },
   template:
-    '<div class="utility-bar" data-name="layout/utility_bar">' +
+    '<div class="utility-bar" :class="{ \'is-scrolled\': scrolled }" data-name="layout/utility_bar">' +
 
       '<div class="utility-bar__group utility-bar__left" data-name="left_btn">' +
         '<button class="utility-bar-icon-btn" type="button" aria-label="뒤로" @click="goBack">' +

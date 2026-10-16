@@ -30,6 +30,17 @@
   background: var(--background-variant-1);
 }
 
+/* 스크롤이 시작되면 콘텐츠가 바 밑으로 지나가므로, 완전 불투명 대신
+   배경을 70%로 낮추고 그 뒤를 블러 처리한다 (Figma 11542:52272 주석:
+   "스크롤 시 BG Color 투명도 70%, BG blur 44 적용" — Figma의 배경
+   블러 44는 CSS backdrop-filter 22px에 대응). 색은 테마를 따라가야
+   해서 하드코딩 대신 토큰을 color-mix로 희석한다. */
+.utility-bar.is-scrolled {
+  background: color-mix(in srgb, var(--background-variant-1) 70%, transparent);
+  backdrop-filter: blur(2.2rem);
+  -webkit-backdrop-filter: blur(2.2rem);
+}
+
 .utility-bar__group { display: flex; align-items: center; }
 .utility-bar__left { gap: 0.8rem; }
 .utility-bar__right { gap: 1.2rem; }
