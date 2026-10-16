@@ -1,0 +1,220 @@
+/* =============================================================
+   PC방 혜택 다이얼로그 (Figma layout/utility_bar/dialog/pcbang-benefits)
+   유틸리티 바의 "PC방 혜택 안내" 버튼이 띄우는 레이어 팝업.
+   ※ 시멘틱 토큰 우선. Figma가 글로벌(stds.glob.*)을 지정한 자리만
+      글로벌 토큰을 그대로 쓴다 — 카드/버튼은 배경 이미지 위에 얹히는
+      레이어라 테마와 무관하게 흰색 알파로 고정돼야 하기 때문.
+   ============================================================= */
+
+/* 딤 — 창 전체를 덮고 다이얼로그를 가운데 띄운다. */
+.pcbang-dim {
+  position: fixed;
+  inset: 0;
+  z-index: 200; /* 유틸리티 바(100)보다 위 */
+  background: var(--stove-black-60);
+  display: grid;
+  place-items: center;
+}
+
+.pcbang-dialog {
+  display: flex;
+  flex-direction: column;
+  width: 70rem;
+  /* Figma 케이스별 높이는 294~520 — 내용만큼 늘어나되 520에서 멈추고
+     그 다음부터 본문이 스크롤된다(가장 큰 케이스에 스크롤바가 그려져 있음). */
+  max-height: 52rem;
+  border-radius: var(--radius-lg);
+  background: var(--surface-elevation-1);
+  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.1); /* Figma shadow/4 */
+  overflow: hidden;
+}
+
+/* ---- Dialog/Header ---------------------------------------- */
+.pcbang-dialog__header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 2rem 3.2rem 1.6rem; /* 합계 높이 6rem */
+  background: var(--surface-elevation-1);
+}
+.pcbang-dialog__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  color: var(--on-surface-elevation-1);
+}
+.pcbang-dialog__close {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--on-surface-elevation-1);
+}
+.pcbang-dialog__close i { font-size: 2.4rem; }
+
+/* ---- 본문 (헤더 아래 0.8rem부터 시작 = Figma contents top 68) ---- */
+/* 오른쪽 패딩이 3.2rem이 아니라 2rem인 이유: 스크롤바(1.2rem)가 패딩이
+   아니라 콘텐츠 폭을 깎아먹기 때문에, 둘을 합쳐 3.2rem이 되게 맞춰야
+   본문이 Figma와 같은 63.6rem로 떨어진다(스크롤바는 그대로 오른쪽 끝).
+   스크롤이 없는 케이스에서도 폭이 흔들리지 않게 gutter는 항상 잡아둔다. */
+.pcbang-dialog__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  padding: 0.8rem 2rem 3.2rem 3.2rem;
+}
+
+.pcbang-dialog__welcome {
+  flex: 0 0 auto;
+  margin: 0;
+  text-align: center;
+  color: var(--on-surface-elevation-1);
+}
+/* PC방 이름만 포인트 컬러 — Figma가 토큰이 아닌 고정 색(#1fff86)을 지정 */
+.pcbang-dialog__store { color: #1fff86; }
+
+.pcbang-dialog__list {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* 스크롤바 — Figma element/scroll: 폭 12, 오른쪽 8 비우고 썸 4px.
+   색은 프로젝트 공통 규칙(default=inverse-elevation-2, hover=1). */
+.pcbang-dialog__body::-webkit-scrollbar { width: 1.2rem; }
+.pcbang-dialog__body::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-md);
+  border-right: 0.8rem solid transparent;
+  background-color: var(--inverse-elevation-2);
+  background-clip: content-box;
+}
+.pcbang-dialog__body::-webkit-scrollbar-thumb:hover { background-color: var(--inverse-elevation-1); }
+
+/* ---- component/list/pcbang-benefits ------------------------ */
+.pcbang-card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding: 2rem;
+  border-radius: 1.6rem; /* Figma 16px — radius 스케일에 없는 값 */
+  background: var(--stove-gray-700); /* 배경 이미지 미등록 시 기본 컬러 */
+  overflow: hidden;
+}
+/* 등록 규격 1272x400(2배수) = 표시 636x200, 카드가 더 낮으면 TOP 기준 크롭 */
+.pcbang-card__bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  width: 100%;
+  height: 20rem;
+  object-fit: cover;
+  object-position: top;
+  pointer-events: none;
+}
+.pcbang-card__title {
+  margin: 0;
+  color: var(--stove-white);
+}
+
+.pcbang-card__game {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  height: 4.8rem;
+}
+.pcbang-card__thumb {
+  flex: 0 0 auto;
+  width: 4.8rem;
+  height: 4.8rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--inverse-variant-3);
+  object-fit: cover;
+  display: block;
+}
+/* 썸네일 없음 — 흰색 4% 박스에 같은 농도의 STOVE S 마크 */
+.pcbang-card__thumb--empty {
+  display: grid;
+  place-items: center;
+  background: var(--stove-white-04);
+  border-color: var(--stove-white-04);
+  color: var(--stove-white-04);
+}
+.pcbang-card__thumb--empty i { font-size: 2rem; }
+
+.pcbang-card__info { min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; }
+.pcbang-card__name {
+  margin: 0;
+  color: var(--stove-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pcbang-card__genre {
+  margin: 0;
+  color: var(--stove-white-50);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- component/btn/pcbang-benefits -------------------------
+   버튼은 개수(최대 4개)와 상관없이 같은 간격으로 가로를 똑같이 나눠 갖고,
+   라벨이 길면 양쪽 여백(1.6rem)을 유지한 채 버튼 안에서 줄바꿈된다
+   — 그만큼 버튼이 세로로 늘어난다(Figma 다국어 케이스). */
+.pcbang-card__btns {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0.8rem;
+}
+.pcbang-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 1rem 1.6rem;
+  border-radius: var(--radius-lg);
+  background: var(--stove-white-10);
+  color: var(--stove-white);
+  overflow: hidden;
+  transition: background .15s;
+}
+.pcbang-btn:hover { background: var(--stove-white-15); }
+.pcbang-btn:active { background: var(--stove-white-20); }
+.pcbang-btn__label { display: flex; align-items: center; justify-content: center; gap: 0.4rem; min-width: 0; text-align: center; }
+.pcbang-btn__label i { flex: 0 0 auto; font-size: 1.6rem; }
+/* 업데이트 있을 때 라벨 오른쪽 어깨에 붙는 도트 — 박스는 글줄 높이(1.8rem)만큼
+   잡고 점은 그 맨 위에 둬서 첫 줄 어깨에 걸리게 한다(Figma 4x18 프레임). */
+.pcbang-btn__new { flex: 0 0 auto; position: relative; width: 0.4rem; height: 1.8rem; }
+.pcbang-btn__new::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: var(--radius-full);
+  background: var(--brand-primary-enabled);
+}
+
+/* ---- 항목 없음 --------------------------------------------- */
+.pcbang-card--empty {
+  height: 14.4rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  background: var(--inverse-elevation-7);
+}
+.pcbang-card--empty i { font-size: 4.8rem; color: var(--on-surface-elevation-4); }
+.pcbang-card--empty p { margin: 0; color: var(--on-surface-elevation-4); text-align: center; }

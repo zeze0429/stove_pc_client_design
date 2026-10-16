@@ -44,6 +44,7 @@ function utilityBarTooltip(label) {
 }
 
 var UtilityBarComponent = {
+  components: { PcbangBenefitsDialog: PcbangBenefitsDialog },
   data: function () {
     return {
       // 창 최대화 여부 — 최대화 상태에서는 "이전 크기로 복원" 버튼으로 바뀐다
@@ -165,7 +166,11 @@ var UtilityBarComponent = {
         '</div>' +
 
       '</div>' +
-    '</div>',
+    '</div>' +
+
+    // PC방 혜택은 바에 붙는 드롭다운이 아니라 창 전체를 덮는 레이어 팝업이라
+    // 바 밖(루트 형제)에 둔다.
+    '<pcbang-benefits-dialog v-if="openPopupId === \'pcCafe\'" @close="openPopupId = null" />',
 };
 
 function mountUtilityBar(selector) {
