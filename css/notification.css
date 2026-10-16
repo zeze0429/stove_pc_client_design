@@ -70,10 +70,14 @@
    스크롤바는 숨기고 아래 .notification-popup__scrollbar를 오버레이로
    띄운다(네이티브는 반드시 콘텐츠 폭을 깎아먹어 겹칠 수 없음).
    GNB(.gnb-scrollbar)와 같은 방식. */
+/* 하단 여백 2rem은 팝업 모서리 radius와 같은 값 — 끝까지 내렸을 때 마지막
+   항목이 둥근 모서리에 물리지 않게 그만큼 비운다. 패딩이 스크롤 콘텐츠
+   안에 있어서, 스크롤 중인 항목은 그대로 팝업 가장자리까지 내려간다. */
 .notification-popup__list {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
+  padding-bottom: 2rem;
   scrollbar-width: none; /* Firefox */
 }
 .notification-popup__list::-webkit-scrollbar { display: none; }
@@ -84,7 +88,7 @@
 .notification-popup__scrollbar {
   position: absolute;
   top: 6.6rem;
-  bottom: 0;
+  bottom: 2rem; /* 목록 하단 여백과 동일 — 스크롤바도 모서리에 물리지 않게 */
   right: 0.8rem;
   width: 0.4rem;
   pointer-events: none;

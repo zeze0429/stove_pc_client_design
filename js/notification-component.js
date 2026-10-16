@@ -122,7 +122,8 @@ var NotificationPopup = {
           '<span v-if="item.icon" class="notification-item__avatar notification-item__avatar--icon" aria-hidden="true">' +
             '<i :class="item.icon"></i>' +
           '</span>' +
-          '<img v-else class="notification-item__avatar" :src="avatar" alt="" />' +
+          // 아바타가 늦게 로드되면 목록 높이가 변해서 썸 크기를 다시 재야 한다
+          '<img v-else class="notification-item__avatar" :src="avatar" alt="" @load="updateThumb" />' +
           '<span class="notification-item__text">' +
             '<span class="notification-item__message stds-text4 fw-regular">' +
               '<b v-if="item.bold">{{ item.bold }}</b>{{ item.text }}' +
