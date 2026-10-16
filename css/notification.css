@@ -141,9 +141,12 @@
 .notification-item__avatar--icon i { font-size: 2.4rem; }
 
 .notification-item__text { min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 0.2rem; }
-/* 메시지는 최대 3줄까지 보이고 넘치면 말줄임 */
+/* 메시지는 최대 3줄까지 보이고 넘치면 말줄임.
+   줄바꿈은 단어(공백) 단위가 아니라 글자 단위 — 한 줄을 최대한 채우고 남는
+   부분만 다음 줄로 내린다(GNB 게임명 툴팁과 동일한 규칙). */
 .notification-item__message {
   margin: 0;
+  word-break: break-all;
   color: var(--on-surface-elevation-1);
   display: -webkit-box;
   -webkit-box-orient: vertical;
