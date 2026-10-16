@@ -10,9 +10,7 @@
 
 .notification-popup {
   position: absolute;
-  /* 버튼 아래가 아니라 바 아래에서 4px — 버튼(3.2rem)과 바(4.8rem)의
-     차이인 하단 패딩 0.8rem을 더해준다. */
-  top: calc(100% + 0.8rem + 0.4rem);
+  top: calc(100% + 0.4rem); /* 아이콘 영역 아래 4px */
   right: 0;
   z-index: 150; /* 유틸리티 바(100)보다 위, 센터 레이어 팝업(200)보다 아래 */
   display: flex;
@@ -68,22 +66,40 @@
 .notification-popup__action:disabled { color: var(--disabled-variant-2); cursor: default; }
 
 /* ---- 목록 --------------------------------------------------
-   스크롤바는 레이어 팝업 공통 방식(썸 4px, 오른쪽 끝에서 8px).
-   목록의 오른쪽 패딩을 2rem으로 줄여 스크롤바가 먹는 폭을 상쇄하면
-   글 영역이 Figma와 같은 자리(좌 3.2rem ~ 우 3.2rem)에 떨어진다. */
+   항목이 팝업 폭을 꽉 채우고 스크롤바가 그 위에 겹쳐야 해서, 네이티브
+   스크롤바는 숨기고 아래 .notification-popup__scrollbar를 오버레이로
+   띄운다(네이티브는 반드시 콘텐츠 폭을 깎아먹어 겹칠 수 없음).
+   GNB(.gnb-scrollbar)와 같은 방식. */
 .notification-popup__list {
   flex: 1 1 auto;
   min-height: 0;
-  overflow-y: scroll;
-  margin-right: 0.8rem;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
 }
-.notification-popup__list::-webkit-scrollbar { width: 0.4rem; }
-.notification-popup__list::-webkit-scrollbar-track { margin: 0.8rem 0; }
-.notification-popup__list::-webkit-scrollbar-thumb {
+.notification-popup__list::-webkit-scrollbar { display: none; }
+
+/* 트랙은 스크롤되는 목록이 아니라 팝업의 자식 — 목록 안에 두면 스크롤할 때
+   스크롤바까지 같이 밀려 올라간다. 위는 목록이 시작하는 자리(헤더 높이)에
+   그대로 맞추고, 오른쪽은 Figma대로 팝업 끝에서 8px. */
+.notification-popup__scrollbar {
+  position: absolute;
+  top: 6.6rem;
+  bottom: 0;
+  right: 0.8rem;
+  width: 0.4rem;
+  pointer-events: none;
+  z-index: 1;
+}
+.notification-popup__scrollbar-thumb {
+  position: absolute;
+  left: 0;
+  width: 100%;
   border-radius: var(--radius-full);
-  background-color: var(--inverse-elevation-2);
+  background: var(--inverse-elevation-2);
+  pointer-events: auto;
 }
-.notification-popup__list::-webkit-scrollbar-thumb:hover { background-color: var(--inverse-elevation-1); }
+.notification-popup__scrollbar-thumb:hover,
+.notification-popup__scrollbar-thumb:active { background: var(--inverse-elevation-1); }
 
 /* ---- Notification List Item -------------------------------- */
 .notification-item {
@@ -91,7 +107,7 @@
   align-items: flex-start;
   gap: 1rem;
   width: 100%;
-  padding: 1.6rem 2rem 1.6rem 3.2rem;
+  padding: 1.6rem 3.2rem;
   text-align: left;
   transition: background .15s;
 }
@@ -108,15 +124,16 @@
   object-fit: cover;
   display: block;
 }
-/* 상품 알림은 프로필 사진 대신 아이콘 썸네일 — 실제 아트가 따로 정의되기
-   전까지 브랜드 블루 계열로 세워둔다. */
+/* 상품 알림은 프로필 사진 대신 ic-noti-store (Figma 11554:171437) —
+   blue100 원 안에 스토어 마크. Figma는 32px 원에 아이콘 22px이고 여기 원은
+   36px이라 같은 비율(약 69%)인 24px로 맞춘다. */
 .notification-item__avatar--icon {
   display: grid;
   place-items: center;
-  background: color-mix(in srgb, var(--brand-blue-enabled) 35%, var(--stove-white));
+  background: var(--stove-blue-100);
   color: var(--brand-blue-enabled);
 }
-.notification-item__avatar--icon i { font-size: 1.8rem; }
+.notification-item__avatar--icon i { font-size: 2.4rem; }
 
 .notification-item__text { min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 0.2rem; }
 /* 메시지는 최대 3줄까지 보이고 넘치면 말줄임 */

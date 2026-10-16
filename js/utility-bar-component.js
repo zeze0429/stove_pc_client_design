@@ -100,7 +100,8 @@ var UtilityBarComponent = {
     },
   },
   template:
-    '<div class="utility-bar" :class="{ \'is-scrolled\': scrolled }" data-name="layout/utility_bar">' +
+    '<div class="utility-bar" :class="{ \'is-scrolled\': scrolled, \'has-popup\': openPopupId }" ' +
+      'data-name="layout/utility_bar">' +
 
       '<div class="utility-bar__group utility-bar__left" data-name="left_btn">' +
         '<button class="utility-bar-icon-btn" type="button" aria-label="뒤로" @click="goBack" ' +

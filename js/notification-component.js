@@ -21,19 +21,19 @@ var NOTIFICATION_ITEMS = [
     bold: '봉말이', text: '님이 회원님의 댓글에 답글을 등록하였습니다."@휴먼메이드 비밀입니다"',
   },
   {
-    id: 3, unread: false, time: '11시간 전', icon: 'ic-v2-object-game-fill',
+    id: 3, unread: false, time: '11시간 전', icon: 'ic-v2-navigation-store-fill',
     text: '구매한 상품이 업데이트 되었습니다. "플라워 서바이버스"',
   },
   {
-    id: 4, unread: false, time: '11시간 전', icon: 'ic-v2-object-game-fill',
+    id: 4, unread: false, time: '11시간 전', icon: 'ic-v2-navigation-store-fill',
     text: '보유한 상품의 DLC가 출시되었습니다. "플라워 서바이버스"',
   },
   {
-    id: 5, unread: false, time: '16시간 전', icon: 'ic-v2-object-game-fill',
+    id: 5, unread: false, time: '16시간 전', icon: 'ic-v2-navigation-store-fill',
     text: '구매한 상품이 업데이트 되었습니다. "좀비스쿨"',
   },
   {
-    id: 6, unread: false, time: '18시간 전', icon: 'ic-v2-object-game-fill',
+    id: 6, unread: false, time: '18시간 전', icon: 'ic-v2-navigation-store-fill',
     text: '구매한 상품이 업데이트 되었습니다. "비둘기의 모험(Pigeon\'s Adventure)"',
   },
 ];
@@ -41,9 +41,19 @@ var NOTIFICATION_ITEMS = [
 var NotificationPopup = {
   emits: ['close'],
   data: function () {
-    return { items: NOTIFICATION_ITEMS, avatar: 'assets/notification/avatar-sample.jpg' };
+    return {
+      items: NOTIFICATION_ITEMS,
+      avatar: 'assets/notification/avatar-sample.jpg',
+      // 오버레이 스크롤바 썸 (네이티브는 콘텐츠 폭을 깎아 겹칠 수 없어 직접 그린다)
+      thumbHeight: 0,
+      thumbTop: 0,
+      hasScroll: false,
+    };
   },
   computed: {
+    thumbStyle: function () {
+      return { height: this.thumbHeight + 'px', top: this.thumbTop + 'px' };
+    },
     unreadCount: function () {
       return this.items.filter(function (it) { return it.unread; }).length;
     },
@@ -61,6 +71,7 @@ var NotificationPopup = {
       if (!e.target.closest('.utility-bar__popup-anchor')) this.$emit('close');
     }.bind(this);
     document.addEventListener('click', this.onDocClick);
+    this.updateThumb();
   },
   beforeUnmount: function () {
     document.removeEventListener('keydown', this.onKeydown);
@@ -69,6 +80,19 @@ var NotificationPopup = {
   methods: {
     markAllRead: function () {
       this.items.forEach(function (it) { it.unread = false; });
+    },
+    updateThumb: function () {
+      var list = this.$refs.list;
+      var track = this.$refs.track;
+      if (!list || !track) return;
+      var content = list.scrollHeight;
+      var visible = list.clientHeight;
+      this.hasScroll = content > visible;
+      if (!this.hasScroll) return;
+      var trackHeight = track.clientHeight;
+      var h = Math.max((visible / content) * trackHeight, 24);
+      this.thumbHeight = h;
+      this.thumbTop = (trackHeight - h) * (list.scrollTop / (content - visible));
     },
   },
   template:
@@ -90,7 +114,8 @@ var NotificationPopup = {
         '</div>' +
       '</div>' +
 
-      '<div v-if="items.length" class="notification-popup__list" data-name="Card">' +
+      '<div v-if="items.length" ref="list" class="notification-popup__list" @scroll="updateThumb" ' +
+        'data-name="Card">' +
         '<button v-for="item in items" :key="item.id" class="notification-item" type="button" ' +
           ':class="{ \'notification-item--unread\': item.unread }" ' +
           'data-name="Notification List Item">' +
@@ -108,6 +133,10 @@ var NotificationPopup = {
       '</div>' +
 
       '<p v-else class="notification-popup__empty stds-cap1 fw-regular">알림 메시지가 없습니다.</p>' +
+
+      '<div ref="track" class="notification-popup__scrollbar" aria-hidden="true" data-name="Scroll Bar">' +
+        '<div v-show="hasScroll" class="notification-popup__scrollbar-thumb" :style="thumbStyle"></div>' +
+      '</div>' +
 
     '</div>',
 };

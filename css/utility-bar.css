@@ -169,6 +169,8 @@
 .utility-bar-icon-btn:hover > .utility-bar-tooltip,
 .utility-bar-pc-cafe:hover > .utility-bar-tooltip,
 .utility-bar-profile:hover > .utility-bar-tooltip { opacity: 1; visibility: visible; }
+/* 팝업이 떠 있는 동안에는 툴팁을 띄우지 않는다 — 팝업 위에 겹쳐 떠서 거슬림 */
+.utility-bar.has-popup .utility-bar-tooltip { display: none; }
 
 .utility-bar-tooltip__tail {
   width: 0;
