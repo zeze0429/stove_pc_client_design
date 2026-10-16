@@ -31,9 +31,17 @@ var UtilityBarComponent = {
       newBadges: { chat: true, alarm: true, pcCafe: true },
       // 콘텐츠가 바 밑으로 지나가기 시작했는지 (배경 70% + 블러로 전환)
       scrolled: false,
+      // 클라이언트에 막 들어온 상태 — 아직 오갈 기록이 없어서 뒤로/앞으로가
+      // 비활성이다. 새로고침은 첫 화면에서도 쓸 수 있으니 그대로 둔다.
+      firstEntry: false,
     };
   },
   mounted: function () {
+    // 페이지마다 별도 문서라 "처음 열었는지"를 문서 안에서는 알 수 없다 —
+    // 탭 세션에 표식을 남겨서 이 세션의 첫 페이지인지로 판단한다.
+    this.firstEntry = !sessionStorage.getItem('stove-client-entered');
+    sessionStorage.setItem('stove-client-entered', '1');
+
     // 바는 .main 바깥에 떠 있어서 자기 스크롤이 없다 — 실제 스크롤 컨테이너인
     // .main을 직접 구독해야 상태를 알 수 있다.
     this.scroller = document.querySelector('.app > .main');
@@ -46,8 +54,8 @@ var UtilityBarComponent = {
     if (this.scroller) this.scroller.removeEventListener('scroll', this.onScroll);
   },
   methods: {
-    goBack: function () { history.back(); },
-    goForward: function () { history.forward(); },
+    goBack: function () { if (!this.firstEntry) history.back(); },
+    goForward: function () { if (!this.firstEntry) history.forward(); },
     reload: function () { location.reload(); },
     toggleMaximize: function () { this.maximized = !this.maximized; },
     togglePopup: function (id) {
@@ -59,10 +67,12 @@ var UtilityBarComponent = {
     '<div class="utility-bar" :class="{ \'is-scrolled\': scrolled }" data-name="layout/utility_bar">' +
 
       '<div class="utility-bar__group utility-bar__left" data-name="left_btn">' +
-        '<button class="utility-bar-icon-btn" type="button" aria-label="뒤로" @click="goBack">' +
+        '<button class="utility-bar-icon-btn" type="button" aria-label="뒤로" @click="goBack" ' +
+          ':class="{ \'is-disabled\': firstEntry }" :aria-disabled="firstEntry">' +
           '<i class="ic-v2-control-long-arrow-left-line"></i>' + utilityBarTooltip('뒤로') +
         '</button>' +
-        '<button class="utility-bar-icon-btn" type="button" aria-label="앞으로" @click="goForward">' +
+        '<button class="utility-bar-icon-btn" type="button" aria-label="앞으로" @click="goForward" ' +
+          ':class="{ \'is-disabled\': firstEntry }" :aria-disabled="firstEntry">' +
           '<i class="ic-v2-control-long-arrow-right-line"></i>' + utilityBarTooltip('앞으로') +
         '</button>' +
         '<button class="utility-bar-icon-btn" type="button" aria-label="새로고침" @click="reload">' +
