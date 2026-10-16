@@ -154,6 +154,8 @@
   overflow: hidden;
 }
 .notification-item__message b { font-weight: 700; }
+/* 영문 단어는 중간에서 끊지 않는다 — 위 break-all을 이 덩어리에서만 해제 */
+.notification-item__keep { word-break: keep-all; }
 .notification-item__time { margin: 0; color: var(--on-surface-elevation-4); }
 
 /* ---- 알림 없음 ---------------------------------------------- */

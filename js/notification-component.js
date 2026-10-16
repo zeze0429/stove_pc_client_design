@@ -81,6 +81,22 @@ var NotificationPopup = {
     markAllRead: function () {
       this.items.forEach(function (it) { it.unread = false; });
     },
+    // 한글은 글자 단위로 끊어 한 줄을 꽉 채우되(컨테이너의 break-all),
+    // 영문 단어는 중간에서 잘리면 안 되므로 라틴 덩어리만 따로 떼어
+    // keep-all을 걸 수 있게 조각으로 나눈다.
+    messageParts: function (text) {
+      var parts = [];
+      var re = /[A-Za-z0-9][A-Za-z0-9'’._-]*/g;
+      var last = 0;
+      var m;
+      while ((m = re.exec(text)) !== null) {
+        if (m.index > last) parts.push({ t: text.slice(last, m.index), keep: false });
+        parts.push({ t: m[0], keep: true });
+        last = m.index + m[0].length;
+      }
+      if (last < text.length) parts.push({ t: text.slice(last), keep: false });
+      return parts;
+    },
     updateThumb: function () {
       var list = this.$refs.list;
       var track = this.$refs.track;
@@ -126,7 +142,9 @@ var NotificationPopup = {
           '<img v-else class="notification-item__avatar" :src="avatar" alt="" @load="updateThumb" />' +
           '<span class="notification-item__text">' +
             '<span class="notification-item__message stds-text4 fw-regular">' +
-              '<b v-if="item.bold">{{ item.bold }}</b>{{ item.text }}' +
+              '<b v-if="item.bold">{{ item.bold }}</b>' +
+              '<span v-for="(part, i) in messageParts(item.text)" :key="i" ' +
+                ':class="{ \'notification-item__keep\': part.keep }">{{ part.t }}</span>' +
             '</span>' +
             '<span class="notification-item__time stds-cap1 fw-regular">{{ item.time }}</span>' +
           '</span>' +
