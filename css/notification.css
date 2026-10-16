@@ -111,10 +111,11 @@
   text-align: left;
   transition: background .15s;
 }
-/* 안 읽은 항목만 파란 틴트 — Figma가 지정한 blue 6% */
+/* 안 읽은 항목만 파란 틴트 — Figma가 지정한 blue 6%.
+   안 읽음 상태에서는 호버/프레스를 따로 주지 않고 이 틴트를 그대로 유지한다. */
 .notification-item--unread { background: color-mix(in srgb, var(--brand-blue-enabled) 6%, transparent); }
-.notification-item:hover { background: var(--interaction-hover); }
-.notification-item:active { background: var(--interaction-pressed); }
+.notification-item:not(.notification-item--unread):hover { background: var(--interaction-hover); }
+.notification-item:not(.notification-item--unread):active { background: var(--interaction-pressed); }
 
 .notification-item__avatar {
   flex: 0 0 auto;
