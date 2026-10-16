@@ -44,14 +44,19 @@
   margin: 0;
   color: var(--on-surface-elevation-1);
 }
+/* 닫기는 배경이 깔리는 게 아니라 아이콘 자체가 흐려진다 —
+   Figma 가이드: hover = 기본값의 50%, press = 70%. */
 .pcbang-dialog__close {
   flex: 0 0 auto;
   display: grid;
   place-items: center;
   padding: 0;
   color: var(--on-surface-elevation-1);
+  transition: opacity .15s;
 }
 .pcbang-dialog__close i { font-size: 2.4rem; }
+.pcbang-dialog__close:hover { opacity: 0.5; }
+.pcbang-dialog__close:active { opacity: 0.7; }
 
 /* ---- 본문 (헤더 아래 0.8rem부터 시작 = Figma contents top 68) ---- */
 .pcbang-dialog__body {
@@ -74,9 +79,12 @@
 .pcbang-dialog__store { color: #1fff86; }
 
 /* 스크롤은 환영 문구가 아니라 리스트만 한다.
-   스크롤 영역은 음수 마진으로 본문 패딩 밖(다이얼로그 오른쪽·아래 끝)까지
-   넓히고, 같은 크기의 패딩으로 안쪽을 되돌린다:
-   - 오른쪽: 스크롤바(1.2rem)가 다이얼로그 끝에 붙으면서도 콘텐츠 폭 63.6rem 유지
+   스크롤 영역은 음수 마진으로 본문 패딩 밖까지 넓히고, 같은 크기의 패딩으로
+   안쪽을 되돌린다:
+   - 오른쪽: Figma의 스크롤 영역은 폭 12(왼쪽 4가 썸, 오른쪽 8은 빈 공간)라
+     다이얼로그 오른쪽 끝에서 8 떨어진 곳(688~692)에 썸이 온다. 그래서 2.4rem
+     만큼만 내보내고(=썸 오른쪽 끝이 69.2rem), 패딩 2rem + 썸 0.4rem을 빼면
+     콘텐츠 폭이 Figma와 같은 63.6rem이 된다.
    - 아래: 스크롤 중인 카드는 다이얼로그 가장자리에서 잘려야 "아래 더 있다"로
      읽힌다. 3.2rem 위에서 끊기면 잘린 카드가 빈 공간에 떠 보여서 깨져 보임.
      대신 패딩이 스크롤 콘텐츠 안에 있어서 끝까지 내리면 마지막 카드 아래
@@ -86,7 +94,7 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: scroll;
-  margin-right: -3.2rem;
+  margin-right: -2.4rem;
   margin-bottom: -3.2rem;
   padding-right: 2rem;
   padding-bottom: 3.2rem;
@@ -95,19 +103,19 @@
   gap: 1.2rem;
 }
 
-/* Figma element/scroll: 폭 12, 오른쪽 8을 비워 썸은 4px만 보인다.
-   border-radius는 border-box 기준이라 4px로는 보이는 띠가 둥글어지지 않아
-   full로 준다 — 폭 4px라 결과는 Figma의 radius 4(= 완전 둥근 막대)와 같다.
+/* Figma element/scroll: 폭 12 중 왼쪽 4px만 썸, 오른쪽 8은 빈 공간.
+   폭 12짜리 스크롤바에 보더+background-clip:content-box로 4px만 남기는
+   방법은 라운딩이 안 먹는다 — 잘라내는 영역이 사각형이라 border-radius가
+   보이는 띠에 적용되지 않는다. 그래서 스크롤바 자체를 4px로 만들고,
+   비는 8px은 위 .pcbang-dialog__list의 margin-right로 확보한다.
    색은 프로젝트 공통 규칙(default=inverse-elevation-2, hover=1). */
-.pcbang-dialog__list::-webkit-scrollbar { width: 1.2rem; }
+.pcbang-dialog__list::-webkit-scrollbar { width: 0.4rem; }
 /* 스크롤 영역은 다이얼로그 바닥까지 내려가지만, 스크롤바는 리스트와 같이
    3.2rem 위에서 끝나야 한다 — 트랙에 마진을 줘서 그만큼 짧게 만든다. */
 .pcbang-dialog__list::-webkit-scrollbar-track { margin-bottom: 3.2rem; }
 .pcbang-dialog__list::-webkit-scrollbar-thumb {
   border-radius: var(--radius-full);
-  border-right: 0.8rem solid transparent;
   background-color: var(--inverse-elevation-2);
-  background-clip: content-box;
 }
 .pcbang-dialog__list::-webkit-scrollbar-thumb:hover { background-color: var(--inverse-elevation-1); }
 
