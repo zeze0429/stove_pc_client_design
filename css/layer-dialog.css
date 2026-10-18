@@ -22,7 +22,10 @@
   flex-direction: column;
   /* 내용만큼 늘어나되 여기서 멈추고 그 다음부터 본문이 스크롤된다. */
   max-height: 52rem;
-  border-radius: var(--radius-lg);
+  /* 20px — 알림/내 정보 팝업과 스토브 앱 다이얼로그가 모두 쓰는 값으로 통일.
+     PC방 혜택 시안만 8px이었는데, 센터 레이어 팝업은 같은 셸을 쓴다는
+     기준에 맞춰 이쪽으로 모았다. */
+  border-radius: 2rem;
   background: var(--surface-elevation-1);
   box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.1); /* Figma shadow/4 */
   overflow: hidden;

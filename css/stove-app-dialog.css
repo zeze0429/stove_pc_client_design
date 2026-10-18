@@ -1,0 +1,36 @@
+/* =============================================================
+   스토브 앱 다운로드 팝업 (Figma Dialog · 3512:50462)
+   내 정보 팝업의 "스토브앱" 메뉴가 띄우는 센터 레이어 팝업.
+   딤·헤더·닫기·높이 규칙은 공용 셸(css/layer-dialog.css)이 담당하고
+   여기서는 본문만 정의한다.
+   ============================================================= */
+
+.stove-app { display: flex; flex-direction: column; align-items: center; gap: 2.4rem; }
+
+/* QR은 항상 흰 바탕 위에 — 다크 테마에서도 스캔이 되어야 한다. */
+.stove-app__qr {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 16rem;
+  height: 16rem;
+  border-radius: 1.2rem;
+  background: var(--stove-white);
+  overflow: hidden;
+}
+.stove-app__qr img { width: 14.72rem; height: 14.72rem; display: block; }
+
+.stove-app__text { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; text-align: center; }
+.stove-app__lead { margin: 0; color: var(--stove-white); }
+.stove-app__title { margin: 0; color: var(--brand-primary-enabled); }
+.stove-app__desc { margin: 0; color: var(--on-surface-elevation-3); }
+
+/* ---- 스토어 배지 ------------------------------------------- */
+.stove-app__stores { display: flex; align-items: center; justify-content: center; gap: 1.2rem; }
+.stove-app__store { display: flex; align-items: center; gap: 0.3077rem; }
+/* 로고 칸은 정사각 18.46 — 구글 마크는 그 안에서 가운데 정렬되며 Figma의
+   inset(상하 7.92% / 좌우 12.5%)과 같은 크기로 떨어진다. */
+.stove-app__store-logo { flex: 0 0 auto; display: grid; place-items: center; width: 1.846rem; height: 1.846rem; }
+.stove-app__store-logo img { display: block; }
+.stove-app__store-word { display: block; height: 2rem; }
+.stove-app__stores-div { flex: 0 0 auto; width: 1px; height: 1.6rem; background: var(--stove-white-10); }

@@ -39,12 +39,15 @@ var PROFILE_MENU = [
     { id: 'help', label: '고객센터', icon: 'ic-v2-object-help-center-fill' },
     { id: 'report', label: '신고센터', icon: 'ic-v2-object-report-fill' },
     { id: 'bug', label: '오류보고', icon: 'ic-v2-community-board-fill' },
-    { id: 'app', label: '스토브앱', icon: 'ic-v2-object-download-line' },
+    { id: 'app', label: '스토브앱', icon: 'ic-v2-object-download-line', action: 'stoveApp' },
   ],
 ];
 
 var ProfilePopup = {
-  emits: ['close'],
+  // select: 메뉴 중 별도 팝업을 띄우는 항목을 눌렀을 때 — 띄우는 건 이 팝업을
+  // 연 쪽(유틸리티 바)이 맡는다. 센터 레이어 팝업은 이 팝업보다 위이고,
+  // 이 팝업은 그때 닫혀야 하기 때문.
+  emits: ['close', 'select'],
   data: function () {
     return {
       user: PROFILE_USER,
@@ -161,6 +164,7 @@ var ProfilePopup = {
         '<div class="profile-popup__menu" data-name="위계2">' +
           '<div v-for="(row, r) in menu" :key="r" class="profile-popup__menu-row">' +
             '<button v-for="item in row" :key="item.id" class="profile-menu-item" type="button" ' +
+              '@click="item.action && $emit(\'select\', item.action)" ' +
               'data-name="component/list/user_menu">' +
               '<i :class="item.icon"></i>' +
               '<span class="stds-cap1 fw-medium">{{ item.label }}</span>' +

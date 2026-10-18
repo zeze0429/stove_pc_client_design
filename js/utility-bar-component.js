@@ -48,6 +48,7 @@ var UtilityBarComponent = {
     PcbangBenefitsDialog: PcbangBenefitsDialog,
     NotificationPopup: NotificationPopup,
     ProfilePopup: ProfilePopup,
+    StoveAppDialog: StoveAppDialog,
   },
   data: function () {
     return {
@@ -56,6 +57,9 @@ var UtilityBarComponent = {
       // 팝업을 띄우는 버튼들(스토브챗/알림/내 정보/PC방)은 팝업이 열려 있는
       // 동안 selected 상태로 남는다 — Figma 주석 "팝업 노출되는 아이콘 버튼에 사용"
       openPopupId: null,
+      // 버튼에 붙는 팝업과 달리 창 가운데 뜨는 레이어 팝업 — 다른 팝업에서
+      // 띄우는 경우가 있어 따로 들고 있는다.
+      openDialogId: null,
       // 신규 내용 유무 — 한 번 열어보면 점이 사라진다
       newBadges: { chat: true, alarm: true, pcCafe: true },
       // 콘텐츠가 바 밑으로 지나가기 시작했는지 (배경 70% + 블러로 전환)
@@ -95,13 +99,18 @@ var UtilityBarComponent = {
     goForward: function () { if (this.canGoForward) history.forward(); },
     reload: function () { location.reload(); },
     toggleMaximize: function () { this.maximized = !this.maximized; },
+    // 팝업 안의 메뉴가 센터 레이어 팝업을 띄울 때 — 띄우던 팝업은 닫는다.
+    openDialog: function (id) {
+      this.openPopupId = null;
+      this.openDialogId = id;
+    },
     togglePopup: function (id) {
       this.openPopupId = this.openPopupId === id ? null : id;
       if (this.openPopupId && this.newBadges[id]) this.newBadges[id] = false;
     },
   },
   template:
-    '<div class="utility-bar" :class="{ \'is-scrolled\': scrolled, \'has-popup\': openPopupId }" ' +
+    '<div class="utility-bar" :class="{ \'is-scrolled\': scrolled, \'has-popup\': openPopupId || openDialogId }" ' +
       'data-name="layout/utility_bar">' +
 
       '<div class="utility-bar__group utility-bar__left" data-name="left_btn">' +
@@ -155,7 +164,8 @@ var UtilityBarComponent = {
               '<img class="utility-bar-profile__thumb" src="assets/utility-bar/profile-thumb.png" alt="" />' +
               utilityBarTooltip('내 정보') +
             '</button>' +
-            '<profile-popup v-if="openPopupId === \'profile\'" @close="openPopupId = null" />' +
+            '<profile-popup v-if="openPopupId === \'profile\'" @close="openPopupId = null" ' +
+              '@select="openDialog" />' +
           '</span>' +
         '</div>' +
 
@@ -183,7 +193,8 @@ var UtilityBarComponent = {
 
     // PC방 혜택은 바에 붙는 드롭다운이 아니라 창 전체를 덮는 레이어 팝업이라
     // 바 밖(루트 형제)에 둔다.
-    '<pcbang-benefits-dialog v-if="openPopupId === \'pcCafe\'" @close="openPopupId = null" />',
+    '<pcbang-benefits-dialog v-if="openPopupId === \'pcCafe\'" @close="openPopupId = null" />' +
+    '<stove-app-dialog v-if="openDialogId === \'stoveApp\'" @close="openDialogId = null" />',
 };
 
 function mountUtilityBar(selector) {
