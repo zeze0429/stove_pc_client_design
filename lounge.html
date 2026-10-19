@@ -83,6 +83,40 @@
     .lounge-col-right { padding-top: 0.7rem; }
     .lounge-col-right img { top: 0.7rem; }
 
+    /* 플로팅 버튼(글쓰기 · 맨 위로) — 실제 라운지 웹 캡처(그림자 포함 투명 PNG).
+       웹과 같은 자리: 콘텐츠 오른쪽 끝에서 44(웹 여백 20 + 스크롤바 자리 24),
+       아래 20. 버튼 40 · 간격 16. 캡처 이미지는 버튼 바깥으로 그림자 여백이
+       위·좌우 16만큼 있어서 그만큼 당겨 놓는다. 이미지 위에 투명 버튼을 겹쳐
+       "맨 위로"는 실제로 스크롤을 올린다. */
+    .lounge-fab {
+      position: absolute;
+      z-index: 15;
+      right: 4.4rem;
+      bottom: 2rem;
+      width: 4rem;
+      height: 9.6rem;
+    }
+    .lounge-fab img {
+      position: absolute;
+      left: -1.6rem;
+      top: -1.6rem;
+      width: 7.2rem;
+      pointer-events: none;
+    }
+    .lounge-fab__btn {
+      position: absolute;
+      left: 0;
+      width: 4rem;
+      height: 4rem;
+      padding: 0;
+      border: 0;
+      border-radius: var(--radius-full);
+      background: transparent;
+      cursor: pointer;
+    }
+    .lounge-fab__btn--write { top: 0; }
+    .lounge-fab__btn--top { top: 5.6rem; }
+
   </style>
 </head>
 <body>
@@ -112,6 +146,15 @@
         <img class="theme-img--dark" src="assets/lounge-right-dark.jpg?v=4" alt="" aria-hidden="true" loading="lazy" />
         <img class="theme-img--light" src="assets/lounge-right-light.jpg?v=2" alt="" aria-hidden="true" loading="lazy" />
       </div>
+    </div>
+
+    <!-- 플로팅 버튼 (라운지 웹 캡처) -->
+    <div class="lounge-fab">
+      <img class="theme-img--dark" src="assets/lounge-fab-dark.png?v=1" alt="" aria-hidden="true" />
+      <img class="theme-img--light" src="assets/lounge-fab-light.png?v=1" alt="" aria-hidden="true" loading="lazy" />
+      <button class="lounge-fab__btn lounge-fab__btn--write" type="button" aria-label="글쓰기"></button>
+      <button class="lounge-fab__btn lounge-fab__btn--top" type="button" aria-label="맨 위로"
+        onclick="document.querySelector('.app > .main').scrollTo({ top: 0, behavior: 'smooth' })"></button>
     </div>
 
   </div>
