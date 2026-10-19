@@ -349,10 +349,13 @@ var GnbComponent = {
       this.handleHoverEnter(li);
       var nameEl = li.querySelector('.game-group__list-name');
       if (nameEl && nameEl.scrollWidth > nameEl.clientWidth) {
+        // 툴팁은 화면 기준(fixed) 좌표 — 스크롤 영역(.gnb-menu) 안에 absolute로
+        // 두면 그 overflow에 그림자가 잘린다
+        var nameRect = nameEl.getBoundingClientRect();
         this.hoveredGameId = game.id;
-        this.tooltipLeft = nameEl.offsetLeft;
-        this.tooltipWidth = nameEl.offsetWidth;
-        this.tooltipTop = nameEl.offsetTop + nameEl.offsetHeight + 2; // 텍스트 라벨 바닥 + 2px
+        this.tooltipLeft = nameRect.left;
+        this.tooltipWidth = nameRect.width;
+        this.tooltipTop = nameRect.bottom + 2; // 텍스트 라벨 바닥 + 2px
       }
     },
     handleListMouseLeave: function () {
@@ -372,7 +375,7 @@ var GnbComponent = {
         gameId: game.id,
         text: GNB_BADGE_TOOLTIP[badge],
         left: 0,
-        top: li.offsetHeight - 4, // 꼬리 4px가 행 안쪽, 몸통은 행 바닥부터
+        top: li.getBoundingClientRect().bottom - 4, // 꼬리 4px가 행 안쪽, 몸통은 행 바닥부터 (화면 기준)
         tailLeft: 0,
         measuring: true,
       };
@@ -384,7 +387,7 @@ var GnbComponent = {
         var center = badgeRect.left + badgeRect.width / 2 - liRect.left;
         var w = tip.offsetWidth;
         var left = Math.min(Math.max(center - w / 2, 0), li.offsetWidth - w);
-        self.badgeTip.left = left;
+        self.badgeTip.left = liRect.left + left;
         self.badgeTip.tailLeft = center - left - 3; // 꼬리 폭 6의 절반
         self.badgeTip.measuring = false;
       });
@@ -439,6 +442,9 @@ var GnbComponent = {
     handleGnbScroll: function () {
       var scrollEl = this.$refs.scrollEl;
       if (!scrollEl) return;
+      // 툴팁은 화면 기준 고정 위치라 목록이 움직이면 행과 어긋난다 — 스크롤 중엔 닫는다
+      this.hoveredGameId = null;
+      this.badgeTip = null;
       // 탑 버튼은 "40px 스크롤되면"이 아니라, 상단 메뉴 6개(.menu-group)가
       // 완전히 가려지는 시점(그 바닥이 스크롤 영역 상단을 지나는 순간) 노출
       var menuGroupEl = scrollEl.querySelector('.menu-group');

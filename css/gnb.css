@@ -398,8 +398,10 @@ body { margin: 0; }
      실제 위치·폭에 맞춰 인라인으로 지정 — li는 세로 중앙 정렬이라 li 바닥과
      라벨 바닥이 다르고, 뱃지 유무로 이름 칸 너비도 달라져서 고정값을 안 씀
      (Figma: "리스트의 텍스트길이와 동일", 텍스트 라벨 바닥에서 2px). */
-  position: absolute;
-  z-index: 20;
+  /* fixed — 스크롤 영역(.gnb-menu)의 overflow에 그림자가 잘리지 않도록
+     목록 밖(화면 기준)에 그린다. TOP 버튼(20)보다 위. */
+  position: fixed;
+  z-index: 30;
   padding: 0.4rem 0.8rem;
   border-radius: var(--radius-lg);
   background: var(--surface-layer);
@@ -425,12 +427,12 @@ body { margin: 0; }
    - 최대 폭은 행 폭. 다국어로 길어지면 그 안에서 줄바꿈
    left / 꼬리 위치는 실제 폭을 재야 알 수 있어 JS가 인라인으로 준다. */
 .game-group__badge-tooltip {
-  position: absolute;
-  z-index: 20; /* 이름 툴팁과 같은 이유로 행이 아니라 목록 기준으로 쌓인다 */
+  position: fixed; /* 이름 툴팁과 같은 이유 — 스크롤 영역에 잘리지 않게 */
+  z-index: 30;
   display: flex;
   flex-direction: column;
   width: max-content;
-  max-width: 100%;
+  max-width: 20rem; /* 행 폭 */
   white-space: normal;
   pointer-events: none;
 }
