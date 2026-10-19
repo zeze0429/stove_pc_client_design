@@ -1,0 +1,288 @@
+/* =============================================================
+   스토어 메인 상단 — 카테고리 네비게이션 바 + 메인 배너 캐러셀
+   (js/store-main-component.js) — 실제 store.onstove.com/ko 실측값.
+   색은 웹이 쓰는 시멘틱 토큰 그대로라 다크/라이트를 따라간다.
+   ============================================================= */
+
+/* 마운트 지점·루트는 상자를 만들지 않는다 — 네비게이션 바의 sticky 기준이
+   .main(스크롤 영역)이 되어야 페이지 끝까지 따라온다 */
+#store-main-mount,
+.store-main-top { display: contents; }
+
+/* ---- 카테고리 네비게이션 바 ----------------------------------
+   영역 높이 68(위아래 8 + 바 52), 좌우 40. 유틸리티 바 바로 아래에 붙어
+   따라오고, 아래로 스크롤하면 위로 숨고 올리면 다시 나타난다. */
+.store-nav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  flex: 0 0 auto; /* .main은 세로 flex — 줄어들지 않게 */
+  padding: 0.8rem 4rem;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.store-nav.is-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+.store-nav__bar {
+  display: flex;
+  align-items: center;
+  height: 5.2rem;
+  padding: 0 3.2rem 0 0.8rem;
+  border-radius: var(--radius-full);
+  background: var(--surface-elevation-1);
+  box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.06);
+}
+
+/* 탭 목록 — 선택 칩은 목록 뒤에 깔린 공유 인디케이터가 미끄러져 다닌다 */
+.store-nav__tabs-wrap {
+  position: relative;
+  flex: 0 0 auto;
+  margin-right: 0.4rem;
+}
+.store-nav__tabs {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.store-nav__indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 3.6rem;
+  border-radius: var(--radius-full);
+  background: var(--on-surface-elevation-1);
+  transition: transform 0.35s cubic-bezier(0.55, -0.05, 0.25, 1.05), width 0.35s cubic-bezier(0.55, -0.05, 0.25, 1.05);
+  pointer-events: none;
+}
+.store-nav__tab {
+  display: flex;
+  align-items: center;
+  height: 3.6rem;
+  padding: 0 1.2rem;
+  border-radius: var(--radius-full);
+  color: var(--on-surface-elevation-1);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.store-nav__tab:not(.is-selected):hover { background: var(--interaction-hover); }
+.store-nav__tab:not(.is-selected):active { background: var(--interaction-pressed); }
+.store-nav__tab-label {
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 2rem;
+  letter-spacing: -0.03rem;
+}
+.store-nav__tab.is-selected .store-nav__tab-label {
+  font-weight: 700;
+  color: var(--background-variant-2); /* 칩(on-surface-elevation-1) 위 반전 글자 */
+}
+.store-nav__tab--image { padding: 0 1.6rem; }
+.store-nav__tab-img { display: block; width: 7.7rem; height: 2rem; }
+
+/* 카테고리 — 앞에 1 x 12 구분선 */
+.store-nav__category {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  padding-left: 0.5rem;
+}
+.store-nav__divider {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 0.1rem;
+  height: 1.2rem;
+  transform: translateY(-50%);
+  background: var(--inverse-elevation-4);
+}
+.store-nav__category-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  height: 3.6rem;
+  padding: 0 1.2rem;
+  border-radius: var(--radius-full);
+  color: var(--on-surface-elevation-1);
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 2rem;
+  letter-spacing: -0.03rem;
+  cursor: pointer;
+}
+.store-nav__category-btn i { font-size: 1.6rem; color: var(--inverse-elevation-1); }
+.store-nav__category-btn:hover { background: var(--interaction-hover); }
+.store-nav__category-btn:active { background: var(--interaction-pressed); }
+
+/* 오른쪽 아이콘 (찜 · 장바구니 · 검색) — 36 버튼, 간격 8 */
+.store-nav__icons {
+  display: flex;
+  gap: 0.8rem;
+  margin-left: auto;
+}
+.store-nav__icon-btn {
+  display: grid;
+  place-items: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: var(--radius-full);
+  color: var(--on-surface-elevation-1);
+  cursor: pointer;
+}
+.store-nav__icon-btn i { font-size: 2.4rem; }
+.store-nav__icon-btn:hover { background: var(--interaction-hover); }
+.store-nav__icon-btn:active { background: var(--interaction-pressed); }
+
+/* ---- 메인 배너 캐러셀 ----------------------------------------
+   네비게이션 영역 아래 16, 높이 276. 카드 644 x 276 / 간격 20 / 모서리 24. */
+.store-hero {
+  position: relative;
+  flex: 0 0 auto; /* .main은 세로 flex — 줄어들지 않게 */
+  height: 27.6rem;
+  margin-top: 1.6rem;
+  overflow: hidden;
+  user-select: none;
+}
+/* 트랙의 왼쪽 끝을 화면 가운데(left 50%)에 두고, JS가 카드 절반 + 지나간
+   카드 수만큼 왼쪽으로 민다 — translate의 %는 트랙 자신 기준이라 쓰지 않는다 */
+.store-hero__track {
+  position: relative;
+  left: 50%;
+  display: flex;
+  gap: 2rem;
+  height: 100%;
+  cursor: grab;
+  touch-action: pan-y;
+}
+.store-hero__track:active { cursor: grabbing; }
+.store-hero__card {
+  position: relative;
+  flex: 0 0 64.4rem;
+  height: 100%;
+  border-radius: 2.4rem;
+  overflow: hidden;
+}
+.store-hero__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 0%;
+  pointer-events: none;
+}
+/* 글자 — 왼쪽 48 / 위 40, 폭 340 */
+.store-hero__text {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 34rem;
+  height: 100%;
+  padding: 4rem 0 4rem 4.8rem;
+  color: #fff; /* 배너 위 글자는 테마와 상관없이 흰색 (웹 --light/--dark-text-color 모두 #fff) */
+}
+.store-hero__title {
+  margin: 0;
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 3.6rem;
+  letter-spacing: -0.078rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.store-hero__desc {
+  margin: 0.6rem 0 0;
+  font-size: 1.4rem;
+  font-weight: 400;
+  line-height: 2.4rem;
+  letter-spacing: -0.042rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.store-hero__price {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.2rem;
+}
+.store-hero__price-main {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 2.4rem;
+  letter-spacing: -0.048rem;
+}
+.store-hero__discount { color: var(--brand-primary-enabled); }
+.store-hero__original {
+  font-size: 1.3rem;
+  font-weight: 500;
+  line-height: 2.2rem;
+  letter-spacing: -0.0325rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: line-through;
+}
+
+/* 좌우 화살표 — 36 원, 가운데 카드 좌우 끝에 걸친다 */
+.store-hero__arrow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: var(--radius-full);
+  background: var(--neutral-variant-3);
+  color: var(--on-surface-elevation-1);
+  cursor: pointer;
+}
+.store-hero__arrow i { font-size: 2rem; }
+.store-hero__arrow:hover { background: var(--neutral-variant-3-hover); }
+.store-hero__arrow:active { background: var(--neutral-variant-3-pressed); }
+.store-hero__arrow--prev { transform: translate(calc(-32.2rem - 1.8rem), -50%); }
+.store-hero__arrow--next { transform: translate(calc(32.2rem - 1.8rem), -50%); }
+
+/* "n/14 ⏸" — 카드 오른쪽 아래 20, 검정 70% 알약. 누르면 재생/일시정지 */
+.store-hero__pager {
+  position: absolute;
+  bottom: 2rem;
+  right: calc(50% - 32.2rem + 2rem);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 2.6rem;
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(0.1rem);
+  -webkit-backdrop-filter: blur(0.1rem);
+  color: #fff;
+  cursor: pointer;
+}
+.store-hero__count {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 1.2rem;
+  line-height: 1.8rem;
+  letter-spacing: -0.036rem;
+}
+.store-hero__count b { min-width: 0.8rem; font-weight: 700; }
+.store-hero__count span:first-of-type { width: 0.5rem; }
+.store-hero__count span:last-child { min-width: 0.8rem; }
+.store-hero__pager i { font-size: 1.2rem; }

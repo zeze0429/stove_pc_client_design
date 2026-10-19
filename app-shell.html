@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="css/profile-popup.css?v=4" />
   <link rel="stylesheet" href="css/stove-app-dialog.css?v=2" />
   <link rel="stylesheet" href="css/utility-notice.css?v=4" />
+  <link rel="stylesheet" href="css/store-main.css?v=2" />
   <style>
     /* 클라이언트 메인 = 스토어 페이지 정적 스크린샷(다크·라이트 한 쌍).
        ※ 한때 실제 웹을 iframe으로 라이브 임베드했다가(2026-10) 되돌렸다 —
@@ -103,8 +104,11 @@
 
     <!-- ============ MAIN (store 정적 스크린샷 — 테마별 한 쌍) ============ -->
     <div class="main main--overlay-scroll">
-      <img class="store-preview theme-img--dark" src="assets/store-preview-dark.jpg?v=3" alt="STOVE 스토어 미리보기" loading="lazy" />
-      <img class="store-preview theme-img--light" src="assets/store-preview-light.jpg?v=3" alt="STOVE 스토어 미리보기" loading="lazy" />
+      <!-- 상단: 카테고리 네비게이션 바 + 메인 배너는 실제 컴포넌트 (js/store-main-component.js) -->
+      <div id="store-main-mount"></div>
+      <!-- 그 아래 콘텐츠는 정적 스크린샷 — 배너 바로 아래(웹 기준 y 424)부터 잘라 이어 붙인다 -->
+      <img class="store-preview theme-img--dark" src="assets/store-rest-dark.jpg?v=1" alt="STOVE 스토어 미리보기" loading="lazy" />
+      <img class="store-preview theme-img--light" src="assets/store-rest-light.jpg?v=1" alt="STOVE 스토어 미리보기" loading="lazy" />
     </div>
 
     <!-- 맨 위로 (스토어 웹 캡처) — 300 넘게 스크롤하면 나타난다 -->
@@ -125,10 +129,12 @@
   <script src="js/stove-app-dialog-component.js?v=2"></script>
   <script src="js/utility-notice-component.js?v=3"></script>
   <script src="js/utility-bar-component.js?v=12"></script>
+  <script src="js/store-main-component.js?v=4"></script>
   <script src="js/page-scrollbar.js?v=2"></script>
   <script>
     mountGnb('#gnb-mount');
     mountUtilityBar('#utility-bar-mount');
+    mountStoreMainTop('#store-main-mount');
     mountPageScrollbar(document.querySelector('.app > .main'));
     // 맨 위로 버튼 — 웹 스토어처럼 300 넘게 내려가면 나타난다
     (function () {
