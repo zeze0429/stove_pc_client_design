@@ -25,9 +25,9 @@
        아니라 COLOR_MODE 쿠키로만 테마가 바뀌어 캡처할 때 쿠키로 다크를 연다.
        라운지만은 웹 스크롤바가 있는 1016 레이아웃으로 찍는다 — 스크롤바가
        없으면 가운데 피드가 544로 넓어져 아래 실측 간격(피드 520 기준)이 깨진다.
-       배경: 실제 라운지는 다크 gray-880 / 라이트 gray-20이라 스토어·이벤트와
-       다른데, 클라이언트에서는 스토어 메인과 같은 background-variant-1로
-       통일한다 — 캡처할 때 웹 배경을 그 색으로 바꿔서 찍었다.
+       배경: 실제 라운지는 다크 gray-880 / 라이트 gray-20. 다크만 스토어 메인과
+       같은 background-variant-1로 통일했다(캡처할 때 웹 배경을 그 색으로 바꿔
+       찍음). 라이트는 웹 원래 색(gray-20) 그대로.
        app-shell.html(스토어)과 동일한 방식 — 라이브 임베드 대신 헤드리스
        크롬으로 1040px/2x 레티나 다크모드 캡처, 최상단 공유 GNB(64px)는
        제거. 상단 48px / 하단 200px 여백. 스크롤바는 오버레이(js/page-scrollbar.js).
@@ -58,25 +58,32 @@
     .app > .main {
       overflow-y: auto;
       overflow-x: hidden;
-      background: var(--background-variant-1); /* 스토어 메인과 동일 — 위 주석 참고 */
+      background: var(--background-variant-1); /* 다크: 스토어 메인과 동일 — 위 주석 참고 */
       /* 좌: 사이드바-아이콘레일 4px / 우: 우측열 뒤 64px — 실제 네이티브
          클라이언트 캡처에 직접 그려서 받은 정확한 수치. 하단은 0 —
          라운지는 실제로 무한 스크롤 피드라서 스토어/이벤트처럼 "콘텐츠
          끝 + 200px 여백"을 두면 어색함(끝이 있는 것처럼 보임). */
-      padding: calc(4.8rem + var(--utility-notice-h, 0px)) 6.4rem 0 0.4rem;
+      /* 오른쪽 40 — 3단 이미지가 카드 그림자를 담으려고 오른쪽 패딩 24를 품고
+         있어서, 콘텐츠 끝은 예전과 같은 자리(64 안쪽)다. */
+      padding: calc(4.8rem + var(--utility-notice-h, 0px)) 4rem 0 0.4rem;
       display: flex;
       flex-direction: row; /* 공통 셸 기본값(column)을 3단 레이아웃용으로 덮어씀 */
     }
     /* 1단-2단 간격 52px, 2단-3단 간격 56px — 실측 결과 둘이 다름 */
     .lounge-col-center { flex: 0 0 auto; margin-left: 5.2rem; }
-    .lounge-col-right { flex: 0 0 auto; margin-left: 5.6rem; }
+    /* 3단 이미지는 aside 박스 전체(좌 24 + 콘텐츠 280 + 우 24)라 그만큼 간격을
+       줄인다: 56 - 24 = 32. 콘텐츠 사이 실제 간격은 그대로 56. */
+    .lounge-col-right { flex: 0 0 auto; margin-left: 3.2rem; }
     .lounge-col-left,
     .lounge-col-right { height: 253.6rem; }
     .lounge-col-left img,
     .lounge-col-right img { position: sticky; top: 0; display: block; }
     .lounge-col-left img { width: 6.4rem; }
     .lounge-col-center img { display: block; width: 52rem; }
-    .lounge-col-right img { width: 28rem; }
+    .lounge-col-right img { width: 32.8rem; }
+    /* 라이트: 실제 라운지 웹 배경(글로벌 gray-20 #fafafa) 그대로 — 검색 인풋(#f0f0f0)이
+       배경과 구분돼야 해서 스토어 메인 색으로 통일하지 않는다 */
+    :root[data-theme="light"] .app > .main { background: var(--stove-gray-20); }
     /* 3단 검색창 윗변을 1단 활성 메뉴("오늘의 1등") 박스 윗변에 맞춘다 —
        1단 이미지 안의 여백이 8px(72→64 축소 표시라 약 7px)이라 같은 7px.
        sticky 기준도 같이 내려야 스크롤 중에도 같은 높이를 유지한다. */
@@ -136,16 +143,16 @@
     <!-- ============ MAIN (라운지 정적 스크린샷 — 3단 분할, 좌/우 고정, 테마별 한 쌍) ============ -->
     <div class="main main--overlay-scroll">
       <div class="lounge-col-left">
-        <img class="theme-img--dark" src="assets/lounge-left-dark.jpg?v=3" alt="" aria-hidden="true" loading="lazy" />
-        <img class="theme-img--light" src="assets/lounge-left-light.jpg?v=2" alt="" aria-hidden="true" loading="lazy" />
+        <img class="theme-img--dark" src="assets/lounge-left-dark.jpg?v=4" alt="" aria-hidden="true" loading="lazy" />
+        <img class="theme-img--light" src="assets/lounge-left-light.jpg?v=3" alt="" aria-hidden="true" loading="lazy" />
       </div>
       <div class="lounge-col-center">
-        <img class="theme-img--dark" src="assets/lounge-center-dark.jpg?v=6" alt="STOVE 라운지 미리보기" loading="lazy" />
-        <img class="theme-img--light" src="assets/lounge-center-light.jpg?v=2" alt="STOVE 라운지 미리보기" loading="lazy" />
+        <img class="theme-img--dark" src="assets/lounge-center-dark.jpg?v=7" alt="STOVE 라운지 미리보기" loading="lazy" />
+        <img class="theme-img--light" src="assets/lounge-center-light.jpg?v=3" alt="STOVE 라운지 미리보기" loading="lazy" />
       </div>
       <div class="lounge-col-right">
-        <img class="theme-img--dark" src="assets/lounge-right-dark.jpg?v=4" alt="" aria-hidden="true" loading="lazy" />
-        <img class="theme-img--light" src="assets/lounge-right-light.jpg?v=2" alt="" aria-hidden="true" loading="lazy" />
+        <img class="theme-img--dark" src="assets/lounge-right-dark.jpg?v=5" alt="" aria-hidden="true" loading="lazy" />
+        <img class="theme-img--light" src="assets/lounge-right-light.jpg?v=3" alt="" aria-hidden="true" loading="lazy" />
       </div>
     </div>
 
