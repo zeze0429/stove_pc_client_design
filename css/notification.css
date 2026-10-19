@@ -12,7 +12,7 @@
   position: absolute;
   top: calc(100% + 0.4rem); /* 아이콘 영역 아래 4px */
   right: 0;
-  z-index: 150; /* 유틸리티 바(100)보다 위, 센터 레이어 팝업(200)보다 아래 */
+  z-index: 150; /* 유틸리티 바(110)보다 위, 센터 레이어 팝업(200)보다 아래 */
   display: flex;
   flex-direction: column;
   width: 40rem;

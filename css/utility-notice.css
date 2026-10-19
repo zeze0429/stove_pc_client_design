@@ -13,7 +13,7 @@
   top: 4.8rem; /* 유틸리티 바 바로 아래 */
   left: 24rem; /* 사이드바 폭 */
   right: 0;
-  z-index: 100; /* 유틸리티 바와 같은 층 */
+  z-index: 100; /* 유틸리티 바(110) 바로 아래 층 */
   display: flex;
   align-items: center;
   justify-content: center;

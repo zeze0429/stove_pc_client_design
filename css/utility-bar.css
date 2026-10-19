@@ -21,7 +21,9 @@
   top: 0;
   left: 24rem;
   right: 0;
-  z-index: 100;
+  /* 공지 바(100)보다 한 단 위 — 바 밑으로 내려오는 툴팁이 공지에 가리면
+     안 된다(같은 값이면 나중에 그려지는 공지가 덮는다). */
+  z-index: 110;
   height: 4.8rem;
   display: flex;
   align-items: center;
