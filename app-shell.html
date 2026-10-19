@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>STOVE 클라이언트</title>
   <!-- 로드 순서: tokens → foundations → typography → 아이콘 → GNB → 셸 -->
-  <script src="js/proto-settings.js?v=3" data-client></script>
+  <script src="js/proto-settings.js?v=4" data-client></script>
   <link rel="stylesheet" href="css/tokens.css?v=7" />
   <link rel="stylesheet" href="css/foundations.css?v=7" />
   <link rel="stylesheet" href="css/typography.css?v=12" />
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=8" />
   <link rel="stylesheet" href="css/gnb.css?v=82" />
-  <link rel="stylesheet" href="css/dashboard.css?v=23" />
+  <link rel="stylesheet" href="css/dashboard.css?v=24" />
   <link rel="stylesheet" href="css/utility-bar.css?v=5" />
   <link rel="stylesheet" href="css/layer-dialog.css?v=4" />
   <link rel="stylesheet" href="css/pcbang-benefits.css?v=6" />
@@ -19,6 +19,57 @@
   <link rel="stylesheet" href="css/profile-popup.css?v=4" />
   <link rel="stylesheet" href="css/stove-app-dialog.css?v=2" />
   <link rel="stylesheet" href="css/utility-notice.css?v=4" />
+  <style>
+    /* 클라이언트 메인 = 스토어 페이지 정적 스크린샷(다크·라이트 한 쌍).
+       ※ 한때 실제 웹을 iframe으로 라이브 임베드했다가(2026-10) 되돌렸다 —
+       크로스 오리진이라 유틸리티 바 블러(스크롤 감지)·웹 스크롤바 처리·
+       라운지 다크 전환이 전부 불가능했음.
+       다크/라이트 두 장은 한 번 연 페이지에서 테마만 바꿔 연달아 캡처해
+       배너·섹션 문구까지 내용이 완전히 같다. 1040 창에 웹 자체 스크롤바(24)가
+       뜬 상태 그대로 찍고 스크롤바만 잘라내서 폭은 1016 — 우리 .main
+       스크롤바(2.4rem)가 그 자리를 채워 웹과 같은 배치가 된다.
+       처음엔 실제 store.onstove.com을 iframe으로 라이브 임베드했었는데:
+       1) 최상단 지엔비·푸터는 크로스 오리진이라 크롭이 불가능하거나(푸터는
+          콘텐츠 길이가 화면 폭마다 달라져서 고정 크롭이 다른 폭에서 깨짐),
+       2) 다크모드도 "보는 사람 시스템 설정"을 그대로 따라가서, 시스템이
+          라이트면 라이트로 뜨는 걸 부모 페이지에서 강제로 못 바꿈(크로스
+          오리진 iframe 보안 경계라 CSS/쿠키 어느 쪽으로도 우회 불가, CORS도
+          안 열려 있어 HTML을 가져와 고쳐 넣는 것도 불가능했음).
+       → 라이브 임베드를 포기하고, 다크모드로 직접 캡처한 화면(최상단
+       지엔비 제거, assets/store-preview-dark.jpg)을 정적 이미지로 넣음 —
+       이러면 테마/크롭 둘 다 항상 의도한 대로 고정됨.
+       클라이언트 최소 폭(1280, 사이드바 240 제외 1040)에 맞춰 1040px
+       뷰포트로 캡처했고, width도 1040 고정 — 100%로 늘려서 더 넓은 화면에
+       맞게 늘어나면(실제로 해보니 블러지고 내용도 부족해 보임) 안 되므로
+       항상 이 1040 고정 크기로만 보여주고, 더 넓은 창에서는 옆에 배경색만
+       추가로 보임(사이드바 폭이 고정인 것과 같은 방식).
+       레티나 대응: 원본 파일 자체를 2x(2080px 폭, --force-device-scale-factor=2로
+       캡처)로 만들어두고 CSS로는 1040px에 표시 — 그래서 고밀도(레티나) 디스플레이에서도
+       안 흐려짐. */
+    .app > .main {
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: var(--background-variant-1); /* store.onstove.com 실제 body 배경(rgb(25,25,25))과 동일 토큰 */
+      padding: calc(4.8rem + var(--utility-notice-h, 0px)) 0 20rem; /* 상단 = 유틸리티 바 + 공지 띠 / 하단 200px */
+    }
+    .store-preview { display: block; width: 1016px; height: auto; }
+
+    /* 스크롤바 — store.onstove.com(실제 웹)의 body 스크롤바와 동일한 구조/수치로 재현.
+       실제 페이지는 .inds-scrollbar-theme-8을 써서 트랙 2.4rem에 썸은
+       0.8rem solid transparent 보더 + background-clip:content-box로 가운데
+       0.8rem만 색이 보이게 만드는 방식 — 사이드바(.gnb-scrollbar, 0.4rem 오버레이
+       방식)와는 다른 구조라서 그대로 복제. 색상은 동일 컨벤션(default=inverse-elevation-2,
+       hover=inverse-elevation-1). */
+    .app > .main::-webkit-scrollbar { width: 2.4rem; }
+    .app > .main::-webkit-scrollbar-track { border-radius: var(--radius-full); }
+    .app > .main::-webkit-scrollbar-thumb {
+      border-radius: var(--radius-full);
+      border: 0.8rem solid transparent;
+      background-color: var(--inverse-elevation-2);
+      background-clip: content-box;
+    }
+    .app > .main::-webkit-scrollbar-thumb:hover { background-color: var(--inverse-elevation-1); }
+  </style>
 </head>
 <body>
   <div class="app">
@@ -33,11 +84,10 @@
          (js/utility-bar-component.js)가 마운트되는 자리. -->
     <div id="utility-bar-mount"></div>
 
-    <!-- ============ MAIN (실제 웹 라이브 임베드 — dashboard.css "라이브 웹 임베드" 참고) ============ -->
-    <div class="main main--live">
-      <div class="live-frame">
-        <iframe credentialless style="--live-web-scrollbar: 24px" src="https://store.onstove.com/ko" title="STOVE 스토어"></iframe>
-      </div>
+    <!-- ============ MAIN (store 정적 스크린샷 — 테마별 한 쌍) ============ -->
+    <div class="main">
+      <img class="store-preview theme-img--dark" src="assets/store-preview-dark.jpg?v=1" alt="STOVE 스토어 미리보기" loading="lazy" />
+      <img class="store-preview theme-img--light" src="assets/store-preview-light.jpg?v=1" alt="STOVE 스토어 미리보기" loading="lazy" />
     </div>
 
   </div>

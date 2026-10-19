@@ -63,17 +63,6 @@ function protoApplyDocument(s) {
   document.documentElement.classList.toggle('proto-pr-on', !!s.pr);
 }
 
-// 라이브 웹(iframe)의 테마는 페이지를 새로 열어야 바뀐다.
-// 웹은 COLOR_MODE 쿠키가 있으면 시스템 설정(=iframe color-scheme)보다 그걸
-// 먼저 따르고, 로드할 때마다 그 쿠키를 다시 써 둔다. 그래서 iframe은
-// credentialless로 띄워 실제 쿠키를 못 보게 하는데, 그 임시 쿠키 저장소도
-// 최상위 페이지가 살아 있는 동안은 유지된다 — iframe만 다시 불러오면 첫
-// 로드 때 써 둔 테마로 다시 고정된다. 테마가 바뀌면 최상위 페이지째 새로
-// 연다(main.html 안이면 main.html이 자기 쪽에서 처리한다).
-function protoIsTopLevel() {
-  try { return window.top === window; } catch (e) { return false; }
-}
-
 // 12컬럼 그리드 오버레이(콘텐츠 영역 위 가이드) + 창 하단 PR영역 자리
 function protoMountLayout() {
   var app = document.querySelector('.app');
@@ -95,12 +84,7 @@ function protoMountLayout() {
 (function () {
   var me = document.currentScript;
   if (!me || !me.hasAttribute('data-client')) return;
-  var theme = protoSettingsRead().theme;
   protoApplyDocument(protoSettingsRead());
-  protoSettingsSubscribe(function (s) {
-    protoApplyDocument(s);
-    if (s.theme !== theme && protoIsTopLevel()) location.reload();
-    theme = s.theme;
-  });
+  protoSettingsSubscribe(protoApplyDocument);
   document.addEventListener('DOMContentLoaded', protoMountLayout);
 })();

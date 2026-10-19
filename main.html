@@ -165,7 +165,7 @@
     setInterval(tick, 1000 * 30);
   </script>
 
-  <script src="js/proto-settings.js?v=3"></script>
+  <script src="js/proto-settings.js?v=4"></script>
   <script>
     // 보기 옵션 패널 — 컨트롤 상태는 항상 저장된 설정에서 다시 그린다
     (function () {
@@ -214,33 +214,8 @@
         });
       });
 
-      // 테마가 바뀌면 미리보기째 새로 연다 — 라이브 웹은 최상위 페이지가 새로
-      // 열려야 테마가 바뀐다(js/proto-settings.js의 protoIsTopLevel 주석 참고).
-      // 보던 클라이언트 페이지와 패널 열림 상태는 그대로 되살린다.
-      var RESTORE_KEY = 'stove-proto-restore';
-      var clientFrame = document.querySelector('.os-content');
-      var theme = protoSettingsRead().theme;
-      try {
-        var restore = JSON.parse(sessionStorage.getItem(RESTORE_KEY) || 'null');
-        sessionStorage.removeItem(RESTORE_KEY);
-        if (restore) {
-          if (restore.src) clientFrame.src = restore.src;
-          if (restore.panelOpen) setOpen(true);
-        }
-      } catch (e) {}
-
       render(protoSettingsRead());
-      protoSettingsSubscribe(function (s) {
-        render(s);
-        if (s.theme === theme) return;
-        theme = s.theme;
-        var src = null;
-        try { src = clientFrame.contentWindow.location.href; } catch (e) {}
-        try {
-          sessionStorage.setItem(RESTORE_KEY, JSON.stringify({ src: src, panelOpen: !panel.hidden }));
-        } catch (e) {}
-        location.reload();
-      });
+      protoSettingsSubscribe(render);
     })();
   </script>
 
