@@ -635,6 +635,7 @@ body { margin: 0; }
   opacity: 0;
 }
 .gnb-hover-indicator { background: var(--interaction-hover); }
+.gnb-hover-indicator.is-pressed { background: var(--interaction-pressed); } /* 누르는 동안 */
 .gnb-active-indicator { background: var(--interaction-selected); }
 .game-group__thumbnail {
   width: 1.8rem;

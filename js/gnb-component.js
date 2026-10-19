@@ -371,8 +371,15 @@ var GnbComponent = {
       this._hoverSpring.show();
       this._hoverVisible = true;
     },
+    // 누르고 있는 동안 호버 배경을 pressed 값으로 (메뉴·게임 리스트 공통).
+    // 이미 선택된 항목은 호버 인디케이터가 없어서 선택 배경 그대로다.
+    setPressed: function (on) {
+      var el = this.$refs.hoverIndicator;
+      if (el) el.classList.toggle('is-pressed', !!on);
+    },
     handleHoverLeave: function () {
       var self = this;
+      this.setPressed(false);
       this._hoverLeaveTimer = setTimeout(function () {
         self._hoverSpring.hide();
         self._hoverVisible = false;
@@ -825,6 +832,9 @@ var GnbComponent = {
     this.updateThumb();
 
     this._hoverSpring = createSpringBox(this.$refs.hoverIndicator);
+    // 어디서 손을 떼든 pressed는 풀린다
+    this._onPressRelease = this.setPressed.bind(this, false);
+    document.addEventListener('mouseup', this._onPressRelease);
     this._activeSpring = createSpringBox(this.$refs.activeIndicator);
     // 최초 진입 시엔 "어디선가 날아오는" 느낌 없이 바로 기본 선택 위치(스토어)에
     // 있어야 하므로 immediate=true로 스프링 없이 즉시 배치.
@@ -853,6 +863,7 @@ var GnbComponent = {
     }
   },
   unmounted: function () {
+    document.removeEventListener('mouseup', this._onPressRelease);
     clearTimeout(this._dlTimer);
     (this._dlTimers || []).forEach(function (id) { clearTimeout(id); });
     var scrollEl = this.$refs.scrollEl;
@@ -884,7 +895,7 @@ var GnbComponent = {
         '<div ref="activeIndicator" class="gnb-active-indicator" aria-hidden="true"></div>' +
         '<div>' +
           '<ul class="menu-group" data-name="component/GNB/menu_group">' +
-            '<li v-for="item in visibleMenuItems" :key="item.id" class="menu-item" :class="{ \'is-selected\': selectedId === item.id }" @click="selectMenu(item)" @mouseenter="handleMenuMouseEnter" @mouseleave="handleHoverLeave" :data-name="menuItemSymbol(item)">' +
+            '<li v-for="item in visibleMenuItems" :key="item.id" class="menu-item" :class="{ \'is-selected\': selectedId === item.id }" @click="selectMenu(item)" @mousedown.left="setPressed(true)" @mouseenter="handleMenuMouseEnter" @mouseleave="handleHoverLeave" :data-name="menuItemSymbol(item)">' +
               '<i :class="item.icon"></i>' +
               '<span class="menu-item__label stds-title8">{{ item.label }}</span>' +
               '<span v-if="item.badge === \'new\'" class="badge-new" data-name="component/badge/menu_title">NEW</span>' +
@@ -926,7 +937,7 @@ var GnbComponent = {
             '<li v-for="(game, gameIndex) in groupGames(group)" :key="game.id" class="game-group__list" ' +
               ':class="{ \'is-selected\': selectedGameId === game.id, \'is-dragging\': dragging && dragging.gameId === game.id, \'is-context-open\': contextMenu.visible && contextMenu.game && contextMenu.game.id === game.id }" ' +
               '@click="selectGame(game)" @mouseenter="handleListMouseEnter($event, game)" @mouseleave="handleListMouseLeave" ' +
-              '@contextmenu.prevent="openGameContextMenu($event, game, group)" @mousedown="onFavoriteMouseDown($event, group, gameIndex)" ' +
+              '@contextmenu.prevent="openGameContextMenu($event, game, group)" @mousedown="onFavoriteMouseDown($event, group, gameIndex); if ($event.button === 0) setPressed(true)" ' +
               'data-name="component/game_group/list">' +
               '<span class="game-group__thumbnail" :style="{ backgroundImage: \'url(\' + game.thumb + \')\' }" data-name="component/thumbnail/game"></span>' +
               '<span class="game-group__list-name stds-cap1 fw-medium">{{ game.name }}</span>' +
