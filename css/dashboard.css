@@ -78,7 +78,11 @@ ul { list-style: none; margin: 0; padding: 0; }
    보이는 모양은 웹 스크롤바와 같다: 폭 0.8rem, 오른쪽·위아래 0.8rem 안쪽.
    마우스가 콘텐츠 영역 위에 있을 때만 나타난다.
    색은 공통 규칙(default=inverse-elevation-2, hover/press=inverse-elevation-1). */
-.main--overlay-scroll { scrollbar-width: none; }
+.main--overlay-scroll {
+  scrollbar-width: none;
+  /* 맨 위·아래에서 더 당겨도 스프링처럼 튕기지 않게 (macOS 바운스 끄기) */
+  overscroll-behavior: none;
+}
 .main--overlay-scroll::-webkit-scrollbar { display: none; }
 .page-scrollbar {
   position: absolute;
