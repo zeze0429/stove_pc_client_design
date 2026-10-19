@@ -73,7 +73,13 @@ ul { list-style: none; margin: 0; padding: 0; }
       스토어의 카테고리 탭은 그 아래라 그대로 보인다.
    2) 다크/라이트 — 웹은 prefers-color-scheme을 따르는데, iframe 요소의
       color-scheme이 곧 안쪽 문서의 prefers-color-scheme이 된다. 그래서
-      클라이언트 테마(data-theme)를 그대로 넘겨주면 웹도 같이 바뀐다. */
+      클라이언트 테마(data-theme)를 그대로 넘겨주면 웹도 같이 바뀐다.
+   3) 웹 스크롤바 — 스토어·이벤트는 문서 스크롤바가 폭 24를 차지해서 오른쪽
+      여백이 40이 아니라 64로 보인다. iframe을 그만큼 넓혀 스크롤바를 틀 밖으로
+      밀어내 숨긴다(휠·트랙패드 스크롤은 그대로). 실제 클라이언트는 웹에 CSS를
+      넣어 오버레이 스크롤바를 쓸 수 있지만, 크로스 오리진 iframe은 스크롤
+      위치를 읽을 수 없어 여기서는 대신 그려 줄 수 없다 — 임시 처리.
+      폭은 페이지마다 iframe의 --live-web-scrollbar로 준다(라운지는 0). */
 .app > .main.main--live {
   position: relative;
   overflow: hidden;
@@ -91,7 +97,7 @@ ul { list-style: none; margin: 0; padding: 0; }
   position: absolute;
   top: calc(var(--live-web-gnb) * -1);
   left: 0;
-  width: 100%;
+  width: calc(100% + var(--live-web-scrollbar, 0px));
   height: calc(100% + var(--live-web-gnb));
   border: 0;
   display: block;
