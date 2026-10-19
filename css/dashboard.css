@@ -74,6 +74,8 @@ ul { list-style: none; margin: 0; padding: 0; }
    2) 다크/라이트 — 웹은 prefers-color-scheme을 따르는데, iframe 요소의
       color-scheme이 곧 안쪽 문서의 prefers-color-scheme이 된다. 그래서
       클라이언트 테마(data-theme)를 그대로 넘겨주면 웹도 같이 바뀐다.
+      단 웹은 COLOR_MODE 쿠키를 더 우선하므로 iframe은 credentialless로
+      띄워 실제 쿠키를 가린다(js/proto-settings.js 참고).
    3) 웹 스크롤바 — 스토어·이벤트는 문서 스크롤바가 폭 24를 차지해서 오른쪽
       여백이 40이 아니라 64로 보인다. iframe을 그만큼 넓혀 스크롤바를 틀 밖으로
       밀어내 숨긴다(휠·트랙패드 스크롤은 그대로). 실제 클라이언트는 웹에 CSS를
