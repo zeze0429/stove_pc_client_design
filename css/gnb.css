@@ -543,12 +543,14 @@ body { margin: 0; }
   cursor: grabbing;
 }
 
-/* 드롭 위치 표시선 (Figma: 변경 예정 위치 표기 — 2px 흰 라인, 슬랙 UI 참고) */
+/* 드롭 위치 표시선 (Figma: 변경 예정 위치 표기 — 2px 라인, 슬랙 UI 참고).
+   색은 Figma Make 레퍼런스 코드 그대로 on-surface-elevation-1 — 다크는 흰색,
+   라이트는 어두운 색으로 테마를 따라 바뀐다. */
 .game-group__drop-line {
   position: fixed;
   z-index: 35;
   height: 2px;
-  background: #fff;
+  background: var(--on-surface-elevation-1);
   border-radius: var(--radius-full);
   pointer-events: none;
 }
