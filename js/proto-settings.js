@@ -11,14 +11,14 @@
  */
 var PROTO_SETTINGS_KEY = 'stove-proto-settings';
 
-// 레퍼런스 패널의 초기 상태 그대로
+// 레퍼런스 패널의 초기 상태 기준 — 업데이트 버튼만 끈 상태로 바꿈
 var PROTO_SETTINGS_DEFAULTS = {
   theme: 'dark',
   grid: false,
   pr: true,
   notice: false,
   noticeUrgent: false,
-  updateBtn: true,
+  updateBtn: false,
   download: false,
   downloadStartedAt: 0, // 다운로드 관리를 켠 시각 — GNB 진행 애니메이션이 여기서부터 이어진다
   downloadError: false,
