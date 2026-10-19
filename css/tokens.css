@@ -166,12 +166,12 @@
   --inverse-variant-2:   var(--stove-white-06);
   --inverse-variant-3:   var(--stove-white-04);
 
-  /* disabled */
-  --disabled-variant-1: var(--stove-gray-600);
+  /* disabled (Figma 시멘틱 표 2026-10-19 기준) */
+  --disabled-variant-1: var(--stove-gray-500);
   --disabled-variant-2: var(--stove-gray-600);
   --disabled-variant-3: var(--stove-gray-750);
   --disabled-variant-4: var(--stove-gray-500);
-  --disabled-variant-5: var(--stove-gray-200);
+  --disabled-variant-5: var(--stove-gray-400);
   --disabled-variant-6: var(--stove-gray-80);
   --disabled-variant-7: var(--stove-white-20);
   --disabled-variant-8: var(--stove-white-10);
@@ -261,12 +261,12 @@
   --inverse-variant-2:   var(--stove-black-15);
   --inverse-variant-3:   var(--stove-black-06);
 
-  /* disabled */
-  --disabled-variant-1: var(--stove-gray-200);
+  /* disabled (Figma 시멘틱 표 2026-10-19 기준) */
+  --disabled-variant-1: var(--stove-gray-400);
   --disabled-variant-2: var(--stove-gray-150);
   --disabled-variant-3: var(--stove-gray-80);
   --disabled-variant-4: var(--stove-gray-40);
-  --disabled-variant-5: var(--stove-gray-200);
+  --disabled-variant-5: var(--stove-gray-400);
   --disabled-variant-6: var(--stove-gray-80);
   --disabled-variant-7: var(--stove-white-20);
   --disabled-variant-8: var(--stove-black-08);
