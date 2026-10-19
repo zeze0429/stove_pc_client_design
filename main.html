@@ -28,7 +28,11 @@
 
     <!-- 클라이언트 창 (1280 x 800, 상단 상태표시줄 없음 — 커스텀 영역으로 대체 예정) -->
     <div class="os-window">
-      <iframe class="os-content" src="app-shell.html" title="STOVE 클라이언트" width="1280" height="800"></iframe>
+      <iframe class="os-content" title="STOVE 클라이언트" width="1280" height="800"></iframe>
+      <script>
+        // 캐시된 예전 HTML이 뜨지 않도록 시각을 붙여 연다 (js/gnb-component.js gnbFreshUrl 참고)
+        document.querySelector('.os-content').src = 'app-shell.html?_=' + Date.now();
+      </script>
     </div>
 
     <!-- 작업표시줄 (Figma Make 레퍼런스: https://quartz-unique-70171087.figma.site/ 그대로 재현) -->

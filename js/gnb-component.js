@@ -20,6 +20,13 @@ var GNB_MENU_ITEMS = [
   { id: 'studio', label: '스튜디오 테스트', icon: 'ic-v2-navigation-studio-test-fill', pageUrl: 'studio.html' },
 ];
 
+// 페이지 이동 주소에 시각을 붙여 항상 최신 HTML을 받게 한다 — GitHub Pages가
+// HTML을 10분까지 캐시해서, 배포 직후 옮겨 간 페이지가 예전 마크업에 새
+// 이미지만 받아 깨져 보이는 일이 있었다.
+function gnbFreshUrl(url) {
+  return url + (url.indexOf('?') === -1 ? '?' : '&') + '_=' + Date.now();
+}
+
 // 현재 페이지 파일명으로 어떤 메뉴가 active 상태여야 하는지 추론 —
 // 각 메뉴가 실제로 별도 HTML 문서(멀티 페이지)라서, 페이지가 열릴 때마다
 // 사이드바가 자기 자신을 맞게 하이라이트하려면 이렇게 역으로 찾아야 함.
@@ -297,7 +304,7 @@ var GnbComponent = {
       // 고르면 그 문서로 이동. 지금 보고 있는 페이지를 다시 누른
       // 경우에만 이동 없이 선택 상태만 갱신.
       if (item.pageUrl && gnbInferActiveMenuId() !== item.id) {
-        location.href = item.pageUrl;
+        location.href = gnbFreshUrl(item.pageUrl);
         return;
       }
       this.selectedId = item.id;
@@ -311,7 +318,7 @@ var GnbComponent = {
       // 이동 — 지금 보고 있는 바로 그 게임을 다시 누른 경우에만 이동 없이
       // 선택 상태만 갱신(같은 페이지 리로드 방지).
       if (gnbCurrentGameIdFromUrl() !== game.id) {
-        location.href = 'game-detail.html?id=' + encodeURIComponent(game.id);
+        location.href = gnbFreshUrl('game-detail.html?id=' + encodeURIComponent(game.id));
         return;
       }
       this.selectedGameId = game.id;
