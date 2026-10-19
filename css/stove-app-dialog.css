@@ -5,7 +5,11 @@
    여기서는 본문만 정의한다.
    ============================================================= */
 
-.stove-app { display: flex; flex-direction: column; align-items: center; gap: 2.4rem; }
+/* 본문 묶음 사이는 2.4rem, 그 안의 QR↔문구는 2.8rem — Figma가 두 단계로
+   중첩돼 있어서 한 단계로 펴면 QR 아래 간격이 틀어진다.
+   헤더 아래 간격은 이 시안만 12(공용 셸 기본은 8)라 0.4rem을 더해 맞춘다. */
+.stove-app { display: flex; flex-direction: column; align-items: center; gap: 2.4rem; margin-top: 0.4rem; }
+.stove-app__main { display: flex; flex-direction: column; align-items: center; gap: 2.8rem; }
 
 /* QR은 항상 흰 바탕 위에 — 다크 테마에서도 스캔이 되어야 한다. */
 .stove-app__qr {
