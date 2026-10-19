@@ -133,6 +133,22 @@
         <span class="proto-panel__label">업데이트 버튼</span>
         <button class="proto-switch" type="button" role="switch" data-proto-key="updateBtn" aria-label="업데이트 버튼"></button>
       </div>
+      <!-- 메뉴 강조 — 스위치 없이 체크박스 두 개. 뉴 = 라운지 NEW, 뱃지 = 라운지 "오늘의 1등" -->
+      <div class="proto-panel__row">
+        <span class="proto-panel__label">메뉴 강조</span>
+        <span class="proto-panel__controls">
+          <label class="proto-check">
+            <input type="checkbox" data-proto-key="menuNew" />
+            <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
+            뉴
+          </label>
+          <label class="proto-check">
+            <input type="checkbox" data-proto-key="menuBadge" />
+            <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
+            뱃지
+          </label>
+        </span>
+      </div>
       <div class="proto-panel__row">
         <span class="proto-panel__label">다운로드 관리</span>
         <span class="proto-panel__controls">
@@ -155,22 +171,6 @@
       <div class="proto-panel__row">
         <span class="proto-panel__label">즐겨찾기</span>
         <button class="proto-switch" type="button" role="switch" data-proto-key="favorites" aria-label="즐겨찾기"></button>
-      </div>
-      <!-- 메뉴 강조 — 스위치 없이 체크박스 두 개. 뉴 = 라운지 NEW, 뱃지 = 라운지 "오늘의 1등" -->
-      <div class="proto-panel__row">
-        <span class="proto-panel__label">메뉴 강조</span>
-        <span class="proto-panel__controls">
-          <label class="proto-check">
-            <input type="checkbox" data-proto-key="menuNew" />
-            <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
-            뉴
-          </label>
-          <label class="proto-check">
-            <input type="checkbox" data-proto-key="menuBadge" />
-            <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
-            뱃지
-          </label>
-        </span>
       </div>
     </div>
 

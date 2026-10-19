@@ -357,11 +357,15 @@ body { margin: 0; }
 
 /* NEW 배지 (텍스트와 4px 간격 — 기본 gap 6px에서 2px만큼 당김) */
 /* 메뉴 강조 이미지 (Figma 11661:51764 — "image 2x download" 원본, 2배 PNG).
-   NEW: 메뉴명에서 4 옆(행 gap 6 - 2), 20 x 6.5 / 오늘의 1등: 6 옆, 60 x 18.
-   둘 다 행 세로 가운데. */
+   NEW: 메뉴명에서 4 옆(행 gap 6 - 2), 20 x 6.5, 메뉴명 글자 윗변에 탑정렬 —
+   이미지가 글자로 꽉 차 있어 이미지 윗변 = NEW 글자 윗변. 메뉴명(14/20)의
+   글자 윗변은 행 콘텐츠 위에서 1.4px 아래(실측)라 그만큼 내린다.
+   오늘의 1등: 6 옆, 60 x 18, 행 세로 가운데. */
 .badge-new {
   flex: 0 0 auto;
   display: block;
+  align-self: flex-start;
+  margin-top: 0.14rem;
   margin-left: -0.2rem;
   width: 2rem;
   height: 0.65rem;
