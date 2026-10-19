@@ -145,7 +145,9 @@ var UtilityBarComponent = {
         '<button class="utility-bar-pc-cafe" type="button" aria-label="PC방 혜택 안내" ' +
           ':class="{ \'is-selected\': openPopupId === \'pcCafe\' }" @click="togglePopup(\'pcCafe\')" ' +
           'data-name="component/btn/pc_cafe">' +
-          '<img class="utility-bar-pc-cafe__badge" src="assets/utility-bar/pc-cafe-on-ko.svg" alt="PC방 ON" />' +
+          // "PC방" 글자는 on-surface-elevation-1 — 라이트에선 어두운 글자 버전으로 바꾼다
+          '<img class="utility-bar-pc-cafe__badge utility-bar-pc-cafe__badge--dark" src="assets/utility-bar/pc-cafe-on-ko.svg" alt="PC방 ON" />' +
+          '<img class="utility-bar-pc-cafe__badge utility-bar-pc-cafe__badge--light" src="assets/utility-bar/pc-cafe-on-ko-light.svg" alt="PC방 ON" />' +
           '<span v-if="newBadges.pcCafe" class="utility-bar-pc-cafe__new"></span>' +
           utilityBarTooltip('PC방 혜택 안내') +
         '</button>' +
