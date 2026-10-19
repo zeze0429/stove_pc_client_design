@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/foundations.css?v=7" />
   <link rel="stylesheet" href="css/typography.css?v=12" />
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=2" />
-  <link rel="stylesheet" href="css/desktop.css?v=11" />
+  <link rel="stylesheet" href="css/desktop.css?v=13" />
   <link rel="stylesheet" href="css/notice.css?v=9" />
 </head>
 <body>
@@ -22,7 +22,7 @@
     <!-- 작업표시줄 (Figma Make 레퍼런스: https://quartz-unique-70171087.figma.site/ 그대로 재현) -->
     <div class="os-taskbar os-taskbar--light">
       <div class="os-taskbar__left">
-        <button class="os-taskbar__btn" title="시작">
+        <button class="os-taskbar__btn" title="시작" id="startBtn" aria-controls="protoPanel" aria-expanded="false">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" fill="currentColor"/><rect x="13" y="3" width="8" height="8" fill="currentColor"/><rect x="3" y="13" width="8" height="8" fill="currentColor"/><rect x="13" y="13" width="8" height="8" fill="currentColor"/></svg>
         </button>
         <button class="os-taskbar__btn" title="검색">
@@ -69,6 +69,77 @@
       </div>
     </div>
 
+    <!-- 프로토타입 보기 옵션 패널 — 시작 버튼으로 연다 (Figma Make 레퍼런스 패널 그대로).
+         값은 js/proto-settings.js로 저장되고 iframe 안 클라이언트가 실시간으로 받는다. -->
+    <div class="proto-panel" id="protoPanel" role="dialog" aria-label="보기 옵션" hidden>
+      <button class="proto-panel__close" type="button" data-proto-close aria-label="닫기">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+      </button>
+
+      <h2 class="proto-panel__title">모드지정</h2>
+      <div class="proto-panel__row proto-panel__row--theme">
+        <span class="proto-panel__label">다크 / 라이트</span>
+        <button class="proto-theme" type="button" data-proto-theme aria-label="다크 / 라이트 전환">
+          <svg class="proto-theme__moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+          <svg class="proto-theme__sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+        </button>
+      </div>
+
+      <hr class="proto-panel__divider" />
+
+      <h2 class="proto-panel__title">레이아웃 설정</h2>
+      <div class="proto-panel__row">
+        <span class="proto-panel__label">그리드</span>
+        <button class="proto-switch" type="button" role="switch" data-proto-key="grid" aria-label="그리드"></button>
+      </div>
+      <div class="proto-panel__row">
+        <span class="proto-panel__label">PR영역</span>
+        <button class="proto-switch" type="button" role="switch" data-proto-key="pr" aria-label="PR영역"></button>
+      </div>
+      <div class="proto-panel__row">
+        <span class="proto-panel__label">공지사항</span>
+        <span class="proto-panel__controls">
+          <label class="proto-check">
+            <input type="checkbox" data-proto-key="noticeUrgent" />
+            <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
+            긴급
+          </label>
+          <button class="proto-switch" type="button" role="switch" data-proto-key="notice" aria-label="공지사항"></button>
+        </span>
+      </div>
+
+      <hr class="proto-panel__divider" />
+
+      <h2 class="proto-panel__title">GNB 설정</h2>
+      <div class="proto-panel__row">
+        <span class="proto-panel__label">업데이트 버튼</span>
+        <button class="proto-switch" type="button" role="switch" data-proto-key="updateBtn" aria-label="업데이트 버튼"></button>
+      </div>
+      <div class="proto-panel__row">
+        <span class="proto-panel__label">다운로드 관리</span>
+        <span class="proto-panel__controls">
+          <label class="proto-check">
+            <input type="checkbox" data-proto-key="downloadError" />
+            <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
+            에러
+          </label>
+          <button class="proto-switch" type="button" role="switch" data-proto-key="download" aria-label="다운로드 관리"></button>
+        </span>
+      </div>
+      <div class="proto-panel__row">
+        <span class="proto-panel__label">스튜디오 테스트</span>
+        <button class="proto-switch" type="button" role="switch" data-proto-key="studio" aria-label="스튜디오 테스트"></button>
+      </div>
+      <div class="proto-panel__row">
+        <span class="proto-panel__label">광고</span>
+        <button class="proto-switch" type="button" role="switch" data-proto-key="ad" aria-label="광고"></button>
+      </div>
+      <div class="proto-panel__row">
+        <span class="proto-panel__label">즐겨찾기</span>
+        <button class="proto-switch" type="button" role="switch" data-proto-key="favorites" aria-label="즐겨찾기"></button>
+      </div>
+    </div>
+
     <!-- 데스크탑 알림 스택 (Figma: layout/desktop notice · node 66683:7471) -->
     <div class="notice-stack" id="noticeStack" aria-live="polite"></div>
   </div>
@@ -92,6 +163,60 @@
     }
     tick();
     setInterval(tick, 1000 * 30);
+  </script>
+
+  <script src="js/proto-settings.js?v=1"></script>
+  <script>
+    // 보기 옵션 패널 — 컨트롤 상태는 항상 저장된 설정에서 다시 그린다
+    (function () {
+      var panel = document.getElementById('protoPanel');
+      var startBtn = document.getElementById('startBtn');
+
+      function setOpen(open) {
+        panel.hidden = !open;
+        startBtn.classList.toggle('is-active', open);
+        startBtn.setAttribute('aria-expanded', String(open));
+      }
+
+      function render(s) {
+        panel.classList.toggle('is-light', s.theme === 'light');
+        panel.querySelectorAll('.proto-switch').forEach(function (el) {
+          var on = !!s[el.dataset.protoKey];
+          el.classList.toggle('is-on', on);
+          el.setAttribute('aria-checked', String(on));
+        });
+        panel.querySelectorAll('input[data-proto-key]').forEach(function (el) {
+          el.checked = !!s[el.dataset.protoKey];
+        });
+      }
+
+      startBtn.addEventListener('click', function () { setOpen(panel.hidden); });
+      panel.querySelector('[data-proto-close]').addEventListener('click', function () { setOpen(false); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !panel.hidden) setOpen(false);
+      });
+
+      panel.querySelector('[data-proto-theme]').addEventListener('click', function () {
+        protoSettingsWrite({ theme: protoSettingsRead().theme === 'light' ? 'dark' : 'light' });
+      });
+      panel.querySelectorAll('.proto-switch').forEach(function (el) {
+        el.addEventListener('click', function () {
+          var patch = {};
+          patch[el.dataset.protoKey] = !protoSettingsRead()[el.dataset.protoKey];
+          protoSettingsWrite(patch);
+        });
+      });
+      panel.querySelectorAll('input[data-proto-key]').forEach(function (el) {
+        el.addEventListener('change', function () {
+          var patch = {};
+          patch[el.dataset.protoKey] = el.checked;
+          protoSettingsWrite(patch);
+        });
+      });
+
+      render(protoSettingsRead());
+      protoSettingsSubscribe(render);
+    })();
   </script>
 
   <script>

@@ -209,9 +209,18 @@ var GnbComponent = {
       contextMenu: { visible: false, x: 0, y: 0, game: null, isFavorite: false },
       // 즐겨찾기 롱프레스 드래그 순서변경 중인 항목 (진행 중엔 is-dragging 클래스로 시각 피드백)
       dragging: null,
+      // 보기 옵션(js/proto-settings.js) — 업데이트 버튼·다운로드 뱃지·스튜디오·광고·즐겨찾기
+      proto: protoSettingsRead(),
+      // 다운로드 관리 옆 진행 중 개수 (보기 옵션 "다운로드 관리"를 켰을 때만 보임)
+      downloadCount: 2,
     };
   },
   computed: {
+    // 스튜디오 테스트는 보기 옵션으로 감출 수 있다
+    visibleMenuItems: function () {
+      var showStudio = this.proto.studio;
+      return this.menuItems.filter(function (item) { return item.id !== 'studio' || showStudio; });
+    },
     thumbStyle: function () {
       return { height: this.thumbHeight + 'px', top: this.thumbTop + 'px' };
     },
@@ -382,6 +391,13 @@ var GnbComponent = {
     },
     hideBadgeTip: function () {
       this.badgeTip = null;
+    },
+    // 보기 옵션 "즐겨찾기"를 끄면 즐겨찾기가 하나도 없는 상태 — 그룹 제목만 남는다
+    groupGames: function (group) {
+      return group.id === 'favorites' && !this.proto.favorites ? [] : group.games;
+    },
+    groupCount: function (group) {
+      return group.id === 'favorites' && !this.proto.favorites ? 0 : group.count;
     },
     // 대부분의 1뎁스 메뉴 항목은 "component/GNB/menu/basic" 심볼이지만
     // 다운로드 관리 항목만 Figma에서 별도 심볼("download_manage")을 씀
@@ -716,6 +732,15 @@ var GnbComponent = {
     this._onIndicatorResize = function () { self.moveActiveIndicator('instant'); };
     window.addEventListener('resize', this._onIndicatorResize);
 
+    // 보기 옵션이 바뀌면 메뉴/목록 높이가 달라지므로 인디케이터·스크롤바를 다시 맞춘다
+    protoSettingsSubscribe(function (s) {
+      self.proto = s;
+      self.$nextTick(function () {
+        self.moveActiveIndicator('instant');
+        self.updateThumb();
+      });
+    });
+
     this._resizeObserver = new MutationObserver(function () { self.updateThumb(); });
     if (scrollEl) {
       this._resizeObserver.observe(scrollEl, {
@@ -742,7 +767,7 @@ var GnbComponent = {
           '<img class="logo-dark" src="assets/logo/stove_dark.png" alt="STOVE" />' +
           '<img class="logo-light" src="assets/logo/stove_light.png" alt="STOVE" />' +
         '</button>' +
-        '<button class="update-badge" type="button" aria-label="업데이트" data-name="img/badge/luncher_update">' +
+        '<button v-if="proto.updateBtn" class="update-badge" type="button" aria-label="업데이트" data-name="img/badge/luncher_update">' +
           '<img class="update-badge__img update-badge__img--default" src="assets/update-btn/luncher_update_enabled.png" alt="" />' +
           '<img class="update-badge__img update-badge__img--active" src="assets/update-btn/luncher_update_hover_pressed.png" alt="" />' +
         '</button>' +
@@ -753,13 +778,18 @@ var GnbComponent = {
         '<div ref="activeIndicator" class="gnb-active-indicator" aria-hidden="true"></div>' +
         '<div>' +
           '<ul class="menu-group" data-name="component/GNB/menu_group">' +
-            '<li v-for="item in menuItems" :key="item.id" class="menu-item" :class="{ \'is-selected\': selectedId === item.id }" @click="selectMenu(item)" @mouseenter="handleMenuMouseEnter" @mouseleave="handleHoverLeave" :data-name="menuItemSymbol(item)">' +
+            '<li v-for="item in visibleMenuItems" :key="item.id" class="menu-item" :class="{ \'is-selected\': selectedId === item.id }" @click="selectMenu(item)" @mouseenter="handleMenuMouseEnter" @mouseleave="handleHoverLeave" :data-name="menuItemSymbol(item)">' +
               '<i :class="item.icon"></i>' +
               '<span class="menu-item__label stds-title8">{{ item.label }}</span>' +
               '<span v-if="item.badge === \'new\'" class="badge-new" data-name="component/badge/menu_title">NEW</span>' +
+              // 다운로드 관리 — 진행 중이면 파란 개수, 실패가 있으면 빨간 느낌표
+              '<span v-if="item.id === \'download\' && proto.download" class="badge-download" ' +
+                ':class="{ \'badge-download--error\': proto.downloadError }">' +
+                '{{ proto.downloadError ? \'!\' : downloadCount }}' +
+              '</span>' +
             '</li>' +
           '</ul>' +
-          '<a class="gnb-ad" style="margin-top: var(--spacing-12);" role="link" data-name="img/GNB/AD">' +
+          '<a v-if="proto.ad" class="gnb-ad" style="margin-top: var(--spacing-12);" role="link" data-name="img/GNB/AD">' +
             '<img src="assets/ad-mystery.png" alt="미스테리 기획전 · 3월 26일 할인 종료!" />' +
           '</a>' +
         '</div>' +
@@ -773,11 +803,11 @@ var GnbComponent = {
             '</button>' +
             '<span class="game-group__title-inner">' +
               '<span class="game-group__name stds-title8 fw-medium">{{ group.title }}</span>' +
-              '<span v-if="group.count" class="badge-menu-title" data-name="component/badge/menu_title">{{ group.count }}</span>' +
+              '<span v-if="groupCount(group)" class="badge-menu-title" data-name="component/badge/menu_title">{{ groupCount(group) }}</span>' +
             '</span>' +
           '</div>' +
           '<ul ref="listGroupEl" class="game-group__list-group" data-name="component/game_group/list_group">' +
-            '<li v-for="(game, gameIndex) in group.games" :key="game.id" class="game-group__list" ' +
+            '<li v-for="(game, gameIndex) in groupGames(group)" :key="game.id" class="game-group__list" ' +
               ':class="{ \'is-selected\': selectedGameId === game.id, \'is-dragging\': dragging && dragging.gameId === game.id, \'is-context-open\': contextMenu.visible && contextMenu.game && contextMenu.game.id === game.id }" ' +
               '@click="selectGame(game)" @mouseenter="handleListMouseEnter($event, game)" @mouseleave="handleListMouseLeave" ' +
               '@contextmenu.prevent="openGameContextMenu($event, game, group)" @mousedown="onFavoriteMouseDown($event, group, gameIndex)" ' +

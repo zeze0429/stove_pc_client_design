@@ -121,3 +121,151 @@ html, body {
 .os-taskbar__clock:hover { background: rgba(255, 255, 255, 0.1); }
 .os-taskbar__clock-divider { width: 1px; height: 12px; background: rgba(255, 255, 255, 0.3); flex: 0 0 auto; }
 .os-taskbar__clock .date { color: rgba(255, 255, 255, 0.9); }
+
+/* ---- 보기 옵션 패널 (시작 버튼) --------------------------------
+   레퍼런스: https://quartz-unique-70171087.figma.site/ 시작 버튼 패널의
+   실측값 그대로. 디자인 스펙이 아닌 시안 확인용 장치라 토큰을 쓰지 않는다. */
+.proto-panel {
+  position: absolute;
+  left: 8px;
+  bottom: 56px; /* 작업표시줄 48 + 8 */
+  z-index: 70; /* 데모 버튼(알림 추가, 60) 위 */
+  box-sizing: border-box;
+  width: 260px;
+  padding: 48px 24px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(64px);
+  -webkit-backdrop-filter: blur(64px);
+  color: #101828;
+  font-family: "Spoqa Han Sans Neo", stds-font-kr, system-ui, sans-serif;
+}
+.proto-panel[hidden] { display: none; }
+
+.proto-panel__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #1f1f1f;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.proto-panel__close:hover { background: rgba(0, 0, 0, 0.08); }
+.proto-panel__close svg { width: 16px; height: 16px; display: block; }
+
+.proto-panel__title {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.proto-panel__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 24px;
+}
+.proto-panel__row + .proto-panel__row { margin-top: 12px; }
+.proto-panel__row--theme { height: 32px; }
+
+.proto-panel__label {
+  font-size: 11.25px;
+  font-weight: 700;
+  line-height: 17.5px;
+}
+
+.proto-panel__controls { display: flex; align-items: center; gap: 4px; }
+
+.proto-panel__divider {
+  margin: 24px 0;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* 토글 스위치 44x24 · 노브 20 */
+.proto-switch {
+  position: relative;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.proto-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.04), 0 3px 8px rgba(0, 0, 0, 0.15), 0 3px 1px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s;
+}
+.proto-switch.is-on { background: #fc4420; }
+.proto-switch.is-on::after { transform: translateX(20px); }
+
+/* 다크/라이트 — 지금 모드의 아이콘을 보여준다 */
+.proto-theme {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.2);
+  color: #1f1f1f;
+  cursor: pointer;
+}
+.proto-theme svg { width: 16px; height: 16px; display: block; }
+.proto-theme .proto-theme__sun,
+.proto-panel.is-light .proto-theme .proto-theme__moon { display: none; }
+.proto-panel.is-light .proto-theme .proto-theme__sun { display: block; }
+
+/* 보조 체크박스 (긴급 / 에러) */
+.proto-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 15px;
+  color: #364153;
+  cursor: pointer;
+}
+.proto-check input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.proto-check__box {
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 3px;
+  background: #fff;
+}
+.proto-check__box svg { width: 12px; height: 12px; opacity: 0; }
+.proto-check input:checked + .proto-check__box svg { opacity: 1; }
+.proto-check input:focus-visible + .proto-check__box { outline: 2px solid #fc4420; outline-offset: 1px; }

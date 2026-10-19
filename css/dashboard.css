@@ -24,14 +24,49 @@ ul { list-style: none; margin: 0; padding: 0; }
   position: relative; /* 유틸리티 바(.utility-bar) 플로팅 레이어의 위치 기준 */
   display: grid;
   grid-template-columns: 24rem 1fr;
-  height: 100vh;
+  height: calc(100vh - var(--proto-pr-height)); /* PR영역이 켜지면 그만큼 줄어든다 */
   overflow: hidden;
 }
+
+/* ---- 시안 확인용 12컬럼 그리드 (보기 옵션 "그리드") ---------
+   콘텐츠 영역 전체(유틸리티 바 아래까지 포함)를 덮는다 — 레퍼런스와 동일하게
+   좌우 마진 40 / 거터 20 / 컬럼은 빨강 10%. 클릭을 막지 않는다. */
+.proto-grid {
+  display: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 24rem;
+  right: 0;
+  z-index: 300;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 2rem;
+  padding: 0 4rem;
+  pointer-events: none;
+}
+.proto-grid-on .proto-grid { display: grid; }
+.proto-grid span { background: rgba(255, 0, 0, 0.1); }
+
+/* ---- PR영역 (보기 옵션 "PR영역") ------------------------------
+   창 맨 아래 80 높이 띠. 창 전체 높이(800)는 그대로이고 앱 셸이
+   그만큼 줄어든다(720). 배너 이미지는 아직 없어 영역만 잡아 둔다. */
+:root { --proto-pr-height: 0px; }
+:root.proto-pr-on { --proto-pr-height: 8rem; }
+.proto-pr {
+  display: none;
+  height: var(--proto-pr-height);
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid var(--border);
+  background: var(--background-variant-1);
+  color: var(--on-surface-elevation-4);
+}
+.proto-pr-on .proto-pr { display: flex; }
 
 /* ---- GNB를 대시보드 셸에 맞게 조정 (컴포넌트 스타일은 gnb.css) --- */
 /* 헤더 고정 · 스크롤 분리는 gnb.css의 .gnb / .gnb-header / .gnb-menu에서 처리 */
 .app > .gnb {
-  height: 100vh;
+  height: 100%;
   min-height: 0;
   max-height: none;
 }

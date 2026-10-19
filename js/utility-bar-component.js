@@ -63,8 +63,11 @@ var UtilityBarComponent = {
       // 띄우는 경우가 있어 따로 들고 있는다.
       openDialogId: null,
       // 유틸리티 바 아래 공지 띠 — 닫으면 콘텐츠가 그만큼 다시 올라온다.
-      notice: UTILITY_NOTICE,
-      noticeVisible: true,
+      // 노출 여부와 긴급 여부는 보기 옵션(js/proto-settings.js)을 따른다.
+      notice: Object.assign({}, UTILITY_NOTICE, {
+        level: protoSettingsRead().noticeUrgent ? 'urgent' : 'normal',
+      }),
+      noticeVisible: protoSettingsRead().notice,
       // 신규 내용 유무 — 한 번 열어보면 점이 사라진다
       newBadges: { chat: true, alarm: true, pcCafe: true },
       // 콘텐츠가 바 밑으로 지나가기 시작했는지 (배경 70% + 블러로 전환)
@@ -77,6 +80,11 @@ var UtilityBarComponent = {
   },
   mounted: function () {
     this.syncNav();
+    var self = this;
+    protoSettingsSubscribe(function (s) {
+      self.noticeVisible = s.notice;
+      self.notice.level = s.noticeUrgent ? 'urgent' : 'normal';
+    });
     // 뒤로가기로 돌아온 페이지는 bfcache에서 통째로 복원돼 mounted가 다시
     // 돌지 않는다 — 그 사이 달라진 앞으로가기 상태를 여기서 다시 맞춘다.
     this.onPageShow = this.syncNav.bind(this);
