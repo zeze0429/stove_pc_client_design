@@ -66,6 +66,10 @@ var StoreMainTop = {
       playing: true,
       dragX: 0,
       dragging: false,
+      // "n/14" 알약 테두리 진행 표시 — 폭은 숫자 자릿수에 따라 달라 실측한다
+      pagerW: 69,
+      progressKey: 0, // 바뀔 때마다 테두리 애니메이션을 처음부터 다시
+
     };
   },
   computed: {
@@ -85,6 +89,14 @@ var StoreMainTop = {
         transition: this.animate && !this.dragging ? 'transform ' + STORE_HERO_SPEED + 'ms ease' : 'none',
       };
     },
+    // 알약(높이 26) 테두리를 위·아래 반으로 나눈 경로 — 왼쪽 가운데에서 시작해
+    // 오른쪽 가운데까지 동시에 그려진다 (실제 웹 svg-border 그대로)
+    pagerPaths: function () {
+      var w = this.pagerW;
+      var top = 'M0.5,13 A12.5,12.5 0 0 1 13,0.5 H' + (w - 13) + ' A12.5,12.5 0 0 1 ' + (w - 0.5) + ',13';
+      var bottom = 'M0.5,13 A12.5,12.5 0 0 0 13,25.5 H' + (w - 13) + ' A12.5,12.5 0 0 0 ' + (w - 0.5) + ',13';
+      return { top: top, bottom: bottom, length: Math.PI * 12.5 + (w - 26) };
+    },
     indicatorStyle: function () {
       return {
         transform: 'translateX(' + this.indicator.left + 'px)',
@@ -93,8 +105,20 @@ var StoreMainTop = {
       };
     },
   },
+  watch: {
+    current: function () { this.$nextTick(this.measurePager); },
+  },
   mounted: function () {
     var self = this;
+    // 알약 폭은 숫자 자릿수·글꼴 로드에 따라 바뀐다 — 바뀔 때마다 테두리 경로를 다시 맞춘다
+    this.$nextTick(function () {
+      self.measurePager();
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(self.measurePager);
+      if (window.ResizeObserver && self.$refs.pager) {
+        self.pagerObserver = new ResizeObserver(self.measurePager);
+        self.pagerObserver.observe(self.$refs.pager);
+      }
+    });
     this.$nextTick(function () {
       self.moveIndicator();
       requestAnimationFrame(function () { requestAnimationFrame(function () { self.indicatorReady = true; }); });
@@ -115,6 +139,7 @@ var StoreMainTop = {
   },
   beforeUnmount: function () {
     this.stopAutoplay();
+    if (this.pagerObserver) this.pagerObserver.disconnect();
     if (this.scroller) this.scroller.removeEventListener('scroll', this.onScroll);
   },
   methods: {
@@ -158,11 +183,17 @@ var StoreMainTop = {
         requestAnimationFrame(function () { requestAnimationFrame(function () { self.animate = true; }); });
       }
     },
+    measurePager: function () {
+      var el = this.$refs.pager;
+      if (el) this.pagerW = Math.round(el.getBoundingClientRect().width * 10) / 10;
+    },
     startAutoplay: function () {
       var self = this;
       this.stopAutoplay();
+      this.measurePager();
+      this.progressKey += 1;
       if (!this.playing) return;
-      this.timer = setInterval(function () { self.go(1); }, STORE_HERO_DELAY);
+      this.timer = setInterval(function () { self.go(1); self.progressKey += 1; }, STORE_HERO_DELAY);
     },
     stopAutoplay: function () { clearInterval(this.timer); },
     restartAutoplay: function () { if (this.playing) this.startAutoplay(); },
@@ -246,7 +277,12 @@ var StoreMainTop = {
         '</div>' +
         '<button class="store-hero__arrow store-hero__arrow--prev" type="button" aria-label="이전 배너" @click="go(-1)"><i class="ic-v2-control-arrow-left-line"></i></button>' +
         '<button class="store-hero__arrow store-hero__arrow--next" type="button" aria-label="다음 배너" @click="go(1)"><i class="ic-v2-control-arrow-right-line"></i></button>' +
-        '<button class="store-hero__pager" type="button" :aria-label="playing ? \'자동 재생 멈춤\' : \'자동 재생\'" @click="togglePlay">' +
+        '<button ref="pager" class="store-hero__pager" type="button" :aria-label="playing ? \'자동 재생 멈춤\' : \'자동 재생\'" @click="togglePlay">' +
+          // 재생 중이면 다음 배너까지 남은 시간만큼 흰 테두리가 채워진다
+          '<svg v-if="playing" :key="progressKey" class="store-hero__pager-border" :viewBox="\'0 0 \' + pagerW + \' 26\'" preserveAspectRatio="none" fill="none" aria-hidden="true" ' +
+            ':style="{ \'--border-len\': pagerPaths.length }">' +
+            '<path :d="pagerPaths.top" /><path :d="pagerPaths.bottom" />' +
+          '</svg>' +
           '<span class="store-hero__count"><b>{{ current + 1 }}</b><span>/</span><span>{{ banners.length }}</span></span>' +
           '<i :class="playing ? \'ic-v2-media-av-pause-fill\' : \'ic-v2-media-av-play-fill\'" aria-hidden="true"></i>' +
         '</button>' +
