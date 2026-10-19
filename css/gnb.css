@@ -399,6 +399,39 @@ body { margin: 0; }
 }
 .game-group__list.is-selected .game-group__list-name { color: var(--on-surface-elevation-2); }
 
+/* 뱃지 호버 툴팁 (Figma Tooltip/iconbtn, 규칙 11636:530562)
+   - 몸통은 행 바닥에 붙고, 꼬리(4px)는 행 아래쪽 4px 안으로 들어가 뱃지를 가리킨다
+   - 기본은 뱃지 중앙에 맞춰 뜨되 행(200px) 밖으로 나가면 행 끝에 붙인다 —
+     게임명이 길어 뱃지가 오른쪽 끝에 몰린 경우가 그렇다. 꼬리는 그래도 뱃지 중앙.
+   - 최대 폭은 행 폭. 다국어로 길어지면 그 안에서 줄바꿈
+   left / 꼬리 위치는 실제 폭을 재야 알 수 있어 JS가 인라인으로 준다. */
+.game-group__badge-tooltip {
+  position: absolute;
+  z-index: 20; /* 이름 툴팁과 같은 이유로 행이 아니라 목록 기준으로 쌓인다 */
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  max-width: 100%;
+  white-space: normal;
+  pointer-events: none;
+}
+.game-group__badge-tooltip.is-measuring { visibility: hidden; }
+.game-group__badge-tooltip-tail {
+  align-self: flex-start;
+  width: 0;
+  height: 0;
+  border-left: 0.3rem solid transparent;
+  border-right: 0.3rem solid transparent;
+  border-bottom: 0.4rem solid var(--neutral-variant-1);
+}
+.game-group__badge-tooltip-body {
+  padding: 0.5rem 0.8rem;
+  border-radius: 0.6rem; /* Figma 6px — radius 스케일에 없는 값 */
+  background: var(--neutral-variant-1);
+  color: var(--stove-white);
+  overflow-wrap: anywhere;
+}
+
 /* 드래그 중인 즐겨찾기 항목(롱프레스 후 순서변경) — 살짝 반투명 + 잡기 커서 */
 /* 드래그 중 원래 자리에 남는 "고스트" (Figma: 기존 위치 — 투명도 30% + 점선) */
 .game-group__list.is-dragging {

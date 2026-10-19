@@ -85,6 +85,12 @@ var GNB_BADGE_ICON = {
   multiplay: 'ic-v2-navigation-pcbang-fill',
 };
 
+// 뱃지에 마우스를 올리면 뜨는 툴팁 문구
+var GNB_BADGE_TOOLTIP = {
+  link: '링크 플레이 지원',
+  multiplay: 'PC방에서 플레이하면 무료!',
+};
+
 // id로 게임 하나 찾기 — 스토브게임/즐겨찾기 그룹을 가리지 않고 전체에서 검색
 // (게임 상세 페이지가 자기 id로 어떤 게임인지 알아내는 데 씀).
 function gnbFindGameById(id) {
@@ -188,6 +194,8 @@ var GnbComponent = {
       selectedId: gnbInferActiveMenuId(),
       selectedGameId: gnbCurrentGameIdFromUrl(),
       hoveredGameId: null,
+      // 뱃지 툴팁: { gameId, text, left, top, tailLeft, measuring }
+      badgeTip: null,
       tooltipLeft: 0,
       tooltipTop: 0,
       tooltipWidth: 0,
@@ -340,7 +348,40 @@ var GnbComponent = {
     },
     handleListMouseLeave: function () {
       this.hoveredGameId = null;
+      this.badgeTip = null;
       this.handleHoverLeave();
+    },
+    // 뱃지 툴팁은 뱃지 중앙에 맞추되 행 밖으로 나가면 행 끝에 붙인다.
+    // 폭은 문구 길이(다국어 포함)에 따라 달라서, 일단 숨긴 채 그려 실제 폭을
+    // 잰 다음 자리를 정한다.
+    showBadgeTip: function (e, game, badge) {
+      if (this.contextMenu.visible || this.dragging) return;
+      var badgeEl = e.currentTarget;
+      var li = badgeEl.closest('.game-group__list');
+      var self = this;
+      this.badgeTip = {
+        gameId: game.id,
+        text: GNB_BADGE_TOOLTIP[badge],
+        left: 0,
+        top: li.offsetHeight - 4, // 꼬리 4px가 행 안쪽, 몸통은 행 바닥부터
+        tailLeft: 0,
+        measuring: true,
+      };
+      this.$nextTick(function () {
+        var tip = li.querySelector('.game-group__badge-tooltip');
+        if (!tip || !self.badgeTip || self.badgeTip.gameId !== game.id) return;
+        var liRect = li.getBoundingClientRect();
+        var badgeRect = badgeEl.getBoundingClientRect();
+        var center = badgeRect.left + badgeRect.width / 2 - liRect.left;
+        var w = tip.offsetWidth;
+        var left = Math.min(Math.max(center - w / 2, 0), li.offsetWidth - w);
+        self.badgeTip.left = left;
+        self.badgeTip.tailLeft = center - left - 3; // 꼬리 폭 6의 절반
+        self.badgeTip.measuring = false;
+      });
+    },
+    hideBadgeTip: function () {
+      this.badgeTip = null;
     },
     // 대부분의 1뎁스 메뉴 항목은 "component/GNB/menu/basic" 심볼이지만
     // 다운로드 관리 항목만 Figma에서 별도 심볼("download_manage")을 씀
@@ -744,11 +785,20 @@ var GnbComponent = {
               '<span class="game-group__thumbnail" :style="{ backgroundImage: \'url(\' + game.thumb + \')\' }" data-name="component/thumbnail/game"></span>' +
               '<span class="game-group__list-name stds-cap1 fw-medium">{{ game.name }}</span>' +
               '<span v-if="game.badges && game.badges.length" class="game-group__badges">' +
-                '<span v-for="b in game.badges" :key="b" class="badge-game-list" :class="\'badge-game-list--\' + b" data-name="component/badge/game_list">' +
+                '<span v-for="b in game.badges" :key="b" class="badge-game-list" :class="\'badge-game-list--\' + b" data-name="component/badge/game_list" ' +
+                  '@mouseenter="showBadgeTip($event, game, b)" @mouseleave="hideBadgeTip">' +
                   '<i :class="badgeIcon[b]"></i>' +
                 '</span>' +
               '</span>' +
-              '<div v-if="hoveredGameId === game.id" class="game-group__list-tooltip stds-cap2" :style="tooltipStyle" data-name="menu">{{ game.name }}</div>' +
+              // 뱃지 툴팁이 떠 있는 동안에는 게임명 툴팁을 감춘다 — 둘이 겹쳐 뜨면 안 된다
+              '<div v-if="hoveredGameId === game.id && !(badgeTip && badgeTip.gameId === game.id)" ' +
+                'class="game-group__list-tooltip stds-cap2" :style="tooltipStyle" data-name="menu">{{ game.name }}</div>' +
+              '<div v-if="badgeTip && badgeTip.gameId === game.id" class="game-group__badge-tooltip" ' +
+                ':class="{ \'is-measuring\': badgeTip.measuring }" ' +
+                ':style="{ left: badgeTip.left + \'px\', top: badgeTip.top + \'px\' }" data-name="Tooltip/iconbtn">' +
+                '<span class="game-group__badge-tooltip-tail" :style="{ marginLeft: badgeTip.tailLeft + \'px\' }"></span>' +
+                '<span class="game-group__badge-tooltip-body stds-cap1 fw-medium">{{ badgeTip.text }}</span>' +
+              '</div>' +
             '</li>' +
           '</ul>' +
         '</section>' +
