@@ -86,32 +86,33 @@ var GNB_BADGE_ICON = {
 };
 
 // 다운로드 관리 진행 애니메이션 (Figma Make 레퍼런스 quartz-unique-70171087.figma.site
-// 실측을 바탕으로 흐름만 조정) — 보기 옵션 "다운로드 관리"를 켜면 대기열 3개를
-// 차례로 받는다: 남은 개수 3 → 진행률들 → 2 → 진행률들 → 1 → 진행률들 → 완료.
-// 완료 체크(+ 퍼지는 링)는 맨 마지막에 한 번만 나오고, 끝나면 비어 있는 상태.
+// 실측) — 보기 옵션 "다운로드 관리"를 켜면 대기열 3개를 차례로 받는다.
+// 항목마다: 남은 개수 뱃지 → 진행률(%)들 → 완료 체크(+ 퍼지는 링).
+// 레퍼런스보다 조금 느리게, 마지막 체크는 더 오래 머문 뒤 빈 상태로 끝난다.
 var GNB_DOWNLOAD_QUEUE = [
   { count: 3, pcts: [12, 34, 87, 98] },
   { count: 2, pcts: [7, 64, 99] },
   { count: 1, pcts: [15, 72, 99] },
 ];
-var GNB_DOWNLOAD_STEP = 2000;  // 단계마다 머무는 시간
-var GNB_DOWNLOAD_CHECK = 5000; // 완료 체크 — 링 펄스 1.4초 x 3 + 들어오는 시간
-var GNB_DOWNLOAD_SLIDE = 500;  // css/gnb.css .download-queue__layer 애니메이션 길이
+var GNB_DOWNLOAD_STEP = 2000;        // 단계마다 머무는 시간
+var GNB_DOWNLOAD_CHECK = 5000;       // 중간 완료 체크 — 링 펄스 1.4초 x 3 + 들어오는 시간
+var GNB_DOWNLOAD_FINAL_CHECK = 8000; // 마지막 완료 체크는 더 오래
+var GNB_DOWNLOAD_SLIDE = 500;        // css/gnb.css .download-queue__layer 애니메이션 길이
 
 // 시퀀스를 시간축으로 펼친다 — [{ at, kind, value }], 끝 시각은 end
 function gnbDownloadTimeline() {
   var steps = [];
   var t = 0;
-  GNB_DOWNLOAD_QUEUE.forEach(function (job) {
+  GNB_DOWNLOAD_QUEUE.forEach(function (job, i) {
     steps.push({ at: t, kind: 'count', value: job.count });
     t += GNB_DOWNLOAD_STEP;
     job.pcts.forEach(function (pct) {
       steps.push({ at: t, kind: 'pct', value: pct });
       t += GNB_DOWNLOAD_STEP;
     });
+    steps.push({ at: t, kind: 'check', value: null });
+    t += i === GNB_DOWNLOAD_QUEUE.length - 1 ? GNB_DOWNLOAD_FINAL_CHECK : GNB_DOWNLOAD_CHECK;
   });
-  steps.push({ at: t, kind: 'check', value: null });
-  t += GNB_DOWNLOAD_CHECK;
   return { steps: steps, end: t };
 }
 
