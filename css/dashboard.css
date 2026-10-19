@@ -24,6 +24,8 @@ ul { list-style: none; margin: 0; padding: 0; }
   position: relative; /* 유틸리티 바(.utility-bar) 플로팅 레이어의 위치 기준 */
   display: grid;
   grid-template-columns: 24rem 1fr;
+  /* 행을 앱 높이에 고정 — auto면 내용 높이(800)만큼 늘어나 PR영역 밑으로 넘친다 */
+  grid-template-rows: minmax(0, 1fr);
   height: calc(100vh - var(--proto-pr-height)); /* PR영역이 켜지면 그만큼 줄어든다 */
   overflow: hidden;
 }
