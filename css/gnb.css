@@ -416,6 +416,14 @@ body { margin: 0; }
 .game-group__btn-left-arrow:hover { background: var(--interaction-hover); }
 .game-group__btn-left-arrow:active { background: var(--interaction-pressed); }
 .game-group__btn-left-arrow i { font-size: 1.2rem; transition: transform .15s; }
+/* 그룹에 항목이 하나도 없으면(예: 즐겨찾기 0개) 화살표는 비활성 —
+   disabled-variant-3, 펼칠 게 없으니 호버·프레스 배경도 없다 */
+.game-group.is-empty .game-group__btn-left-arrow {
+  color: var(--disabled-variant-3);
+  cursor: default;
+}
+.game-group.is-empty .game-group__btn-left-arrow:hover,
+.game-group.is-empty .game-group__btn-left-arrow:active { background: transparent; }
 /* 기본값 = 펼쳐진 상태(down-fill 그대로). 접히면 같은 아이콘을 -90deg 회전해 우측 화살표처럼 보이게 함 */
 .game-group.is-collapsed .game-group__btn-left-arrow i { transform: rotate(-90deg); }
 .game-group__title-inner {

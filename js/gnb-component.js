@@ -923,7 +923,7 @@ var GnbComponent = {
 
         '<div class="gnb-divider" data-name="element/div"></div>' +
 
-        '<section v-for="group in gameGroups" :key="group.id" class="game-group" :class="{ \'is-collapsed\': isCollapsed(group) }">' +
+        '<section v-for="group in gameGroups" :key="group.id" class="game-group" :class="{ \'is-collapsed\': isCollapsed(group), \'is-empty\': !groupCount(group) }">' +
           '<div class="game-group__title" data-name="component/game_group/title">' +
             '<button class="game-group__btn-left-arrow" type="button" aria-label="펼치기/접기" @click="toggleGroup(group)" data-name="component/game_group/title/btn_left_arrow">' +
               '<i class="ic-v2-control-select-arrow-down-fill"></i>' +
