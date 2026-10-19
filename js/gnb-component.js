@@ -86,17 +86,17 @@ var GNB_BADGE_ICON = {
 };
 
 // 다운로드 관리 진행 애니메이션 (Figma Make 레퍼런스 quartz-unique-70171087.figma.site
-// 실측) — 보기 옵션 "다운로드 관리"를 켜면 대기열 3개를 차례로 받는다.
-// 항목마다: 남은 개수 뱃지 → 진행률(%)들 → 완료 체크, 각 1.5초 / 체크만 4.6초.
-// 마지막 체크가 빠지면 오른쪽은 비어 있는 상태로 끝난다.
+// 실측을 바탕으로 흐름만 조정) — 보기 옵션 "다운로드 관리"를 켜면 대기열 3개를
+// 차례로 받는다: 남은 개수 3 → 진행률들 → 2 → 진행률들 → 1 → 진행률들 → 완료.
+// 완료 체크(+ 퍼지는 링)는 맨 마지막에 한 번만 나오고, 끝나면 비어 있는 상태.
 var GNB_DOWNLOAD_QUEUE = [
   { count: 3, pcts: [12, 34, 87, 98] },
   { count: 2, pcts: [7, 64, 99] },
   { count: 1, pcts: [15, 72, 99] },
 ];
-var GNB_DOWNLOAD_STEP = 1500;
-var GNB_DOWNLOAD_CHECK = 4600;
-var GNB_DOWNLOAD_SLIDE = 380; // css/gnb.css .download-queue__layer 애니메이션 길이
+var GNB_DOWNLOAD_STEP = 2000;  // 단계마다 머무는 시간
+var GNB_DOWNLOAD_CHECK = 5000; // 완료 체크 — 링 펄스 1.4초 x 3 + 들어오는 시간
+var GNB_DOWNLOAD_SLIDE = 500;  // css/gnb.css .download-queue__layer 애니메이션 길이
 
 // 시퀀스를 시간축으로 펼친다 — [{ at, kind, value }], 끝 시각은 end
 function gnbDownloadTimeline() {
@@ -109,9 +109,9 @@ function gnbDownloadTimeline() {
       steps.push({ at: t, kind: 'pct', value: pct });
       t += GNB_DOWNLOAD_STEP;
     });
-    steps.push({ at: t, kind: 'check', value: null });
-    t += GNB_DOWNLOAD_CHECK;
   });
+  steps.push({ at: t, kind: 'check', value: null });
+  t += GNB_DOWNLOAD_CHECK;
   return { steps: steps, end: t };
 }
 
@@ -244,6 +244,8 @@ var GnbComponent = {
       // 다운로드 관리 옆 진행 애니메이션의 현재 레이어들 — 전환 중엔 들어오는 것과
       // 나가는 것 두 장이 겹친다 (보기 옵션 "다운로드 관리"를 켰을 때만)
       dlLayers: [],
+      // 완료 체크 뒤로 퍼지는 링 — 목록(스크롤 영역)에 잘리지 않게 화면 기준 위치로 따로 그린다
+      dlPulse: null,
     };
   },
   computed: {
@@ -433,6 +435,7 @@ var GnbComponent = {
       clearTimeout(this._dlTimer);
       this._dlTimers = (this._dlTimers || []).filter(function (id) { clearTimeout(id); return false; });
       var started = this.proto.downloadStartedAt;
+      this.dlPulse = null;
       if (!this.proto.download || !started) { this.dlLayers = []; return; }
       var line = gnbDownloadTimeline();
       var elapsed = Date.now() - started;
@@ -443,7 +446,19 @@ var GnbComponent = {
       this._dlKey = (this._dlKey || 0) + 1;
       this.dlLayers = [{ key: this._dlKey, kind: cur.kind, value: cur.value,
         phase: elapsed - cur.at < GNB_DOWNLOAD_SLIDE ? 'in' : 'static' }];
+      if (cur.kind === 'check') this.showDownloadPulse(Math.max(0, cur.at + GNB_DOWNLOAD_SLIDE - elapsed));
       this.scheduleDownloadStep(i + 1, line, started);
+    },
+    // 체크가 다 올라온 뒤(delay) 그 자리에 링을 띄운다 — 위치는 체크 원의 화면 좌표
+    showDownloadPulse: function (delay) {
+      var self = this;
+      this._dlTimers.push(setTimeout(function () {
+        var circle = self.$el.querySelector('.download-queue__check-circle');
+        if (!circle) return;
+        var r = circle.getBoundingClientRect();
+        self._dlKey += 1;
+        self.dlPulse = { key: self._dlKey, left: r.left, top: r.top };
+      }, delay));
     },
     scheduleDownloadStep: function (i, line, started) {
       var self = this;
@@ -451,10 +466,12 @@ var GnbComponent = {
       this._dlTimer = setTimeout(function () {
         // 지금 레이어는 위로 빠지고, 다음 단계가 아래에서 올라온다
         self.dlLayers.forEach(function (l) { l.phase = 'out'; });
+        self.dlPulse = null;
         if (i < line.steps.length) {
           var next = line.steps[i];
           self._dlKey += 1;
           self.dlLayers.push({ key: self._dlKey, kind: next.kind, value: next.value, phase: 'in' });
+          if (next.kind === 'check') self.showDownloadPulse(GNB_DOWNLOAD_SLIDE);
           self.scheduleDownloadStep(i + 1, line, started);
         }
         self._dlTimers.push(setTimeout(function () {
@@ -512,6 +529,7 @@ var GnbComponent = {
       // 툴팁은 화면 기준 고정 위치라 목록이 움직이면 행과 어긋난다 — 스크롤 중엔 닫는다
       this.hoveredGameId = null;
       this.badgeTip = null;
+      this.dlPulse = null;
       // 탑 버튼은 "40px 스크롤되면"이 아니라, 상단 메뉴 6개(.menu-group)가
       // 완전히 가려지는 시점(그 바닥이 스크롤 영역 상단을 지나는 순간) 노출
       var menuGroupEl = scrollEl.querySelector('.menu-group');
@@ -869,7 +887,6 @@ var GnbComponent = {
                   '<span v-if="layer.kind === \'count\'" class="badge-download">{{ layer.value }}</span>' +
                   '<span v-else-if="layer.kind === \'pct\'" class="download-queue__pct">{{ layer.value }}%</span>' +
                   '<span v-else class="download-queue__check" aria-label="다운로드 완료">' +
-                    '<span class="download-queue__pulse" aria-hidden="true"></span>' +
                     '<span class="download-queue__check-circle">' +
                       '<svg viewBox="0 0 9 6.5" fill="none" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M8.78034 0.21967C9.07324 0.512563 9.07324 0.987437 8.78034 1.28033L3.78034 6.28033C3.63262 6.42805 3.42999 6.50746 3.22123 6.49945C3.01248 6.49143 2.81653 6.39671 2.68057 6.23809L0.180571 3.32143C-0.0889955 3.00693 -0.0525743 2.53346 0.26192 2.26389C0.576414 1.99432 1.04989 2.03075 1.31946 2.34524L3.29238 4.64698L7.71968 0.21967C8.01258 -0.0732233 8.48745 -0.0732233 8.78034 0.21967Z"/></svg>' +
                     '</span>' +
@@ -923,6 +940,8 @@ var GnbComponent = {
         '</section>' +
       '</div>' +
 
+      '<span v-if="dlPulse" :key="dlPulse.key" class="download-queue__pulse" aria-hidden="true" ' +
+        ':style="{ left: dlPulse.left + \'px\', top: dlPulse.top + \'px\' }"></span>' +
       '<div ref="track" class="gnb-scrollbar" :class="{ \'is-visible\': showScrollbar }" aria-hidden="true">' +
         '<div class="gnb-scrollbar__thumb" :style="thumbStyle"></div>' +
       '</div>' +
