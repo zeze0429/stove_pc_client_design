@@ -59,7 +59,7 @@ var NoticeDialog = {
     '<layer-dialog title="공지" width="56rem" @close="$emit(\'close\')" ' +
       'data-name="layout/utility_bar/notice/dialog">' +
       '<div class="notice-dialog">' +
-        '<p class="notice-dialog__title stds-title6 fw-bold">{{ notice.title }}</p>' +
+        '<p class="notice-dialog__title stds-title7 fw-medium">{{ notice.title }}</p>' +
         '<div class="notice-dialog__box stds-text2 fw-regular" data-name="contents">' +
           '<p v-for="(line, i) in notice.body" :key="i" ' +
             ':class="{ \'notice-dialog__link\': line.link }">{{ line.text }}</p>' +
