@@ -717,7 +717,10 @@ body { margin: 0; }
   pointer-events: auto;
 }
 .gnb-top-btn:hover { color: var(--on-surface-elevation-1); }
-.gnb-top-btn__img { display: block; width: 36px; height: 36px; }
+.gnb-top-btn__img { display: block; width: 36px; height: 36px; transition: opacity .15s; }
+/* 호버·프레스 — 이미지 투명도 50% */
+.gnb-top-btn:hover .gnb-top-btn__img,
+.gnb-top-btn:active .gnb-top-btn__img { opacity: 0.5; }
 .gnb-top-btn__img--light { display: none; }
 :root[data-theme="light"] .gnb-top-btn__img--dark { display: none; }
 :root[data-theme="light"] .gnb-top-btn__img--light { display: block; }
