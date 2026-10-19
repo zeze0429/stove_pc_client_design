@@ -51,9 +51,40 @@
       overflow-y: auto;
       overflow-x: hidden;
       background: var(--background-variant-1); /* store.onstove.com 실제 body 배경(rgb(25,25,25))과 동일 토큰 */
-      padding: calc(4.8rem + var(--utility-notice-h, 0px)) 0 20rem; /* 상단 = 유틸리티 바 + 공지 띠 / 하단 200px */
+      padding: calc(4.8rem + var(--utility-notice-h, 0px)) 0 10rem; /* 상단 = 유틸리티 바 + 공지 띠 / 하단 100px */
     }
     .store-preview { display: block; width: 1040px; height: auto; }
+
+    /* 맨 위로 버튼 — 실제 스토어 웹 캡처(그림자 포함 투명 PNG).
+       웹처럼 어느 정도(300) 스크롤해야 나타난다: 숨김 상태에선 투명하고
+       40 아래에 있다가 0.2초 동안 제자리로 올라온다(웹은 margin-bottom 전환).
+       자리는 라운지 플로팅 버튼과 같은 오른쪽 40 / 아래 20. 캡처 이미지는
+       버튼 바깥 그림자 여백 16만큼 당겨 놓는다. */
+    .store-fab-top {
+      position: absolute;
+      z-index: 15;
+      right: 4rem;
+      bottom: 2rem;
+      width: 4rem;
+      height: 4rem;
+      padding: 0;
+      border: 0;
+      border-radius: var(--radius-full);
+      background: transparent;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(4rem);
+      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .store-fab-top.is-visible { opacity: 1; pointer-events: auto; transform: none; }
+    .store-fab-top img {
+      position: absolute;
+      left: -1.6rem;
+      top: -1.6rem;
+      width: 7.2rem;
+      pointer-events: none;
+    }
 
   </style>
 </head>
@@ -76,6 +107,13 @@
       <img class="store-preview theme-img--light" src="assets/store-preview-light.jpg?v=2" alt="STOVE 스토어 미리보기" loading="lazy" />
     </div>
 
+    <!-- 맨 위로 (스토어 웹 캡처) — 300 넘게 스크롤하면 나타난다 -->
+    <button class="store-fab-top" type="button" aria-label="맨 위로"
+      onclick="document.querySelector('.app > .main').scrollTo({ top: 0, behavior: 'smooth' })">
+      <img class="theme-img--dark" src="assets/store-fab-top-dark.png?v=1" alt="" aria-hidden="true" />
+      <img class="theme-img--light" src="assets/store-fab-top-light.png?v=1" alt="" aria-hidden="true" loading="lazy" />
+    </button>
+
   </div>
 
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
@@ -92,6 +130,14 @@
     mountGnb('#gnb-mount');
     mountUtilityBar('#utility-bar-mount');
     mountPageScrollbar(document.querySelector('.app > .main'));
+    // 맨 위로 버튼 — 웹 스토어처럼 300 넘게 내려가면 나타난다
+    (function () {
+      var main = document.querySelector('.app > .main');
+      var fab = document.querySelector('.store-fab-top');
+      function sync() { fab.classList.toggle('is-visible', main.scrollTop > 300); }
+      main.addEventListener('scroll', sync, { passive: true });
+      sync();
+    })();
   </script>
 </body>
 </html>
