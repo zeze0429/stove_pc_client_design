@@ -235,6 +235,75 @@ body { margin: 0; }
 }
 .badge-download--error { padding: 0; background: var(--system-error); font-weight: 700; }
 
+/* 다운로드 진행 애니메이션 (Figma Make 레퍼런스 실측, js/gnb-component.js
+   GNB_DOWNLOAD_QUEUE). 높이 20 · 최소 폭 32 칸 안에 레이어를 겹쳐 두고,
+   새 단계는 아래에서 올라오며 나타나고(queueSlideIn) 이전 단계는 위로
+   빠지며 사라진다(queueSlideOut) — 둘 다 380ms. 칸 밖으로 움직이는 동안도
+   보여야 해서 overflow는 visible. */
+.download-queue {
+  position: relative;
+  flex: 0 0 auto;
+  margin-left: auto;
+  min-width: 3.2rem;
+  height: 2rem;
+}
+.download-queue__layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.download-queue__layer .badge-download { margin-left: 0; }
+.download-queue__layer.is-in { animation: download-queue-in 380ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+.download-queue__layer.is-out { animation: download-queue-out 380ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+@keyframes download-queue-in {
+  from { opacity: 0; transform: translateY(100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes download-queue-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-100%); }
+}
+/* 진행률 — 12 / Medium / 행간 18 / 자간 -0.24 */
+.download-queue__pct {
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.8rem;
+  letter-spacing: -0.024rem;
+  color: var(--on-surface-elevation-4);
+  white-space: nowrap;
+}
+/* 완료 체크 — 16 파란 원 + 뒤로 퍼지는 링(1.4초씩 3번) */
+.download-queue__check {
+  position: relative;
+  width: 1.6rem;
+  height: 1.6rem;
+}
+.download-queue__pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-full);
+  background: var(--brand-blue-enabled);
+  animation: download-check-pulse 1400ms ease-out 3 both;
+}
+@keyframes download-check-pulse {
+  0%   { opacity: 0.7; transform: scale(1); }
+  70%  { opacity: 0; transform: scale(3.2); }
+  100% { opacity: 0; transform: scale(3.2); }
+}
+.download-queue__check-circle {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--brand-blue-enabled);
+  color: var(--stove-white);
+}
+.download-queue__check-circle svg { width: 0.9rem; height: 0.65rem; display: block; }
+
 .menu-item {
   position: relative;
   display: flex;

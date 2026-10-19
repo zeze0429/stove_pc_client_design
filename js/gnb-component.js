@@ -85,6 +85,36 @@ var GNB_BADGE_ICON = {
   multiplay: 'ic-v2-navigation-pcbang-fill',
 };
 
+// 다운로드 관리 진행 애니메이션 (Figma Make 레퍼런스 quartz-unique-70171087.figma.site
+// 실측) — 보기 옵션 "다운로드 관리"를 켜면 대기열 3개를 차례로 받는다.
+// 항목마다: 남은 개수 뱃지 → 진행률(%)들 → 완료 체크, 각 1.5초 / 체크만 4.6초.
+// 마지막 체크가 빠지면 오른쪽은 비어 있는 상태로 끝난다.
+var GNB_DOWNLOAD_QUEUE = [
+  { count: 3, pcts: [12, 34, 87, 98] },
+  { count: 2, pcts: [7, 64, 99] },
+  { count: 1, pcts: [15, 72, 99] },
+];
+var GNB_DOWNLOAD_STEP = 1500;
+var GNB_DOWNLOAD_CHECK = 4600;
+var GNB_DOWNLOAD_SLIDE = 380; // css/gnb.css .download-queue__layer 애니메이션 길이
+
+// 시퀀스를 시간축으로 펼친다 — [{ at, kind, value }], 끝 시각은 end
+function gnbDownloadTimeline() {
+  var steps = [];
+  var t = 0;
+  GNB_DOWNLOAD_QUEUE.forEach(function (job) {
+    steps.push({ at: t, kind: 'count', value: job.count });
+    t += GNB_DOWNLOAD_STEP;
+    job.pcts.forEach(function (pct) {
+      steps.push({ at: t, kind: 'pct', value: pct });
+      t += GNB_DOWNLOAD_STEP;
+    });
+    steps.push({ at: t, kind: 'check', value: null });
+    t += GNB_DOWNLOAD_CHECK;
+  });
+  return { steps: steps, end: t };
+}
+
 // 뱃지에 마우스를 올리면 뜨는 툴팁 문구
 var GNB_BADGE_TOOLTIP = {
   link: '링크 플레이 지원',
@@ -211,8 +241,9 @@ var GnbComponent = {
       dragging: null,
       // 보기 옵션(js/proto-settings.js) — 업데이트 버튼·다운로드 뱃지·스튜디오·광고·즐겨찾기
       proto: protoSettingsRead(),
-      // 다운로드 관리 옆 진행 중 개수 (보기 옵션 "다운로드 관리"를 켰을 때만 보임)
-      downloadCount: 2,
+      // 다운로드 관리 옆 진행 애니메이션의 현재 레이어들 — 전환 중엔 들어오는 것과
+      // 나가는 것 두 장이 겹친다 (보기 옵션 "다운로드 관리"를 켰을 때만)
+      dlLayers: [],
     };
   },
   computed: {
@@ -394,6 +425,42 @@ var GnbComponent = {
     },
     hideBadgeTip: function () {
       this.badgeTip = null;
+    },
+    // 다운로드 진행 애니메이션 — 켠 시각(proto.downloadStartedAt)부터 지난 시간으로
+    // 지금 단계를 정한다. 그래서 페이지를 옮겨 GNB가 새로 떠도 처음부터 다시
+    // 돌지 않고 이어서 진행된다.
+    syncDownloadQueue: function () {
+      clearTimeout(this._dlTimer);
+      this._dlTimers = (this._dlTimers || []).filter(function (id) { clearTimeout(id); return false; });
+      var started = this.proto.downloadStartedAt;
+      if (!this.proto.download || !started) { this.dlLayers = []; return; }
+      var line = gnbDownloadTimeline();
+      var elapsed = Date.now() - started;
+      if (elapsed >= line.end) { this.dlLayers = []; return; }
+      var i = 0;
+      while (i + 1 < line.steps.length && line.steps[i + 1].at <= elapsed) i++;
+      var cur = line.steps[i];
+      this._dlKey = (this._dlKey || 0) + 1;
+      this.dlLayers = [{ key: this._dlKey, kind: cur.kind, value: cur.value,
+        phase: elapsed - cur.at < GNB_DOWNLOAD_SLIDE ? 'in' : 'static' }];
+      this.scheduleDownloadStep(i + 1, line, started);
+    },
+    scheduleDownloadStep: function (i, line, started) {
+      var self = this;
+      var at = i < line.steps.length ? line.steps[i].at : line.end;
+      this._dlTimer = setTimeout(function () {
+        // 지금 레이어는 위로 빠지고, 다음 단계가 아래에서 올라온다
+        self.dlLayers.forEach(function (l) { l.phase = 'out'; });
+        if (i < line.steps.length) {
+          var next = line.steps[i];
+          self._dlKey += 1;
+          self.dlLayers.push({ key: self._dlKey, kind: next.kind, value: next.value, phase: 'in' });
+          self.scheduleDownloadStep(i + 1, line, started);
+        }
+        self._dlTimers.push(setTimeout(function () {
+          self.dlLayers = self.dlLayers.filter(function (l) { return l.phase !== 'out'; });
+        }, GNB_DOWNLOAD_SLIDE + 40));
+      }, Math.max(0, started + at - Date.now()));
     },
     // 보기 옵션 "즐겨찾기"를 끄면 즐겨찾기가 하나도 없는 상태 — 그룹 제목만 남는다
     groupGames: function (group) {
@@ -739,8 +806,11 @@ var GnbComponent = {
     window.addEventListener('resize', this._onIndicatorResize);
 
     // 보기 옵션이 바뀌면 메뉴/목록 높이가 달라지므로 인디케이터·스크롤바를 다시 맞춘다
+    this.syncDownloadQueue();
     protoSettingsSubscribe(function (s) {
+      var dlChanged = s.download !== self.proto.download || s.downloadStartedAt !== self.proto.downloadStartedAt;
       self.proto = s;
+      if (dlChanged) self.syncDownloadQueue();
       self.$nextTick(function () {
         self.moveActiveIndicator('instant');
         self.updateThumb();
@@ -755,6 +825,8 @@ var GnbComponent = {
     }
   },
   unmounted: function () {
+    clearTimeout(this._dlTimer);
+    (this._dlTimers || []).forEach(function (id) { clearTimeout(id); });
     var scrollEl = this.$refs.scrollEl;
     if (scrollEl) scrollEl.removeEventListener('scroll', this.handleGnbScroll);
     document.removeEventListener('mousemove', this.handleDocumentMouseMove);
@@ -789,9 +861,20 @@ var GnbComponent = {
               '<span class="menu-item__label stds-title8">{{ item.label }}</span>' +
               '<span v-if="item.badge === \'new\'" class="badge-new" data-name="component/badge/menu_title">NEW</span>' +
               // 다운로드 관리 — 진행 중이면 파란 개수, 실패가 있으면 빨간 느낌표
-              '<span v-if="item.id === \'download\' && proto.download" class="badge-download" ' +
-                ':class="{ \'badge-download--error\': proto.downloadError }">' +
-                '{{ proto.downloadError ? \'!\' : downloadCount }}' +
+              // 다운로드 관리: 에러면 빨간 "!" 고정, 아니면 진행 애니메이션 레이어
+              '<span v-if="item.id === \'download\' && proto.download && proto.downloadError" ' +
+                'class="badge-download badge-download--error">!</span>' +
+              '<span v-else-if="item.id === \'download\' && proto.download" class="download-queue">' +
+                '<span v-for="layer in dlLayers" :key="layer.key" class="download-queue__layer" :class="\'is-\' + layer.phase">' +
+                  '<span v-if="layer.kind === \'count\'" class="badge-download">{{ layer.value }}</span>' +
+                  '<span v-else-if="layer.kind === \'pct\'" class="download-queue__pct">{{ layer.value }}%</span>' +
+                  '<span v-else class="download-queue__check" aria-label="다운로드 완료">' +
+                    '<span class="download-queue__pulse" aria-hidden="true"></span>' +
+                    '<span class="download-queue__check-circle">' +
+                      '<svg viewBox="0 0 9 6.5" fill="none" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M8.78034 0.21967C9.07324 0.512563 9.07324 0.987437 8.78034 1.28033L3.78034 6.28033C3.63262 6.42805 3.42999 6.50746 3.22123 6.49945C3.01248 6.49143 2.81653 6.39671 2.68057 6.23809L0.180571 3.32143C-0.0889955 3.00693 -0.0525743 2.53346 0.26192 2.26389C0.576414 1.99432 1.04989 2.03075 1.31946 2.34524L3.29238 4.64698L7.71968 0.21967C8.01258 -0.0732233 8.48745 -0.0732233 8.78034 0.21967Z"/></svg>' +
+                    '</span>' +
+                  '</span>' +
+                '</span>' +
               '</span>' +
             '</li>' +
           '</ul>' +

@@ -20,6 +20,7 @@ var PROTO_SETTINGS_DEFAULTS = {
   noticeUrgent: false,
   updateBtn: true,
   download: false,
+  downloadStartedAt: 0, // 다운로드 관리를 켠 시각 — GNB 진행 애니메이션이 여기서부터 이어진다
   downloadError: false,
   studio: true,
   ad: true,

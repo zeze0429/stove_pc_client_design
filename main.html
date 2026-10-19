@@ -165,7 +165,7 @@
     setInterval(tick, 1000 * 30);
   </script>
 
-  <script src="js/proto-settings.js?v=4"></script>
+  <script src="js/proto-settings.js?v=5"></script>
   <script>
     // 보기 옵션 패널 — 컨트롤 상태는 항상 저장된 설정에서 다시 그린다
     (function () {
@@ -203,6 +203,8 @@
         el.addEventListener('click', function () {
           var patch = {};
           patch[el.dataset.protoKey] = !protoSettingsRead()[el.dataset.protoKey];
+          // 다운로드 관리를 켤 때마다 GNB 진행 애니메이션을 처음부터 시작
+          if (el.dataset.protoKey === 'download' && patch.download) patch.downloadStartedAt = Date.now();
           protoSettingsWrite(patch);
         });
       });
