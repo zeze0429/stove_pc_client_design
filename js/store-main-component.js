@@ -250,8 +250,8 @@ var StoreMainTop = {
             '</button>' +
           '</div>' +
           '<div class="store-nav__icons">' +
-            '<button class="store-nav__icon-btn" type="button" aria-label="찜"><i class="ic-v2-community-like-fill"></i></button>' +
-            '<button class="store-nav__icon-btn" type="button" aria-label="장바구니"><i class="ic-v2-navigation-cart-fill"></i></button>' +
+            '<button class="store-nav__icon-btn store-nav__icon-btn--stateful" type="button" aria-label="찜"><i class="ic-v2-community-like-fill"></i></button>' +
+            '<button class="store-nav__icon-btn store-nav__icon-btn--stateful" type="button" aria-label="장바구니"><i class="ic-v2-navigation-cart-fill"></i></button>' +
             '<button class="store-nav__icon-btn" type="button" aria-label="검색"><i class="ic-v2-navigation-search-line"></i></button>' +
           '</div>' +
         '</div>' +

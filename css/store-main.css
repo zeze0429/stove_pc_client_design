@@ -140,11 +140,11 @@
   color: var(--on-surface-elevation-1);
   cursor: pointer;
 }
-.store-nav__icon-btn i { font-size: 2.4rem; transition: opacity .15s; }
-/* 상태는 배경 없이 아이콘 자체 투명도 — 호버 50% / 프레스 70%
-   (레이어 팝업 닫기 버튼과 같은 규칙) */
-.store-nav__icon-btn:hover i { opacity: 0.5; }
-.store-nav__icon-btn:active i { opacity: 0.7; }
+.store-nav__icon-btn i { font-size: 2.4rem; transition: color .15s; }
+/* 상태는 배경 없이 아이콘 색만 — 실제 웹 그대로:
+   찜·장바구니 호버 on-surface-elevation-2 / 프레스 -3, 검색은 상태 변화 없음 */
+.store-nav__icon-btn--stateful:hover i { color: var(--on-surface-elevation-2); }
+.store-nav__icon-btn--stateful:active i { color: var(--on-surface-elevation-3); }
 
 /* ---- 메인 배너 캐러셀 ----------------------------------------
    네비게이션 영역 아래 16, 높이 276. 카드 644 x 276 / 간격 20 / 모서리 24. */
