@@ -126,7 +126,9 @@ html, body {
    레퍼런스: https://quartz-unique-70171087.figma.site/ 시작 버튼 패널의
    실측값 그대로. 디자인 스펙이 아닌 시안 확인용 장치라 토큰을 쓰지 않는다. */
 .proto-panel {
-  position: absolute;
+  /* fixed — .os-desktop은 아래 패딩(48)만큼 화면보다 길어서, 그 기준으로
+     absolute를 주면 패널이 작업표시줄 위로 내려와 아이콘을 가린다 */
+  position: fixed;
   left: 8px;
   bottom: 56px; /* 작업표시줄 48 + 8 */
   z-index: 70; /* 데모 버튼(알림 추가, 60) 위 */
