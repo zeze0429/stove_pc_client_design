@@ -35,6 +35,8 @@ var LayerDialog = {
           '</button>' +
         '</div>' +
         '<div class="layer-dialog__body"><slot></slot></div>' +
+        // 버튼이 있는 팝업만 — 없으면 아예 그려지지 않는다
+        '<div v-if="$slots.footer" class="layer-dialog__footer"><slot name="footer"></slot></div>' +
       '</div>' +
     '</div>',
 };

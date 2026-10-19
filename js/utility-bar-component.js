@@ -49,6 +49,8 @@ var UtilityBarComponent = {
     NotificationPopup: NotificationPopup,
     ProfilePopup: ProfilePopup,
     StoveAppDialog: StoveAppDialog,
+    UtilityNotice: UtilityNotice,
+    NoticeDialog: NoticeDialog,
   },
   data: function () {
     return {
@@ -60,6 +62,9 @@ var UtilityBarComponent = {
       // 버튼에 붙는 팝업과 달리 창 가운데 뜨는 레이어 팝업 — 다른 팝업에서
       // 띄우는 경우가 있어 따로 들고 있는다.
       openDialogId: null,
+      // 유틸리티 바 아래 공지 띠 — 닫으면 콘텐츠가 그만큼 다시 올라온다.
+      notice: UTILITY_NOTICE,
+      noticeVisible: true,
       // 신규 내용 유무 — 한 번 열어보면 점이 사라진다
       newBadges: { chat: true, alarm: true, pcCafe: true },
       // 콘텐츠가 바 밑으로 지나가기 시작했는지 (배경 70% + 블러로 전환)
@@ -193,8 +198,11 @@ var UtilityBarComponent = {
 
     // PC방 혜택은 바에 붙는 드롭다운이 아니라 창 전체를 덮는 레이어 팝업이라
     // 바 밖(루트 형제)에 둔다.
+    '<utility-notice v-if="noticeVisible" :notice="notice" @close="noticeVisible = false" ' +
+      '@open="openDialogId = \'notice\'" />' +
     '<pcbang-benefits-dialog v-if="openPopupId === \'pcCafe\'" @close="openPopupId = null" />' +
-    '<stove-app-dialog v-if="openDialogId === \'stoveApp\'" @close="openDialogId = null" />',
+    '<stove-app-dialog v-if="openDialogId === \'stoveApp\'" @close="openDialogId = null" />' +
+    '<notice-dialog v-if="openDialogId === \'notice\'" :notice="notice" @close="openDialogId = null" />',
 };
 
 function mountUtilityBar(selector) {

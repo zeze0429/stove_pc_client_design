@@ -1,0 +1,109 @@
+/* =============================================================
+   공지사항 바 + 상세 팝업
+   (Figma layout/utility_bar/notice 3456:53635 / .../notice/dialog 11364:271914)
+   유틸리티 바 바로 아래에 붙는 띠. 콘텐츠 위에 겹치는 게 아니라 자리를
+   차지해서, 떠 있는 동안 콘텐츠 영역이 이 높이만큼 내려간다 —
+   높이는 컴포넌트가 --utility-notice-h로 올려주고 .main이 그만큼 더
+   내려가서 시작한다(css/dashboard.css).
+   ※ css/notice.css는 윈도우 토스트 알림이라 전혀 다른 컴포넌트.
+   ============================================================= */
+
+.utility-notice {
+  position: absolute;
+  top: 4.8rem; /* 유틸리티 바 바로 아래 */
+  left: 24rem; /* 사이드바 폭 */
+  right: 0;
+  z-index: 100; /* 유틸리티 바와 같은 층 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  height: 2.8rem; /* Figma 고정 — 안쪽 콘텐츠(18)+패딩(8)만으론 26이라 직접 지정 */
+  padding: 0.4rem 0;
+  background: var(--stove-gray-750); /* Figma가 글로벌 gray750 지정 */
+  cursor: pointer;
+}
+/* 긴급 공지 — 배경과 뱃지 글자색만 에러 컬러로 바뀐다 */
+.utility-notice--urgent { background: var(--system-error); }
+
+.utility-notice__badge {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  padding: 0.2rem 0.3rem;
+  border-radius: var(--radius-md);
+  background: var(--stove-white);
+  color: var(--stove-gray-750);
+}
+.utility-notice--urgent .utility-notice__badge { color: var(--system-error); }
+
+.utility-notice__message {
+  margin: 0;
+  color: var(--stove-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 닫기는 가운데 정렬된 본문과 무관하게 오른쪽 끝에 고정 */
+.utility-notice__close {
+  position: absolute;
+  top: 50%;
+  right: 1.4rem;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  min-width: 1.6rem;
+  padding: 0;
+  border-radius: var(--radius-full);
+  color: var(--stove-white-60);
+  transition: opacity .15s;
+}
+.utility-notice__close i { font-size: 1.2rem; }
+/* 10px — 타이포 스케일에 없는 값이라 직접 지정 */
+.utility-notice__close-label { font-size: 1rem; letter-spacing: -0.02em; }
+.utility-notice__close:hover { opacity: 0.5; }
+.utility-notice__close:active { opacity: 0.7; }
+
+/* ---- 상세 팝업 본문 -----------------------------------------
+   이 시안은 제목이 헤더에 바로 붙고(위 여백 0) 본문 상자가 버튼 줄에
+   그대로 닿는다(아래 여백 0) — 공용 셸의 본문 여백(위 0.8 / 아래 3.2)을
+   음수 마진으로 걷어내 그 둘을 맞춘다. */
+.notice-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  margin-top: -0.8rem;
+  margin-bottom: -3.2rem;
+}
+.notice-dialog__title { margin: 0; color: var(--on-surface-elevation-1); }
+.notice-dialog__box {
+  padding: 1.6rem 2rem;
+  border-radius: 1.2rem;
+  background: var(--surface-elevation-2);
+  color: var(--on-surface-elevation-2);
+}
+.notice-dialog__box p { margin: 0; }
+/* 본문 속 링크 한 줄 — Figma가 토큰이 아닌 브랜드 오렌지를 직접 지정 */
+.notice-dialog__link { color: var(--brand-primary-enabled); text-decoration: underline; }
+
+.notice-dialog__close-btn {
+  width: 12.8rem;
+  max-width: 26.4rem;
+  /* 보더까지 포함해 44 — 패딩 12로 두면 보더 2px만큼 더 커진다 */
+  height: 4.4rem;
+  padding: 0 2rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--neutral-variant-3);
+  color: var(--on-surface-elevation-2);
+  text-align: center;
+  transition: background .15s;
+}
+.notice-dialog__close-btn:hover { background: var(--neutral-variant-3-hover); }
+.notice-dialog__close-btn:active { background: var(--neutral-variant-3-pressed); }

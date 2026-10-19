@@ -82,6 +82,16 @@
   padding: 0.8rem 2rem 3.2rem 3.2rem;
 }
 
+/* 버튼이 붙는 팝업용 — 본문이 스크롤돼도 이 줄은 바닥에 그대로 남는다. */
+.layer-dialog__footer {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.4rem;
+  background: var(--surface-elevation-1);
+}
+
 /* 스크롤바 — 폭 12짜리 트랙에 보더 + background-clip:content-box로 4px만
    남기는 방식은 잘라내는 영역이 사각형이라 border-radius가 보이는 띠에
    안 걸린다(끝이 각짐). 그래서 스크롤바 자체를 4px로 만들고, 비는 8px은

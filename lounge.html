@@ -12,11 +12,12 @@
   <link rel="stylesheet" href="css/gnb.css?v=79" />
   <link rel="stylesheet" href="css/dashboard.css?v=17" />
   <link rel="stylesheet" href="css/utility-bar.css?v=4" />
-  <link rel="stylesheet" href="css/layer-dialog.css?v=2" />
+  <link rel="stylesheet" href="css/layer-dialog.css?v=3" />
   <link rel="stylesheet" href="css/pcbang-benefits.css?v=6" />
   <link rel="stylesheet" href="css/notification.css?v=6" />
   <link rel="stylesheet" href="css/profile-popup.css?v=3" />
   <link rel="stylesheet" href="css/stove-app-dialog.css?v=2" />
+  <link rel="stylesheet" href="css/utility-notice.css?v=2" />
   <style>
     /* 클라이언트 메인 = 라운지 페이지 정적 스크린샷(다크모드).
        app-shell.html(스토어)과 동일한 방식 — 라이브 임베드 대신 헤드리스
@@ -57,7 +58,7 @@
          클라이언트 캡처에 직접 그려서 받은 정확한 수치. 하단은 0 —
          라운지는 실제로 무한 스크롤 피드라서 스토어/이벤트처럼 "콘텐츠
          끝 + 200px 여백"을 두면 어색함(끝이 있는 것처럼 보임). */
-      padding: 4.8rem 6.4rem 0 0.4rem;
+      padding: calc(4.8rem + var(--utility-notice-h, 0px)) 6.4rem 0 0.4rem;
       display: flex;
       flex-direction: row; /* 공통 셸 기본값(column)을 3단 레이아웃용으로 덮어씀 */
     }
@@ -113,12 +114,13 @@
 
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <script src="js/gnb-component.js?v=43"></script>
-  <script src="js/layer-dialog-component.js?v=1"></script>
+  <script src="js/layer-dialog-component.js?v=2"></script>
   <script src="js/pcbang-benefits-component.js?v=2"></script>
   <script src="js/notification-component.js?v=4"></script>
   <script src="js/profile-popup-component.js?v=4"></script>
   <script src="js/stove-app-dialog-component.js?v=2"></script>
-  <script src="js/utility-bar-component.js?v=9"></script>
+  <script src="js/utility-notice-component.js?v=1"></script>
+  <script src="js/utility-bar-component.js?v=10"></script>
   <script>
     mountGnb('#gnb-mount');
     mountUtilityBar('#utility-bar-mount');
