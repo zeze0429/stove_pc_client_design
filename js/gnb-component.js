@@ -465,8 +465,10 @@ var GnbComponent = {
       var self = this;
       var at = i < line.steps.length ? line.steps[i].at : line.end;
       this._dlTimer = setTimeout(function () {
-        // 지금 레이어는 위로 빠지고, 다음 단계가 아래에서 올라온다
-        self.dlLayers.forEach(function (l) { l.phase = 'out'; });
+        // 지금 레이어는 위로 빠지고, 다음 단계가 아래에서 올라온다.
+        // 마지막 완료 체크는 다음이 없으니 제자리에서 투명도만 줄이며 사라진다.
+        var leaving = i < line.steps.length ? 'out' : 'fade';
+        self.dlLayers.forEach(function (l) { l.phase = leaving; });
         self.dlPulse = null;
         if (i < line.steps.length) {
           var next = line.steps[i];
@@ -476,7 +478,7 @@ var GnbComponent = {
           self.scheduleDownloadStep(i + 1, line, started);
         }
         self._dlTimers.push(setTimeout(function () {
-          self.dlLayers = self.dlLayers.filter(function (l) { return l.phase !== 'out'; });
+          self.dlLayers = self.dlLayers.filter(function (l) { return l.phase !== leaving; });
         }, GNB_DOWNLOAD_SLIDE + 40));
       }, Math.max(0, started + at - Date.now()));
     },

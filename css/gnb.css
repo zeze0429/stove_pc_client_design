@@ -258,6 +258,12 @@ body { margin: 0; }
 .download-queue__layer .badge-download { margin-left: 0; }
 .download-queue__layer.is-in { animation: download-queue-in 500ms cubic-bezier(0.4, 0, 0.2, 1) backwards; }
 .download-queue__layer.is-out { animation: download-queue-out 500ms cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+/* 마지막 완료 체크 — 위치는 그대로, 투명도만 */
+.download-queue__layer.is-fade { animation: download-queue-fade 500ms cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+@keyframes download-queue-fade {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
 @keyframes download-queue-in {
   from { opacity: 0; transform: translateY(100%); }
   to   { opacity: 1; transform: translateY(0); }
