@@ -25,6 +25,8 @@ var PROTO_SETTINGS_DEFAULTS = {
   studio: false,
   ad: true,
   favorites: true,
+  menuNew: false,   // 메뉴 강조 — 라운지 NEW 표시
+  menuBadge: false, // 메뉴 강조 — 라운지 "오늘의 1등" 뱃지
 };
 
 function protoSettingsRead() {

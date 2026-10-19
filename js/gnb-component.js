@@ -898,7 +898,11 @@ var GnbComponent = {
             '<li v-for="item in visibleMenuItems" :key="item.id" class="menu-item" :class="{ \'is-selected\': selectedId === item.id }" @click="selectMenu(item)" @mousedown.left="setPressed(true)" @mouseenter="handleMenuMouseEnter" @mouseleave="handleHoverLeave" :data-name="menuItemSymbol(item)">' +
               '<i :class="item.icon"></i>' +
               '<span class="menu-item__label stds-title8">{{ item.label }}</span>' +
-              '<span v-if="item.badge === \'new\'" class="badge-new" data-name="component/badge/menu_title">NEW</span>' +
+              '<img v-if="item.badge === \'new\' && proto.menuNew" class="badge-new" src="assets/gnb-badge/badge-new@2x.png" alt="NEW" data-name="component/badge/menu_title" />' +
+              // 메뉴 강조 > 뱃지 — 라운지 "오늘의 1등" (Figma img_badge_lounge 11133:59958)
+              '<span v-if="item.id === \'lounge\' && proto.menuBadge" class="badge-menu-img" data-name="img_badge_lounge">' +
+                '<img src="assets/gnb-badge/badge-lounge-today1@2x.png" alt="오늘의 1등" />' +
+              '</span>' +
               // 다운로드 관리 — 진행 중이면 파란 개수, 실패가 있으면 빨간 느낌표
               // 다운로드 관리: 에러면 빨간 "!" 고정, 아니면 진행 애니메이션 레이어
               '<span v-if="item.id === \'download\' && proto.download && proto.downloadError" ' +
