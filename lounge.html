@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/typography.css?v=12" />
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=8" />
   <link rel="stylesheet" href="css/gnb.css?v=82" />
-  <link rel="stylesheet" href="css/dashboard.css?v=24" />
+  <link rel="stylesheet" href="css/dashboard.css?v=25" />
   <link rel="stylesheet" href="css/utility-bar.css?v=5" />
   <link rel="stylesheet" href="css/layer-dialog.css?v=4" />
   <link rel="stylesheet" href="css/pcbang-benefits.css?v=6" />
@@ -23,12 +23,14 @@
     /* 클라이언트 메인 = 라운지 페이지 정적 스크린샷(다크·라이트 한 쌍).
        캡처 방식은 app-shell.html(스토어) 주석 참고. 라운지는 시스템 설정이
        아니라 COLOR_MODE 쿠키로만 테마가 바뀌어 캡처할 때 쿠키로 다크를 연다.
+       라운지만은 웹 스크롤바가 있는 1016 레이아웃으로 찍는다 — 스크롤바가
+       없으면 가운데 피드가 544로 넓어져 아래 실측 간격(피드 520 기준)이 깨진다.
+       배경: 실제 라운지는 다크 gray-880 / 라이트 gray-20이라 스토어·이벤트와
+       다른데, 클라이언트에서는 스토어 메인과 같은 background-variant-1로
+       통일한다 — 캡처할 때 웹 배경을 그 색으로 바꿔서 찍었다.
        app-shell.html(스토어)과 동일한 방식 — 라이브 임베드 대신 헤드리스
        크롬으로 1040px/2x 레티나 다크모드 캡처, 최상단 공유 GNB(64px)는
-       제거. 상단 48px / 하단 200px 여백. 배경은 라운지 자신의 실제
-       body 배경(rgb(31,31,31) — 스토어/이벤트의 rgb(25,25,25)와는 다른 톤)과
-       동일 토큰(--background-variant-2)으로 맞춤. 스크롤바도 store.onstove.com
-       실제 구조(트랙 2.4rem, 보이는 썸 0.8rem) 그대로 재현 — app-shell.html 참고.
+       제거. 상단 48px / 하단 200px 여백. 스크롤바는 오버레이(js/page-scrollbar.js).
 
        실제 라운지는 3단 구성 — 좌: 아이콘 레일 72px / (56px 간격) /
        가운데: 피드 520px / (56px 간격) / 우: 검색·추천 280px.
@@ -56,7 +58,7 @@
     .app > .main {
       overflow-y: auto;
       overflow-x: hidden;
-      background: var(--background-variant-2);
+      background: var(--background-variant-1); /* 스토어 메인과 동일 — 위 주석 참고 */
       /* 좌: 사이드바-아이콘레일 4px / 우: 우측열 뒤 64px — 실제 네이티브
          클라이언트 캡처에 직접 그려서 받은 정확한 수치. 하단은 0 —
          라운지는 실제로 무한 스크롤 피드라서 스토어/이벤트처럼 "콘텐츠
@@ -76,15 +78,6 @@
     .lounge-col-center img { display: block; width: 52rem; }
     .lounge-col-right img { width: 28rem; }
 
-    .app > .main::-webkit-scrollbar { width: 2.4rem; }
-    .app > .main::-webkit-scrollbar-track { border-radius: var(--radius-full); }
-    .app > .main::-webkit-scrollbar-thumb {
-      border-radius: var(--radius-full);
-      border: 0.8rem solid transparent;
-      background-color: var(--inverse-elevation-2);
-      background-clip: content-box;
-    }
-    .app > .main::-webkit-scrollbar-thumb:hover { background-color: var(--inverse-elevation-1); }
   </style>
 </head>
 <body>
@@ -101,18 +94,18 @@
     <div id="utility-bar-mount"></div>
 
     <!-- ============ MAIN (라운지 정적 스크린샷 — 3단 분할, 좌/우 고정, 테마별 한 쌍) ============ -->
-    <div class="main">
+    <div class="main main--overlay-scroll">
       <div class="lounge-col-left">
-        <img class="theme-img--dark" src="assets/lounge-left-dark.jpg?v=2" alt="" aria-hidden="true" loading="lazy" />
-        <img class="theme-img--light" src="assets/lounge-left-light.jpg?v=1" alt="" aria-hidden="true" loading="lazy" />
+        <img class="theme-img--dark" src="assets/lounge-left-dark.jpg?v=3" alt="" aria-hidden="true" loading="lazy" />
+        <img class="theme-img--light" src="assets/lounge-left-light.jpg?v=2" alt="" aria-hidden="true" loading="lazy" />
       </div>
       <div class="lounge-col-center">
-        <img class="theme-img--dark" src="assets/lounge-center-dark.jpg?v=5" alt="STOVE 라운지 미리보기" loading="lazy" />
-        <img class="theme-img--light" src="assets/lounge-center-light.jpg?v=1" alt="STOVE 라운지 미리보기" loading="lazy" />
+        <img class="theme-img--dark" src="assets/lounge-center-dark.jpg?v=6" alt="STOVE 라운지 미리보기" loading="lazy" />
+        <img class="theme-img--light" src="assets/lounge-center-light.jpg?v=2" alt="STOVE 라운지 미리보기" loading="lazy" />
       </div>
       <div class="lounge-col-right">
-        <img class="theme-img--dark" src="assets/lounge-right-dark.jpg?v=3" alt="" aria-hidden="true" loading="lazy" />
-        <img class="theme-img--light" src="assets/lounge-right-light.jpg?v=1" alt="" aria-hidden="true" loading="lazy" />
+        <img class="theme-img--dark" src="assets/lounge-right-dark.jpg?v=4" alt="" aria-hidden="true" loading="lazy" />
+        <img class="theme-img--light" src="assets/lounge-right-light.jpg?v=2" alt="" aria-hidden="true" loading="lazy" />
       </div>
     </div>
 
@@ -127,9 +120,11 @@
   <script src="js/stove-app-dialog-component.js?v=2"></script>
   <script src="js/utility-notice-component.js?v=3"></script>
   <script src="js/utility-bar-component.js?v=11"></script>
+  <script src="js/page-scrollbar.js?v=1"></script>
   <script>
     mountGnb('#gnb-mount');
     mountUtilityBar('#utility-bar-mount');
+    mountPageScrollbar(document.querySelector('.app > .main'));
   </script>
 </body>
 </html>

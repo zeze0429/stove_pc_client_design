@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/typography.css?v=12" />
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=8" />
   <link rel="stylesheet" href="css/gnb.css?v=82" />
-  <link rel="stylesheet" href="css/dashboard.css?v=24" />
+  <link rel="stylesheet" href="css/dashboard.css?v=25" />
   <link rel="stylesheet" href="css/utility-bar.css?v=5" />
   <link rel="stylesheet" href="css/layer-dialog.css?v=4" />
   <link rel="stylesheet" href="css/pcbang-benefits.css?v=6" />
@@ -25,9 +25,10 @@
        크로스 오리진이라 유틸리티 바 블러(스크롤 감지)·웹 스크롤바 처리·
        라운지 다크 전환이 전부 불가능했음.
        다크/라이트 두 장은 한 번 연 페이지에서 테마만 바꿔 연달아 캡처해
-       배너·섹션 문구까지 내용이 완전히 같다. 1040 창에 웹 자체 스크롤바(24)가
-       뜬 상태 그대로 찍고 스크롤바만 잘라내서 폭은 1016 — 우리 .main
-       스크롤바(2.4rem)가 그 자리를 채워 웹과 같은 배치가 된다.
+       배너·섹션 문구까지 내용이 완전히 같다. 스크롤바 없는 1040 폭으로
+       찍고, 페이지 스크롤바는 폭을 차지하지 않는 오버레이(js/page-scrollbar.js)라
+       이미지가 1040 그대로 들어간다. 페이지 끝(사이트 푸터 앞)까지 찍어서
+       마지막 캐러셀 화살표까지 온전하다.
        처음엔 실제 store.onstove.com을 iframe으로 라이브 임베드했었는데:
        1) 최상단 지엔비·푸터는 크로스 오리진이라 크롭이 불가능하거나(푸터는
           콘텐츠 길이가 화면 폭마다 달라져서 고정 크롭이 다른 폭에서 깨짐),
@@ -52,23 +53,8 @@
       background: var(--background-variant-1); /* store.onstove.com 실제 body 배경(rgb(25,25,25))과 동일 토큰 */
       padding: calc(4.8rem + var(--utility-notice-h, 0px)) 0 20rem; /* 상단 = 유틸리티 바 + 공지 띠 / 하단 200px */
     }
-    .store-preview { display: block; width: 1016px; height: auto; }
+    .store-preview { display: block; width: 1040px; height: auto; }
 
-    /* 스크롤바 — store.onstove.com(실제 웹)의 body 스크롤바와 동일한 구조/수치로 재현.
-       실제 페이지는 .inds-scrollbar-theme-8을 써서 트랙 2.4rem에 썸은
-       0.8rem solid transparent 보더 + background-clip:content-box로 가운데
-       0.8rem만 색이 보이게 만드는 방식 — 사이드바(.gnb-scrollbar, 0.4rem 오버레이
-       방식)와는 다른 구조라서 그대로 복제. 색상은 동일 컨벤션(default=inverse-elevation-2,
-       hover=inverse-elevation-1). */
-    .app > .main::-webkit-scrollbar { width: 2.4rem; }
-    .app > .main::-webkit-scrollbar-track { border-radius: var(--radius-full); }
-    .app > .main::-webkit-scrollbar-thumb {
-      border-radius: var(--radius-full);
-      border: 0.8rem solid transparent;
-      background-color: var(--inverse-elevation-2);
-      background-clip: content-box;
-    }
-    .app > .main::-webkit-scrollbar-thumb:hover { background-color: var(--inverse-elevation-1); }
   </style>
 </head>
 <body>
@@ -85,9 +71,9 @@
     <div id="utility-bar-mount"></div>
 
     <!-- ============ MAIN (store 정적 스크린샷 — 테마별 한 쌍) ============ -->
-    <div class="main">
-      <img class="store-preview theme-img--dark" src="assets/store-preview-dark.jpg?v=1" alt="STOVE 스토어 미리보기" loading="lazy" />
-      <img class="store-preview theme-img--light" src="assets/store-preview-light.jpg?v=1" alt="STOVE 스토어 미리보기" loading="lazy" />
+    <div class="main main--overlay-scroll">
+      <img class="store-preview theme-img--dark" src="assets/store-preview-dark.jpg?v=2" alt="STOVE 스토어 미리보기" loading="lazy" />
+      <img class="store-preview theme-img--light" src="assets/store-preview-light.jpg?v=2" alt="STOVE 스토어 미리보기" loading="lazy" />
     </div>
 
   </div>
@@ -101,9 +87,11 @@
   <script src="js/stove-app-dialog-component.js?v=2"></script>
   <script src="js/utility-notice-component.js?v=3"></script>
   <script src="js/utility-bar-component.js?v=11"></script>
+  <script src="js/page-scrollbar.js?v=1"></script>
   <script>
     mountGnb('#gnb-mount');
     mountUtilityBar('#utility-bar-mount');
+    mountPageScrollbar(document.querySelector('.app > .main'));
   </script>
 </body>
 </html>

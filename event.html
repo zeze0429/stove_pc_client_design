@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/typography.css?v=12" />
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=8" />
   <link rel="stylesheet" href="css/gnb.css?v=82" />
-  <link rel="stylesheet" href="css/dashboard.css?v=24" />
+  <link rel="stylesheet" href="css/dashboard.css?v=25" />
   <link rel="stylesheet" href="css/utility-bar.css?v=5" />
   <link rel="stylesheet" href="css/layer-dialog.css?v=4" />
   <link rel="stylesheet" href="css/pcbang-benefits.css?v=6" />
@@ -21,30 +21,19 @@
   <link rel="stylesheet" href="css/utility-notice.css?v=4" />
   <style>
     /* 클라이언트 메인 = 이벤트 페이지 정적 스크린샷(다크·라이트 한 쌍).
-       캡처 방식·폭(1016)은 app-shell.html(스토어) 주석 참고.
+       캡처 방식·폭(1040)·오버레이 스크롤바는 app-shell.html(스토어) 주석 참고.
        app-shell.html(스토어)과 동일한 방식 — 라이브 임베드 대신 헤드리스
        크롬으로 1040px/2x 레티나 다크모드 캡처, 최상단 공유 GNB(64px)와
        실제 사이트 자체 푸터(Smilegate)는 제거. 상단 48px / 하단 200px 여백,
-       배경은 실제 body 배경(rgb(25,25,25))과 동일 토큰(--background-variant-1),
-       스크롤바도 store.onstove.com 실제 구조(트랙 2.4rem, 보이는 썸 0.8rem)
-       그대로 재현 — app-shell.html 참고. */
+       배경은 실제 body 배경(rgb(25,25,25))과 동일 토큰(--background-variant-1). */
     .app > .main {
       overflow-y: auto;
       overflow-x: hidden;
       background: var(--background-variant-1);
       padding: calc(4.8rem + var(--utility-notice-h, 0px)) 0 20rem;
     }
-    .event-preview { display: block; width: 1016px; height: auto; }
+    .event-preview { display: block; width: 1040px; height: auto; }
 
-    .app > .main::-webkit-scrollbar { width: 2.4rem; }
-    .app > .main::-webkit-scrollbar-track { border-radius: var(--radius-full); }
-    .app > .main::-webkit-scrollbar-thumb {
-      border-radius: var(--radius-full);
-      border: 0.8rem solid transparent;
-      background-color: var(--inverse-elevation-2);
-      background-clip: content-box;
-    }
-    .app > .main::-webkit-scrollbar-thumb:hover { background-color: var(--inverse-elevation-1); }
   </style>
 </head>
 <body>
@@ -61,9 +50,9 @@
     <div id="utility-bar-mount"></div>
 
     <!-- ============ MAIN (이벤트 정적 스크린샷 — 테마별 한 쌍) ============ -->
-    <div class="main">
-      <img class="event-preview theme-img--dark" src="assets/event-preview-dark.jpg?v=3" alt="STOVE 이벤트 미리보기" loading="lazy" />
-      <img class="event-preview theme-img--light" src="assets/event-preview-light.jpg?v=1" alt="STOVE 이벤트 미리보기" loading="lazy" />
+    <div class="main main--overlay-scroll">
+      <img class="event-preview theme-img--dark" src="assets/event-preview-dark.jpg?v=4" alt="STOVE 이벤트 미리보기" loading="lazy" />
+      <img class="event-preview theme-img--light" src="assets/event-preview-light.jpg?v=2" alt="STOVE 이벤트 미리보기" loading="lazy" />
     </div>
 
   </div>
@@ -77,9 +66,11 @@
   <script src="js/stove-app-dialog-component.js?v=2"></script>
   <script src="js/utility-notice-component.js?v=3"></script>
   <script src="js/utility-bar-component.js?v=11"></script>
+  <script src="js/page-scrollbar.js?v=1"></script>
   <script>
     mountGnb('#gnb-mount');
     mountUtilityBar('#utility-bar-mount');
+    mountPageScrollbar(document.querySelector('.app > .main'));
   </script>
 </body>
 </html>
