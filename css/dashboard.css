@@ -63,6 +63,40 @@ ul { list-style: none; margin: 0; padding: 0; }
 }
 .proto-pr-on .proto-pr { display: flex; }
 
+/* ---- 라이브 웹 임베드 (스토어·이벤트) ----------------------------
+   실제 onstove.com 페이지를 iframe으로 띄운다. 크로스 오리진이라 안을
+   고칠 수는 없어서 두 가지를 바깥에서 처리한다.
+   1) 웹 공용 GNB(최상단 64px, sticky/fixed라 스크롤해도 항상 맨 위)는
+      iframe을 그만큼 위로 올리고 감싼 틀이 잘라내서 안 보이게 한다.
+      스토어의 카테고리 탭은 그 아래라 그대로 보인다.
+   2) 다크/라이트 — 웹은 prefers-color-scheme을 따르는데, iframe 요소의
+      color-scheme이 곧 안쪽 문서의 prefers-color-scheme이 된다. 그래서
+      클라이언트 테마(data-theme)를 그대로 넘겨주면 웹도 같이 바뀐다. */
+.app > .main.main--live {
+  position: relative;
+  overflow: hidden;
+  padding-top: calc(4.8rem + var(--utility-notice-h, 0px)); /* 유틸리티 바 + 공지 띠 */
+  background: var(--background-variant-1);
+}
+.live-frame {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+.live-frame iframe {
+  --live-web-gnb: 64px;
+  position: absolute;
+  top: calc(var(--live-web-gnb) * -1);
+  left: 0;
+  width: 100%;
+  height: calc(100% + var(--live-web-gnb));
+  border: 0;
+  display: block;
+  color-scheme: dark;
+}
+:root[data-theme="light"] .live-frame iframe { color-scheme: light; }
+
 /* ---- GNB를 대시보드 셸에 맞게 조정 (컴포넌트 스타일은 gnb.css) --- */
 /* 헤더 고정 · 스크롤 분리는 gnb.css의 .gnb / .gnb-header / .gnb-menu에서 처리 */
 .app > .gnb {

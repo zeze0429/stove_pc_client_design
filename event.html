@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>STOVE 클라이언트 · 이벤트</title>
   <!-- 로드 순서: tokens → foundations → typography → 아이콘 → GNB → 셸 -->
-  <script src="js/proto-settings.js?v=1" data-client></script>
+  <script src="js/proto-settings.js?v=2" data-client></script>
   <link rel="stylesheet" href="css/tokens.css?v=7" />
   <link rel="stylesheet" href="css/foundations.css?v=7" />
   <link rel="stylesheet" href="css/typography.css?v=12" />
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=8" />
   <link rel="stylesheet" href="css/gnb.css?v=81" />
-  <link rel="stylesheet" href="css/dashboard.css?v=18" />
+  <link rel="stylesheet" href="css/dashboard.css?v=19" />
   <link rel="stylesheet" href="css/utility-bar.css?v=5" />
   <link rel="stylesheet" href="css/layer-dialog.css?v=4" />
   <link rel="stylesheet" href="css/pcbang-benefits.css?v=6" />
@@ -19,32 +19,6 @@
   <link rel="stylesheet" href="css/profile-popup.css?v=4" />
   <link rel="stylesheet" href="css/stove-app-dialog.css?v=2" />
   <link rel="stylesheet" href="css/utility-notice.css?v=4" />
-  <style>
-    /* 클라이언트 메인 = 이벤트 페이지 정적 스크린샷(다크모드).
-       app-shell.html(스토어)과 동일한 방식 — 라이브 임베드 대신 헤드리스
-       크롬으로 1040px/2x 레티나 다크모드 캡처, 최상단 공유 GNB(64px)와
-       실제 사이트 자체 푸터(Smilegate)는 제거. 상단 48px / 하단 200px 여백,
-       배경은 실제 body 배경(rgb(25,25,25))과 동일 토큰(--background-variant-1),
-       스크롤바도 store.onstove.com 실제 구조(트랙 2.4rem, 보이는 썸 0.8rem)
-       그대로 재현 — app-shell.html 참고. */
-    .app > .main {
-      overflow-y: auto;
-      overflow-x: hidden;
-      background: var(--background-variant-1);
-      padding: calc(4.8rem + var(--utility-notice-h, 0px)) 0 20rem;
-    }
-    .event-preview { display: block; width: 1040px; height: auto; }
-
-    .app > .main::-webkit-scrollbar { width: 2.4rem; }
-    .app > .main::-webkit-scrollbar-track { border-radius: var(--radius-full); }
-    .app > .main::-webkit-scrollbar-thumb {
-      border-radius: var(--radius-full);
-      border: 0.8rem solid transparent;
-      background-color: var(--inverse-elevation-2);
-      background-clip: content-box;
-    }
-    .app > .main::-webkit-scrollbar-thumb:hover { background-color: var(--inverse-elevation-1); }
-  </style>
 </head>
 <body>
   <div class="app">
@@ -59,9 +33,11 @@
          (js/utility-bar-component.js)가 마운트되는 자리. -->
     <div id="utility-bar-mount"></div>
 
-    <!-- ============ MAIN (이벤트 정적 스크린샷 — 다크모드 고정) ============ -->
-    <div class="main">
-      <img class="event-preview" src="assets/event-preview-dark.jpg?v=2" alt="STOVE 이벤트 (다크모드 미리보기)" />
+    <!-- ============ MAIN (실제 웹 라이브 임베드 — dashboard.css "라이브 웹 임베드" 참고) ============ -->
+    <div class="main main--live">
+      <div class="live-frame">
+        <iframe src="https://event.onstove.com/ko" title="STOVE 이벤트"></iframe>
+      </div>
     </div>
 
   </div>

@@ -58,7 +58,12 @@ function protoSettingsSubscribe(fn) {
 // 클라이언트 페이지 전용 — 문서 단위 옵션(테마·그리드)을 <html>에 바로 건다.
 // 컴포넌트 단위 옵션(GNB·공지 등)은 각 Vue 컴포넌트가 직접 구독한다.
 function protoApplyDocument(s) {
+  var prevTheme = document.documentElement.getAttribute('data-theme');
   document.documentElement.setAttribute('data-theme', s.theme);
+  // 라이브 웹(iframe)은 로드할 때만 테마를 읽으므로 바뀌면 다시 불러온다
+  if (prevTheme && prevTheme !== s.theme) {
+    document.querySelectorAll('.live-frame iframe').forEach(function (f) { f.src = f.src; });
+  }
   document.documentElement.classList.toggle('proto-grid-on', !!s.grid);
   document.documentElement.classList.toggle('proto-pr-on', !!s.pr);
 }
