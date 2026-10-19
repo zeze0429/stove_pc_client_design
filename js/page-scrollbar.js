@@ -7,6 +7,7 @@
  * 썸을 콘텐츠 위에 직접 띄운다 — 사이드바(.gnb-scrollbar)와 같은 방식.
  * 모양은 웹(store.onstove.com) 스크롤바의 보이는 부분 그대로: 폭 0.8rem,
  * 오른쪽·위아래 0.8rem 안쪽. 썸은 끌어서 스크롤할 수 있다.
+ * 사이드바처럼 마우스가 콘텐츠 영역(.main) 안에 있을 때만 보인다.
  *
  *   mountPageScrollbar(document.querySelector('.app > .main'));
  */
@@ -48,6 +49,25 @@ function mountPageScrollbar(scroller) {
   }
   scroller.addEventListener('load', update, true);
 
+  // 노출 — 마우스가 .main 위에 있을 때만(사이드바 .gnb-scrollbar와 같은 규칙).
+  // 썸은 .main 밖(.app)에 붙어 있어 mouseenter/leave로는 썸 위에서 꺼지므로
+  // 좌표로 판단한다. 끄는 중에는 영역을 벗어나도 유지.
+  var dragging = false;
+  var hovering = false;
+  function setVisible() {
+    track.classList.toggle('is-visible', hovering || dragging);
+  }
+  document.addEventListener('mousemove', function (e) {
+    var r = scroller.getBoundingClientRect();
+    hovering = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+    setVisible();
+  });
+  // iframe(데스크톱 미리보기) 안이면 커서가 창 밖으로 나갈 때 mousemove가 끊긴다
+  document.documentElement.addEventListener('mouseleave', function () {
+    hovering = false;
+    setVisible();
+  });
+
   // 썸 끌기 — 썸이 움직인 만큼 콘텐츠를 비율대로 스크롤
   thumb.addEventListener('mousedown', function (e) {
     e.preventDefault();
@@ -56,11 +76,15 @@ function mountPageScrollbar(scroller) {
     var range = scroller.scrollHeight - scroller.clientHeight;
     var travel = track.clientHeight - thumb.offsetHeight;
     thumb.classList.add('is-dragging');
+    dragging = true;
+    setVisible();
     function onMove(ev) {
       if (travel > 0) scroller.scrollTop = startTop + (ev.clientY - startY) * (range / travel);
     }
     function onUp() {
       thumb.classList.remove('is-dragging');
+      dragging = false;
+      setVisible();
       document.removeEventListener('mousemove', onMove);
       document.removeEventListener('mouseup', onUp);
     }

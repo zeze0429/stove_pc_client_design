@@ -76,6 +76,7 @@ ul { list-style: none; margin: 0; padding: 0; }
    폭 미리보기 이미지가 그대로 들어간다. 트랙은 스크롤되는 .main이 아니라
    .app에 붙어 있고, 유틸리티 바(+공지 띠) 아래에서 시작한다.
    보이는 모양은 웹 스크롤바와 같다: 폭 0.8rem, 오른쪽·위아래 0.8rem 안쪽.
+   마우스가 콘텐츠 영역 위에 있을 때만 나타난다.
    색은 공통 규칙(default=inverse-elevation-2, hover/press=inverse-elevation-1). */
 .main--overlay-scroll { scrollbar-width: none; }
 .main--overlay-scroll::-webkit-scrollbar { display: none; }
@@ -87,7 +88,12 @@ ul { list-style: none; margin: 0; padding: 0; }
   right: 0.8rem;
   width: 0.8rem;
   pointer-events: none;
+  /* 마우스가 콘텐츠 영역에 있을 때만 보인다 (사이드바와 같은 규칙) */
+  opacity: 0;
+  transition: opacity 0.15s;
 }
+.page-scrollbar.is-visible { opacity: 1; }
+.page-scrollbar:not(.is-visible) .page-scrollbar__thumb { pointer-events: none; }
 .page-scrollbar__thumb {
   position: absolute;
   top: 0;
