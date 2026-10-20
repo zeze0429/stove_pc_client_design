@@ -8,9 +8,9 @@
   <link rel="stylesheet" href="css/foundations.css?v=7" />
   <link rel="stylesheet" href="css/typography.css?v=12" />
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=2" />
-  <link rel="stylesheet" href="css/desktop.css?v=14" />
+  <link rel="stylesheet" href="css/desktop.css?v=15" />
   <link rel="stylesheet" href="css/notice.css?v=9" />
-  <script src="js/proto-settings.js?v=10"></script>
+  <script src="js/proto-settings.js?v=11"></script>
   <script>
     // 업데이트 버튼·공지사항·다운로드 관리·스튜디오 테스트·메뉴 강조는 저장해 두지 않는다 —
     // 미리보기에 새로 들어올 때마다 아래 기본 상태로 시작한다(오늘의 1등 뱃지만 켜짐,
@@ -112,23 +112,6 @@
         <button class="proto-switch" type="button" role="switch" data-proto-key="grid" aria-label="그리드"></button>
       </div>
       <div class="proto-panel__row">
-        <span class="proto-panel__label">PR영역</span>
-        <!-- 일반배너 / 전략배너 — 둘 중 하나만 (켜면 다른 쪽이 꺼진다) -->
-        <span class="proto-panel__controls">
-          <label class="proto-check">
-            <input type="checkbox" data-proto-key="prBasic" />
-            <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
-            일반배너
-          </label>
-          <label class="proto-check">
-            <input type="checkbox" data-proto-key="prStrategic" />
-            <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
-            전략배너
-          </label>
-          <button class="proto-switch" type="button" role="switch" data-proto-key="pr" aria-label="PR영역"></button>
-        </span>
-      </div>
-      <div class="proto-panel__row">
         <span class="proto-panel__label">공지사항</span>
         <span class="proto-panel__controls">
           <label class="proto-check">
@@ -138,6 +121,42 @@
           </label>
           <button class="proto-switch" type="button" role="switch" data-proto-key="notice" aria-label="공지사항"></button>
         </span>
+      </div>
+      <!-- PR영역 — 스위치 + 아래 두 줄: 일반배너(1·2·3단) / 전략배너. 배너는 둘 중 하나만 -->
+      <div class="proto-panel__row">
+        <span class="proto-panel__label">PR영역</span>
+        <button class="proto-switch" type="button" role="switch" data-proto-key="pr" aria-label="PR영역"></button>
+      </div>
+      <div class="proto-panel__sub">
+        <label class="proto-check">
+          <input type="checkbox" data-proto-key="prBasic" />
+          <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
+          일반배너
+        </label>
+        <span class="proto-panel__controls">
+            <label class="proto-check">
+              <input type="checkbox" data-proto-col="1" />
+              <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
+              1단
+            </label>
+            <label class="proto-check">
+              <input type="checkbox" data-proto-col="2" />
+              <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
+              2단
+            </label>
+            <label class="proto-check">
+              <input type="checkbox" data-proto-col="3" />
+              <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
+              3단
+            </label>
+        </span>
+      </div>
+      <div class="proto-panel__sub">
+        <label class="proto-check">
+          <input type="checkbox" data-proto-key="prStrategic" />
+          <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
+          전략배너
+        </label>
       </div>
 
       <hr class="proto-panel__divider" />
@@ -235,6 +254,9 @@
         panel.querySelectorAll('input[data-proto-key]').forEach(function (el) {
           el.checked = !!s[el.dataset.protoKey];
         });
+        panel.querySelectorAll('input[data-proto-col]').forEach(function (el) {
+          el.checked = String(s.prColumns) === el.dataset.protoCol;
+        });
       }
 
       startBtn.addEventListener('click', function () { setOpen(panel.hidden); });
@@ -263,6 +285,13 @@
           if (el.checked && el.dataset.protoKey === 'prBasic') patch.prStrategic = false;
           if (el.checked && el.dataset.protoKey === 'prStrategic') patch.prBasic = false;
           protoSettingsWrite(patch);
+        });
+      });
+
+      // 일반배너 단 수 — 셋 중 하나만. 고르면 일반배너도 켠다
+      panel.querySelectorAll('input[data-proto-col]').forEach(function (el) {
+        el.addEventListener('change', function () {
+          protoSettingsWrite({ prColumns: Number(el.dataset.protoCol), prBasic: true, prStrategic: false });
         });
       });
 
