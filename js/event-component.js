@@ -105,10 +105,17 @@ var EventMain = {
   mounted: function () { this.startAutoplay(); },
   beforeUnmount: function () { this.stopAutoplay(); },
   methods: {
-    // 현재에서 1칸 떨어진 점 0.84, 2칸 이상 0.67 (웹 그대로)
+    // 창 밖에 점이 더 있으면 그쪽 끝 두 칸이 0.84 · 0.67로 작아진다 (웹 그대로)
     dotScale: function (i) {
-      var d = Math.abs(i - this.current);
-      return d === 0 ? 1 : d === 1 ? 0.84 : 0.67;
+      var n = this.heroes.length;
+      var shift = Math.min(Math.max(this.current - 2, 0), n - 5);
+      var slot = i - shift;
+      var before = shift > 0, after = shift + 5 < n;
+      if (after && slot === 4) return 0.67;
+      if (after && slot === 3) return 0.84;
+      if (before && slot === 0) return 0.67;
+      if (before && slot === 1) return 0.84;
+      return 1;
     },
     go: function (delta) {
       var n = this.heroes.length;
