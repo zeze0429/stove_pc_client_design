@@ -281,10 +281,22 @@
   text-decoration: none;
 }
 
+/* 어제의 1등 배너 — 보라 바 74 + 위로 튀어나온 캐릭터 14 (이미지 88, 바닥 정렬).
+   이미지 바깥 배경은 페이지 배경색(다크 #191919 / 라이트 #fafafa) 그대로 캡처 */
+.lounge-yesterday { position: relative; display: block; height: 7.4rem; }
+.lounge-yesterday img {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 52rem;
+  height: 8.8rem;
+}
+
 /* 탭 + 피드 */
 .lounge-tabs { display: flex; flex-direction: column; gap: 0.6rem; }
 .lounge-tabs__row { display: flex; align-items: center; gap: 1.6rem; }
 .lounge-tabs__tab {
+  position: relative;
   height: 3rem;
   padding: 0;
   color: var(--on-surface-elevation-4);
@@ -294,6 +306,16 @@
   cursor: pointer;
 }
 .lounge-tabs__tab.is-selected { color: var(--on-surface-elevation-1); }
+/* 선택 탭 밑줄 — 글자 폭, 탭 바닥 2px */
+.lounge-tabs__tab.is-selected::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 0.2rem;
+  background: var(--on-surface-elevation-1);
+}
 .lounge-tabs__desc {
   margin: 0;
   color: var(--on-surface-elevation-3);

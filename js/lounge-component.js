@@ -167,6 +167,12 @@ var LoungeMain = {
           '</ul>' +
         '</div>' +
 
+        // 어제의 1등 배너 — 웹 배너 이미지(캐릭터가 바 위로 14 튀어나옴). 바 높이 74
+        '<a class="lounge-yesterday" href="#" @click.prevent aria-label="어제의 1등은 누구? 100만원의 주인공 보기! 1등 된 글은 좀 궁금하잖아">' +
+          '<img class="theme-img--dark" src="assets/lounge/yesterday-banner-dark.jpg" alt="" />' +
+          '<img class="theme-img--light" src="assets/lounge/yesterday-banner-light.jpg" alt="" />' +
+        '</a>' +
+
         '<div class="lounge-feed">' +
           '<div class="lounge-tabs">' +
             '<div class="lounge-tabs__row">' +
