@@ -101,7 +101,7 @@ var PROTO_PR_BASIC = [
   { id: 'epic7', color: '#405866' },
   { id: 'ghostrunner', color: '#502028' },
 ];
-var PROTO_PR_STRATEGIC = { img: 'assets/pr/strategic-bg.jpg?v=2', color: '#0E2D39' };
+var PROTO_PR_STRATEGIC = { img: 'assets/pr/strategic-bg.jpg?v=3', color: '#191212' }; // 이용가이드
 
 function protoPrEdges(color) {
   return '<span class="proto-pr__edge proto-pr__edge--l" style="--pr-color: ' + color + '"></span>' +
