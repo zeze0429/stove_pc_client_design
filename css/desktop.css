@@ -281,3 +281,5 @@ html, body {
 .proto-check__box svg { width: 12px; height: 12px; opacity: 0; }
 .proto-check input:checked + .proto-check__box svg { opacity: 1; }
 .proto-check input:focus-visible + .proto-check__box { outline: 2px solid #fc4420; outline-offset: 1px; }
+/* 항목 토글이 꺼져 있으면 디스에이블 (패널 공통) */
+.proto-check:has(input:disabled) { opacity: 0.4; cursor: default; }

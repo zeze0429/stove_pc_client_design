@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/foundations.css?v=7" />
   <link rel="stylesheet" href="css/typography.css?v=12" />
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=2" />
-  <link rel="stylesheet" href="css/desktop.css?v=15" />
+  <link rel="stylesheet" href="css/desktop.css?v=16" />
   <link rel="stylesheet" href="css/notice.css?v=9" />
   <script src="js/proto-settings.js?v=11"></script>
   <script>
@@ -127,7 +127,7 @@
         <span class="proto-panel__label">PR영역</span>
         <button class="proto-switch" type="button" role="switch" data-proto-key="pr" aria-label="PR영역"></button>
       </div>
-      <div class="proto-panel__sub">
+      <div class="proto-panel__sub" data-proto-parent="pr">
         <label class="proto-check">
           <input type="checkbox" data-proto-key="prBasic" />
           <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
@@ -151,7 +151,7 @@
             </label>
         </span>
       </div>
-      <div class="proto-panel__sub">
+      <div class="proto-panel__sub" data-proto-parent="pr">
         <label class="proto-check">
           <input type="checkbox" data-proto-key="prStrategic" />
           <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
@@ -256,6 +256,15 @@
         });
         panel.querySelectorAll('input[data-proto-col]').forEach(function (el) {
           el.checked = String(s.prColumns) === el.dataset.protoCol;
+        });
+        // 패널 공통 — 항목의 토글이 꺼져 있으면 그 항목의 체크박스는 디스에이블.
+        // 같은 줄의 스위치, 하위 줄이면 data-proto-parent가 가리키는 스위치를 따른다
+        panel.querySelectorAll('.proto-check input').forEach(function (el) {
+          var sub = el.closest('[data-proto-parent]');
+          var row = el.closest('.proto-panel__row');
+          var sw = sub ? null : row && row.querySelector('.proto-switch');
+          var parentKey = sub ? sub.dataset.protoParent : sw && sw.dataset.protoKey;
+          el.disabled = !!parentKey && !s[parentKey];
         });
       }
 
