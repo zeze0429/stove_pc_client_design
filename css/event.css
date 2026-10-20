@@ -1,0 +1,351 @@
+/* =============================================================
+   이벤트 메인 (js/event-component.js) — 실제 event.onstove.com/ko 실측값.
+   색은 웹이 쓰는 시멘틱 토큰 그대로라 다크/라이트를 따라간다.
+   콘텐츠 폭 960 = 메인 1040 - 좌우 40. 위 40 (유틸리티 바 아래), 아래 100.
+   ============================================================= */
+.event-hub {
+  flex: 0 0 auto; /* .main은 세로 flex — 줄어들지 않게 */
+  padding: 4rem 4rem 0;
+}
+
+/* ---- 메인 배너 ----------------------------------------------
+   비율 3.82:1 (960 기준 251), 모서리 32. 3초마다 0.3초 동안 넘어간다. */
+.event-hero__viewport {
+  position: relative;
+  aspect-ratio: 3.82 / 1;
+  max-height: 34rem;
+  border-radius: 3.2rem;
+  overflow: hidden;
+  user-select: none;
+}
+.event-hero__track {
+  display: flex;
+  height: 100%;
+  cursor: grab;
+  touch-action: pan-y;
+}
+.event-hero__track:active { cursor: grabbing; }
+.event-hero__slide {
+  flex: 0 0 100%;
+  height: 100%;
+  cursor: pointer;
+}
+.event-hero__slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* 이전 · 점 · 다음 — 배너 아래 12, 간격 20 */
+.event-hero__indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1.2rem;
+}
+.event-hero__arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: var(--radius-full);
+  background: var(--neutral-variant-3);
+  color: var(--on-surface-elevation-1);
+  cursor: pointer;
+}
+.event-hero__arrow i { font-size: 1.6rem; }
+.event-hero__arrow:hover { background: var(--neutral-variant-3-hover); }
+.event-hero__arrow:active { background: var(--neutral-variant-3-pressed); }
+
+/* 점 6, 간격 5 — 폭 50 창에 다섯 개만 보이고 현재 점을 따라 밀린다 */
+.event-hero__dots-window {
+  display: flex;
+  width: 5rem;
+  overflow: hidden;
+}
+.event-hero__dots {
+  display: flex;
+  gap: 0.5rem;
+  transition: transform 0.2s;
+}
+.event-hero__dot {
+  flex: 0 0 auto;
+  width: 0.6rem;
+  height: 0.6rem;
+  padding: 0;
+  border-radius: var(--radius-full);
+  background: var(--neutral-variant-4);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.event-hero__dot.is-active { background: var(--on-surface-elevation-1); }
+
+/* ---- 진행 중 / 종료된 이벤트 ---------------------------------
+   배너 영역 아래 40, 20/700/30, 간격 20, 아래 16 */
+.event-tabs {
+  display: flex;
+  gap: 2rem;
+  margin: 4rem 0 1.6rem;
+}
+.event-tabs__tab {
+  padding: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 3rem;
+  letter-spacing: -0.06rem;
+  white-space: nowrap;
+  color: var(--on-surface-elevation-4);
+  cursor: pointer;
+}
+.event-tabs__tab:hover,
+.event-tabs__tab:active,
+.event-tabs__tab.is-selected { color: var(--on-surface-elevation-1); }
+
+/* ---- 서비스 필터 칩 ------------------------------------------
+   높이 44, 좌우 20, 16/24, 간격 8, 아래 24.
+   호버·프레스는 칩 위에 흰 10% 막을 덮는다 (테마 무관 — 웹 그대로) */
+.event-chips {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 2.4rem;
+}
+.event-chip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 4.4rem;
+  padding: 1rem 2rem;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background: var(--inverse-elevation-5);
+  color: var(--on-surface-elevation-1);
+  font-size: 1.6rem;
+  font-weight: 500;
+  line-height: 2.4rem;
+  letter-spacing: -0.04rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.event-chip::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: none;
+  background: var(--stove-white-10);
+}
+.event-chip:hover::before,
+.event-chip:active::before { display: block; }
+.event-chip.is-selected {
+  background: var(--on-surface-elevation-1);
+  color: var(--background-variant-2);
+  font-weight: 700;
+}
+
+/* ---- 총 n개 · 정렬 ------------------------------------------- */
+.event-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 3.2rem;
+  margin-bottom: 0.8rem;
+}
+.event-list-head__count,
+.event-list-head__sort {
+  font-size: 1.4rem;
+  line-height: 2rem;
+  letter-spacing: -0.04rem;
+  color: var(--on-surface-elevation-3);
+}
+.event-list-head__sort {
+  display: flex;
+  align-items: center;
+  height: 3.2rem;
+  padding: 0;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.event-list-head__sort i {
+  margin-left: 1.2rem;
+  font-size: 1.6rem;
+}
+
+/* ---- 카드 목록 -----------------------------------------------
+   4열, 가로 간격 20 / 세로 32. 카드 모서리 20, 썸네일 16:9 + 본문 168. */
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 3.2rem 2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.event-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 2rem;
+  overflow: hidden;
+  cursor: pointer;
+}
+.event-card__thumb {
+  position: relative;
+  padding-top: 56.25%;
+  overflow: hidden;
+}
+.event-card__thumb > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 2rem 2rem 0 0;
+}
+/* 플레이크 뱃지 — 썸네일 오른쪽 위 12, 높이 22 */
+.event-card__flake {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-width: 6rem;
+  height: 2.2rem;
+  padding: 0 0.8rem;
+  border-radius: var(--radius-full);
+  background: var(--brand-blue-enabled);
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.8rem;
+  letter-spacing: -0.0288rem;
+}
+.event-card__flake img { width: 1rem; height: 1rem; }
+
+.event-card__body {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  height: 16.8rem;
+  padding: 1.6rem 2rem 2rem;
+  background: var(--surface-elevation-1);
+}
+/* 기간 칩 — 본문 왼쪽 8, 썸네일 위로 16 걸친다 */
+.event-card__date {
+  position: absolute;
+  left: 0.8rem;
+  top: -1.6rem;
+  display: flex;
+  align-items: center;
+  max-height: 2.6rem;
+  padding: 0.4rem 1.2rem;
+  border: 0.1rem solid var(--brand-blue-enabled);
+  border-radius: 2rem;
+  background: var(--surface-elevation-1);
+  color: var(--brand-blue-enabled);
+  font-size: 1.2rem;
+  line-height: 1.8rem;
+  letter-spacing: -0.024rem;
+}
+.event-card__title,
+.event-card__desc {
+  position: relative;
+  margin: 0;
+  word-break: break-all;
+  white-space: pre-line;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.event-card__title {
+  flex: 0 0 auto;
+  color: var(--on-surface-elevation-1);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 2.4rem;
+  letter-spacing: 0.048rem; /* 웹 -tracking-title7 (부호가 뒤집혀 +) 그대로 */
+}
+.event-card__desc {
+  color: var(--on-surface-elevation-3);
+  font-size: 1.4rem;
+  line-height: 2.4rem;
+  letter-spacing: -0.042em;
+}
+
+/* 서비스 · 상태 — 카드 아래 18, 좌우 20 */
+.event-card__foot {
+  position: absolute;
+  left: 2rem;
+  right: 2rem;
+  bottom: 1.8rem;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+}
+.event-card__service {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 2.6rem;
+  color: var(--on-surface-elevation-1);
+  font-size: 1.4rem;
+  line-height: 2rem;
+  letter-spacing: -0.04rem;
+}
+.event-card__service img {
+  flex: 0 0 auto;
+  width: 2.6rem;
+  height: 2.6rem;
+  margin-right: 0.8rem;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+}
+/* 상태 칩 — 배경 #E8F0FF는 웹이 테마와 상관없이 고정으로 쓰는 값 */
+.event-card__status {
+  flex: 0 0 auto;
+  align-self: center;
+  min-width: 3.6rem;
+  max-width: 9.2rem;
+  margin-left: auto;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-lg);
+  background: #e8f0ff;
+  color: var(--brand-blue-enabled);
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.8rem;
+  letter-spacing: -0.022rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- 더보기 — 목록 아래 60, 160 x 44 ------------------------- */
+.event-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16rem;
+  height: 4.4rem;
+  margin: 6rem auto 0;
+  padding: 0 1.2rem;
+  border-radius: var(--radius-full);
+  background: var(--inverse-elevation-6);
+  color: var(--on-surface-elevation-2);
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 2rem;
+  letter-spacing: -0.042rem;
+  cursor: pointer;
+}
+.event-more:hover,
+.event-more:active { background: var(--neutral-variant-2-pressed); }
