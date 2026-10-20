@@ -23,7 +23,7 @@ var PCBANG_BENEFITS = [
     name: '로스트아크',
     genre: 'MMORPG',
     thumb: 'assets/game-lostark.png',
-    bg: 'assets/pcbang-benefits/card-bg-lostark.jpg',
+    bg: 'assets/pcbang-benefits/Client3.0_PC방혜택팝업_백그라운드_로스트아크.jpg',
     buttons: [
       { label: '프리미엄 혜택', icon: 'ic-v2-object-crown-fill', isNew: true },
       { label: '이벤트', icon: 'ic-v2-navigation-community-event-fill' },
@@ -36,7 +36,7 @@ var PCBANG_BENEFITS = [
     name: '테일즈런너',
     genre: 'Racing',
     thumb: 'assets/game-tales.png',
-    bg: 'assets/pcbang-benefits/card-bg-tales.jpg',
+    bg: 'assets/pcbang-benefits/Client3.0_PC방혜택팝업_백그라운드_테일즈런너.jpg',
     buttons: [
       { label: '프리미엄 혜택', icon: 'ic-v2-object-crown-fill' },
       { label: '이벤트', icon: 'ic-v2-navigation-community-event-fill', isNew: true },
