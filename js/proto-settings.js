@@ -99,11 +99,11 @@ function protoMountLayout() {
 //   이름 끝 6자리 hex = 배경·그라데이션 공통 색 — 코드가 파일명에서 읽는다.
 var PROTO_PR_DIR = 'assets/pr/';
 var PROTO_PR_BASIC = [
-  { bg: 'Client3.0_PR영역_기본배너_02_로드나인_2E2C29.jpg', logo: 'Client3.0_PR영역_기본배너_01_로드나인.png' },
-  { bg: 'Client3.0_PR영역_기본배너_02_에픽세븐_405866.jpg', logo: 'Client3.0_PR영역_기본배너_01_에픽세븐.png' },
-  { bg: 'Client3.0_PR영역_기본배너_02_고스트러너_502028.jpg', logo: 'Client3.0_PR영역_기본배너_01_고스트러너.png' },
+  { bg: 'Client3.0_PR영역_기본배너_02_로드나인_2E2C29.png', logo: 'Client3.0_PR영역_기본배너_01_로드나인.png' },
+  { bg: 'Client3.0_PR영역_기본배너_02_에픽세븐_405866.png', logo: 'Client3.0_PR영역_기본배너_01_에픽세븐.png' },
+  { bg: 'Client3.0_PR영역_기본배너_02_고스트러너_502028.png', logo: 'Client3.0_PR영역_기본배너_01_고스트러너.png' },
 ];
-var PROTO_PR_STRATEGIC = 'Client3.0_PR영역_전략배너_이용가이드_KO_371C1C.jpg'; // 클라이언트_v3.1 67751:158533
+var PROTO_PR_STRATEGIC = 'Client3.0_PR영역_전략배너_이용가이드_KO_371C1C.png'; // 클라이언트_v3.1 67751:158533
 
 function protoPrColor(file) {
   var m = /_([0-9A-Fa-f]{6})\.[a-z]+$/.exec(file);
