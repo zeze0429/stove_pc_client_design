@@ -10,9 +10,9 @@
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=2" />
   <link rel="stylesheet" href="css/desktop.css?v=16" />
   <link rel="stylesheet" href="css/notice.css?v=9" />
-  <script src="js/proto-settings.js?v=19"></script>
+  <script src="js/proto-settings.js?v=20"></script>
   <script>
-    // 업데이트 버튼·공지사항·다운로드 관리·스튜디오 테스트·메뉴 강조·PR 배너 종류는 저장해 두지 않는다 —
+    // 업데이트 버튼·공지사항·다운로드 관리·스튜디오 테스트·메뉴 강조·게임 뱃지·PR 배너 종류는 저장해 두지 않는다 —
     // 미리보기에 새로 들어올 때마다 아래 기본 상태로 시작한다(오늘의 1등 뱃지만 켜짐,
     // 나머지는 꺼짐 — 패널에서 켜야 나타난다). 다운로드 관리는 켜는 순간 GNB 진행
     // 애니메이션이 시작된다.
@@ -21,6 +21,7 @@
       updateBtn: false,
       studio: false,
       menuNew: false, menuBadge: true, // 오늘의 1등 뱃지만 켜진 상태로 시작
+      gameBadgeLink: false, gameBadgeFree: false, // 게임 뱃지는 꺼진 상태로 시작
       notice: false, noticeUrgent: false,
       download: false, downloadError: false, downloadStartedAt: 0,
       prBasic: false, prStrategic: true, // PR 배너는 전략배너로 시작 (일반배너 단 수는 기억)
@@ -180,6 +181,22 @@
             <input type="checkbox" data-proto-key="menuBadge" />
             <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
             뱃지
+          </label>
+        </span>
+      </div>
+      <!-- 게임 뱃지 — 스위치 없이 체크박스 두 개. 켜면 사이드바 모든 게임 항목에 붙는다 -->
+      <div class="proto-panel__row">
+        <span class="proto-panel__label">게임 뱃지</span>
+        <span class="proto-panel__controls">
+          <label class="proto-check">
+            <input type="checkbox" data-proto-key="gameBadgeLink" />
+            <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
+            링크
+          </label>
+          <label class="proto-check">
+            <input type="checkbox" data-proto-key="gameBadgeFree" />
+            <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
+            PC방 무료
           </label>
         </span>
       </div>
