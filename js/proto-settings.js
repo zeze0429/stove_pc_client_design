@@ -92,12 +92,15 @@ function protoMountLayout() {
 //   기준으로 잘려 1·2·3단 어디에 놓여도 맞는다.
 // 전략배너: 1920 x 80 이미지 한 장을 가운데에 두고, 창이 1920보다 넓으면
 //   이미지 양끝 120 그라데이션이 배경색으로 자연스럽게 이어진다.
+//   배경색 = 그라데이션 색 (배너마다 하나의 색).
+// 리소스는 1.5배수로 받는다 — 배경·전략 이미지 2880 x 120, 로고 642 x 120.
+//   표시 크기는 CSS가 1배(1920 x 80 / 428 x 80)로 고정한다.
 var PROTO_PR_BASIC = [
   { id: 'lordnine', color: '46, 44, 41' },
   { id: 'epic7', color: '64, 88, 102' },
   { id: 'ghostrunner', color: '80, 32, 40' },
 ];
-var PROTO_PR_STRATEGIC = { img: 'assets/pr/strategic-bg.jpg', color: '14, 45, 57' };
+var PROTO_PR_STRATEGIC = { img: 'assets/pr/strategic-bg.jpg?v=2', color: '14, 45, 57' };
 
 function protoPrEdges(rgb) {
   return '<span class="proto-pr__edge proto-pr__edge--l" style="--pr-color: ' + rgb + '"></span>' +
@@ -117,7 +120,7 @@ function protoRenderPr(el, s) {
       return '<div class="proto-pr__basic">' +
         '<img class="proto-pr__bg" src="assets/pr/' + b.id + '-bg.jpg" alt="" />' +
         protoPrEdges(b.color) +
-        '<img class="proto-pr__logo" src="assets/pr/' + b.id + '-logo.png" alt="" />' +
+        '<img class="proto-pr__logo" src="assets/pr/' + b.id + '-logo.png?v=2" alt="" />' +
       '</div>';
     }).join('');
   } else {
