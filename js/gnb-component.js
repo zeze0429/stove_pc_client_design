@@ -921,7 +921,8 @@ var GnbComponent = {
             '</li>' +
           '</ul>' +
           '<a v-if="proto.ad" class="gnb-ad" style="margin-top: var(--spacing-12);" role="link" data-name="img/GNB/AD">' +
-            '<img src="assets/ad-mystery.png" alt="미스테리 기획전 · 3월 26일 할인 종료!" />' +
+            // 리소스 이름 그대로 — 원본 400 x 80(2배수)을 200 x 40으로 표시. 파일명의 공백은 %20
+            '<img src="assets/pr/Client3.0_PR영역_GNB%20배너_미스테리기획전.png" alt="미스테리 기획전 · 3월 26일 할인 종료!" />' +
           '</a>' +
         '</div>' +
 
