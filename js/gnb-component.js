@@ -87,9 +87,11 @@ var GNB_GAME_GROUPS = [
   },
 ];
 
+// 게임 리스트 뱃지 — 이미지 리소스 (Figma 2026_웹전환 11716:51837, 2배수 32 → 16 표시).
+// 파일명은 Figma 컴포넌트 이름 그대로 (공백은 %20)
 var GNB_BADGE_ICON = {
-  link: 'ic-v2-navigation-link-fill',
-  multiplay: 'ic-v2-navigation-pcbang-fill',
+  link: 'assets/gnb-badge/img_badge_link.png',
+  multiplay: 'assets/gnb-badge/img_badge_free%20game.png',
 };
 
 // 다운로드 관리 진행 애니메이션 (Figma Make 레퍼런스 quartz-unique-70171087.figma.site
@@ -949,7 +951,7 @@ var GnbComponent = {
               '<span v-if="game.badges && game.badges.length" class="game-group__badges">' +
                 '<span v-for="b in game.badges" :key="b" class="badge-game-list" :class="\'badge-game-list--\' + b" data-name="component/badge/game_list" ' +
                   '@mouseenter="showBadgeTip($event, game, b)" @mouseleave="hideBadgeTip">' +
-                  '<i :class="badgeIcon[b]"></i>' +
+                  '<img :src="badgeIcon[b]" alt="" />' +
                 '</span>' +
               '</span>' +
               // 뱃지 툴팁이 떠 있는 동안에는 게임명 툴팁을 감춘다 — 둘이 겹쳐 뜨면 안 된다
@@ -995,7 +997,7 @@ var GnbComponent = {
         '<span class="game-group__list-name stds-cap1 fw-medium">{{ dragging.game.name }}</span>' +
         '<span v-if="dragging.game.badges && dragging.game.badges.length" class="game-group__badges">' +
           '<span v-for="b in dragging.game.badges" :key="b" class="badge-game-list" :class="\'badge-game-list--\' + b">' +
-            '<i :class="badgeIcon[b]"></i>' +
+            '<img :src="badgeIcon[b]" alt="" />' +
           '</span>' +
         '</span>' +
       '</div>' +

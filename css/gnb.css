@@ -13,9 +13,6 @@ body { margin: 0; }
    var(--실제토큰명)으로 값만 교체하면 됨 (사용하는 쪽은 안 건드림). */
 :root {
   --game-group-list-text: #888;
-  --badge-game-list-link-bg: rgba(89, 138, 255, 0.2);
-  --badge-game-list-multiplay-bg: rgba(68, 224, 143, 0.2);
-  --badge-game-list-multiplay-fg: #44e08f;
 }
 
 /* ---- 페이지 캔버스 (컴포넌트 미리보기용) ----------------- */
@@ -714,13 +711,10 @@ body { margin: 0; }
 .badge-game-list {
   width: 1.6rem;
   height: 1.6rem;
-  border-radius: var(--radius-md);
-  display: grid;
-  place-items: center;
+  display: block;
 }
-.badge-game-list i { font-size: 1.2rem; }
-.badge-game-list--link { background: var(--badge-game-list-link-bg); color: var(--stove-blue-400); }
-.badge-game-list--multiplay { background: var(--badge-game-list-multiplay-bg); color: var(--badge-game-list-multiplay-fg); }
+/* 뱃지는 이미지 리소스(배경·아이콘 포함) — Figma img_badge_link / img_badge_free game */
+.badge-game-list img { display: block; width: 100%; height: 100%; }
 
 /* ============================================================
    맨 위로(TOP) 버튼
