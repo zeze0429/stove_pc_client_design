@@ -95,16 +95,17 @@ function protoMountLayout() {
 //   배경색 = 그라데이션 색 (배너마다 하나의 색).
 // 리소스는 1.5배수로 받는다 — 배경·전략 이미지 2880 x 120, 로고 642 x 120.
 //   표시 크기는 CSS가 1배(1920 x 80 / 428 x 80)로 고정한다.
+// color = 리소스 파일명 끝 6자리 (배경·그라데이션 공통 색)
 var PROTO_PR_BASIC = [
-  { id: 'lordnine', color: '46, 44, 41' },
-  { id: 'epic7', color: '64, 88, 102' },
-  { id: 'ghostrunner', color: '80, 32, 40' },
+  { id: 'lordnine', color: '#2E2C29' },
+  { id: 'epic7', color: '#405866' },
+  { id: 'ghostrunner', color: '#502028' },
 ];
-var PROTO_PR_STRATEGIC = { img: 'assets/pr/strategic-bg.jpg?v=2', color: '14, 45, 57' };
+var PROTO_PR_STRATEGIC = { img: 'assets/pr/strategic-bg.jpg?v=2', color: '#0E2D39' };
 
-function protoPrEdges(rgb) {
-  return '<span class="proto-pr__edge proto-pr__edge--l" style="--pr-color: ' + rgb + '"></span>' +
-    '<span class="proto-pr__edge proto-pr__edge--r" style="--pr-color: ' + rgb + '"></span>';
+function protoPrEdges(color) {
+  return '<span class="proto-pr__edge proto-pr__edge--l" style="--pr-color: ' + color + '"></span>' +
+    '<span class="proto-pr__edge proto-pr__edge--r" style="--pr-color: ' + color + '"></span>';
 }
 
 function protoRenderPr(el, s) {
@@ -112,13 +113,13 @@ function protoRenderPr(el, s) {
   if (el.dataset.kind === kind) return;
   el.dataset.kind = kind;
   if (kind === 'strategic') {
-    el.innerHTML = '<div class="proto-pr__strategic" style="background: rgb(' + PROTO_PR_STRATEGIC.color + ')">' +
+    el.innerHTML = '<div class="proto-pr__strategic" style="background: ' + PROTO_PR_STRATEGIC.color + '">' +
       '<div class="proto-pr__visual"><img src="' + PROTO_PR_STRATEGIC.img + '" alt="" />' +
       protoPrEdges(PROTO_PR_STRATEGIC.color) + '</div></div>';
   } else if (kind) {
     el.innerHTML = PROTO_PR_BASIC.slice(0, s.prColumns || 3).map(function (b) {
       return '<div class="proto-pr__basic">' +
-        '<img class="proto-pr__bg" src="assets/pr/' + b.id + '-bg.jpg" alt="" />' +
+        '<img class="proto-pr__bg" src="assets/pr/' + b.id + '-bg.jpg?v=2" alt="" />' +
         protoPrEdges(b.color) +
         '<img class="proto-pr__logo" src="assets/pr/' + b.id + '-logo.png?v=2" alt="" />' +
       '</div>';
