@@ -16,6 +16,8 @@ var PROTO_SETTINGS_DEFAULTS = {
   theme: 'dark',
   grid: false,
   pr: true,
+  prBasic: true,      // PR영역 — 일반배너(같은 리소스로 1·2·3단) / 전략배너 중 하나만
+  prStrategic: false,
   notice: false,
   noticeUrgent: false,
   updateBtn: false,
@@ -77,9 +79,50 @@ function protoMountLayout() {
   app.appendChild(grid);
 
   var pr = document.createElement('div');
-  pr.className = 'proto-pr stds-text3';
-  pr.textContent = 'PR영역';
+  pr.className = 'proto-pr';
   app.insertAdjacentElement('afterend', pr);
+  protoRenderPr(pr, protoSettingsRead());
+  protoSettingsSubscribe(function (s) { protoRenderPr(pr, s); });
+}
+
+// ---- PR영역 배너 (Figma NEW 클라이언트 Library · PR 5215:3267) ----------
+// 일반배너: 배경(1920 x 80, 가운데 기준) + 가운데 로고(428 x 80) + 양끝 120
+//   그라데이션(배너 고유색 → 투명). 칸 폭이 달라도 같은 리소스가 가운데
+//   기준으로 잘려 1·2·3단 어디에 놓여도 맞는다.
+// 전략배너: 1920 x 80 이미지 한 장을 가운데에 두고, 창이 1920보다 넓으면
+//   이미지 양끝 120 그라데이션이 배경색으로 자연스럽게 이어진다.
+var PROTO_PR_BASIC = [
+  { id: 'lordnine', color: '46, 44, 41' },
+  { id: 'epic7', color: '64, 88, 102' },
+  { id: 'ghostrunner', color: '80, 32, 40' },
+];
+var PROTO_PR_BASIC_COLUMNS = 3; // 일반배너 단 수 (1 · 2 · 3)
+var PROTO_PR_STRATEGIC = { img: 'assets/pr/strategic-bg.jpg', color: '14, 45, 57' };
+
+function protoPrEdges(rgb) {
+  return '<span class="proto-pr__edge proto-pr__edge--l" style="--pr-color: ' + rgb + '"></span>' +
+    '<span class="proto-pr__edge proto-pr__edge--r" style="--pr-color: ' + rgb + '"></span>';
+}
+
+function protoRenderPr(el, s) {
+  var kind = s.prStrategic ? 'strategic' : s.prBasic ? 'basic' : '';
+  if (el.dataset.kind === kind) return;
+  el.dataset.kind = kind;
+  if (kind === 'strategic') {
+    el.innerHTML = '<div class="proto-pr__strategic" style="background: rgb(' + PROTO_PR_STRATEGIC.color + ')">' +
+      '<div class="proto-pr__visual"><img src="' + PROTO_PR_STRATEGIC.img + '" alt="" />' +
+      protoPrEdges(PROTO_PR_STRATEGIC.color) + '</div></div>';
+  } else if (kind === 'basic') {
+    el.innerHTML = PROTO_PR_BASIC.slice(0, PROTO_PR_BASIC_COLUMNS).map(function (b) {
+      return '<div class="proto-pr__basic">' +
+        '<img class="proto-pr__bg" src="assets/pr/' + b.id + '-bg.jpg" alt="" />' +
+        protoPrEdges(b.color) +
+        '<img class="proto-pr__logo" src="assets/pr/' + b.id + '-logo.png" alt="" />' +
+      '</div>';
+    }).join('');
+  } else {
+    el.innerHTML = '';
+  }
 }
 
 // 클라이언트 페이지가 data-client를 달고 불렀을 때만 스스로 적용한다 —
