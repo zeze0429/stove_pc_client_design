@@ -20,13 +20,6 @@ var STORE_REST = {
     { label: '플레이크 미션', img: 'assets/store-rest/shortcut-08.png' },
     { label: '캡슐 뽑기', img: 'assets/store-rest/shortcut-09.png' },
   ],
-  personal: [
-    { title: '이클립스: 더 어웨이크닝', genre: 'PC, MOBILE, MMORPG', tone: 'gray', buttons: ['navigation-home-fill', 'navigation-community-line'], img: 'assets/store-rest/pick-00.jpg' },
-    { title: '에픽세븐', genre: 'PC, MOBILE, 턴제RPG', tone: 'gray', buttons: ['navigation-home-fill', 'navigation-community-line'], img: 'assets/store-rest/pick-01.jpg' },
-    { title: '카오스 제로 나이트메어', genre: 'PC, MOBILE, 로그라이트 RPG', badge: 'UP', tone: 'gray', buttons: ['navigation-home-fill', 'navigation-community-line'], img: 'assets/store-rest/pick-02.jpg' },
-    { title: '로드나인', genre: 'PC, MOBILE, MMORPG', tone: 'gray', buttons: ['navigation-home-fill', 'navigation-community-line', 'navigation-shop-line'], img: 'assets/store-rest/pick-03.jpg' },
-    { title: 'LOST ARK', genre: 'PC, MMORPG', tone: 'gray', buttons: ['navigation-home-fill', 'navigation-community-line'], img: 'assets/store-rest/pick-04.jpg' },
-  ],
   banner: 'assets/store-rest/banner-wide.jpg',
   gifts: [
     { title: '플레이크를 만나는 즐거운 방법🥳', desc: '매일 미션 참여하고 플레이크 받아가세요!', img: 'assets/store-rest/gift-00.jpg', icon: 'assets/store-rest/gift-icon-00.png' },
@@ -133,6 +126,34 @@ var STORE_REST = {
   ],
 };
 
+// 로그인 후 개인화 영역 — 실제 로그인 화면에서 받아 온 값(2026-10-20)
+var STORE_REST_ME = {
+  nickname: '휴먼메이드',
+  profile: 'assets/store-rest/profile.png',
+  recent: [
+    { name: '이클립스: 더 어웨이크닝', played: '2026-10-14', img: 'assets/store-rest/recent-0.jpg' },
+    { name: 'Don’t Pop!: Splash Race', played: '2026-09-22', img: 'assets/store-rest/recent-1.jpg' },
+    { name: 'Teleport Master', played: '2026-09-17', img: 'assets/store-rest/recent-2.jpg' },
+    { name: '러블롯 경 (Sir Lovelot)', played: '2026-08-26', img: 'assets/store-rest/recent-3.jpg' },
+    { name: '닌자 캐슬 이스케이프 (Ninja Castle Escape)', played: '2026-08-26', img: 'assets/store-rest/recent-4.jpg' },
+  ],
+  picks: [
+    { title: '마이썸머 베케이션', price: '₩7,800' },
+    { title: '더 시그널 스테이트 (The Signal State)', price: '₩20,500' },
+    { title: '진스 비치 레스토랑', price: '₩11,000' },
+    { title: '패링맨 - PARRYMAN', price: '₩10,010' },
+    { title: "브레이브 레이지 (Brave's Rage)", price: '₩10,500' },
+    { title: '레트로 어비스 : 게임의 마지막 소원', price: '₩5,000' },
+    { title: 'Town of illustive', price: '₩11,000' },
+    { title: '비가 오기 시작했지만, 낙엽은 이미 젖어있었다.', price: '₩2,750' },
+  ].map(function (g, i) {
+    g.img = 'assets/store-rest/mypick-' + i + '.jpg';
+    g.badge = 'In Library';
+    g.buttons = ['control-check-circle-fill', 'navigation-community-line'];
+    return g;
+  }),
+};
+
 // ---- 캐러셀 하나의 상태 — 페이지 단위로 넘기고, 끝에서는 마지막 카드가 오른쪽에 붙게 멈춘다
 //      (웹 swiper loop:false · speed 300 그대로)
 function storeRestPager(count, perView, perGroup, slideW, gap, viewW) {
@@ -184,12 +205,15 @@ var StoreRestDots = {
 };
 
 // ---- 게임 카드 — 호버하면 제목이 한 줄로 줄고, 정보가 위로 밀리며 평가·버튼이 올라온다
-//      variant: pick(게임 맛집 패널) · product(신작·출시 예정) · featured(대표 게임)
+//      variant: mypick(로그인 후 추천 패널) · product(신작·출시 예정) · featured(대표 게임)
 var StoreRestGameCard = {
   props: { game: Object, variant: String },
   computed: {
     // 웹 --transform-value: 정가 줄이 있으면 장르+정가(44), 아니면 장르(22)만큼 밀어 올린다
-    lift: function () { return this.game.strike ? '4.4rem' : '2.2rem'; },
+    lift: function () {
+      if (this.variant === 'mypick') return '0rem'; // 로그인 후 추천 카드는 정보 줄을 밀지 않고 버튼 줄만 올라온다
+      return this.game.strike ? '4.4rem' : '2.2rem';
+    },
     primary: function () {
       var b = this.game.buttons[0] || '';
       return /home|cart/.test(b) || (this.variant === 'featured' && /community-fill/.test(b)) ? b : null;
@@ -212,7 +236,8 @@ var StoreRestGameCard = {
         '<h3 class="store-game__title">{{ game.title }}</h3>' +
         '<div class="store-game__clip">' +
           '<div class="store-game__slide" :style="{ \'--lift\': lift }">' +
-            '<p class="store-game__genre">{{ game.genre }}</p>' +
+            '<p v-if="game.genre" class="store-game__genre">{{ game.genre }}</p>' +
+            '<p v-if="variant === \'mypick\'" class="store-game__price store-game__price--small">{{ game.price }}</p>' +
             '<template v-if="variant === \'product\'">' +
               '<div v-if="game.strike" class="store-game__price store-game__price--sale">' +
                 '<span class="store-game__strike">{{ game.strike }}</span>' +
@@ -229,7 +254,7 @@ var StoreRestGameCard = {
               '<div class="store-game__actions">' +
                 '<button v-if="primary" type="button" class="store-game__btn store-game__btn--primary">' +
                   '<i v-if="variant !== \'featured\'" :class="\'ic-v2-\' + primary"></i>' +
-                  '<span v-if="variant !== \'pick\'">{{ label(primary) }}</span>' +
+                  '<span>{{ label(primary) }}</span>' +
                 '</button>' +
                 '<button v-for="b in secondary" :key="b" type="button" class="store-game__btn"' +
                   ' :class="{ \'store-game__btn--wide\': variant === \'featured\' && /community/.test(b) }">' +
@@ -249,7 +274,8 @@ var StoreRest = {
   data: function () {
     return {
       shortcuts: STORE_REST.shortcuts,
-      personal: STORE_REST.personal,
+      me: STORE_REST_ME,
+      recentPage: 0,
       banner: STORE_REST.banner,
       gifts: STORE_REST.gifts,
       today1: STORE_REST.today1,
@@ -257,7 +283,7 @@ var StoreRest = {
       upcoming: STORE_REST.upcoming,
       featured: STORE_REST.featured,
       // 슬라이드 폭은 콘텐츠 960 기준 실측값
-      pickPager: storeRestPager(STORE_REST.personal.length, 4, 1, 131.7, 12, 562.7),
+      pickPager: storeRestPager(STORE_REST_ME.picks.length, 4, 4, 131.7, 12, 562.7),
       giftPager: storeRestPager(STORE_REST.gifts.length, 3, 3, 306.7, 20, 960),
       newPager: storeRestPager(STORE_REST.newReleases.length, 5, 5, 176, 20, 960),
       soonPager: storeRestPager(STORE_REST.upcoming.length, 5, 5, 176, 20, 960),
@@ -267,6 +293,11 @@ var StoreRest = {
   methods: {
     trackStyle: function (p) { return { transform: 'translateX(' + (-storeRestShift(p)) + 'px)' }; },
     go: function (p, page) { p.page = Math.min(Math.max(page, 0), p.pages - 1); },
+    rewind: function (p, delta) { p.page = (p.page + delta + p.pages) % p.pages; },
+    goRecent: function (delta) {
+      var n = this.me.recent.length;
+      this.recentPage = (this.recentPage + delta + n) % n;
+    },
   },
   template:
     '<div class="store-rest">' +
@@ -287,29 +318,45 @@ var StoreRest = {
         '</div>' +
       '</div>' +
 
-      // ---- 지루할 틈 없는 게임 맛집 (로그인 카드 + 추천 게임 패널) ----
+      // ---- 로그인 후 개인화 (환영 제목 + 최근 플레이한 게임 + 추천 패널) ----
       '<section class="store-rest-section">' +
-        '<h2 class="store-rest-title">지루할 틈 없는 게임 맛집</h2>' +
+        '<h2 class="store-rest-title store-rest-title--welcome">' +
+          '<img class="store-rest-title__avatar" :src="me.profile" alt="" />' +
+          '<span><span class="store-rest-title__name">{{ me.nickname }}님,</span>기다렸어요!</span>' +
+        '</h2>' +
         '<div class="store-pick">' +
-          '<div class="store-login">' +
-            '<div class="store-login__slider"><div class="store-login__track">' +
-              '<img src="assets/store-rest/login-slider.png" alt="" /><img src="assets/store-rest/login-slider.png" alt="" />' +
-            '</div></div>' +
-            '<div class="store-login__body">' +
-              '<p class="store-login__text">로그인하고<br>다양한 게임을 만나보세요!</p>' +
-              '<button class="store-login__btn" type="button">로그인</button>' +
+          '<div class="store-recent">' +
+            '<div class="store-recent__track" :style="{ transform: \'translateX(\' + (-recentPage * 100) + \'%)\' }">' +
+              '<div v-for="g in me.recent" :key="g.name" class="store-recent__slide">' +
+                '<img class="store-recent__blur" :src="g.img" alt="" />' +
+                '<div class="store-recent__art"><img :src="g.img" alt="" /></div>' +
+                '<div class="store-recent__bar">' +
+                  '<div class="store-recent__info">' +
+                    '<h6>{{ g.name }}</h6>' +
+                    '<p><i class="ic-v2-media-av-play-round-fill"></i><span>{{ g.played }} 플레이</span></p>' +
+                  '</div>' +
+                  '<button class="store-recent__play" type="button"><i class="ic-v2-media-av-play-round-fill"></i><span>플레이</span></button>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<button class="store-recent__arrow store-recent__arrow--prev" type="button" aria-label="이전" @click="goRecent(-1)"><i class="ic-v2-control-arrow-left-line"></i></button>' +
+            '<button class="store-recent__arrow store-recent__arrow--next" type="button" aria-label="다음" @click="goRecent(1)"><i class="ic-v2-control-arrow-right-line"></i></button>' +
+            '<div class="store-recent__dots">' +
+              '<button v-for="(g, i) in me.recent" :key="g.name" type="button" class="store-recent__dot"' +
+                ' :class="{ \'is-active\': i === recentPage }" :aria-label="(i + 1) + \'번째 게임\'" @click="recentPage = i"></button>' +
             '</div>' +
           '</div>' +
-          '<div class="store-pick__panel">' +
-            '<h3 class="store-pick__title">기다렸던 그 게임일지도 몰라요!</h3>' +
+          '<div class="store-pick__panel store-pick__panel--me">' +
+            '<h3 class="store-pick__title">내 다음 플레이로 좋은 게임</h3>' +
             '<div class="store-pick__swiper">' +
               '<div class="store-rest-viewport store-rest-viewport--visible">' +
                 '<div class="store-rest-track store-rest-track--pick" :style="trackStyle(pickPager)">' +
-                  '<store-game-card v-for="g in personal" :key="g.title" :game="g" variant="pick"></store-game-card>' +
+                  '<store-game-card v-for="g in me.picks" :key="g.title" :game="g" variant="mypick"></store-game-card>' +
                 '</div>' +
               '</div>' +
-              '<button v-if="pickPager.page > 0" class="store-pick__arrow store-pick__arrow--prev" type="button" aria-label="이전" @click="go(pickPager, pickPager.page - 1)"><i class="ic-v2-control-arrow-left-line"></i></button>' +
-              '<button v-if="pickPager.page < pickPager.pages - 1" class="store-pick__arrow store-pick__arrow--next" type="button" aria-label="다음" @click="go(pickPager, pickPager.page + 1)"><i class="ic-v2-control-arrow-right-line"></i></button>' +
+              // 웹 swiper rewind — 끝에서 다음을 누르면 처음으로, 처음에서 이전은 끝으로
+              '<button class="store-pick__arrow store-pick__arrow--prev" type="button" aria-label="이전" @click="rewind(pickPager, -1)"><i class="ic-v2-control-arrow-left-line"></i></button>' +
+              '<button class="store-pick__arrow store-pick__arrow--next" type="button" aria-label="다음" @click="rewind(pickPager, 1)"><i class="ic-v2-control-arrow-right-line"></i></button>' +
             '</div>' +
           '</div>' +
         '</div>' +

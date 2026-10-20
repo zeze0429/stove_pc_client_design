@@ -216,16 +216,26 @@ var LoungeMain = {
           '<span class="lounge-search__placeholder">라운지에서 검색하기</span>' +
           '<i class="ic-v2-navigation-search-line" aria-hidden="true"></i>' +
         '</div>' +
-        '<div class="lounge-boost-card">' +
+        // 로그인 후 내 프로필 카드 — 실제 로그인 화면 실측(2026-10-20)
+        '<div class="lounge-boost-card lounge-profile">' +
           '<div class="lounge-boost-card__body">' +
-            '<p class="lounge-boost-card__text">오늘의 1등 인기글을 찾고 있어요.<br>마음에 드는 글을 <span class="lounge-boost-card__em"><i class="ic-v2-object-fire-fill lounge-fire"></i><em>부스트</em></span> 해보세요!</p>' +
+            '<div class="lounge-profile__head">' +
+              '<div class="lounge-profile__info">' +
+                '<strong class="lounge-profile__name">휴먼메이드</strong>' +
+                '<div class="lounge-profile__stats"><span>글 11</span><i aria-hidden="true"></i><span>댓글 34</span></div>' +
+              '</div>' +
+              '<span class="lounge-profile__avatar"><img src="assets/lounge/profile-me.png" alt="" /></span>' +
+            '</div>' +
             '<div class="lounge-boost-card__btns">' +
               '<button class="lounge-btn lounge-btn--primary" type="button">글쓰기<i class="ic-v2-community-pencil-fill"></i></button>' +
-              '<button class="lounge-btn lounge-btn--neutral" type="button">로그인</button>' +
+              '<button class="lounge-btn lounge-btn--neutral" type="button">MY홈</button>' +
             '</div>' +
           '</div>' +
-          '<div class="lounge-boost-card__foot">' +
-            '<span>부스트란?</span><i class="ic-v2-state-info-circle-line" aria-hidden="true"></i>' +
+          '<div class="lounge-boost-card__foot lounge-profile__foot">' +
+            '<span class="lounge-profile__boost">부스트<i class="ic-v2-state-info-circle-line" aria-hidden="true"></i></span>' +
+            '<span class="lounge-profile__fires">' +
+              '<i v-for="n in 5" :key="n" class="ic-v2-object-fire-fill lounge-fire"></i>' +
+            '</span>' +
           '</div>' +
         '</div>' +
         '<div class="lounge-recs">' +

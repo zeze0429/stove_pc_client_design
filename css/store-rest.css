@@ -18,6 +18,20 @@
   line-height: 3rem;
   letter-spacing: -0.06rem;
 }
+.store-rest-title--welcome {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+.store-rest-title__avatar {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+.store-rest-title__name { margin-right: 0.8rem; } /* 웹 mr-4 + mx-4 */
 .store-rest-head {
   display: flex;
   justify-content: space-between;
@@ -182,65 +196,158 @@
   letter-spacing: -0.054rem;
 }
 
-/* ---- 지루할 틈 없는 게임 맛집 — 로그인 카드 1 : 추천 패널 2 ---------- */
+/* ---- 로그인 후 개인화 — 최근 플레이한 게임 1 : 추천 패널 2 ---------- */
 .store-pick {
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 2rem;
 }
-.store-login {
-  display: flex;
-  flex-direction: column;
-  height: 32.9rem;
-  padding-top: 2rem;
+/* 최근 플레이한 게임 — 한 장씩 넘기는 카드 (웹 rewind: 끝에서 다음 → 처음).
+   뒤에 같은 이미지를 25 블러로 깔고, 위 238.7은 이미지, 아래 90은 검정 25% 띠 */
+.store-recent {
+  position: relative;
+  height: 32.87rem;
   border-radius: 3.2rem;
   overflow: hidden;
-  background: var(--background-variant-2);
+  isolation: isolate;
 }
-/* 게임 아이콘 띠 — 같은 이미지 두 장을 이어 붙여 20초에 한 바퀴 흐른다 */
-.store-login__slider {
-  height: 16.1rem;
-  overflow: hidden;
-}
-.store-login__track {
+.store-recent__track {
   display: flex;
-  width: max-content;
   height: 100%;
-  animation: store-login-scroll 20s linear infinite;
+  transition: transform 0.3s ease;
 }
-.store-login__track img { height: 100%; width: auto; flex: none; }
-@keyframes store-login-scroll { to { transform: translateX(-50%); } }
-.store-login__body {
+.store-recent__slide {
+  position: relative;
+  flex: 0 0 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  cursor: pointer;
+}
+.store-recent__blur {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  min-width: 100%;
+  max-width: 110%;
+  transform: translateX(-50%);
+  object-fit: cover;
+  filter: blur(2.5rem);
+}
+.store-recent__art {
+  position: relative;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+.store-recent__art img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.store-recent__bar {
+  position: relative;
+  display: flex;
   align-items: center;
-  gap: 1.2rem;
+  justify-content: space-between;
+  gap: 0.6rem;
+  height: 9rem;
   padding: 2rem;
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff; /* 이미지 위 글자 — 테마 무관 */
 }
-.store-login__text {
+.store-recent__info {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+.store-recent__info h6 {
   margin: 0;
-  color: var(--on-surface-elevation-1);
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 700;
-  line-height: 2.6rem;
-  letter-spacing: -0.072rem;
-  text-align: center;
+  line-height: 2.4rem;
+  letter-spacing: -0.025rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.store-login__btn {
-  min-width: 10rem;
+.store-recent__info p {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: 1.3rem;
+  line-height: 2.2rem;
+  letter-spacing: -0.025rem;
+}
+.store-recent__info i { font-size: 1.6rem; }
+.store-recent__info span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* "플레이" — 흰 버튼 (stds-button-white, 테마 무관) */
+.store-recent__play {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
   height: 4.4rem;
   padding: 0 2rem;
+  border: 0.2rem solid #fff;
   border-radius: var(--radius-full);
-  background: var(--brand-blue-enabled);
-  color: #fff;
+  background: #fff;
+  color: var(--stove-gray-880);
   font-size: 1.4rem;
   font-weight: 500;
   line-height: 2rem;
   letter-spacing: -0.025rem;
   cursor: pointer;
 }
-.store-login__btn:hover { background: var(--brand-blue-hover); }
-.store-login__btn:active { background: var(--brand-blue-pressed); }
+.store-recent__play i { margin-right: 0.8rem; font-size: 2rem; }
+.store-recent__play:hover { background: var(--stove-gray-20); border-color: var(--stove-gray-20); }
+.store-recent__play:active { background: var(--stove-gray-40); border-color: var(--stove-gray-40); }
+/* 좌우 40 화살표 — 검정 40%, 카드에 마우스를 올리면 0.3초 동안 나타난다.
+   세로 위치는 이미지 영역(띠 90 제외) 가운데 */
+.store-recent__arrow {
+  position: absolute;
+  top: calc((100% - 9rem) / 2 - 2rem);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  opacity: 0;
+  cursor: pointer;
+}
+.store-recent__arrow i { font-size: 2rem; }
+.store-recent:hover .store-recent__arrow { opacity: 1; transition: opacity 0.3s ease-in-out; }
+.store-recent__arrow:hover { background: rgba(0, 0, 0, 0.5); }
+.store-recent__arrow:active { background: rgba(0, 0, 0, 0.6); }
+.store-recent__arrow--prev { left: 1.2rem; }
+.store-recent__arrow--next { right: 1.2rem; }
+/* 점 — 띠 위 12 (아래 102), 6 · 간격 5 */
+.store-recent__dots {
+  position: absolute;
+  left: 50%;
+  bottom: 10.2rem;
+  z-index: 5;
+  display: flex;
+  gap: 0.5rem;
+  transform: translateX(-50%);
+}
+.store-recent__dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--neutral-variant-4);
+  cursor: pointer;
+}
+.store-recent__dot.is-active { background: var(--on-surface-elevation-1); }
 
 .store-pick__panel {
   display: flex;
@@ -251,6 +358,7 @@
   overflow: hidden;
   background: var(--surface-elevation-1);
 }
+.store-pick__panel--me { padding: 2.4rem 0 0.8rem; }
 .store-pick__title {
   margin: 0;
   padding: 0 3.2rem;
@@ -321,6 +429,11 @@
   letter-spacing: -0.025rem;
   text-transform: uppercase;
 }
+.store-game--mypick .store-game__badge {
+  font-weight: 700;
+  line-height: 1.6rem;
+  text-transform: none;
+}
 .store-game__info {
   height: 6.4rem;
   margin-top: 1rem;
@@ -342,7 +455,9 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.store-game--pick .store-game__title {
+.store-game--mypick .store-game__info { height: 8rem; }
+.store-game--mypick .store-game__clip { margin-top: 0.2rem; }
+.store-game--mypick .store-game__title {
   font-size: 1.4rem;
   line-height: 2rem;
   letter-spacing: -0.042rem;
@@ -370,6 +485,12 @@
   font-weight: 700;
   line-height: 2.4rem;
   letter-spacing: -0.048rem;
+}
+.store-game__price--small {
+  margin: 0;
+  font-size: 1.4rem;
+  line-height: 2rem;
+  letter-spacing: -0.042rem;
 }
 .store-game__price--free { color: var(--brand-primary-enabled); }
 .store-game__price--soon {
@@ -427,8 +548,15 @@
   align-items: center;
   gap: 0.6rem;
 }
-.store-game--pick .store-game__actions,
 .store-game--featured .store-game__actions { margin-top: 1.2rem; }
+/* 로그인 후 추천 카드 — 버튼 줄이 64 아래에 있다가 호버하면 0.16초 동안 올라온다 */
+.store-game--mypick .store-game__hover {
+  margin-top: 0;
+  transform: translateY(6.4rem);
+  transition: transform 0.16s ease-in-out;
+}
+.store-game--mypick:hover .store-game__hover { transform: none; }
+.store-game--mypick .store-game__actions { margin-top: 0.6rem; }
 
 /* 버튼 32 — 주 버튼(공식홈·장바구니)은 반전색, 나머지는 원형 */
 .store-game__btn {
@@ -451,9 +579,10 @@
 .store-game__btn i { font-size: 1.6rem; }
 .store-game__btn:hover { background: var(--neutral-variant-3-hover); }
 .store-game__btn:active { background: var(--neutral-variant-3-pressed); }
-.store-game--pick .store-game__btn { background: var(--neutral-variant-2); }
-.store-game--pick .store-game__btn:hover { background: var(--neutral-variant-2-hover); }
-.store-game--pick .store-game__btn:active { background: var(--neutral-variant-2-pressed); }
+.store-game--mypick .store-game__btn { background: var(--neutral-variant-2); }
+.store-game--mypick .store-game__btn:hover { background: var(--neutral-variant-2-hover); }
+.store-game--mypick .store-game__btn:active { background: var(--neutral-variant-2-pressed); }
+.store-game--mypick .store-game__btn:first-child { color: var(--on-surface-elevation-2); } /* 보유 중(체크) */
 .store-game__btn span {
   font-size: 1.2rem;
   font-weight: 500;
