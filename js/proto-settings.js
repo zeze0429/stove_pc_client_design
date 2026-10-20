@@ -95,13 +95,20 @@ function protoMountLayout() {
 //   배경색 = 그라데이션 색 (배너마다 하나의 색).
 // 리소스는 1.5배수로 받는다 — 배경·전략 이미지 2880 x 120, 로고 642 x 120.
 //   표시 크기는 CSS가 1배(1920 x 80 / 428 x 80)로 고정한다.
-// color = 리소스 파일명 끝 6자리 (배경·그라데이션 공통 색)
+// 파일명은 디자이너가 정의한 리소스 이름 그대로 쓴다 (assets/pr/).
+//   이름 끝 6자리 hex = 배경·그라데이션 공통 색 — 코드가 파일명에서 읽는다.
+var PROTO_PR_DIR = 'assets/pr/';
 var PROTO_PR_BASIC = [
-  { id: 'lordnine', color: '#2E2C29' },
-  { id: 'epic7', color: '#405866' },
-  { id: 'ghostrunner', color: '#502028' },
+  { bg: 'Client3.0_PR영역_기본배너_02_로드나인_2E2C29.jpg', logo: 'Client3.0_PR영역_기본배너_01_로드나인.png' },
+  { bg: 'Client3.0_PR영역_기본배너_02_에픽세븐_405866.jpg', logo: 'Client3.0_PR영역_기본배너_01_에픽세븐.png' },
+  { bg: 'Client3.0_PR영역_기본배너_02_고스트러너_502028.jpg', logo: 'Client3.0_PR영역_기본배너_01_고스트러너.png' },
 ];
-var PROTO_PR_STRATEGIC = { img: 'assets/pr/strategic-bg.jpg?v=5', color: '#371C1C' }; // 이용가이드 (클라이언트_v3.1 67751:158533)
+var PROTO_PR_STRATEGIC = 'Client3.0_PR영역_전략배너_이용가이드_KO_371C1C.jpg'; // 클라이언트_v3.1 67751:158533
+
+function protoPrColor(file) {
+  var m = /_([0-9A-Fa-f]{6})\.[a-z]+$/.exec(file);
+  return m ? '#' + m[1] : 'transparent';
+}
 
 function protoPrEdges(color) {
   return '<span class="proto-pr__edge proto-pr__edge--l" style="--pr-color: ' + color + '"></span>' +
@@ -113,15 +120,16 @@ function protoRenderPr(el, s) {
   if (el.dataset.kind === kind) return;
   el.dataset.kind = kind;
   if (kind === 'strategic') {
-    el.innerHTML = '<div class="proto-pr__strategic" style="background: ' + PROTO_PR_STRATEGIC.color + '">' +
-      '<div class="proto-pr__visual"><img src="' + PROTO_PR_STRATEGIC.img + '" alt="" />' +
-      protoPrEdges(PROTO_PR_STRATEGIC.color) + '</div></div>';
+    var color = protoPrColor(PROTO_PR_STRATEGIC);
+    el.innerHTML = '<div class="proto-pr__strategic" style="background: ' + color + '">' +
+      '<div class="proto-pr__visual"><img src="' + PROTO_PR_DIR + PROTO_PR_STRATEGIC + '" alt="" />' +
+      protoPrEdges(color) + '</div></div>';
   } else if (kind) {
     el.innerHTML = PROTO_PR_BASIC.slice(0, s.prColumns || 3).map(function (b) {
       return '<div class="proto-pr__basic">' +
-        '<img class="proto-pr__bg" src="assets/pr/' + b.id + '-bg.jpg?v=2" alt="" />' +
-        protoPrEdges(b.color) +
-        '<img class="proto-pr__logo" src="assets/pr/' + b.id + '-logo.png?v=2" alt="" />' +
+        '<img class="proto-pr__bg" src="' + PROTO_PR_DIR + b.bg + '" alt="" />' +
+        protoPrEdges(protoPrColor(b.bg)) +
+        '<img class="proto-pr__logo" src="' + PROTO_PR_DIR + b.logo + '" alt="" />' +
       '</div>';
     }).join('');
   } else {
