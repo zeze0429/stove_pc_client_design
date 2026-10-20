@@ -30,8 +30,6 @@ var PROTO_SETTINGS_DEFAULTS = {
   favorites: true,
   menuNew: false,   // 메뉴 강조 — 라운지 NEW 표시
   menuBadge: true,  // 메뉴 강조 — 라운지 "오늘의 1등" 뱃지 (기본 켜짐)
-  gameBadgeLink: false, // 게임 뱃지 — 사이드바 모든 게임 항목에 링크 플레이 뱃지
-  gameBadgeFree: false, // 게임 뱃지 — 사이드바 모든 게임 항목에 PC방 무료 뱃지
 };
 
 function protoSettingsRead() {

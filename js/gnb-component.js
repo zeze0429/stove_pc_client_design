@@ -47,7 +47,7 @@ var GNB_GAME_GROUPS = [
     collapsed: false,
     games: [
       { id: 'lostark', name: 'LOST ARK', thumb: 'assets/game-lostark.png' },
-      { id: 'rodnine', name: '로드나인', thumb: 'assets/game-rodnine.png' },
+      { id: 'rodnine', name: '로드나인', thumb: 'assets/game-rodnine.png', badges: ['link', 'multiplay'] },
       { id: 'chaos', name: '카오스 제로 나이트메어', thumb: 'assets/game-chaos.png' },
       { id: 'e7', name: '에픽세븐', thumb: 'assets/game-e7.png' },
       { id: 'bts', name: 'BTS 쿠킹온 스토브 : 타이니탄 레스토랑', thumb: 'assets/game-bts.png' },
@@ -63,7 +63,7 @@ var GNB_GAME_GROUPS = [
       { id: 'fav-floppy-knight', name: '플로피 나이트', thumb: 'assets/game-floppy-knight.png' },
       { id: 'fav-hwayeonwol', name: '화연월의', thumb: 'assets/game-hwayeonwol.png' },
       { id: 'fav-lostark', name: 'LOST ARK', thumb: 'assets/game-lostark.png' },
-      { id: 'fav-rodnine', name: '로드나인', thumb: 'assets/game-rodnine.png' },
+      { id: 'fav-rodnine', name: '로드나인', thumb: 'assets/game-rodnine.png', badges: ['link', 'multiplay'] },
       { id: 'fav-deluvian-winds', name: '딜루비안 윈즈', thumb: 'assets/game-deluvian-winds.png' },
       { id: 'fav-bus-world', name: '버스 월드', thumb: 'assets/game-bus-world.png' },
       { id: 'fav-happy-quest', name: '해피 퀘스트', thumb: 'assets/game-happy-quest.png' },
@@ -88,6 +88,7 @@ var GNB_GAME_GROUPS = [
 ];
 
 // 게임 리스트 뱃지 — 이미지 리소스 (Figma 2026_웹전환 11716:51837, 2배수 32 → 16 표시).
+// 게임마다 badges: ['link', 'multiplay'] 중 필요한 것만 달면 어느 게임에든 붙는다.
 // 파일명은 Figma 컴포넌트 이름 그대로 (공백은 %20)
 var GNB_BADGE_ICON = {
   link: 'assets/gnb-badge/img_badge_link.png',
@@ -278,14 +279,6 @@ var GnbComponent = {
     },
   },
   methods: {
-    // 게임 뱃지 — 게임별 데이터가 아니라 보기 옵션(게임 뱃지 > 링크 / PC방 무료)으로
-    // 모든 게임 항목에 똑같이 붙인다
-    gameBadges: function () {
-      var list = [];
-      if (this.proto.gameBadgeLink) list.push('link');
-      if (this.proto.gameBadgeFree) list.push('multiplay');
-      return list;
-    },
     // 인디케이터(호버/선택 공용)를 targetEl 위치로 옮긴다. 좌표는 .gnb-menu
     // (스크롤 컨테이너) 기준으로 계산 — 그래야 인디케이터가 .gnb-menu의 자식으로
     // 스크롤과 함께 자연스럽게 움직인다. mode: 'instant'(스프링 없이 즉시 점프,
@@ -621,7 +614,7 @@ var GnbComponent = {
       if (!favGroup) return;
       var favId = 'fav-' + game.id;
       if (favGroup.games.some(function (g) { return g.id === favId; })) return; // 이미 즐겨찾기에 있음
-      favGroup.games.unshift({ id: favId, name: game.name, thumb: game.thumb });
+      favGroup.games.unshift({ id: favId, name: game.name, thumb: game.thumb, badges: game.badges });
       favGroup.count = favGroup.games.length;
     },
     removeFromFavorites: function (game) {
@@ -956,8 +949,8 @@ var GnbComponent = {
               'data-name="component/game_group/list">' +
               '<span class="game-group__thumbnail" :style="{ backgroundImage: \'url(\' + game.thumb + \')\' }" data-name="component/thumbnail/game"></span>' +
               '<span class="game-group__list-name stds-cap1 fw-medium">{{ game.name }}</span>' +
-              '<span v-if="gameBadges().length" class="game-group__badges">' +
-                '<span v-for="b in gameBadges()" :key="b" class="badge-game-list" :class="\'badge-game-list--\' + b" data-name="component/badge/game_list" ' +
+              '<span v-if="game.badges && game.badges.length" class="game-group__badges">' +
+                '<span v-for="b in game.badges" :key="b" class="badge-game-list" :class="\'badge-game-list--\' + b" data-name="component/badge/game_list" ' +
                   '@mouseenter="showBadgeTip($event, game, b)" @mouseleave="hideBadgeTip">' +
                   '<img :src="badgeIcon[b]" alt="" />' +
                 '</span>' +
@@ -1003,8 +996,8 @@ var GnbComponent = {
         '<i class="ic-v2-navigation-menu-line game-group__drag-handle"></i>' +
         '<span class="game-group__thumbnail" :style="{ backgroundImage: \'url(\' + dragging.game.thumb + \')\' }"></span>' +
         '<span class="game-group__list-name stds-cap1 fw-medium">{{ dragging.game.name }}</span>' +
-        '<span v-if="gameBadges().length" class="game-group__badges">' +
-          '<span v-for="b in gameBadges()" :key="b" class="badge-game-list" :class="\'badge-game-list--\' + b">' +
+        '<span v-if="dragging.game.badges && dragging.game.badges.length" class="game-group__badges">' +
+          '<span v-for="b in dragging.game.badges" :key="b" class="badge-game-list" :class="\'badge-game-list--\' + b">' +
             '<img :src="badgeIcon[b]" alt="" />' +
           '</span>' +
         '</span>' +
