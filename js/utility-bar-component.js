@@ -176,7 +176,7 @@ var UtilityBarComponent = {
             '<button class="utility-bar-profile" type="button" aria-label="내 정보" ' +
               ':class="{ \'is-selected\': openPopupId === \'profile\' }" @click="togglePopup(\'profile\')" ' +
               'data-name="component/btn/profile">' +
-              '<img class="utility-bar-profile__thumb" src="assets/utility-bar/profile-thumb.png" alt="" />' +
+              '<img class="utility-bar-profile__thumb" src="assets/utility-bar/profile-thumb.png?v=2" alt="" />' +
               utilityBarTooltip('내 정보') +
             '</button>' +
             '<profile-popup v-if="openPopupId === \'profile\'" @close="openPopupId = null" ' +

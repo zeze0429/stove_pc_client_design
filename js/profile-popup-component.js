@@ -10,8 +10,8 @@
 
 // 실제로는 API 응답.
 var PROFILE_USER = {
-  name: '일이삼사오육칠팔구십일이삼사오육칠팔구십',
-  avatar: 'assets/profile-popup/avatar.jpg',
+  name: '휴먼메이드',
+  avatar: 'assets/profile-popup/avatar.jpg?v=2',
 };
 
 // 재화 — 캐시에만 충전 버튼이 붙는다. value는 카운트업을 돌려야 해서 숫자.
