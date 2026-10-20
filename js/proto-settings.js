@@ -16,8 +16,8 @@ var PROTO_SETTINGS_DEFAULTS = {
   theme: 'dark',
   grid: false,
   pr: true,
-  prBasic: true,      // PR영역 — 일반배너(같은 리소스로 1·2·3단) / 전략배너 중 하나만
-  prStrategic: false,
+  prBasic: false,     // PR영역 — 일반배너(같은 리소스로 1·2·3단) / 전략배너 중 하나만 (기본 전략배너)
+  prStrategic: true,
   prColumns: 3,       // 일반배너 단 수 (1 · 2 · 3)
   notice: false,
   noticeUrgent: false,
