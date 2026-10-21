@@ -6,6 +6,8 @@
  * 같은 게임을 페이지마다 따로 적지 않는다 — 게임을 추가 · 수정할 때는 이 파일만.
  *
  * 썸네일은 assets/games/{id}.png 한 장 (원본 그대로, 화면마다 크기만 다르게 표시).
+ * 원본이 png가 아니면 ext로 확장자를 적는다 (예: ext: 'webp').
+ * 스토브게임(LOST ARK · 로드나인 등 사이드바 고정 그룹)은 라이브러리 보유게임에 넣지 않는다.
  * 이 파일은 gnb-component.js 등 게임을 쓰는 스크립트보다 먼저 불러야 한다.
  */
 var GAME_CATALOG = {
@@ -56,11 +58,71 @@ var GAME_CATALOG = {
   noexistencen: { name: '당신과 나의 존재불명 (The NOexistenceN of you AND me)', genre: '인디' },
   'primal-slidey': { name: '프라이멀 슬라이디 DX', genre: '퍼즐' },
   'critter-cove': { name: '크리터 코브 (Critter Cove)', genre: 'RPG' },
+  // 스토어 신작 (store.onstove.com 2026-10 신작 출시 목록) — 라이브러리 보유게임 채우기용
+  'store-01': { name: '비욘드 디스 스타즈 (Beyond These Stars)', genre: '시뮬레이션' },
+  'store-02': { name: 'Dynamite Blue', genre: 'RPG' },
+  'store-03': { name: '미귀환 기록실', genre: '비주얼 노벨' },
+  'store-04': { name: '럽플레이스', genre: '리듬' },
+  'store-05': { name: '파멸의 오타쿠', genre: '어드벤처' },
+  'store-06': { name: '블로샤퍼: 꽃들의 전쟁', genre: '전략' },
+  'store-07': { name: '안락온실 VR', genre: '시뮬레이션' },
+  'store-08': { name: '메테오는 예술이다', genre: '캐주얼' },
+  'store-09': { name: '용사단 키우기', genre: 'RPG' },
+  'store-10': { name: '봇틀링 (Botlings) - 꼬마 로봇: 자동화 대작전', genre: '전략' },
+  'store-11': { name: '네온 어비스 2 (Neon Abyss 2)', genre: '액션', ext: 'webp' },
+  'store-12': { name: '안락온실', genre: '시뮬레이션' },
+  'store-13': { name: 'That Which Comes', genre: '기타' },
+  'store-14': { name: '라스트 소녀 전사', genre: '전략' },
+  'store-15': { name: '어센딩 인페르노 (Ascending Inferno)', genre: '플랫포머' },
+  'store-16': { name: 'Yellow Terminal', genre: '캐주얼' },
+  'store-17': { name: '777용사 ~시간을 거스르는 자~', genre: 'RPG' },
+  'store-18': { name: 'MO or DO', genre: '캐주얼' },
+  'store-19': { name: '좀비 버스터즈 (ZombieBusters: Reborn)', genre: '액션' },
+  'store-20': { name: '참지말고 뽑자!', genre: '시뮬레이션' },
+  'store-21': { name: '조선퇴마전', genre: '액션' },
+  'store-22': { name: '바벨의 영주', genre: '시뮬레이션' },
+  'store-23': { name: '시큐리티 51', genre: '시뮬레이션' },
+  'store-24': { name: '삼한쟁패', genre: '시뮬레이션' },
+  'store-25': { name: '전설의 술안주', genre: '액션' },
+  'store-26': { name: '귀신은 그림자가 없다', genre: '캐주얼' },
+  'store-27': { name: 'Wielder', genre: 'RPG' },
+  'store-28': { name: 'Island For Sale', genre: '어드벤처' },
+  'store-29': { name: 'Upload Aliens', genre: '액션' },
+  'store-30': { name: '수박 만들기 2048', genre: '퍼즐' },
+  'store-31': { name: '프로젝트 폴라리스', genre: '액션' },
+  'store-32': { name: '악귀를 베라!', genre: '액션' },
+  'store-33': { name: '귀척사', genre: '전략' },
+  'store-34': { name: '비트디펜스', genre: '리듬' },
+  'store-35': { name: '타이거스톤', genre: '시뮬레이션' },
+  'store-36': { name: '등불 골짜기', genre: '캐주얼' },
+  'store-37': { name: '대국삼국지', genre: '전략' },
+  'store-38': { name: '인형 공방: 기워진 기억', genre: '공포' },
+  'store-39': { name: '어깨 너머', genre: '어드벤처' },
+  'store-40': { name: 'Creator Chronicles', genre: '시뮬레이션' },
+  'store-41': { name: '아스트로 번', genre: '액션' },
+  'store-42': { name: 'PHOBOS: PSYCHODEATH 狂死', genre: '공포', ext: 'webp' },
+  'store-43': { name: '통로에서 살아남다', genre: '전략' },
+  'store-44': { name: 'Esc ape, You died?', genre: '퍼즐' },
+  'store-45': { name: '윈몬 (WinMon)', genre: '캐주얼' },
+  'store-46': { name: '길드림', genre: '시뮬레이션' },
+  'store-47': { name: '리:프레시 (Re:Fresh)', genre: '플랫포머' },
+  'store-48': { name: '솔라테리아', genre: '액션' },
+  'store-49': { name: 'Rich PaPa', genre: '슈팅' },
+  'store-50': { name: '홀로라이브 트레저 마운틴 메가팩 (hololive Treasure Mountain MegaPack)', genre: '퍼즐' },
+  'store-51': { name: 'MarshmallowLand', genre: '디펜스' },
+  'store-52': { name: '쌀먹의 시대', genre: '시뮬레이션' },
+  'store-53': { name: '미확인 개체 대응반', genre: '캐주얼' },
+  'store-54': { name: '스페셜포스 리마스터', genre: '액션' },
+  'store-55': { name: '우주공강', genre: '비주얼 노벨' },
+  'store-56': { name: '어서오세요, 셰어하우스에!', genre: '비주얼 노벨', ext: 'webp' },
+  'store-57': { name: '기술과 혼돈의 김세브란스밍기뉴', genre: '비주얼 노벨' },
+  'store-58': { name: '저녁식사는 천사님이었습니다', genre: '비주얼 노벨' },
+  'store-59': { name: '대학 조교 생활 -송하윤편-', genre: '비주얼 노벨' },
 };
 
 // 게임 정보 하나 — { id, name, genre, thumb }. 카탈로그에 없는 id면 null
 function gameInfo(id) {
   var g = GAME_CATALOG[id];
   if (!g) return null;
-  return { id: id, name: g.name, genre: g.genre, thumb: 'assets/games/' + id + '.png' };
+  return { id: id, name: g.name, genre: g.genre, thumb: 'assets/games/' + id + '.' + (g.ext || 'png') };
 }
