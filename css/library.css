@@ -249,6 +249,19 @@
   margin-top: 1.6rem;
 }
 .library-toolbar__right { display: flex; align-items: center; gap: 0.8rem; }
+/* 게임 선택 · 필터 버튼 바탕 — 시멘틱 토큰 대신 글로벌 토큰 임시 매칭 (레퍼런스 실측)
+   다크 gray-800 / hover 750 / pressed 700 · 라이트 gray-200 / 300 / 400.
+   토큰이 정해지면 이 변수 정의만 교체 */
+:root {
+  --library-btn-bg: var(--stove-gray-800);
+  --library-btn-bg-hover: var(--stove-gray-750);
+  --library-btn-bg-pressed: var(--stove-gray-700);
+}
+:root[data-theme="light"] {
+  --library-btn-bg: var(--stove-gray-200);
+  --library-btn-bg-hover: var(--stove-gray-300);
+  --library-btn-bg-pressed: var(--stove-gray-400);
+}
 .library-btn {
   display: flex;
   align-items: center;
@@ -256,7 +269,7 @@
   height: 3.2rem;
   padding: 0 1.2rem;
   border-radius: var(--radius-lg);
-  background: var(--neutral-variant-2);
+  background: var(--library-btn-bg);
   color: var(--on-surface-elevation-2);
   font-size: 1.2rem;
   font-weight: 500;
@@ -264,10 +277,11 @@
   letter-spacing: -0.024rem;
   white-space: nowrap;
   cursor: pointer;
+  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .library-btn i { font-size: 1.6rem; }
-.library-btn:hover { background: var(--neutral-variant-2-hover); }
-.library-btn:active { background: var(--neutral-variant-2-pressed); }
+.library-btn:hover { background: var(--library-btn-bg-hover); }
+.library-btn:active { background: var(--library-btn-bg-pressed); }
 
 /* 카드 / 목록 보기 토글 — 바탕은 아직 시멘틱 토큰이 없어 레퍼런스대로 글로벌 토큰
    (다크 gray-940 / 라이트 gray-100) */
