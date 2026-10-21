@@ -19,14 +19,10 @@
   <link rel="stylesheet" href="css/profile-popup.css?v=4" />
   <link rel="stylesheet" href="css/stove-app-dialog.css?v=2" />
   <link rel="stylesheet" href="css/utility-notice.css?v=4" />
-  <style>
-    /* 아직 제작 전 — 사이드바(GNB) 동작 확인용 빈 페이지.
-       배경은 store.onstove.com 실제 body 배경(rgb(25,25,25))과 동일 토큰. */
-    .app > .main { background: var(--background-variant-1); }
-  </style>
+  <link rel="stylesheet" href="css/library.css?v=1" />
 </head>
 <body>
-  <div class="app">
+  <div class="app app--library">
 
     <!-- ============ GNB (STOVE layout/GNB · Figma 5705:58393) ============
          공통 Vue 컴포넌트(js/gnb-component.js)가 마운트되는 자리.
@@ -38,8 +34,10 @@
          (js/utility-bar-component.js)가 마운트되는 자리. -->
     <div id="utility-bar-mount"></div>
 
-    <!-- ============ MAIN (빈 페이지) ============ -->
-    <div class="main"></div>
+    <!-- ============ 라이브러리 (Figma 2026_웹전환 11735:51868) ============
+         콘텐츠(MD_container) + 오른쪽 패널 280. 레이아웃은 css/library.css -->
+    <div class="main main--overlay-scroll" data-name="MD_container"></div>
+    <aside class="library-panel" aria-label="내 게임 폴더" data-name="Pannel Area"></aside>
 
   </div>
 
@@ -52,9 +50,11 @@
   <script src="js/stove-app-dialog-component.js?v=2"></script>
   <script src="js/utility-notice-component.js?v=3"></script>
   <script src="js/utility-bar-component.js?v=13"></script>
+  <script src="js/page-scrollbar.js?v=2"></script>
   <script>
     mountGnb('#gnb-mount');
     mountUtilityBar('#utility-bar-mount');
+    mountPageScrollbar(document.querySelector('.app > .main'));
   </script>
 </body>
 </html>

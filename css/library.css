@@ -1,0 +1,56 @@
+/* =============================================================
+   라이브러리 레이아웃 — 콘텐츠(MD_container) + 오른쪽 패널
+   Figma 2026_웹전환 11735:51868 "사이즈 정의"
+   - 패널 폭 280 고정, 콘텐츠가 나머지 (1280 창: 760 / 1920 창: 1400)
+   - 높이는 창을 따라 가변 — 창이 길면 패널 아래쪽 게임 항목이 더 많이 보인다
+   - 패널은 창 맨 위부터 바닥까지. 유틸리티 바는 패널 위까지 덮고,
+     그 구간 배경만 패널 색으로 칠한다.
+   패널 내용(내 게임 폴더 관리)은 다음 단계.
+   ============================================================= */
+
+/* 패널 색 — 아직 시멘틱 토큰 미지정(디자인시스템 등록 예정).
+   Figma 협의 내용대로 글로벌 토큰을 선적용: 다크 gray940 / 라이트 gray100.
+   시멘틱 토큰이 나오면 이 두 줄만 바꾼다. */
+:root { --library-panel-bg: var(--stove-gray-940); }
+:root[data-theme="light"] { --library-panel-bg: var(--stove-gray-100); }
+:root { --library-panel-w: 28rem; }
+
+/* GNB 240 | 콘텐츠 | 패널 280 */
+.app--library { grid-template-columns: 24rem minmax(0, 1fr) var(--library-panel-w); }
+
+/* 콘텐츠 — 스크롤 컨테이너는 그대로 .main (유틸리티 바 블러·오버레이 스크롤바가
+   이걸 구독한다) */
+.app--library > .main {
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--background-variant-1);
+  padding-top: calc(4.8rem + var(--utility-notice-h, 0px));
+}
+
+/* 오른쪽 패널 — 따로 스크롤 */
+.library-panel {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+  scrollbar-width: none;
+  padding-top: calc(4.8rem + var(--utility-notice-h, 0px));
+  background: var(--library-panel-bg);
+}
+.library-panel::-webkit-scrollbar { display: none; }
+
+/* 유틸리티 바 — 패널 구간(오른쪽 280)은 패널 색, 나머지는 원래 배경.
+   스크롤 시 70% + 블러 규칙도 같은 경계로 나눈다. */
+.app--library .utility-bar {
+  background: linear-gradient(to right,
+    var(--background-variant-1) calc(100% - var(--library-panel-w)),
+    var(--library-panel-bg) calc(100% - var(--library-panel-w)));
+}
+.app--library .utility-bar.is-scrolled {
+  background: linear-gradient(to right,
+    color-mix(in srgb, var(--background-variant-1) 70%, transparent) calc(100% - var(--library-panel-w)),
+    var(--library-panel-bg) calc(100% - var(--library-panel-w)));
+}
+
+/* 콘텐츠 오버레이 스크롤바는 패널 왼쪽 끝 안쪽에 */
+.app--library .page-scrollbar { right: calc(var(--library-panel-w) + 0.8rem); }
