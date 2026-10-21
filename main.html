@@ -207,14 +207,16 @@
         <button class="proto-switch" type="button" role="switch" data-proto-key="favorites" aria-label="즐겨찾기"></button>
       </div>
 
-      <hr class="proto-panel__divider" />
-
       <!-- 클라이언트 레이아웃 — 우측패널은 다운로드 관리 · 스튜디오 테스트에만 적용.
-           라이브러리는 패널을 항상 쓰고, 웹을 띄우는 스토어·라운지·이벤트에는 영향 없음 -->
-      <h2 class="proto-panel__title">클라이언트 레이아웃</h2>
-      <div class="proto-panel__row">
-        <span class="proto-panel__label">우측패널</span>
-        <button class="proto-switch" type="button" role="switch" data-proto-key="rightPanel" aria-label="우측패널"></button>
+           그래서 클라이언트가 그 두 페이지에 있을 때만 이 섹션을 보여준다
+           (라이브러리는 패널을 항상 쓰고, 웹 페이지에는 영향 없음) -->
+      <div class="proto-panel__section" id="protoClientLayout" hidden>
+        <hr class="proto-panel__divider" />
+        <h2 class="proto-panel__title">클라이언트 레이아웃</h2>
+        <div class="proto-panel__row">
+          <span class="proto-panel__label">우측패널</span>
+          <button class="proto-switch" type="button" role="switch" data-proto-key="rightPanel" aria-label="우측패널"></button>
+        </div>
       </div>
     </div>
 
@@ -314,6 +316,19 @@
           protoSettingsWrite({ prColumns: Number(el.dataset.protoCol), prBasic: true, prStrategic: false });
         });
       });
+
+      // 클라이언트 레이아웃 섹션 — iframe 안 클라이언트가 다운로드 관리 · 스튜디오 테스트
+      // 페이지일 때만 노출 (페이지를 옮길 때마다 iframe load가 다시 온다)
+      var CLIENT_LAYOUT_PAGES = ['download.html', 'studio.html'];
+      var clientLayout = document.getElementById('protoClientLayout');
+      var frame = document.querySelector('.os-content');
+      function syncClientLayout() {
+        var page = '';
+        try { page = frame.contentWindow.location.pathname.split('/').pop(); } catch (e) {}
+        clientLayout.hidden = CLIENT_LAYOUT_PAGES.indexOf(page) < 0;
+      }
+      frame.addEventListener('load', syncClientLayout);
+      syncClientLayout();
 
       render(protoSettingsRead());
       protoSettingsSubscribe(render);
