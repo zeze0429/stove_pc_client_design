@@ -4,12 +4,6 @@
    색은 레퍼런스가 쓰는 STDS 시멘틱 토큰 그대로 — 다크/라이트가 따라간다.
    카드 그리드는 우측패널 켜짐 그리드(5단 · 여백 40 · 거터 20)와 같다.
    ============================================================= */
-/* 레퍼런스 framer-motion 스프링을 CSS linear()로 옮긴 이징 (살짝 넘쳤다 돌아옴) */
-:root {
-  --library-spring: linear(0, 0.052 3.7%, 0.173 7.4%, 0.324 11.1%, 0.477 14.8%, 0.617 18.5%,
-    0.737 22.2%, 0.832 25.9%, 0.904 29.6%, 0.956 33.3%, 0.991 37%, 1.012 40.7%, 1.023 44.4%,
-    1.028 48.1%, 1.027 53.7%, 1.021 59.3%, 1.013 66.7%, 1.006 74.1%, 1.002 81.5%, 1 88.9%, 1);
-}
 .library {
   flex: 0 0 auto; /* .main은 세로 flex — 줄어들지 않게 */
   padding: 0 4rem 10rem;
@@ -71,8 +65,8 @@
   overflow: hidden;
   background: var(--neutral-variant-1);
   cursor: pointer;
-  /* 펼침 — 폭이 살짝 넘쳤다 돌아오는 스프링 (레퍼런스 flex-basis 0.5s) */
-  transition: flex-basis 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+  /* 펼침 — 빠르게 커지다 부드럽게 멈춘다 (넘쳤다 돌아오는 스프링 없음) */
+  transition: flex-basis 0.5s cubic-bezier(0.22, 1, 0.36, 1),
     background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .library-quick__card.is-active { flex-basis: 26rem; background: #000; }
@@ -131,12 +125,23 @@
   gap: 0.4rem;
   height: 100%;
   padding: 1.2rem;
-  /* 안쪽 내용 — 6 아래에서 살짝 떠오르며 나타난다 (레퍼런스 스프링 0.55s 그대로) */
-  opacity: 0;
-  transform: translateY(0.6rem);
-  transition: opacity 0.55s var(--library-spring), transform 0.55s var(--library-spring);
 }
-.library-quick__card.is-active .library-quick__body { opacity: 1; transform: none; }
+/* 안쪽 내용 — 카드가 커질 때 위 줄(아이콘·게임명) → 아래 줄(플레이 시간·버튼) 순서로
+   아래에서 위로 올라오며 나타난다. 접힐 때는 바로 사라진다 */
+.library-quick__info,
+.library-quick__foot {
+  opacity: 0;
+  transform: translateY(1.2rem);
+  transition: opacity 0.15s ease, transform 0s 0.15s;
+}
+.library-quick__card.is-active .library-quick__info,
+.library-quick__card.is-active .library-quick__foot {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.08s,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+}
+.library-quick__card.is-active .library-quick__foot { transition-delay: 0.14s; }
 .library-quick__info { display: flex; align-items: center; gap: 0.8rem; height: 6rem; }
 .library-quick__icon {
   position: relative;
