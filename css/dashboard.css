@@ -176,7 +176,8 @@ ul { list-style: none; margin: 0; padding: 0; }
    Figma 2026_웹전환 11735:51868 "사이즈 정의":
    - 패널 폭 280 고정, 콘텐츠가 나머지 (1280 창: 760 / 1920 창: 1400)
    - 높이는 창을 따라 가변 — 창이 길면 패널 아래쪽 항목이 더 많이 보인다
-   - 패널은 y 0부터 바닥까지. 유틸리티 바가 그 위를 덮고, 바 색은 그대로. */
+   - 패널은 y 0부터 바닥까지. 유틸리티 바가 그 위를 덮고, 바 색은 그대로.
+   - 공지사항 띠도 밀어내지 않고 콘텐츠·패널 위에 겹쳐 뜬다 (웹 페이지는 밀어냄). */
 :root { --client-panel-w: 28rem; }
 /* 패널 색 — 아직 시멘틱 토큰 미지정(디자인시스템 등록 예정). Figma 협의대로
    글로벌 토큰 선적용: 다크 gray940 / 라이트 gray100. 토큰이 나오면 이 두 줄만 교체 */
@@ -188,7 +189,8 @@ ul { list-style: none; margin: 0; padding: 0; }
   overflow-y: auto;
   overflow-x: hidden;
   background: var(--background-variant-1);
-  padding-top: calc(4.8rem + var(--utility-notice-h, 0px));
+  /* 공지 띠는 밀어내지 않고 콘텐츠 위에 겹친다 — 웹 페이지(스토어·라운지·이벤트)와 다른 점 */
+  padding-top: 4.8rem;
 }
 /* 오른쪽 패널 — 옵션이 꺼져 있으면 없음 */
 .client-panel { display: none; }
@@ -202,7 +204,7 @@ ul { list-style: none; margin: 0; padding: 0; }
   overflow-x: hidden;
   overscroll-behavior: none;
   scrollbar-width: none;
-  padding-top: calc(4.8rem + var(--utility-notice-h, 0px));
+  padding-top: 4.8rem;
   background: var(--client-panel-bg);
 }
 .client-panel::-webkit-scrollbar { display: none; }
