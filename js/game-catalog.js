@@ -7,6 +7,8 @@
  *
  * 썸네일은 assets/games/{id}.png 한 장 (원본 그대로, 화면마다 크기만 다르게 표시).
  * 원본이 png가 아니면 ext로 확장자를 적는다 (예: ext: 'webp').
+ * type: 정식 게임이 아닌 상품만 적는다 — 'dlc' · 'demo' · 'utility'(소설 · 월페이퍼 등 부가 콘텐츠).
+ *   스토어 상품 정보(product_detail_type · demo · product_type) 기준. 빠른 실행에는 정식 게임(type 없음)만 나온다.
  * 스토브게임(LOST ARK · 로드나인 등 사이드바 고정 그룹)은 라이브러리 보유게임에 넣지 않는다.
  * 이 파일은 gnb-component.js 등 게임을 쓰는 스크립트보다 먼저 불러야 한다.
  */
@@ -25,7 +27,7 @@ var GAME_CATALOG = {
   scarf: { name: '스카프 (Scarf)', genre: '어드벤처', ext: 'jpg' },
   'floppy-knight': { name: '플로피 나이트 (Floppy Knights)', genre: '전략' },
   'novena-diabolos': { name: '노베나 디아볼로스', genre: '비주얼 노벨' },
-  'bullet-delivery': { name: '총알배달 우주반점: 프리퀄 단편소설 (STOVE 한정)', genre: '액션' },
+  'bullet-delivery': { name: '총알배달 우주반점: 프리퀄 단편소설 (STOVE 한정)', genre: '액션', type: 'utility' },
   illips: { name: '일립스 (Elypse)', genre: '플랫포머', ext: 'jpg' },
   undying: { name: '언다잉 (UNDYING)', genre: '액션', ext: 'jpg' },
   'bus-world': { name: '버스 월드 (Bus World)', genre: '시뮬레이션' },
@@ -38,21 +40,21 @@ var GAME_CATALOG = {
   'four-lights': { name: '네개의 빛 : 제 1세계 [Iruka Route]', genre: '비주얼 노벨' },
   cabbage: { name: '카베지 (Carbage)', genre: '레이싱', ext: 'jpg' },
   utawarerumono: { name: '칭송받는 자: 거짓의 가면 - DLC 합본팩', genre: '어드벤처' },
-  'atom-rpg-supporter': { name: '아톰 RPG 트루도그라드 DLC 서포터팩 (Trudograd - Supporter Pack)', genre: 'RPG' },
-  'baek-wallpaper': { name: '백의 소각자 월페이퍼 DLC', genre: '어드벤처' },
+  'atom-rpg-supporter': { name: '아톰 RPG 트루도그라드 DLC 서포터팩 (Trudograd - Supporter Pack)', genre: 'RPG', type: 'dlc' },
+  'baek-wallpaper': { name: '백의 소각자 월페이퍼 DLC', genre: '어드벤처', type: 'utility' },
   '52hz': { name: '52헤르츠 / DLC 통합 패키지', genre: '시뮬레이션' },
-  'storm-maid': { name: '폭풍의 메이드: 시크릿 커리큘럼 콜라보 DLC', genre: '퍼즐' },
-  'eyes-nose-mouth': { name: '눈, 코, 입', genre: '기타' },
+  'storm-maid': { name: '폭풍의 메이드: 시크릿 커리큘럼 콜라보 DLC', genre: '퍼즐', type: 'dlc' },
+  'eyes-nose-mouth': { name: '눈, 코, 입', genre: '기타', type: 'demo' },
   'hamster-talk': { name: '햄스터 톡', genre: '시뮬레이션' },
   gigabash: { name: '기가배시 (GigaBash) : 괴수 몬스터 대난투', genre: '액션' },
   sisters: { name: '시스터즈: 여름의 마지막 날 (Sisters: Last Day of Summer)', genre: '비주얼 노벨' },
   'dice-eater': { name: '다이스 이터: 초능력 추리 카드게임', genre: '어드벤처' },
   'into-the-room': { name: '인투더라움', genre: '액션' },
   'knight-overloaded': { name: '나이트 오버로디드 (Knight Overloaded)', genre: '액션' },
-  dosul: { name: '도술회전', genre: '퍼즐' },
+  dosul: { name: '도술회전', genre: '퍼즐', type: 'demo' },
   'infinite-incantation': { name: '무한의 주술 (Infinite Incantation)', genre: '액션' },
-  'flower-survivors': { name: '플라워 서바이버스 - DEMO', genre: '액션' },
-  'whos-my-manito': { name: '후즈 마이 마니또 데모', genre: '비주얼 노벨' },
+  'flower-survivors': { name: '플라워 서바이버스 - DEMO', genre: '액션', type: 'demo' },
+  'whos-my-manito': { name: '후즈 마이 마니또 데모', genre: '비주얼 노벨', type: 'demo' },
   'everything-is-crab': { name: '에브리씽 이즈 크랩: 동물 진화 로그라이트 | Everything is Crab', genre: '액션' },
   postal2: { name: '포스탈 2 (POSTAL 2)', genre: '어드벤처' },
   reblade: { name: 'Re:Blade', genre: '액션' },
@@ -126,5 +128,5 @@ var GAME_CATALOG = {
 function gameInfo(id) {
   var g = GAME_CATALOG[id];
   if (!g) return null;
-  return { id: id, name: g.name, genre: g.genre, thumb: 'assets/games/' + id + '.' + (g.ext || 'png') };
+  return { id: id, name: g.name, genre: g.genre, type: g.type || 'game', thumb: 'assets/games/' + id + '.' + (g.ext || 'png') };
 }
