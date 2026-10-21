@@ -159,7 +159,7 @@
 .notice--rich__banner .notice__close {
   top: var(--spacing-8);
   right: var(--spacing-8);
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--stove-black-30);
   color: var(--stove-white);
 }
 .notice--rich__banner .notice__close:hover { background: rgba(0, 0, 0, 0.45); }
@@ -191,7 +191,7 @@
   background: transparent;
   transition: background 0.12s;
 }
-.notice__cta:hover { background: rgba(255, 255, 255, 0.08); }
+.notice__cta:hover { background: var(--stove-white-08); }
 
 /* ---- 프로토타입 데모 컨트롤 (디자인 스펙 아님) --------------- */
 .notice-demo-btn {

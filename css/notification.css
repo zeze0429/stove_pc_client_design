@@ -19,7 +19,7 @@
   max-height: 48.5rem;
   border-radius: 2rem; /* Figma radius/3xl 20px — 스케일에 없는 값 */
   background: var(--surface-elevation-1);
-  box-shadow: 0 1.2rem 1.4rem rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1.2rem 1.4rem var(--stove-black-20);
   overflow: hidden;
 }
 

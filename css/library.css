@@ -81,7 +81,7 @@
   transition: flex-basis 0.5s cubic-bezier(0.22, 1, 0.36, 1),
     background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.library-quick__card.is-active { flex-basis: 26rem; background: #000; }
+.library-quick__card.is-active { flex-basis: 26rem; background: var(--stove-black); }
 .library-quick__page > .library-quick__card.is-active:last-child { flex-grow: 1; }
 .library-quick__thumb {
   position: absolute;
@@ -129,7 +129,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--stove-black-60);
 }
 .library-quick__body {
   position: relative;
@@ -176,14 +176,14 @@
 }
 .library-quick__text { display: flex; flex-direction: column; min-width: 0; }
 .library-quick__genre {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--stove-white-50);
   font-size: 1.1rem;
   font-weight: 700;
   line-height: 1.8rem;
   letter-spacing: -0.022rem;
 }
 .library-quick__name {
-  color: #fff;
+  color: var(--stove-white);
   font-size: 1.4rem;
   font-weight: 700;
   line-height: 2rem;
@@ -199,7 +199,7 @@
   align-items: center;
   gap: 0.4rem;
   min-width: 0;
-  color: rgba(255, 255, 255, 0.5); /* Figma glob white50 */
+  color: var(--stove-white-50); /* Figma glob white50 */
   font-size: 1.1rem;
   line-height: 1.8rem;
   letter-spacing: -0.022rem;
@@ -210,7 +210,7 @@
   width: 0.2rem;
   height: 0.2rem;
   border-radius: 0.1rem;
-  background: rgba(255, 255, 255, 0.5);
+  background: var(--stove-white-50);
 }
 
 /* 실행 · 업데이트 · 설치 버튼 — 32, 모서리 8, 브랜드 블루 */
@@ -223,7 +223,7 @@
   padding: 0;
   border-radius: var(--radius-lg);
   background: var(--brand-blue-enabled);
-  color: #fff;
+  color: var(--stove-white);
   cursor: pointer;
 }
 .library-action i { display: block; font-size: 2rem; line-height: 1; }
@@ -369,8 +369,8 @@
   height: 2.2rem;
   padding: 0 0.6rem;
   border-radius: 9.9rem;
-  background: linear-gradient(to left, #3363d9, #6a1ec7);
-  color: #fff;
+  background: linear-gradient(to left, var(--stove-blue-700), #6a1ec7);
+  color: var(--stove-white);
   font-family: Inter, stds-font-kr, sans-serif;
   font-size: 1.1rem;
   font-weight: 700;

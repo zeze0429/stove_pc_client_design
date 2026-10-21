@@ -384,7 +384,7 @@ body { margin: 0; }
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(98.34deg, transparent 35%, rgba(255, 255, 255, 0.5) 50%, transparent 65%) no-repeat;
+  background: linear-gradient(98.34deg, transparent 35%, var(--stove-white-50) 50%, transparent 65%) no-repeat;
   background-size: 150% 100%;
   background-position: 200% 50%;
   animation: gnb-badge-shine 4s ease-in-out infinite;
@@ -525,7 +525,7 @@ body { margin: 0; }
   padding: 0.4rem 0.8rem;
   border-radius: var(--radius-lg);
   background: var(--surface-layer);
-  box-shadow: 0 1.2rem 1.4rem rgba(0, 0, 0, 0.2); /* Figma drop-shadow 0/12/14/.2 근사 */
+  box-shadow: 0 1.2rem 1.4rem var(--stove-black-20); /* Figma drop-shadow 0/12/14/.2 근사 */
   color: var(--on-surface-elevation-2);
   white-space: normal; /* 부모의 nowrap을 상속하지 않고 툴팁 안에서는 줄바꿈 */
   /* 단어(공백) 단위가 아니라 글자 단위로 줄바꿈 — Figma 스펙: 박스 너비는
@@ -640,7 +640,7 @@ body { margin: 0; }
   border: 1px solid var(--inverse-variant-1); /* Figma: inverse/variant-1 = #FFF 15% */
   border-radius: var(--radius-lg);
   background: var(--surface-layer);
-  box-shadow: 0 1.2rem 1.4rem rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1.2rem 1.4rem var(--stove-black-20);
 }
 .gnb-context-menu__item {
   display: block;

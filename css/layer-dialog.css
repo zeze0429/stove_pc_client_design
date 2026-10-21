@@ -27,7 +27,7 @@
      기준에 맞춰 이쪽으로 모았다. */
   border-radius: 2rem;
   background: var(--surface-elevation-1);
-  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.1); /* Figma shadow/4 */
+  box-shadow: 0 0.4rem 1rem var(--stove-black-10); /* Figma shadow/4 */
   overflow: hidden;
 }
 
