@@ -167,6 +167,44 @@ ul { list-style: none; margin: 0; padding: 0; }
 .page-scrollbar__thumb:hover,
 .page-scrollbar__thumb.is-dragging { background: var(--inverse-elevation-1); }
 
+/* ---- 클라이언트 레이아웃 (보기 옵션 "클라이언트 레이아웃 > 우측패널") ----
+   클라이언트가 직접 관리하는 메뉴(라이브러리 · 다운로드 관리 · 스튜디오 테스트)
+   공통 레이아웃 — .app에 app--client, 오른쪽에 <aside class="client-panel">.
+   웹을 띄우는 스토어·라운지·이벤트에는 쓰지 않는다.
+   Figma 2026_웹전환 11735:51868 "사이즈 정의":
+   - 패널 폭 280 고정, 콘텐츠가 나머지 (1280 창: 760 / 1920 창: 1400)
+   - 높이는 창을 따라 가변 — 창이 길면 패널 아래쪽 항목이 더 많이 보인다
+   - 패널은 y 0부터 바닥까지. 유틸리티 바가 그 위를 덮고, 바 색은 그대로. */
+:root { --client-panel-w: 28rem; }
+/* 패널 색 — 아직 시멘틱 토큰 미지정(디자인시스템 등록 예정). Figma 협의대로
+   글로벌 토큰 선적용: 다크 gray940 / 라이트 gray100. 토큰이 나오면 이 두 줄만 교체 */
+:root { --client-panel-bg: var(--stove-gray-940); }
+:root[data-theme="light"] { --client-panel-bg: var(--stove-gray-100); }
+
+/* 콘텐츠 — 스크롤 컨테이너는 그대로 .main (유틸리티 바 블러·오버레이 스크롤바가 구독) */
+.app--client > .main {
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--background-variant-1);
+  padding-top: calc(4.8rem + var(--utility-notice-h, 0px));
+}
+/* 오른쪽 패널 — 옵션이 꺼져 있으면 없음 */
+.client-panel { display: none; }
+.proto-right-panel-on .app--client { grid-template-columns: 24rem minmax(0, 1fr) var(--client-panel-w); }
+.proto-right-panel-on .client-panel {
+  display: block;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+  scrollbar-width: none;
+  padding-top: calc(4.8rem + var(--utility-notice-h, 0px));
+  background: var(--client-panel-bg);
+}
+.client-panel::-webkit-scrollbar { display: none; }
+/* 콘텐츠 오버레이 스크롤바는 패널 왼쪽 끝 안쪽에 */
+.proto-right-panel-on .app--client .page-scrollbar { right: calc(var(--client-panel-w) + 0.8rem); }
+
 /* ---- GNB를 대시보드 셸에 맞게 조정 (컴포넌트 스타일은 gnb.css) --- */
 /* 헤더 고정 · 스크롤 분리는 gnb.css의 .gnb / .gnb-header / .gnb-menu에서 처리 */
 .app > .gnb {

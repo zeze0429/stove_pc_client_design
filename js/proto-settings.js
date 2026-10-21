@@ -28,6 +28,7 @@ var PROTO_SETTINGS_DEFAULTS = {
   studio: false,
   ad: true,
   favorites: true,
+  rightPanel: true,  // 클라이언트 레이아웃 — 우측패널 280 (라이브러리·다운로드 관리·스튜디오)
   menuNew: false,   // 메뉴 강조 — 라운지 NEW 표시
   menuBadge: true,  // 메뉴 강조 — 라운지 "오늘의 1등" 뱃지 (기본 켜짐)
 };
@@ -67,6 +68,7 @@ function protoApplyDocument(s) {
   document.documentElement.setAttribute('data-theme', s.theme);
   document.documentElement.classList.toggle('proto-grid-on', !!s.grid);
   document.documentElement.classList.toggle('proto-pr-on', !!s.pr);
+  document.documentElement.classList.toggle('proto-right-panel-on', !!s.rightPanel);
 }
 
 // 12컬럼 그리드 오버레이(콘텐츠 영역 위 가이드) + 창 하단 PR영역 자리

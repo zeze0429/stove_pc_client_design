@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=2" />
   <link rel="stylesheet" href="css/desktop.css?v=16" />
   <link rel="stylesheet" href="css/notice.css?v=9" />
-  <script src="js/proto-settings.js?v=21"></script>
+  <script src="js/proto-settings.js?v=22"></script>
   <script>
     // 업데이트 버튼·공지사항·다운로드 관리·스튜디오 테스트·메뉴 강조·PR 배너 종류는 저장해 두지 않는다 —
     // 미리보기에 새로 들어올 때마다 아래 기본 상태로 시작한다(오늘의 1등 뱃지만 켜짐,
@@ -205,6 +205,16 @@
       <div class="proto-panel__row">
         <span class="proto-panel__label">즐겨찾기</span>
         <button class="proto-switch" type="button" role="switch" data-proto-key="favorites" aria-label="즐겨찾기"></button>
+      </div>
+
+      <hr class="proto-panel__divider" />
+
+      <!-- 클라이언트 레이아웃 — 클라이언트 관리 메뉴(라이브러리 · 다운로드 관리 · 스튜디오 테스트)
+           에만 적용되는 공통 레이아웃. 웹을 띄우는 스토어·라운지·이벤트에는 영향 없음 -->
+      <h2 class="proto-panel__title">클라이언트 레이아웃</h2>
+      <div class="proto-panel__row">
+        <span class="proto-panel__label">우측패널</span>
+        <button class="proto-switch" type="button" role="switch" data-proto-key="rightPanel" aria-label="우측패널"></button>
       </div>
     </div>
 

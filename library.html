@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>STOVE 클라이언트 · 라이브러리</title>
   <!-- 로드 순서: tokens → foundations → typography → 아이콘 → GNB → 셸 -->
-  <script src="js/proto-settings.js?v=21" data-client></script>
+  <script src="js/proto-settings.js?v=22" data-client></script>
   <link rel="stylesheet" href="css/tokens.css?v=8" />
   <link rel="stylesheet" href="css/foundations.css?v=7" />
   <link rel="stylesheet" href="css/typography.css?v=12" />
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=8" />
   <link rel="stylesheet" href="css/gnb.css?v=93" />
-  <link rel="stylesheet" href="css/dashboard.css?v=29" />
+  <link rel="stylesheet" href="css/dashboard.css?v=30" />
   <link rel="stylesheet" href="css/utility-bar.css?v=7" />
   <link rel="stylesheet" href="css/layer-dialog.css?v=4" />
   <link rel="stylesheet" href="css/pcbang-benefits.css?v=6" />
@@ -19,10 +19,9 @@
   <link rel="stylesheet" href="css/profile-popup.css?v=4" />
   <link rel="stylesheet" href="css/stove-app-dialog.css?v=2" />
   <link rel="stylesheet" href="css/utility-notice.css?v=4" />
-  <link rel="stylesheet" href="css/library.css?v=2" />
 </head>
 <body>
-  <div class="app app--library">
+  <div class="app app--client">
 
     <!-- ============ GNB (STOVE layout/GNB · Figma 5705:58393) ============
          공통 Vue 컴포넌트(js/gnb-component.js)가 마운트되는 자리.
@@ -35,9 +34,9 @@
     <div id="utility-bar-mount"></div>
 
     <!-- ============ 라이브러리 (Figma 2026_웹전환 11735:51868) ============
-         콘텐츠(MD_container) + 오른쪽 패널 280. 레이아웃은 css/library.css -->
+         콘텐츠(MD_container) + 우측패널 280 — 클라이언트 레이아웃 공통(css/dashboard.css) -->
     <div class="main main--overlay-scroll" data-name="MD_container"></div>
-    <aside class="library-panel" aria-label="내 게임 폴더" data-name="Pannel Area"></aside>
+    <aside class="client-panel" aria-label="내 게임 폴더" data-name="Pannel Area"></aside>
 
   </div>
 
