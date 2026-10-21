@@ -11,12 +11,14 @@
  * 이 파일은 gnb-component.js 등 게임을 쓰는 스크립트보다 먼저 불러야 한다.
  */
 var GAME_CATALOG = {
-  lostark: { name: 'LOST ARK', genre: 'MMORPG' },
-  rodnine: { name: '로드나인', genre: 'MMORPG' },
+  // 스토브게임 썸네일은 스토어 GNB '인기 게임' 아이콘(gnb_img) 원본
+  eclipse: { name: '이클립스: 더 어웨이크닝', genre: '' }, // 출시 전 — 스토어 장르 미등록
+  lostark: { name: 'LOST ARK', genre: 'MMORPG', ext: 'jpg' },
+  rodnine: { name: '로드나인', genre: 'MMORPG', ext: 'jpg' },
   chaos: { name: '카오스 제로 나이트메어', genre: '로그라이트 RPG' },
   e7: { name: '에픽세븐', genre: '턴제RPG' },
-  bts: { name: 'BTS 쿠킹온 스토브 : 타이니탄 레스토랑', genre: '캐주얼' },
-  tales: { name: '테일즈런너', genre: 'Racing' },
+  bts: { name: 'BTS 쿠킹온 STOVE : 타이니탄 레스토랑', genre: '캐주얼' },
+  tales: { name: '테일즈런너', genre: 'Racing', ext: 'jpg' },
   'atom-rpg': { name: '아톰 RPG 트루도그라드 디럭스 컬렉션', genre: 'RPG' },
   ghostrunner: { name: '고스트러너: 컴플리트 에디션', genre: '액션' },
   'deluvian-winds': { name: '딜루비안 윈즈 (Diluvian Winds)', genre: '시뮬레이션' },

@@ -50,9 +50,10 @@ var GNB_GAME_GROUPS = [
   {
     id: 'stove-games',
     title: '스토브게임',
-    count: 6,
+    count: 7,
     collapsed: false,
     games: [
+      { id: 'eclipse', game: 'eclipse', badges: ['link'] },
       { id: 'lostark', game: 'lostark' },
       { id: 'rodnine', game: 'rodnine', badges: ['link', 'multiplay'] },
       { id: 'chaos', game: 'chaos' },
