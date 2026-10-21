@@ -11,62 +11,50 @@
  * 우측 패널(내 게임 폴더)은 다음 단계.
  */
 
-// 빠른 실행 — 최근 플레이 순
-var LIBRARY_QUICK = [
-  { id: 'deluvian-winds', lastPlayed: '10분 전 플레이', total: '총 24시간 30분' },
-  { id: 'atom-rpg', lastPlayed: '1시간 전 플레이', total: '총 4,679시간 59분' },
-  { id: 'novena-diabolos', lastPlayed: '어제 플레이', total: '총 312시간 5분' },
-  { id: 'illips', lastPlayed: '3일 전 플레이', total: '총 128시간 12분' },
-  { id: 'yoryeong-village', lastPlayed: '1주 전 플레이', total: '총 56시간 42분' },
-  { id: 'under-blue-horizon', lastPlayed: '10분 전 플레이', total: '총 128시간 12분' },
-  { id: 'happy-quest', lastPlayed: '1시간 전 플레이', total: '총 1,205시간 8분' },
-  { id: 'baek-wallpaper', lastPlayed: '어제 플레이', total: '총 24시간 30분' },
-  { id: 'dice-eater', lastPlayed: '3일 전 플레이', total: '총 1,205시간 8분' },
-  { id: 'into-the-room', lastPlayed: '1주 전 플레이', total: '총 56시간 42분' },
-  { id: 'flower-survivors', lastPlayed: '어제 플레이', total: '총 12시간 4분' },
-  { id: 'reblade', lastPlayed: '1시간 전 플레이', total: '총 3시간 18분' },
-];
+// 빠른 실행 — 보유게임 중 플레이한 게임을 최근 플레이 순으로 12개 (별도 목록 없음)
+var LIBRARY_QUICK_COUNT = 12;
 var LIBRARY_QUICK_STEP = 4; // 화살표 한 번에 넘기는 카드 수 (레퍼런스: 4장 = 560)
 
 // 보유게임 — action: play(실행) · update(업데이트) · install(설치)
+//   played: 마지막 플레이가 몇 분 전인지 (없으면 플레이 기록 없음), total: 총 플레이 시간
 var LIBRARY_OWNED = [
-  { id: 'atom-rpg', action: 'play', lastPlayed: '1시간 전 플레이', collection: true },
+  { id: 'atom-rpg', action: 'play', collection: true, played: 60, total: '총 4,679시간 59분' },
   { id: 'ghostrunner', action: 'update' },
-  { id: 'deluvian-winds', action: 'play', lastPlayed: '10분 전 플레이' },
+  { id: 'deluvian-winds', action: 'play', played: 10, total: '총 24시간 30분' },
   { id: 'scarf', action: 'install' },
-  { id: 'floppy-knight', action: 'update', lastPlayed: '1주 전 플레이' },
-  { id: 'novena-diabolos', action: 'play', lastPlayed: '어제 플레이' },
+  { id: 'floppy-knight', action: 'update', played: 50000 },
+  { id: 'novena-diabolos', action: 'play', played: 1500, total: '총 312시간 5분' },
   { id: 'bullet-delivery', action: 'install' },
-  { id: 'illips', action: 'play', lastPlayed: '3일 전 플레이' },
+  { id: 'illips', action: 'play', played: 4320, total: '총 128시간 12분' },
   { id: 'undying', action: 'update' },
   { id: 'bus-world', action: 'install' },
-  { id: 'yoryeong-village', action: 'play', lastPlayed: '1주 전 플레이' },
+  { id: 'yoryeong-village', action: 'play', played: 10080, total: '총 56시간 42분' },
   { id: 'hwayeonwol', action: 'install' },
-  { id: 'fog-detective', action: 'update', lastPlayed: '어제 플레이' },
-  { id: 'under-blue-horizon', action: 'play', lastPlayed: '10분 전 플레이' },
+  { id: 'fog-detective', action: 'update', played: 52000 },
+  { id: 'under-blue-horizon', action: 'play', played: 10200, total: '총 128시간 12분' },
   { id: 'suicide-countdown', action: 'install' },
-  { id: 'happy-quest', action: 'play', lastPlayed: '1시간 전 플레이' },
+  { id: 'happy-quest', action: 'play', played: 20160, total: '총 1,205시간 8분' },
   { id: 'four-lights', action: 'install' },
   { id: 'cabbage', action: 'update' },
   { id: 'utawarerumono', action: 'install' },
   { id: 'atom-rpg-supporter', action: 'update' },
-  { id: 'baek-wallpaper', action: 'play', lastPlayed: '10분 전 플레이' },
+  { id: 'baek-wallpaper', action: 'play', played: 20300, total: '총 24시간 30분' },
   { id: '52hz', action: 'install' },
   { id: 'storm-maid', action: 'update' },
   { id: 'eyes-nose-mouth', action: 'install' },
   { id: 'hamster-talk', action: 'update' },
   { id: 'gigabash', action: 'install' },
   { id: 'sisters', action: 'install' },
-  { id: 'dice-eater', action: 'play', lastPlayed: '어제 플레이' },
-  { id: 'into-the-room', action: 'play', lastPlayed: '3일 전 플레이' },
+  { id: 'dice-eater', action: 'play', played: 30240, total: '총 1,205시간 8분' },
+  { id: 'into-the-room', action: 'play', played: 30400, total: '총 56시간 42분' },
   { id: 'knight-overloaded', action: 'install' },
   { id: 'dosul', action: 'install' },
   { id: 'infinite-incantation', action: 'update' },
-  { id: 'flower-survivors', action: 'play', lastPlayed: '어제 플레이' },
+  { id: 'flower-survivors', action: 'play', played: 43200, total: '총 12시간 4분' },
   { id: 'whos-my-manito', action: 'install' },
   { id: 'everything-is-crab', action: 'install' },
   { id: 'postal2', action: 'install' },
-  { id: 'reblade', action: 'play', lastPlayed: '1시간 전 플레이' },
+  { id: 'reblade', action: 'play', played: 44000, total: '총 3시간 18분' },
   { id: 'zombie-shooting-star', action: 'install' },
   { id: 'noexistencen', action: 'update' },
   { id: 'primal-slidey', action: 'install' },
@@ -75,59 +63,59 @@ var LIBRARY_OWNED = [
   { id: 'store-01', action: 'install' },
   { id: 'store-02', action: 'update' },
   { id: 'store-03', action: 'install' },
-  { id: 'store-04', action: 'play', lastPlayed: '3일 전 플레이' },
+  { id: 'store-04', action: 'play', played: 60000 },
   { id: 'store-05', action: 'install' },
   { id: 'store-06', action: 'install' },
   { id: 'store-07', action: 'update' },
-  { id: 'store-08', action: 'play', lastPlayed: '10분 전 플레이' },
+  { id: 'store-08', action: 'play', played: 67000 },
   { id: 'store-09', action: 'install' },
   { id: 'store-10', action: 'update' },
   { id: 'store-11', action: 'install' },
-  { id: 'store-12', action: 'play', lastPlayed: '1주 전 플레이' },
+  { id: 'store-12', action: 'play', played: 74000 },
   { id: 'store-13', action: 'install' },
   { id: 'store-14', action: 'install' },
   { id: 'store-15', action: 'update' },
-  { id: 'store-16', action: 'play', lastPlayed: '1시간 전 플레이' },
+  { id: 'store-16', action: 'play', played: 81000 },
   { id: 'store-17', action: 'install' },
   { id: 'store-18', action: 'update' },
   { id: 'store-19', action: 'install' },
-  { id: 'store-20', action: 'play', lastPlayed: '2주 전 플레이' },
+  { id: 'store-20', action: 'play', played: 88000 },
   { id: 'store-21', action: 'install' },
   { id: 'store-22', action: 'install' },
   { id: 'store-23', action: 'update' },
-  { id: 'store-24', action: 'play', lastPlayed: '어제 플레이' },
+  { id: 'store-24', action: 'play', played: 95000 },
   { id: 'store-25', action: 'install' },
   { id: 'store-26', action: 'update' },
   { id: 'store-27', action: 'install' },
-  { id: 'store-28', action: 'play', lastPlayed: '1달 전 플레이' },
+  { id: 'store-28', action: 'play', played: 102000 },
   { id: 'store-29', action: 'install' },
-  { id: 'store-30', action: 'install' },
+  { id: 'store-30', action: 'play', played: 5, total: '총 2시간 14분' },
   { id: 'store-31', action: 'update' },
-  { id: 'store-32', action: 'play', lastPlayed: '3일 전 플레이' },
+  { id: 'store-32', action: 'play', played: 109000 },
   { id: 'store-33', action: 'install' },
   { id: 'store-34', action: 'update' },
   { id: 'store-35', action: 'install' },
-  { id: 'store-36', action: 'play', lastPlayed: '10분 전 플레이' },
+  { id: 'store-36', action: 'play', played: 116000 },
   { id: 'store-37', action: 'install' },
   { id: 'store-38', action: 'install' },
   { id: 'store-39', action: 'update' },
-  { id: 'store-40', action: 'play', lastPlayed: '1주 전 플레이' },
+  { id: 'store-40', action: 'play', played: 123000 },
   { id: 'store-41', action: 'install' },
   { id: 'store-42', action: 'update' },
   { id: 'store-43', action: 'install' },
-  { id: 'store-44', action: 'play', lastPlayed: '1시간 전 플레이' },
+  { id: 'store-44', action: 'play', played: 130000 },
   { id: 'store-45', action: 'install' },
   { id: 'store-46', action: 'install' },
   { id: 'store-47', action: 'update' },
-  { id: 'store-48', action: 'play', lastPlayed: '2주 전 플레이' },
+  { id: 'store-48', action: 'play', played: 137000 },
   { id: 'store-49', action: 'install' },
   { id: 'store-50', action: 'update' },
   { id: 'store-51', action: 'install' },
-  { id: 'store-52', action: 'play', lastPlayed: '어제 플레이' },
+  { id: 'store-52', action: 'play', played: 144000 },
   { id: 'store-53', action: 'install' },
   { id: 'store-54', action: 'install' },
   { id: 'store-55', action: 'update' },
-  { id: 'store-56', action: 'play', lastPlayed: '1달 전 플레이' },
+  { id: 'store-56', action: 'play', played: 151000 },
   { id: 'store-57', action: 'install' },
   { id: 'store-58', action: 'update' },
   { id: 'store-59', action: 'install' },
@@ -141,14 +129,24 @@ var LIBRARY_ACTION_ICON = {
 };
 var LIBRARY_ACTION_LABEL = { play: '실행', update: '업데이트', install: '설치' };
 
+// 마지막 플레이(분 전) → "10분 전 플레이" · "어제 플레이" · "3일 전 플레이" …
+function libraryPlayedLabel(min) {
+  if (min == null) return '';
+  if (min < 60) return min + '분 전 플레이';
+  if (min < 1440) return Math.floor(min / 60) + '시간 전 플레이';
+  if (min < 2880) return '어제 플레이';
+  if (min < 10080) return Math.floor(min / 1440) + '일 전 플레이';
+  if (min < 43200) return Math.floor(min / 10080) + '주 전 플레이';
+  return Math.floor(min / 43200) + '달 전 플레이';
+}
+
 function libraryGame(entry) {
-  return Object.assign({}, gameInfo(entry.id), entry);
+  return Object.assign({}, gameInfo(entry.id), entry, { lastPlayed: libraryPlayedLabel(entry.played) });
 }
 
 var LibraryMain = {
   data: function () {
     return {
-      quick: LIBRARY_QUICK.map(libraryGame),
       owned: LIBRARY_OWNED.map(libraryGame),
       quickPage: 0,
       quickActive: 0, // 넓게 펼쳐진 카드 — 마우스를 올린 카드, 없으면 지금 페이지 첫 카드
@@ -157,6 +155,13 @@ var LibraryMain = {
     };
   },
   computed: {
+    // 빠른 실행 — 플레이 기록이 있는 보유게임을 최근 순으로 12개
+    quick: function () {
+      return this.owned
+        .filter(function (g) { return g.played != null; })
+        .sort(function (a, b) { return a.played - b.played; })
+        .slice(0, LIBRARY_QUICK_COUNT);
+    },
     quickPages: function () { return Math.ceil(this.quick.length / LIBRARY_QUICK_STEP); },
     // 4장씩 묶은 페이지 — 각 카드에 전체 순번(index)을 붙여 둔다
     quickPageList: function () {
