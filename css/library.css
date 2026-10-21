@@ -57,9 +57,21 @@
   gap: 2rem;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
+/* 페이지 상자 — 트랙 폭(680) 그대로. 안의 카드 합이 잠깐 모자라면 마지막 카드가
+   채우고(grow), 넘치면 함께 조금씩 줄어(shrink) 오른쪽이 비지 않는다 */
+.library-quick__page {
+  display: flex;
+  flex: 0 0 100%;
+  gap: 2rem;
+  min-width: 0;
+  transition: opacity 0.2s ease;
+}
+.library-quick__page.is-offpage { opacity: 0; pointer-events: none; }
+.library-quick__page > .library-quick__card:last-child { flex-grow: 1; }
 .library-quick__card {
   position: relative;
-  flex: 0 0 12rem;
+  flex: 0 1 12rem;
+  min-width: 0;
   height: 12rem;
   border-radius: 2rem;
   overflow: hidden;
@@ -67,12 +79,10 @@
   cursor: pointer;
   /* 펼침 — 빠르게 커지다 부드럽게 멈춘다 (넘쳤다 돌아오는 스프링 없음) */
   transition: flex-basis 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.2s ease;
+    background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
-/* 지금 페이지가 아닌 카드 — 넘길 때 함께 미끄러지며 흐려진다 */
-.library-quick__card.is-offpage { opacity: 0; pointer-events: none; }
 .library-quick__card.is-active { flex-basis: 26rem; background: #000; }
+.library-quick__page > .library-quick__card.is-active:last-child { flex-grow: 1; }
 .library-quick__thumb {
   position: absolute;
   inset: 0;
