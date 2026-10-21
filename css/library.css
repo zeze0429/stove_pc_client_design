@@ -291,9 +291,11 @@
   border-radius: 0.6rem;
   color: var(--inverse-elevation-2);
   cursor: pointer;
+  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.library-view-toggle button i { display: block; font-size: 2rem; line-height: 1; }
-.library-view-toggle button.is-selected { background: var(--neutral-variant-2); color: var(--on-surface-elevation-3); }
+/* 버튼 28 안에 아이콘 16 (레퍼런스 실측) */
+.library-view-toggle button i { display: block; font-size: 1.6rem; line-height: 1; }
+.library-view-toggle button.is-selected { background: var(--surface-variant-1); color: var(--on-surface-elevation-3); }
 
 /* 검색 — 186 x 32 */
 .library-search {
