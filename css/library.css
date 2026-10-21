@@ -232,6 +232,10 @@
 
 /* ---- 보유게임 — 빠른 실행 아래 32 -------------------------------- */
 .library-owned { margin-top: 3.2rem; }
+
+/* 보기 옵션 "라이브러리 설정 > 빠른 실행" 꺼짐 — 영역을 빼고 보유게임이 타이틀 바로 아래(20)로 */
+.proto-library-quick-off .library-quick { display: none; }
+.proto-library-quick-off .library-owned { margin-top: 0; }
 .library-owned__divider {
   height: 0.1rem;
   margin-top: 0.8rem;

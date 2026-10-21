@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=2" />
   <link rel="stylesheet" href="css/desktop.css?v=16" />
   <link rel="stylesheet" href="css/notice.css?v=9" />
-  <script src="js/proto-settings.js?v=23"></script>
+  <script src="js/proto-settings.js?v=24"></script>
   <script>
     // 업데이트 버튼·공지사항·다운로드 관리·스튜디오 테스트·메뉴 강조·PR 배너 종류는 저장해 두지 않는다 —
     // 미리보기에 새로 들어올 때마다 아래 기본 상태로 시작한다(오늘의 1등 뱃지만 켜짐,
@@ -207,6 +207,17 @@
         <button class="proto-switch" type="button" role="switch" data-proto-key="favorites" aria-label="즐겨찾기"></button>
       </div>
 
+      <!-- 라이브러리 설정 — 클라이언트가 라이브러리 페이지에 있을 때만 노출.
+           빠른 실행은 사용자 설정에 따라 숨길 수 있는 영역 -->
+      <div class="proto-panel__section" id="protoLibrarySettings" hidden>
+        <hr class="proto-panel__divider" />
+        <h2 class="proto-panel__title">라이브러리 설정</h2>
+        <div class="proto-panel__row">
+          <span class="proto-panel__label">빠른 실행</span>
+          <button class="proto-switch" type="button" role="switch" data-proto-key="libraryQuick" aria-label="빠른 실행"></button>
+        </div>
+      </div>
+
       <!-- 클라이언트 레이아웃 — 우측패널은 다운로드 관리 · 스튜디오 테스트에만 적용.
            그래서 클라이언트가 그 두 페이지에 있을 때만 이 섹션을 보여준다
            (라이브러리는 패널을 항상 쓰고, 웹 페이지에는 영향 없음) -->
@@ -317,15 +328,18 @@
         });
       });
 
-      // 클라이언트 레이아웃 섹션 — iframe 안 클라이언트가 다운로드 관리 · 스튜디오 테스트
-      // 페이지일 때만 노출 (페이지를 옮길 때마다 iframe load가 다시 온다)
-      var CLIENT_LAYOUT_PAGES = ['download.html', 'studio.html'];
-      var clientLayout = document.getElementById('protoClientLayout');
+      // 페이지 한정 섹션 — iframe 안 클라이언트가 해당 페이지에 있을 때만 노출
+      // (페이지를 옮길 때마다 iframe load가 다시 온다)
+      //   라이브러리 설정: 라이브러리 / 클라이언트 레이아웃: 다운로드 관리 · 스튜디오 테스트
+      var PAGE_SECTIONS = [
+        { el: document.getElementById('protoLibrarySettings'), pages: ['library.html'] },
+        { el: document.getElementById('protoClientLayout'), pages: ['download.html', 'studio.html'] },
+      ];
       var frame = document.querySelector('.os-content');
       function syncClientLayout() {
         var page = '';
         try { page = frame.contentWindow.location.pathname.split('/').pop(); } catch (e) {}
-        clientLayout.hidden = CLIENT_LAYOUT_PAGES.indexOf(page) < 0;
+        PAGE_SECTIONS.forEach(function (sec) { sec.el.hidden = sec.pages.indexOf(page) < 0; });
       }
       frame.addEventListener('load', syncClientLayout);
       syncClientLayout();
