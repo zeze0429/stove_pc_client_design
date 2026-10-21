@@ -22,7 +22,7 @@ var PCBANG_BENEFITS = [
     title: '🍔 햄버거 할인 받고 로스트아크 플레이 하기!',
     name: '로스트아크',
     genre: 'MMORPG',
-    thumb: 'assets/game-lostark.png',
+    thumb: gameInfo('lostark').thumb,
     bg: 'assets/pcbang-benefits/Client3.0_PC방혜택팝업_백그라운드_로스트아크.jpg',
     buttons: [
       { label: '프리미엄 혜택', icon: 'ic-v2-object-crown-fill', isNew: true },
@@ -35,7 +35,7 @@ var PCBANG_BENEFITS = [
     id: 'tales',
     name: '테일즈런너',
     genre: 'Racing',
-    thumb: 'assets/game-tales.png',
+    thumb: gameInfo('tales').thumb,
     bg: 'assets/pcbang-benefits/Client3.0_PC방혜택팝업_백그라운드_테일즈런너.jpg',
     buttons: [
       { label: '프리미엄 혜택', icon: 'ic-v2-object-crown-fill' },

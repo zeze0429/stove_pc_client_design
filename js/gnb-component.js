@@ -39,6 +39,13 @@ function gnbInferActiveMenuId() {
   return 'store';
 }
 
+// 사이드바 고정 그룹 — 게임 정보(이름 · 썸네일)는 공통 카탈로그(js/game-catalog.js)에서
+// 가져온다. 여기엔 그룹 안의 순서 · 항목 id · 뱃지만 둔다.
+function gnbGroupGame(entry) {
+  var info = gameInfo(entry.game) || { name: entry.game, thumb: '' };
+  return { id: entry.id, game: entry.game, name: info.name, thumb: info.thumb, badges: entry.badges };
+}
+
 var GNB_GAME_GROUPS = [
   {
     id: 'stove-games',
@@ -46,13 +53,13 @@ var GNB_GAME_GROUPS = [
     count: 6,
     collapsed: false,
     games: [
-      { id: 'lostark', name: 'LOST ARK', thumb: 'assets/game-lostark.png' },
-      { id: 'rodnine', name: '로드나인', thumb: 'assets/game-rodnine.png', badges: ['link', 'multiplay'] },
-      { id: 'chaos', name: '카오스 제로 나이트메어', thumb: 'assets/game-chaos.png' },
-      { id: 'e7', name: '에픽세븐', thumb: 'assets/game-e7.png' },
-      { id: 'bts', name: 'BTS 쿠킹온 스토브 : 타이니탄 레스토랑', thumb: 'assets/game-bts.png' },
-      { id: 'tales', name: '테일즈런너', thumb: 'assets/game-tales.png' },
-    ],
+      { id: 'lostark', game: 'lostark' },
+      { id: 'rodnine', game: 'rodnine', badges: ['link', 'multiplay'] },
+      { id: 'chaos', game: 'chaos' },
+      { id: 'e7', game: 'e7' },
+      { id: 'bts', game: 'bts' },
+      { id: 'tales', game: 'tales' },
+    ].map(gnbGroupGame),
   },
   {
     id: 'favorites',
@@ -60,30 +67,30 @@ var GNB_GAME_GROUPS = [
     count: 23,
     collapsed: false,
     games: [
-      { id: 'fav-floppy-knight', name: '플로피 나이트', thumb: 'assets/game-floppy-knight.png' },
-      { id: 'fav-hwayeonwol', name: '화연월의', thumb: 'assets/game-hwayeonwol.png' },
-      { id: 'fav-lostark', name: 'LOST ARK', thumb: 'assets/game-lostark.png' },
-      { id: 'fav-rodnine', name: '로드나인', thumb: 'assets/game-rodnine.png', badges: ['link', 'multiplay'] },
-      { id: 'fav-deluvian-winds', name: '딜루비안 윈즈', thumb: 'assets/game-deluvian-winds.png' },
-      { id: 'fav-bus-world', name: '버스 월드', thumb: 'assets/game-bus-world.png' },
-      { id: 'fav-happy-quest', name: '해피 퀘스트', thumb: 'assets/game-happy-quest.png' },
-      { id: 'fav-atom-rpg', name: '아톰 RPG 트루도그라드 디럭스 컬렉션', thumb: 'assets/game-atom-rpg.png' },
-      { id: 'fav-under-blue-horizon', name: 'Under the blue horizon - Aquarium', thumb: 'assets/game-under-blue-horizon.png' },
-      { id: 'fav-chaos', name: '카오스 제로 나이트메어', thumb: 'assets/game-chaos.png' },
-      { id: 'fav-illips', name: '일립스', thumb: 'assets/game-illips.png' },
-      { id: 'fav-cabbage', name: '카베지', thumb: 'assets/game-cabbage.png' },
-      { id: 'fav-scarf', name: '스카프', thumb: 'assets/game-scarf.png' },
-      { id: 'fav-e7', name: '에픽세븐', thumb: 'assets/game-e7.png' },
-      { id: 'fav-bts', name: 'BTS 쿠킹온 스토브 : 타이니탄 레스토랑', thumb: 'assets/game-bts.png' },
-      { id: 'fav-fog-detective', name: '안개 탐정: 네온 바다의 이야기', thumb: 'assets/game-fog-detective.png' },
-      { id: 'fav-bullet-delivery', name: '총알배달 우주반점: 프리퀄 단편소설 (STOVE 한정)', thumb: 'assets/game-bullet-delivery.png' },
-      { id: 'fav-four-lights', name: '네개의 빛 : 제 1세계 [Iruka Route] 시크릿 플러스', thumb: 'assets/game-four-lights.png' },
-      { id: 'fav-ghostrunner', name: '고스트러너', thumb: 'assets/game-ghostrunner.png' },
-      { id: 'fav-undying', name: '언다잉', thumb: 'assets/game-undying.png' },
-      { id: 'fav-suicide-countdown', name: 'Suicide Countdown: 7 Days', thumb: 'assets/game-suicide-countdown.png' },
-      { id: 'fav-novena-diabolos', name: '노베나 디아볼로스', thumb: 'assets/game-novena-diabolos.png' },
-      { id: 'fav-yoryeong-village', name: '요령 마을: 요령사의 길', thumb: 'assets/game-yoryeong-village.png' },
-    ],
+      { id: 'fav-floppy-knight', game: 'floppy-knight' },
+      { id: 'fav-hwayeonwol', game: 'hwayeonwol' },
+      { id: 'fav-lostark', game: 'lostark' },
+      { id: 'fav-rodnine', game: 'rodnine', badges: ['link', 'multiplay'] },
+      { id: 'fav-deluvian-winds', game: 'deluvian-winds' },
+      { id: 'fav-bus-world', game: 'bus-world' },
+      { id: 'fav-happy-quest', game: 'happy-quest' },
+      { id: 'fav-atom-rpg', game: 'atom-rpg' },
+      { id: 'fav-under-blue-horizon', game: 'under-blue-horizon' },
+      { id: 'fav-chaos', game: 'chaos' },
+      { id: 'fav-illips', game: 'illips' },
+      { id: 'fav-cabbage', game: 'cabbage' },
+      { id: 'fav-scarf', game: 'scarf' },
+      { id: 'fav-e7', game: 'e7' },
+      { id: 'fav-bts', game: 'bts' },
+      { id: 'fav-fog-detective', game: 'fog-detective' },
+      { id: 'fav-bullet-delivery', game: 'bullet-delivery' },
+      { id: 'fav-four-lights', game: 'four-lights' },
+      { id: 'fav-ghostrunner', game: 'ghostrunner' },
+      { id: 'fav-undying', game: 'undying' },
+      { id: 'fav-suicide-countdown', game: 'suicide-countdown' },
+      { id: 'fav-novena-diabolos', game: 'novena-diabolos' },
+      { id: 'fav-yoryeong-village', game: 'yoryeong-village' },
+    ].map(gnbGroupGame),
   },
 ];
 

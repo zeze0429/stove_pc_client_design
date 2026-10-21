@@ -6,7 +6,7 @@
   <title>STOVE 클라이언트 · 라이브러리</title>
   <!-- 로드 순서: tokens → foundations → typography → 아이콘 → GNB → 셸 -->
   <script src="js/proto-settings.js?v=23" data-client></script>
-  <link rel="stylesheet" href="css/tokens.css?v=8" />
+  <link rel="stylesheet" href="css/tokens.css?v=9" />
   <link rel="stylesheet" href="css/foundations.css?v=7" />
   <link rel="stylesheet" href="css/typography.css?v=12" />
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=8" />
@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="css/profile-popup.css?v=4" />
   <link rel="stylesheet" href="css/stove-app-dialog.css?v=2" />
   <link rel="stylesheet" href="css/utility-notice.css?v=4" />
+  <link rel="stylesheet" href="css/library.css?v=4" />
 </head>
 <body>
   <div class="app app--client app--panel-always">
@@ -36,24 +37,29 @@
     <!-- ============ 라이브러리 (Figma 2026_웹전환 11735:51868) ============
          콘텐츠(MD_container) + 우측패널 280 — 클라이언트 레이아웃 공통(css/dashboard.css).
          라이브러리는 패널을 항상 쓴다(app--panel-always) — 보기 옵션 "우측패널"과 무관 -->
-    <div class="main main--overlay-scroll" data-name="MD_container"></div>
+    <div class="main main--overlay-scroll" data-name="MD_container">
+      <div id="library-mount"></div>
+    </div>
     <aside class="client-panel" aria-label="내 게임 폴더" data-name="Pannel Area"></aside>
 
   </div>
 
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <script src="js/gnb-component.js?v=60"></script>
+  <script src="js/game-catalog.js?v=1"></script>
+  <script src="js/gnb-component.js?v=61"></script>
   <script src="js/layer-dialog-component.js?v=2"></script>
-  <script src="js/pcbang-benefits-component.js?v=3"></script>
+  <script src="js/pcbang-benefits-component.js?v=4"></script>
   <script src="js/notification-component.js?v=4"></script>
   <script src="js/profile-popup-component.js?v=5"></script>
   <script src="js/stove-app-dialog-component.js?v=2"></script>
   <script src="js/utility-notice-component.js?v=3"></script>
   <script src="js/utility-bar-component.js?v=13"></script>
+  <script src="js/library-component.js?v=1"></script>
   <script src="js/page-scrollbar.js?v=2"></script>
   <script>
     mountGnb('#gnb-mount');
     mountUtilityBar('#utility-bar-mount');
+    mountLibraryMain('#library-mount');
     mountPageScrollbar(document.querySelector('.app > .main'));
   </script>
 </body>

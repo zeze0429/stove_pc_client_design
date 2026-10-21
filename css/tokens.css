@@ -193,6 +193,9 @@
   --neutral-variant-3-hover:   var(--stove-gray-800);
   --neutral-variant-3-pressed: var(--stove-gray-750);
   --neutral-variant-4:         var(--stove-gray-700);
+  --neutral-variant-5:         var(--stove-gray-800);
+  --neutral-variant-5-hover:   var(--stove-gray-750);
+  --neutral-variant-5-pressed: var(--stove-gray-700);
 
   /* system (다크/라이트 동일) */
   --system-error:       var(--stove-error);
@@ -288,6 +291,9 @@
   --neutral-variant-3-hover:   var(--stove-gray-20);
   --neutral-variant-3-pressed: var(--stove-gray-40);
   --neutral-variant-4:         var(--stove-gray-150);
+  --neutral-variant-5:         var(--stove-gray-200);
+  --neutral-variant-5-hover:   var(--stove-gray-300);
+  --neutral-variant-5-pressed: var(--stove-gray-400);
 
   /* system (모드 동일) */
   --system-error:       var(--stove-error);
