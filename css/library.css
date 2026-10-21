@@ -38,11 +38,15 @@
   place-items: center;
   width: 2.4rem;
   height: 2.4rem;
+  padding: 0;
   border-radius: var(--radius-md);
   color: var(--on-surface-elevation-2);
   cursor: pointer;
 }
-.library-quick__arrow i { font-size: 2rem; }
+.library-quick__arrow i { display: block; font-size: 2rem; line-height: 1; }
+/* 상태값 (Figma 11735:58480) — 24 영역 모서리 4, hover/pressed는 interaction 토큰 */
+.library-quick__arrow:not(:disabled):hover { background: var(--interaction-hover); }
+.library-quick__arrow:not(:disabled):active { background: var(--interaction-pressed); }
 .library-quick__arrow:disabled { color: var(--inverse-elevation-2); cursor: default; }
 .library-quick__viewport {
   margin-top: 1.6rem;
@@ -173,12 +177,13 @@
   place-items: center;
   width: 3.2rem;
   height: 3.2rem;
+  padding: 0;
   border-radius: var(--radius-lg);
   background: var(--brand-blue-enabled);
   color: #fff;
   cursor: pointer;
 }
-.library-action i { font-size: 2rem; }
+.library-action i { display: block; font-size: 2rem; line-height: 1; }
 .library-action:hover { background: var(--brand-blue-hover); }
 .library-action:active { background: var(--brand-blue-pressed); }
 
@@ -235,11 +240,12 @@
   place-items: center;
   width: 2.8rem;
   height: 2.8rem;
+  padding: 0;
   border-radius: 0.6rem;
   color: var(--inverse-elevation-2);
   cursor: pointer;
 }
-.library-view-toggle button i { font-size: 2rem; }
+.library-view-toggle button i { display: block; font-size: 2rem; line-height: 1; }
 .library-view-toggle button.is-selected { background: var(--neutral-variant-2); color: var(--on-surface-elevation-3); }
 
 /* 검색 — 186 x 32 */

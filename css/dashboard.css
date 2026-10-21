@@ -242,11 +242,12 @@ ul { list-style: none; margin: 0; padding: 0; }
   place-items: center;
   width: 4rem;
   height: 4rem;
+  padding: 0; /* 기본 버튼 여백(1px 6px)이 있으면 아이콘 30이 가운데서 밀린다 */
   border-radius: var(--radius-lg);
   color: var(--on-surface-elevation-4);
   cursor: pointer;
 }
-.client-page-title__setting i { font-size: 3rem; }
+.client-page-title__setting i { display: block; font-size: 3rem; line-height: 1; }
 .client-page-title__setting:hover { background: var(--interaction-hover); }
 .client-page-title__setting:active { background: var(--interaction-pressed); }
 
