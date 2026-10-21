@@ -155,7 +155,7 @@ var LibraryMain = {
     };
   },
   computed: {
-    // 빠른 실행 — 플레이 기록이 있는 정식 게임(DLC · 데모 · 부가 콘텐츠 제외)을 최근 순으로 12개
+    // 빠른 실행 — 플레이 기록이 있는 정식 게임(DLC · 데모 · 합본팩 · 부가 콘텐츠 제외)을 최근 순으로 12개
     quick: function () {
       return this.owned
         .filter(function (g) { return g.type === 'game' && g.played != null; })

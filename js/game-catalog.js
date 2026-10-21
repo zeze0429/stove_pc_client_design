@@ -7,7 +7,7 @@
  *
  * 썸네일은 assets/games/{id}.png 한 장 (원본 그대로, 화면마다 크기만 다르게 표시).
  * 원본이 png가 아니면 ext로 확장자를 적는다 (예: ext: 'webp').
- * type: 정식 게임이 아닌 상품만 적는다 — 'dlc' · 'demo' · 'utility'(소설 · 월페이퍼 등 부가 콘텐츠).
+ * type: 단품 정식 게임이 아닌 상품만 적는다 — 'dlc' · 'demo' · 'collection'(합본팩) · 'utility'(소설 · 월페이퍼 등 부가 콘텐츠).
  *   스토어 상품 정보(product_detail_type · demo · product_type) 기준. 빠른 실행에는 정식 게임(type 없음)만 나온다.
  * 스토브게임(LOST ARK · 로드나인 등 사이드바 고정 그룹)은 라이브러리 보유게임에 넣지 않는다.
  * 이 파일은 gnb-component.js 등 게임을 쓰는 스크립트보다 먼저 불러야 한다.
@@ -21,7 +21,7 @@ var GAME_CATALOG = {
   e7: { name: '에픽세븐', genre: '턴제RPG' },
   bts: { name: 'BTS 쿠킹온 STOVE : 타이니탄 레스토랑', genre: '캐주얼' },
   tales: { name: '테일즈런너', genre: 'Racing', ext: 'jpg' },
-  'atom-rpg': { name: '아톰 RPG 트루도그라드 디럭스 컬렉션', genre: 'RPG' },
+  'atom-rpg': { name: '아톰 RPG 트루도그라드 디럭스 컬렉션', genre: 'RPG', type: 'collection' },
   ghostrunner: { name: '고스트러너: 컴플리트 에디션', genre: '액션' },
   'deluvian-winds': { name: '딜루비안 윈즈 (Diluvian Winds)', genre: '시뮬레이션' },
   scarf: { name: '스카프 (Scarf)', genre: '어드벤처', ext: 'jpg' },
@@ -42,7 +42,7 @@ var GAME_CATALOG = {
   utawarerumono: { name: '칭송받는 자: 거짓의 가면 - DLC 합본팩', genre: '어드벤처' },
   'atom-rpg-supporter': { name: '아톰 RPG 트루도그라드 DLC 서포터팩 (Trudograd - Supporter Pack)', genre: 'RPG', type: 'dlc' },
   'baek-wallpaper': { name: '백의 소각자 월페이퍼 DLC', genre: '어드벤처', type: 'utility' },
-  '52hz': { name: '52헤르츠 / DLC 통합 패키지', genre: '시뮬레이션' },
+  '52hz': { name: '52헤르츠 / DLC 통합 패키지', genre: '시뮬레이션', type: 'collection' },
   'storm-maid': { name: '폭풍의 메이드: 시크릿 커리큘럼 콜라보 DLC', genre: '퍼즐', type: 'dlc' },
   'eyes-nose-mouth': { name: '눈, 코, 입', genre: '기타', type: 'demo' },
   'hamster-talk': { name: '햄스터 톡', genre: '시뮬레이션' },
