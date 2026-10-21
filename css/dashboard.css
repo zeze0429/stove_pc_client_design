@@ -204,6 +204,8 @@ ul { list-style: none; margin: 0; padding: 0; }
 .client-panel::-webkit-scrollbar { display: none; }
 /* 콘텐츠 오버레이 스크롤바는 패널 왼쪽 끝 안쪽에 */
 .proto-right-panel-on .app--client .page-scrollbar { right: calc(var(--client-panel-w) + 0.8rem); }
+/* 그리드 가이드도 패널을 뺀 콘텐츠 영역 기준 — 좌우 여백 40은 그대로 */
+.proto-right-panel-on .app--client .proto-grid { right: var(--client-panel-w); }
 
 /* ---- GNB를 대시보드 셸에 맞게 조정 (컴포넌트 스타일은 gnb.css) --- */
 /* 헤더 고정 · 스크롤 분리는 gnb.css의 .gnb / .gnb-header / .gnb-menu에서 처리 */
