@@ -123,6 +123,9 @@
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  /* 내용 폭은 펼친 카드(260) 기준으로 고정 — 카드가 커지는 동안 게임명이
+     좁은 폭에서 여러 줄로 접혔다 펴지며 출렁이지 않게 (Figma min-w 236) */
+  width: 26rem;
   height: 100%;
   padding: 1.2rem;
 }
