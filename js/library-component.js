@@ -2,7 +2,9 @@
  * 라이브러리 콘텐츠 (MD_container) — Vue 3 CDN 컴포넌트
  * -------------------------------------------------------------
  * 레퍼런스: Figma Make quartz-unique-70171087.figma.site 라이브러리 화면 실측.
- * 구성: 타이틀(라이브러리 + 설정) · 빠른 실행(가로 캐러셀) · 보유게임(도구 줄 + 5단 카드).
+ * 구성: 빠른 실행(가로 캐러셀) · 보유게임(도구 줄 + 5단 카드). 페이지 타이틀은
+ * 클라이언트 레이아웃 공통(.client-page-title, library.html).
+ * Figma 2026_웹전환 11769:156966 기준으로 맞춤.
  * 게임 이름 · 장르 · 썸네일은 공통 카탈로그(js/game-catalog.js)에서 가져오고,
  * 여기엔 라이브러리 고유 정보(최근 플레이 · 총 플레이 시간 · 실행 버튼 상태)만 둔다.
  * 색은 레퍼런스가 쓰는 STDS 시멘틱 토큰 그대로 (css/library.css).
@@ -21,6 +23,8 @@ var LIBRARY_QUICK = [
   { id: 'baek-wallpaper', lastPlayed: '어제 플레이', total: '총 24시간 30분' },
   { id: 'dice-eater', lastPlayed: '3일 전 플레이', total: '총 1,205시간 8분' },
   { id: 'into-the-room', lastPlayed: '1주 전 플레이', total: '총 56시간 42분' },
+  { id: 'flower-survivors', lastPlayed: '어제 플레이', total: '총 12시간 4분' },
+  { id: 'reblade', lastPlayed: '1시간 전 플레이', total: '총 3시간 18분' },
 ];
 var LIBRARY_QUICK_STEP = 4; // 화살표 한 번에 넘기는 카드 수 (레퍼런스: 4장 = 560)
 
@@ -120,11 +124,6 @@ var LibraryMain = {
   template:
     '<div class="library">' +
 
-      // ---- 타이틀 ----
-      '<div class="library-title" data-name="title">' +
-        '<h1 class="library-title__text">라이브러리</h1>' +
-        '<button class="library-title__setting" type="button" aria-label="라이브러리 설정"><i class="ic-v2-navigation-setting-fill"></i></button>' +
-      '</div>' +
 
       // ---- 빠른 실행 ----
       '<section class="library-section library-quick">' +
@@ -183,11 +182,13 @@ var LibraryMain = {
               '<img :src="g.thumb" alt="" loading="lazy" />' +
               '<span class="library-card__border" aria-hidden="true"></span>' +
               '<button class="library-action library-card__action" type="button" :aria-label="actionLabel(g.action)"><i :class="actionIcon(g.action)"></i></button>' +
-              '<img v-if="g.collection" class="library-card__badge" src="assets/library/badge-collection.png" alt="Collection" />' +
+              '<span v-if="g.collection" class="library-card__badge">Collection</span>' +
             '</div>' +
             '<div class="library-card__text">' +
-              '<p class="library-card__genre">{{ g.genre }}</p>' +
-              '<p class="library-card__name">{{ g.name }}</p>' +
+              '<div class="library-card__main">' +
+                '<p class="library-card__genre">{{ g.genre }}</p>' +
+                '<p class="library-card__name">{{ g.name }}</p>' +
+              '</div>' +
               '<p v-if="g.lastPlayed" class="library-card__played">{{ g.lastPlayed }}</p>' +
             '</div>' +
           '</li>' +

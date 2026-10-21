@@ -218,6 +218,38 @@ ul { list-style: none; margin: 0; padding: 0; }
 .proto-right-panel-on .app--client .proto-grid span:nth-child(n + 6),
 .app--panel-always .proto-grid span:nth-child(n + 6) { display: none; }
 
+/* ---- 클라이언트 페이지 타이틀 (라이브러리 · 다운로드 관리 · 스튜디오 테스트 공통) ----
+   Figma 2026_웹전환 11769:156966 page_title — 유틸리티 바 아래 36, 좌우 40, 높이 40.
+   타이틀 32/700/44 + 설정 버튼 40(아이콘 30). 아래 콘텐츠는 20 띄운다. */
+.client-page-title {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  height: 4rem;
+  margin: 3.6rem 4rem 2rem;
+}
+.client-page-title__text {
+  margin: 0;
+  color: var(--on-surface-elevation-1);
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 4.4rem;
+  letter-spacing: -0.096rem;
+  white-space: nowrap;
+}
+.client-page-title__setting {
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: var(--radius-lg);
+  color: var(--on-surface-elevation-4);
+  cursor: pointer;
+}
+.client-page-title__setting i { font-size: 3rem; }
+.client-page-title__setting:hover { background: var(--interaction-hover); }
+.client-page-title__setting:active { background: var(--interaction-pressed); }
+
 /* ---- GNB를 대시보드 셸에 맞게 조정 (컴포넌트 스타일은 gnb.css) --- */
 /* 헤더 고정 · 스크롤 분리는 gnb.css의 .gnb / .gnb-header / .gnb-menu에서 처리 */
 .app > .gnb {
