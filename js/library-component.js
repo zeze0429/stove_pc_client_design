@@ -118,6 +118,13 @@ var LibraryMain = {
       this.quickPage = next;
       this.quickActive = next * LIBRARY_QUICK_STEP;
     },
+    // 지금 페이지의 4장만 보인다 — 빠르게 여러 카드를 훑으면 커지는 카드와 줄어드는
+    // 카드가 겹쳐 줄 전체 폭이 잠깐 줄어드는데, 그 틈으로 다음 페이지 카드가 비치지 않게
+    hoverQuick: function (i) { if (this.onPage(i)) this.quickActive = i; },
+    onPage: function (i) {
+      var start = this.quickPage * LIBRARY_QUICK_STEP;
+      return i >= start && i < start + LIBRARY_QUICK_STEP;
+    },
     actionIcon: function (a) { return LIBRARY_ACTION_ICON[a]; },
     actionLabel: function (a) { return LIBRARY_ACTION_LABEL[a]; },
   },
@@ -136,7 +143,8 @@ var LibraryMain = {
         '</div>' +
         '<div class="library-quick__viewport">' +
           '<div class="library-quick__track" :style="quickTrackStyle">' +
-            '<div v-for="(g, i) in quick" :key="g.id" class="library-quick__card" :class="{ \'is-active\': i === quickActive }" @mouseenter="quickActive = i">' +
+            '<div v-for="(g, i) in quick" :key="g.id" class="library-quick__card"' +
+              ' :class="{ \'is-active\': i === quickActive, \'is-offpage\': !onPage(i) }" @mouseenter="hoverQuick(i)">' +
               '<img class="library-quick__thumb" :src="g.thumb" alt="" />' +
               // 펼친 카드 — 같은 이미지를 크게 깔고 흐리게 + 검정 60%
               '<div class="library-quick__expanded">' +
