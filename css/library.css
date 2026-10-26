@@ -358,9 +358,10 @@
   object-fit: cover;
   transition: transform 0.35s ease;
 }
-/* 썸네일(실행 버튼 포함)에 마우스를 올리면 이미지만 1.04배로 커지고, 떼면 돌아온다
-   — 텍스트 영역 호버에는 반응하지 않는다 (레퍼런스 실측: 약 0.35초) */
-.library-card__thumb:hover .library-card__media img { transform: scale(1.04); }
+/* 썸네일(실행 버튼 포함)에 마우스를 올리면 이미지만 1.08배로 커지고, 떼면 돌아온다
+   — 텍스트 영역 호버에는 반응하지 않는다 (속도는 레퍼런스 실측 약 0.35초,
+   크기는 레퍼런스 1.04의 두 배 정도로 사용자 조정) */
+.library-card__thumb:hover .library-card__media img { transform: scale(1.08); }
 .library-card__border {
   position: absolute;
   inset: 0;
