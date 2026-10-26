@@ -180,6 +180,7 @@ var LibraryMain = {
       }
       return cards;
     },
+    quickStep: function () { return LIBRARY_QUICK_STEP; },
     quickPages: function () { return Math.ceil(this.quickCards.length / LIBRARY_QUICK_STEP); },
     // 4장씩 묶은 페이지 — 각 카드에 전체 순번(index)을 붙여 둔다
     quickPageList: function () {
@@ -232,7 +233,7 @@ var LibraryMain = {
         '<div class="library-quick__viewport">' +
           '<div class="library-quick__track" :style="quickTrackStyle">' +
            // 페이지(4장)마다 680 고정 상자 — 카드들이 동시에 커지고 줄어도 합이 항상 680
-           '<div v-for="(page, p) in quickPageList" :key="p" class="library-quick__page" :class="{ \'is-offpage\': p !== quickPage }">' +
+           '<div v-for="(page, p) in quickPageList" :key="p" class="library-quick__page" :class="{ \'is-offpage\': p !== quickPage, \'is-full\': page.length === quickStep }">' +
             '<div v-for="g in page" :key="g.key" class="library-quick__card"' +
               ' :class="{ \'is-active\': g.index === quickActive, \'library-quick__card--ad\': g.ad }" @mouseenter="hoverQuick(g.index)">' +
               '<img class="library-quick__thumb" :src="g.thumb" alt="" />' +

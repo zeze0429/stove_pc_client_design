@@ -67,7 +67,9 @@
   transition: opacity 0.2s ease;
 }
 .library-quick__page.is-offpage { opacity: 0; pointer-events: none; }
-.library-quick__page > .library-quick__card:last-child { flex-grow: 1; }
+/* 꽉 찬 페이지(4장)만 마지막 카드가 남는 폭을 채운다. 덜 찬 페이지(마지막 페이지 등)는
+   카드 크기 그대로(접힘 120 · 펼침 260) 왼쪽부터 놓인다 */
+.library-quick__page.is-full > .library-quick__card:last-child { flex-grow: 1; }
 .library-quick__card {
   position: relative;
   flex: 0 1 12rem;
@@ -82,7 +84,7 @@
     background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .library-quick__card.is-active { flex-basis: 26rem; background: var(--stove-black); }
-.library-quick__page > .library-quick__card.is-active:last-child { flex-grow: 1; }
+.library-quick__page.is-full > .library-quick__card.is-active:last-child { flex-grow: 1; }
 .library-quick__thumb {
   position: absolute;
   inset: 0;
