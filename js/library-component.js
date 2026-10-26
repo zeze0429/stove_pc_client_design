@@ -11,9 +11,16 @@
  * 우측 패널(내 게임 폴더)은 다음 단계.
  */
 
-// 빠른 실행 — 보유게임 중 플레이한 게임을 최근 플레이 순으로 12개 (별도 목록 없음)
-var LIBRARY_QUICK_COUNT = 12;
+// 빠른 실행 — 보유게임 중 플레이한 정식 게임을 최근 플레이 순으로 최대 20개 (별도 목록 없음)
+var LIBRARY_QUICK_COUNT = 20;
 var LIBRARY_QUICK_STEP = 4; // 화살표 한 번에 넘기는 카드 수 (레퍼런스: 4장 = 560)
+
+// 빠른 실행 게임 광고 (Figma 2026_웹전환 11856:623971) — 두 번째 자리에 끼워 넣는 카드.
+// 게임 개수(최대 20, 타이틀 옆 숫자)에는 포함하지 않는다. 카드 모양은 게임 카드와 같고
+// 우측 상단 AD 뱃지 + 플레이 시간 자리에 광고 문구, 버튼은 설치.
+var LIBRARY_QUICK_AD_SLOT = 1; // 0부터 — 두 번째 카드
+// 광고 게임은 보유하지 않은 게임 — 스토브게임(사이드바 고정 그룹)은 빠른 실행에 넣지 않는다.
+var LIBRARY_QUICK_AD = { game: 'secret-curriculum', message: '새로운 게임을 만나보세요!', action: 'install' };
 
 // 보유게임 — action: play(실행) · update(업데이트) · install(설치)
 //   played: 마지막 플레이가 몇 분 전인지 (없으면 플레이 기록 없음), total: 총 플레이 시간
@@ -155,18 +162,29 @@ var LibraryMain = {
     };
   },
   computed: {
-    // 빠른 실행 — 플레이 기록이 있는 정식 게임(DLC · 데모 · 합본팩 · 부가 콘텐츠 제외)을 최근 순으로 12개
+    // 빠른 실행 — 플레이 기록이 있는 정식 게임(DLC · 데모 · 합본팩 · 부가 콘텐츠 제외)을 최근 순으로 최대 20개
     quick: function () {
       return this.owned
         .filter(function (g) { return g.type === 'game' && g.played != null; })
         .sort(function (a, b) { return a.played - b.played; })
         .slice(0, LIBRARY_QUICK_COUNT);
     },
-    quickPages: function () { return Math.ceil(this.quick.length / LIBRARY_QUICK_STEP); },
+    // 화면에 놓이는 카드 — 게임 목록 두 번째 자리에 광고 카드를 끼운다
+    quickCards: function () {
+      var cards = this.quick.map(function (g) { return Object.assign({ key: g.id, action: 'play' }, g); });
+      var ad = gameInfo(LIBRARY_QUICK_AD.game);
+      if (ad && cards.length) {
+        cards.splice(Math.min(LIBRARY_QUICK_AD_SLOT, cards.length), 0, Object.assign({}, ad, {
+          key: 'ad-' + ad.id, ad: true, message: LIBRARY_QUICK_AD.message, action: LIBRARY_QUICK_AD.action,
+        }));
+      }
+      return cards;
+    },
+    quickPages: function () { return Math.ceil(this.quickCards.length / LIBRARY_QUICK_STEP); },
     // 4장씩 묶은 페이지 — 각 카드에 전체 순번(index)을 붙여 둔다
     quickPageList: function () {
       var pages = [];
-      this.quick.forEach(function (g, i) {
+      this.quickCards.forEach(function (g, i) {
         var p = Math.floor(i / LIBRARY_QUICK_STEP);
         (pages[p] = pages[p] || []).push(Object.assign({ index: i }, g));
       });
@@ -215,8 +233,8 @@ var LibraryMain = {
           '<div class="library-quick__track" :style="quickTrackStyle">' +
            // 페이지(4장)마다 680 고정 상자 — 카드들이 동시에 커지고 줄어도 합이 항상 680
            '<div v-for="(page, p) in quickPageList" :key="p" class="library-quick__page" :class="{ \'is-offpage\': p !== quickPage }">' +
-            '<div v-for="g in page" :key="g.id" class="library-quick__card"' +
-              ' :class="{ \'is-active\': g.index === quickActive }" @mouseenter="hoverQuick(g.index)">' +
+            '<div v-for="g in page" :key="g.key" class="library-quick__card"' +
+              ' :class="{ \'is-active\': g.index === quickActive, \'library-quick__card--ad\': g.ad }" @mouseenter="hoverQuick(g.index)">' +
               '<img class="library-quick__thumb" :src="g.thumb" alt="" />' +
               // 펼친 카드 — 같은 이미지를 크게 깔고 흐리게 + 검정 60%
               '<div class="library-quick__expanded">' +
@@ -227,12 +245,15 @@ var LibraryMain = {
                     '<span class="library-quick__text"><span class="library-quick__genre">{{ g.genre }}</span><span class="library-quick__name">{{ g.name }}</span></span>' +
                   '</div>' +
                   '<div class="library-quick__foot">' +
-                    '<span class="library-quick__meta"><span>{{ g.lastPlayed }}</span><template v-if="g.total"><i aria-hidden="true"></i><span>{{ g.total }}</span></template></span>' +
-                    '<button class="library-action" type="button" aria-label="실행"><i class="ic-v2-media-av-play-round-fill"></i></button>' +
+                    // 게임: 최근 플레이 · 총 시간 / 광고: 같은 자리에 광고 문구
+                    '<span v-if="g.ad" class="library-quick__meta"><span>{{ g.message }}</span></span>' +
+                    '<span v-else class="library-quick__meta"><span>{{ g.lastPlayed }}</span><template v-if="g.total"><i aria-hidden="true"></i><span>{{ g.total }}</span></template></span>' +
+                    '<button class="library-action" type="button" :aria-label="actionLabel(g.action)"><i :class="actionIcon(g.action)"></i></button>' +
                   '</div>' +
                 '</div>' +
               '</div>' +
               '<span class="library-quick__border" aria-hidden="true"></span>' +
+              '<span v-if="g.ad" class="library-ad-badge" aria-label="광고">AD</span>' +
             '</div>' +
            '</div>' +
           '</div>' +

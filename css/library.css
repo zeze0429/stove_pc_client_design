@@ -213,6 +213,35 @@
   background: var(--stove-white-50);
 }
 
+/* 게임 광고 AD 뱃지 (Figma 11856:623971 "ad") — 26 x 18 알약, 카드 우측 상단 12.
+   접힌 카드 · 펼친 카드 모두 같은 자리. 이미지 위라 테마와 상관없이 고정 색 */
+@font-face {
+  font-family: 'Gmarket Sans';
+  font-weight: 700;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');
+}
+.library-ad-badge {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 2.6rem;
+  height: 1.8rem;
+  border: 0.1rem solid var(--stove-white);
+  border-radius: var(--radius-full);
+  background: var(--stove-black-70);
+  box-shadow: 0 0 0.1rem var(--stove-black-40);
+  color: var(--stove-white);
+  font-family: 'Gmarket Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+
 /* 실행 · 업데이트 · 설치 버튼 — 32, 모서리 8, 브랜드 블루 */
 .library-action {
   display: grid;

@@ -62,6 +62,8 @@ var GAME_CATALOG = {
   noexistencen: { name: '당신과 나의 존재불명 (The NOexistenceN of you AND me)', genre: 'RPG' },
   'primal-slidey': { name: '프라이멀 슬라이디 DX', genre: '레이싱' },
   'critter-cove': { name: '크리터 코브 (Critter Cove)', genre: '어드벤처' },
+  // 미보유 게임 — 라이브러리 빠른 실행 게임 광고용 (스토어 인기순 상위, 스토브게임 아님)
+  'secret-curriculum': { name: '시크릿 커리큘럼', genre: '캐주얼' },
   // 스토어 신작 (store.onstove.com 2026-10 신작 출시 목록) — 라이브러리 보유게임 채우기용
   'store-01': { name: '비욘드 디스 스타즈 (Beyond These Stars)', genre: '시뮬레이션' },
   'store-02': { name: 'Dynamite Blue', genre: 'RPG' },
