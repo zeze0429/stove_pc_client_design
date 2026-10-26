@@ -177,7 +177,7 @@ ul { list-style: none; margin: 0; padding: 0; }
    - 패널 폭 280 고정, 콘텐츠가 나머지 (1280 창: 760 / 1920 창: 1400)
    - 높이는 창을 따라 가변 — 창이 길면 패널 아래쪽 항목이 더 많이 보인다
    - 패널은 y 0부터 바닥까지. 유틸리티 바가 그 위를 덮고, 바 색은 그대로.
-   - 공지사항 띠도 밀어내지 않고 콘텐츠·패널 위에 겹쳐 뜬다 (웹 페이지는 밀어냄). */
+   - 공지사항 띠가 뜨면 웹 페이지와 같이 콘텐츠·패널이 띠 높이만큼 밀린다. */
 :root { --client-panel-w: 28rem; }
 /* 패널 색 — 아직 시멘틱 토큰 미지정(디자인시스템 등록 예정). Figma 협의대로
    글로벌 토큰 선적용: 다크 gray940 / 라이트 gray100. 토큰이 나오면 이 두 줄만 교체 */
@@ -189,8 +189,7 @@ ul { list-style: none; margin: 0; padding: 0; }
   overflow-y: auto;
   overflow-x: hidden;
   background: var(--background-variant-1);
-  /* 공지 띠는 밀어내지 않고 콘텐츠 위에 겹친다 — 웹 페이지(스토어·라운지·이벤트)와 다른 점 */
-  padding-top: 4.8rem;
+  padding-top: calc(4.8rem + var(--utility-notice-h, 0px)); /* 공지 띠가 뜨면 그만큼 밀린다 */
 }
 /* 오른쪽 패널 — 옵션이 꺼져 있으면 없음 */
 .client-panel { display: none; }
@@ -204,7 +203,7 @@ ul { list-style: none; margin: 0; padding: 0; }
   overflow-x: hidden;
   overscroll-behavior: none;
   scrollbar-width: none;
-  padding-top: 4.8rem;
+  padding-top: calc(4.8rem + var(--utility-notice-h, 0px));
   background: var(--client-panel-bg);
 }
 .client-panel::-webkit-scrollbar { display: none; }
@@ -221,14 +220,16 @@ ul { list-style: none; margin: 0; padding: 0; }
 .app--panel-always .proto-grid span:nth-child(n + 6) { display: none; }
 
 /* ---- 클라이언트 페이지 타이틀 (라이브러리 · 다운로드 관리 · 스튜디오 테스트 공통) ----
-   Figma 2026_웹전환 11769:156966 page_title — 유틸리티 바 아래 36, 좌우 40, 높이 40.
+   Figma 2026_웹전환 11769:156966 page_title — 좌우 40, 높이 40.
+   세로 위치는 사이드바 첫 메뉴(스토어, 32 높이)와 가운데를 맞춘다 — 유틸리티 바 아래 24
+   (Figma는 36이었으나 사용자 요청으로 조정). 공지 띠가 뜨면 띠 높이만큼 같이 내려간다.
    타이틀 32/700/44 + 설정 버튼 40(아이콘 30). 아래 콘텐츠는 20 띄운다. */
 .client-page-title {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
   height: 4rem;
-  margin: 3.6rem 4rem 2rem;
+  margin: 2.4rem 4rem 2rem;
 }
 .client-page-title__text {
   margin: 0;
