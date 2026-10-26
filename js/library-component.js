@@ -260,7 +260,7 @@ var LibraryMain = {
         '<ul class="library-grid">' +
           '<li v-for="g in filteredOwned" :key="g.id" class="library-card">' +
             '<div class="library-card__thumb">' +
-              '<img :src="g.thumb" alt="" loading="lazy" />' +
+              '<span class="library-card__media"><img :src="g.thumb" alt="" loading="lazy" /></span>' +
               '<span class="library-card__border" aria-hidden="true"></span>' +
               '<button class="library-action library-card__action" type="button" :aria-label="actionLabel(g.action)"><i :class="actionIcon(g.action)"></i></button>' +
               '<span v-if="g.collection" class="library-card__badge">Collection</span>' +
