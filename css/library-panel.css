@@ -73,7 +73,7 @@
 .library-panel__icon-btn:hover { background: var(--neutral-variant-2-hover); }
 .library-panel__icon-btn:active { background: var(--neutral-variant-2-pressed); }
 
-/* ---- 3. 스크롤 영역 — 버튼 그룹 아래 전부. 하단 TOP(80)에 가리지 않게 그만큼 여백 ---- */
+/* ---- 3. 스크롤 영역 — 구분선 아래 전부 (안내 박스·구분선은 고정). 하단 TOP(80)에 가리지 않게 그만큼 여백 ---- */
 .library-panel__body {
   position: relative;
   flex: 1 1 auto;
@@ -91,7 +91,7 @@
 .library-panel__scroll::-webkit-scrollbar { display: none; }
 
 /* 그룹 없음 (component/game_group/그룹없음) — 위아래 16, 박스 56 · 둥글기 8 */
-.library-panel__empty { padding: 1.6rem 0; }
+.library-panel__empty { flex: 0 0 auto; padding: 1.6rem 0; }
 .library-panel__empty-box {
   display: flex;
   align-items: center;
@@ -105,7 +105,7 @@
 .library-panel__empty-box i { flex: 0 0 auto; font-size: 2.4rem; }
 .library-panel__empty-box p { margin: 0; }
 
-.library-panel__divider { height: 1px; background: var(--inverse-elevation-3); }
+.library-panel__divider { flex: 0 0 auto; height: 1px; background: var(--inverse-elevation-3); }
 
 /* 게임 그룹 목록 — 위아래 16. 패널 그룹은 타이틀 ~ 목록 간격 4 (사이드바는 2) */
 .library-panel__list { padding: 1.6rem 0; }

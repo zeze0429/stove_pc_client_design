@@ -190,22 +190,23 @@ var LibraryPanel = {
         '<button class="library-panel__icon-btn" type="button" aria-label="검색" data-name="btn/icon"><i class="ic-v2-navigation-search-line"></i></button>' +
       '</div>' +
 
-      // 스크롤 영역
+      // 그룹 없음 — 고정 (스크롤 영역 밖). 보유게임이 없어도 그룹은 만들 수 있어 항상 이 안내를 둔다
+      '<div v-if="!groups.length" class="library-panel__empty" data-name="component/game_group/그룹없음">' +
+        '<div class="library-panel__empty-box">' +
+          '<i class="ic-v2-content-folder-add-fill" aria-hidden="true"></i>' +
+          '<p class="stds-cap1 fw-medium">그룹으로 나만의 라이브러리를<br />만들어 보세요.</p>' +
+        '</div>' +
+      '</div>' +
+      // 구분선 — 스크롤 영역의 윗변
+      '<div v-if="ungrouped.length" class="library-panel__divider" data-name="element/div"></div>' +
+
+      // 스크롤 영역 — 구분선 아래부터
       '<div class="library-panel__body">' +
         '<div ref="scrollEl" class="library-panel__scroll" @scroll="onScroll">' +
           '<div ref="hoverIndicator" class="gnb-hover-indicator" aria-hidden="true"></div>' +
 
-          // 그룹 없음 — 보유게임이 없어도 그룹은 만들 수 있어 항상 이 안내를 둔다
-          '<div v-if="!groups.length" class="library-panel__empty" data-name="component/game_group/그룹없음">' +
-            '<div class="library-panel__empty-box">' +
-              '<i class="ic-v2-content-folder-add-fill" aria-hidden="true"></i>' +
-              '<p class="stds-cap1 fw-medium">그룹으로 나만의 라이브러리를<br />만들어 보세요.</p>' +
-            '</div>' +
-          '</div>' +
-
-          // 그룹 없는 게임 — 보유게임이 있을 때만, 구분선 아래
+          // 그룹 없는 게임 — 보유게임이 있을 때만
           '<template v-if="ungrouped.length">' +
-            '<div class="library-panel__divider" data-name="element/div"></div>' +
             '<div class="library-panel__list" data-name="list">' +
               '<section class="game-group" :class="{ \'is-collapsed\': isCollapsed(\'ungrouped\') }" data-name="component/game_group">' +
                 '<div class="game-group__title" data-name="component/game_group/title">' +
