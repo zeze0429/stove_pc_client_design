@@ -97,7 +97,7 @@
 .library-quick__border {
   position: absolute;
   inset: 0;
-  border: 0.1rem solid var(--stove-white-04); /* Figma glob white/4 */
+  border: 0.1rem solid var(--inverse-variant-3);
   border-radius: inherit;
   pointer-events: none;
 }
@@ -173,7 +173,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  border: 0.1rem solid var(--stove-white-04);
+  border: 0.1rem solid var(--inverse-variant-3);
   border-radius: inherit;
 }
 .library-quick__text { display: flex; flex-direction: column; min-width: 0; }
@@ -397,7 +397,7 @@
 .library-card__border {
   position: absolute;
   inset: 0;
-  border: 0.1rem solid var(--stove-white-04); /* Figma glob white/4 */
+  border: 0.1rem solid var(--inverse-variant-3);
   border-radius: inherit;
   pointer-events: none;
 }
