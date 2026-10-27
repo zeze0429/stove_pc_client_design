@@ -17,10 +17,11 @@ var LIBRARY_QUICK_STEP = 4; // 화살표 한 번에 넘기는 카드 수 (레퍼
 
 // 빠른 실행 게임 광고 (Figma 2026_웹전환 11856:623971) — 두 번째 자리에 끼워 넣는 카드.
 // 게임 개수(최대 20, 타이틀 옆 숫자)에는 포함하지 않는다. 카드 모양은 게임 카드와 같고
-// 우측 상단 AD 뱃지 + 플레이 시간 자리에 광고 문구, 버튼은 설치.
+// 우측 상단 AD 뱃지 + 플레이 시간 자리에 광고 문구, 버튼은 action(play · install).
 var LIBRARY_QUICK_AD_SLOT = 1; // 0부터 — 두 번째 카드
-// 광고 게임은 보유하지 않은 게임 — 스토브게임(사이드바 고정 그룹)은 빠른 실행에 넣지 않는다.
-var LIBRARY_QUICK_AD = { game: 'secret-curriculum', message: '새로운 게임을 만나보세요!', action: 'install' };
+// 스토브게임(사이드바 고정 그룹)은 광고로도 빠른 실행에 넣지 않는다.
+// 광고 게임은 일반 카드 목록에서 빠진다(같은 게임이 두 번 나오지 않게).
+var LIBRARY_QUICK_AD = { game: 'store-30', message: '지금 바로 플레이해보세요!', action: 'play' };
 
 // 보유게임 — action: play(실행) · update(업데이트) · install(설치)
 //   played: 마지막 플레이가 몇 분 전인지 (없으면 플레이 기록 없음), total: 총 플레이 시간
@@ -165,7 +166,7 @@ var LibraryMain = {
     // 빠른 실행 — 플레이 기록이 있는 정식 게임(DLC · 데모 · 합본팩 · 부가 콘텐츠 제외)을 최근 순으로 최대 20개
     quick: function () {
       return this.owned
-        .filter(function (g) { return g.type === 'game' && g.played != null; })
+        .filter(function (g) { return g.type === 'game' && g.played != null && g.id !== LIBRARY_QUICK_AD.game; })
         .sort(function (a, b) { return a.played - b.played; })
         .slice(0, LIBRARY_QUICK_COUNT);
     },
