@@ -1,0 +1,149 @@
+/* =============================================================
+   라이브러리 우측패널 — 나의 게임 그룹
+   Figma 2026_웹전환 1131:5779 "라이브러리 > 우측패널" (layout/library/pannel)
+   패널 틀(폭 280 · 배경 · 유틸리티 바/공지 띠 아래 시작)은 css/dashboard.css .client-panel.
+   게임 목록 행(component/game_group)은 사이드바와 같은 컴포넌트라 css/gnb.css
+   .game-group* · .gnb-hover-indicator · 툴팁을 그대로 쓰고, 다른 점만 여기서 덮는다.
+   ============================================================= */
+
+/* 패널 자체는 스크롤하지 않는다 — 헤더는 고정, 아래 .library-panel__scroll만 스크롤 */
+.app--panel-always .client-panel:has(> .library-panel) { overflow: hidden; }
+
+.library-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0 2rem;
+}
+
+/* ---- 1. 헤더 (title) — 위 52 · 아래 24, 아이콘 18 + 간격 8 ---- */
+.library-panel__title {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start; /* Figma items-start — 아이콘 18 · 글자 20 윗변 맞춤 */
+  gap: 0.8rem;
+  padding: 5.2rem 0 2.4rem;
+}
+.library-panel__title > i { font-size: 1.8rem; color: var(--on-surface-elevation-4); }
+.library-panel__title-text { display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
+.library-panel__title-name { color: var(--on-surface-elevation-1); }
+/* 그룹 수 — 0이면 placeholder, 하나라도 있으면 brand-primary */
+.library-panel__title-count { color: var(--placeholder); }
+.library-panel__title-count.is-active { color: var(--brand-primary-enabled); }
+
+/* ---- 2. 버튼 그룹 (btn/create group) — 그룹 만들기(남는 폭) + 아이콘 버튼 32 x2, 간격 8 ---- */
+.library-panel__actions {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 0.8rem;
+}
+.library-panel__create {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  height: 3.2rem;
+  padding: 0 1.2rem;
+  border-radius: var(--radius-lg);
+  background: var(--neutral-variant-1);
+  color: var(--stove-white); /* Figma glob white — 테마 상관없이 */
+  cursor: pointer;
+  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.library-panel__create i { font-size: 1.6rem; }
+.library-panel__create:not(:disabled):hover { background: var(--neutral-variant-1-hover); }
+.library-panel__create:not(:disabled):active { background: var(--neutral-variant-1-pressed); }
+.library-panel__icon-btn {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  padding: 0;
+  border-radius: var(--radius-lg);
+  background: var(--neutral-variant-2);
+  color: var(--on-surface-elevation-2);
+  cursor: pointer;
+  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.library-panel__icon-btn i { font-size: 1.6rem; }
+.library-panel__icon-btn:hover { background: var(--neutral-variant-2-hover); }
+.library-panel__icon-btn:active { background: var(--neutral-variant-2-pressed); }
+
+/* ---- 3. 스크롤 영역 — 버튼 그룹 아래 전부. 하단 TOP(80)에 가리지 않게 그만큼 여백 ---- */
+.library-panel__body {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.library-panel__scroll {
+  position: relative; /* 호버 인디케이터 좌표 기준 */
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: none;
+  scrollbar-width: none;
+  padding-bottom: 8rem;
+}
+.library-panel__scroll::-webkit-scrollbar { display: none; }
+
+/* 그룹 없음 (component/game_group/그룹없음) — 위아래 16, 박스 56 · 둥글기 8 */
+.library-panel__empty { padding: 1.6rem 0; }
+.library-panel__empty-box {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  height: 5.6rem;
+  padding: 0 1.2rem;
+  border-radius: var(--radius-lg);
+  background: var(--inverse-elevation-6);
+  color: var(--inverse-elevation-1);
+}
+.library-panel__empty-box i { flex: 0 0 auto; font-size: 2.4rem; }
+.library-panel__empty-box p { margin: 0; }
+
+.library-panel__divider { height: 1px; background: var(--inverse-elevation-3); }
+
+/* 게임 그룹 목록 — 위아래 16. 패널 그룹은 타이틀 ~ 목록 간격 4 (사이드바는 2) */
+.library-panel__list { padding: 1.6rem 0; }
+.library-panel .game-group { gap: 0.4rem; }
+
+/* 커스텀 스크롤바 — 패널 오른쪽 벽에서 8, 패널에 마우스가 있을 때만 (썸 색은 gnb.css 공통 규칙) */
+.library-panel__scrollbar {
+  position: absolute;
+  top: 0;
+  right: -1.2rem; /* 패널 좌우 여백 20 안쪽 기준 → 벽에서 8 */
+  bottom: 2rem;
+  width: 0.4rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 6;
+}
+.library-panel__scrollbar.is-visible { opacity: 1; }
+
+/* TOP (component/GNB/bottom) — 패널 폭 전체 80, 바닥에서 18 위에 36 이미지.
+   배경은 패널색 → 투명 그라데이션 (Figma 68.125% → 97.727%) */
+.library-panel__top {
+  position: absolute;
+  left: -2rem;
+  right: -2rem;
+  bottom: 0;
+  z-index: 20; /* 스프링 인디케이터(transform) 컴포지팅 레이어보다 위 — Figma "TOP 버튼 z-index" */
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 8rem;
+  padding: 0 0 1.8rem;
+  background: linear-gradient(0deg, var(--client-panel-bg) 68.125%, transparent 97.727%);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.library-panel__top.is-visible { opacity: 1; pointer-events: auto; }
+.library-panel__top:hover .gnb-top-btn__img,
+.library-panel__top:active .gnb-top-btn__img { opacity: 0.5; }

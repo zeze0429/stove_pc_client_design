@@ -25,8 +25,9 @@ var LIBRARY_QUICK_AD = { game: 'store-30', message: '지금 바로 플레이해�
 
 // 보유게임 — action: play(실행) · update(업데이트) · install(설치)
 //   played: 마지막 플레이가 몇 분 전인지 (없으면 플레이 기록 없음), total: 총 플레이 시간
+//   badges: 우측패널 게임 목록 뱃지 ['link', 'multiplay'] (사이드바와 같은 규칙)
 var LIBRARY_OWNED = [
-  { id: 'atom-rpg', action: 'play', collection: true, played: 60, total: '총 172시간 35분' },
+  { id: 'atom-rpg', action: 'play', collection: true, played: 60, total: '총 172시간 35분', badges: ['link', 'multiplay'] },
   { id: 'ghostrunner', action: 'update' },
   { id: 'deluvian-winds', action: 'play', played: 10, total: '총 24시간 30분' },
   { id: 'scarf', action: 'install' },
