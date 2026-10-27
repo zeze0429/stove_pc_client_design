@@ -107,8 +107,9 @@
 
 .library-panel__divider { flex: 0 0 auto; height: 1px; background: var(--inverse-elevation-3); }
 
-/* 게임 그룹 목록 — 위아래 16. 패널 그룹은 타이틀 ~ 목록 간격 4 (사이드바는 2) */
-.library-panel__list { padding: 1.6rem 0; }
+/* 게임 그룹 목록 — 위 16. 아래는 스크롤 영역 여백(TOP 80)만 — 마지막 항목 ~ 바닥 80, 사이드바와 같게.
+   패널 그룹은 타이틀 ~ 목록 간격 4 (사이드바는 2) */
+.library-panel__list { padding: 1.6rem 0 0; }
 .library-panel .game-group { gap: 0.4rem; }
 
 /* 커스텀 스크롤바 — 패널 오른쪽 벽에서 8, 패널에 마우스가 있을 때만 (썸 색은 gnb.css 공통 규칙) */
