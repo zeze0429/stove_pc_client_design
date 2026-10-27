@@ -78,7 +78,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  border: 1px solid var(--inverse-variant-3);
+  border: 1px solid var(--stove-white-04); /* 팝업은 테마 상관없이 글로벌 고정 */
   border-radius: inherit;
   pointer-events: none;
 }
@@ -89,7 +89,6 @@
   background: var(--stove-white-04);
   color: var(--stove-white-04);
 }
-.pcbang-card__thumb--empty::after { border-color: var(--stove-white-04); }
 .pcbang-card__thumb--empty i { font-size: 2rem; }
 
 .pcbang-card__info { min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; }
