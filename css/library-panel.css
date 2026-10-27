@@ -119,7 +119,7 @@
   right: -1.2rem; /* 패널 좌우 여백 20 안쪽 기준 → 벽에서 8 */
   bottom: 2rem; /* 패널 하단에서 20 — 사이드바와 동일 */
   width: 0.4rem;
-  pointer-events: none;
+  pointer-events: auto; /* TOP 버튼과 독립 — 사이드바 .gnb-scrollbar와 같은 이유 */
   opacity: 0;
   transition: opacity 0.15s;
   z-index: 21; /* TOP 버튼 영역(20) 위 — 스크롤바가 그라데이션에 가리지 않게 */

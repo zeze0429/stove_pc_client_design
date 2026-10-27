@@ -173,7 +173,9 @@ body { margin: 0; }
   right: 0.8rem;    /* GNB 우측벽에서 8px */
   bottom: 2rem;      /* GNB 하단에서 20px — 라이브러리 우측패널과 동일 */
   width: 0.4rem;
-  pointer-events: none;
+  /* 트랙이 마우스를 직접 받는다 — none이면 아래 TOP 버튼으로 통과해 TOP 호버가 같이 켜짐.
+     휠은 JS(@wheel)로 목록에 넘겨 스크롤은 그대로 된다 */
+  pointer-events: auto;
   opacity: 0;
   transition: opacity 0.15s;
   z-index: 21; /* TOP 버튼(.gnb-top-btn 20) 위 — 스크롤바가 그라데이션에 가리지 않게 */

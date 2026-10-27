@@ -979,7 +979,7 @@ var GnbComponent = {
 
       '<span v-if="dlPulse" :key="dlPulse.key" class="download-queue__pulse" aria-hidden="true" ' +
         ':style="{ left: dlPulse.left + \'px\', top: dlPulse.top + \'px\' }"></span>' +
-      '<div ref="track" class="gnb-scrollbar" :class="{ \'is-visible\': showScrollbar }" aria-hidden="true">' +
+      '<div ref="track" class="gnb-scrollbar" :class="{ \'is-visible\': showScrollbar }" @wheel.prevent="$refs.scrollEl.scrollTop += $event.deltaY" aria-hidden="true">' +
         '<div class="gnb-scrollbar__thumb" :style="thumbStyle"></div>' +
       '</div>' +
 

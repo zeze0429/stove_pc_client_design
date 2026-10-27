@@ -245,7 +245,7 @@ var LibraryPanel = {
           '</template>' +
         '</div>' +
 
-        '<div ref="track" class="library-panel__scrollbar" :class="{ \'is-visible\': showScrollbar }" aria-hidden="true">' +
+        '<div ref="track" class="library-panel__scrollbar" :class="{ \'is-visible\': showScrollbar }" @wheel.prevent="$refs.scrollEl.scrollTop += $event.deltaY" aria-hidden="true">' +
           '<div class="gnb-scrollbar__thumb" :style="thumbStyle"></div>' +
         '</div>' +
         '<button class="library-panel__top" :class="{ \'is-visible\': showTopBtn }" type="button" aria-label="맨 위로" @click="scrollToTop" data-name="component/GNB/bottom">' +
