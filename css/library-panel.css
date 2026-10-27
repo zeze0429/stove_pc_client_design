@@ -122,7 +122,7 @@
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.15s;
-  z-index: 6;
+  z-index: 21; /* TOP 버튼 영역(20) 위 — 스크롤바가 그라데이션에 가리지 않게 */
 }
 .library-panel__scrollbar.is-visible { opacity: 1; }
 
