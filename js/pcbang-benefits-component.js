@@ -74,8 +74,9 @@ var PcbangBenefitsDialog = {
           '<img v-if="item.bg" class="pcbang-card__bg" :src="item.bg" alt="" aria-hidden="true" />' +
           '<p v-if="item.title" class="pcbang-card__title stds-title8 fw-medium">{{ item.title }}</p>' +
           '<div class="pcbang-card__game">' +
-            '<img v-if="item.thumb" class="pcbang-card__thumb" :src="item.thumb" alt="" ' +
-              'data-name="component/thumnail/game" />' +
+            '<span v-if="item.thumb" class="pcbang-card__thumb" data-name="component/thumnail/game">' +
+              '<img :src="item.thumb" alt="" />' +
+            '</span>' +
             '<span v-else class="pcbang-card__thumb pcbang-card__thumb--empty" aria-hidden="true">' +
               '<i class="ic-v2-stove-s-fill"></i>' +
             '</span>' +
