@@ -160,20 +160,33 @@ var LibraryMain = {
       quickActive: 0, // 넓게 펼쳐진 카드 — 마우스를 올린 카드, 없으면 지금 페이지 첫 카드
       view: 'grid',
       query: '',
+      quickAd: protoSettingsRead().libraryQuickAd, // 하단 메뉴패널 > 빠른 실행 > 광고
     };
+  },
+  mounted: function () {
+    var vm = this;
+    protoSettingsSubscribe(function (s) { vm.quickAd = s.libraryQuickAd; });
+  },
+  watch: {
+    // 광고를 켜고 끄면 카드 수가 바뀐다 — 없어진 페이지에 머물지 않게
+    quickPages: function (n) {
+      if (this.quickPage > n - 1) this.goQuick(n - 1 - this.quickPage);
+    },
   },
   computed: {
     // 빠른 실행 — 플레이 기록이 있는 정식 게임(DLC · 데모 · 합본팩 · 부가 콘텐츠 제외)을 최근 순으로 최대 20개
+    // 광고가 켜져 있으면 광고 게임은 일반 카드에서 빠진다
     quick: function () {
+      var adGame = this.quickAd ? LIBRARY_QUICK_AD.game : null;
       return this.owned
-        .filter(function (g) { return g.type === 'game' && g.played != null && g.id !== LIBRARY_QUICK_AD.game; })
+        .filter(function (g) { return g.type === 'game' && g.played != null && g.id !== adGame; })
         .sort(function (a, b) { return a.played - b.played; })
         .slice(0, LIBRARY_QUICK_COUNT);
     },
     // 화면에 놓이는 카드 — 게임 목록 두 번째 자리에 광고 카드를 끼운다
     quickCards: function () {
       var cards = this.quick.map(function (g) { return Object.assign({ key: g.id, action: 'play' }, g); });
-      var ad = gameInfo(LIBRARY_QUICK_AD.game);
+      var ad = this.quickAd && gameInfo(LIBRARY_QUICK_AD.game);
       if (ad && cards.length) {
         cards.splice(Math.min(LIBRARY_QUICK_AD_SLOT, cards.length), 0, Object.assign({}, ad, {
           key: 'ad-' + ad.id, ad: true, message: LIBRARY_QUICK_AD.message, action: LIBRARY_QUICK_AD.action,
