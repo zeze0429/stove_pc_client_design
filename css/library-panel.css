@@ -17,13 +17,14 @@
   padding: 0 2rem;
 }
 
-/* ---- 1. 헤더 (title) — 위 52 · 아래 24, 아이콘 18 + 간격 8 ---- */
+/* ---- 1. 헤더 (title) — 위 24 · 아래 24, 아이콘 18 + 간격 8.
+   위 여백은 페이지 타이틀(.client-page-title margin-top 24)에 맞춘다 (Figma는 52, 사용자 요청으로 조정) ---- */
 .library-panel__title {
   flex: 0 0 auto;
   display: flex;
   align-items: flex-start; /* Figma items-start — 아이콘 18 · 글자 20 윗변 맞춤 */
   gap: 0.8rem;
-  padding: 5.2rem 0 2.4rem;
+  padding: 2.4rem 0;
 }
 .library-panel__title > i { font-size: 1.8rem; color: var(--on-surface-elevation-4); }
 .library-panel__title-text { display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
