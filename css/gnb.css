@@ -171,7 +171,7 @@ body { margin: 0; }
   position: absolute;
   top: 7.6rem;
   right: 0.8rem;    /* GNB 우측벽에서 8px */
-  bottom: 8rem;      /* TOP 버튼 영역(80) 위에서 끝남 — 라이브러리 우측패널과 동일 */
+  bottom: 2rem;      /* GNB 하단에서 20px — 라이브러리 우측패널과 동일 */
   width: 0.4rem;
   pointer-events: none;
   opacity: 0;
