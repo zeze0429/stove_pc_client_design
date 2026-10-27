@@ -195,7 +195,8 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.library-quick__foot { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; }
+/* 플레이 시간 · 광고 문구는 실행 버튼 아래선에 맞춤 */
+.library-quick__foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 0.8rem; }
 .library-quick__meta {
   display: flex;
   align-items: center;
