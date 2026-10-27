@@ -161,6 +161,7 @@ var LibraryMain = {
       view: 'grid',
       query: '',
       quickAd: protoSettingsRead().libraryQuickAd, // 하단 메뉴패널 > 빠른 실행 > 광고
+      arrowRest: 0, // 방금 누른 화살표(-1 · 1) — 마우스가 나갈 때까지 hover 배경을 끈다
     };
   },
   mounted: function () {
@@ -225,6 +226,11 @@ var LibraryMain = {
       this.quickPage = next;
       this.quickActive = next * LIBRARY_QUICK_STEP;
     },
+    // 화살표를 누르면 넘기고, 마우스가 위에 있어도 기본 상태로 돌려 둔다
+    pressArrow: function (delta) {
+      this.goQuick(delta);
+      this.arrowRest = delta;
+    },
     hoverQuick: function (i) {
       if (Math.floor(i / LIBRARY_QUICK_STEP) === this.quickPage) this.quickActive = i;
     },
@@ -240,8 +246,8 @@ var LibraryMain = {
         '<div class="library-section__head">' +
           '<h2 class="library-section__title">빠른 실행<span>{{ quick.length }}</span></h2>' +
           '<div class="library-quick__nav">' +
-            '<button class="library-quick__arrow" type="button" aria-label="이전" :disabled="quickPage === 0" @click="goQuick(-1)"><i class="ic-v2-control-arrow-left-line"></i></button>' +
-            '<button class="library-quick__arrow" type="button" aria-label="다음" :disabled="quickPage >= quickPages - 1" @click="goQuick(1)"><i class="ic-v2-control-arrow-right-line"></i></button>' +
+            '<button class="library-quick__arrow" :class="{ \'is-rest\': arrowRest === -1 }" type="button" aria-label="이전" :disabled="quickPage === 0" @click="pressArrow(-1)" @mouseleave="arrowRest = 0"><i class="ic-v2-control-arrow-left-line"></i></button>' +
+            '<button class="library-quick__arrow" :class="{ \'is-rest\': arrowRest === 1 }" type="button" aria-label="다음" :disabled="quickPage >= quickPages - 1" @click="pressArrow(1)" @mouseleave="arrowRest = 0"><i class="ic-v2-control-arrow-right-line"></i></button>' +
           '</div>' +
         '</div>' +
         '<div class="library-quick__viewport">' +

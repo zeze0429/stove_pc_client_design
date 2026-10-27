@@ -45,7 +45,8 @@
 }
 .library-quick__arrow i { display: block; font-size: 2rem; line-height: 1; }
 /* 상태값 (Figma 11735:58480) — 24 영역 모서리 4, hover/pressed는 interaction 토큰 */
-.library-quick__arrow:not(:disabled):hover { background: var(--interaction-hover); }
+/* 누르고 나면 기본으로 — 마우스가 나갔다 다시 들어올 때까지 hover를 끈다(is-rest) */
+.library-quick__arrow:not(:disabled):not(.is-rest):hover { background: var(--interaction-hover); }
 .library-quick__arrow:not(:disabled):active { background: var(--interaction-pressed); }
 .library-quick__arrow:disabled { color: var(--inverse-elevation-2); cursor: default; }
 .library-quick__viewport {
