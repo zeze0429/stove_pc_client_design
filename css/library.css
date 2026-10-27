@@ -45,8 +45,9 @@
 }
 .library-quick__arrow i { display: block; font-size: 2rem; line-height: 1; }
 /* 상태값 (Figma 11735:58480) — 24 영역 모서리 4, hover/pressed는 interaction 토큰 */
-/* 누르고 나면 기본으로 — 마우스가 나갔다 다시 들어올 때까지 hover를 끈다(is-rest) */
-.library-quick__arrow:not(:disabled):not(.is-rest):hover { background: var(--interaction-hover); }
+/* 기본 → hover → pressed → (떼면) 기본. 떼고 나면 마우스가 나갔다 다시 들어올 때까지 hover를 끈다(is-rest).
+   :not( , )로 묶어 hover와 pressed 우선순위를 같게 둔다 — pressed가 뒤에 있어 누르는 동안 이긴다 */
+.library-quick__arrow:not(:disabled, .is-rest):hover { background: var(--interaction-hover); }
 .library-quick__arrow:not(:disabled):active { background: var(--interaction-pressed); }
 .library-quick__arrow:disabled { color: var(--inverse-elevation-2); cursor: default; }
 .library-quick__viewport {
