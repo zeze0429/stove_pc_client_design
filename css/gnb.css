@@ -171,7 +171,7 @@ body { margin: 0; }
   position: absolute;
   top: 7.6rem;
   right: 0.8rem;    /* GNB 우측벽에서 8px */
-  bottom: 2rem;      /* GNB 하단에서 20px */
+  bottom: 8rem;      /* TOP 버튼 영역(80) 위에서 끝남 — 라이브러리 우측패널과 동일 */
   width: 0.4rem;
   pointer-events: none;
   opacity: 0;
@@ -734,9 +734,10 @@ body { margin: 0; }
   align-items: center;
   justify-content: flex-end;
   gap: 0.2rem;
-  /* 버튼 영역 전체 높이 80px 고정. padding-bottom은 이미지가 프레임 하단에
-     너무 붙어 보이지 않도록 +6px 추가. */
-  padding: 22px 0 calc(var(--spacing-12) + 6px);
+  /* 버튼 영역 전체 높이 80px 고정 (스크롤바·목록 하단 여백과 같은 선 — 우측패널과 동일).
+     padding-bottom은 이미지가 프레임 하단에 너무 붙어 보이지 않도록 +6px 추가. */
+  height: 8rem;
+  padding: 0 0 calc(var(--spacing-12) + 6px);
   background: linear-gradient(180deg, transparent, var(--background-variant-2) 35%);
   color: var(--on-surface-elevation-3);
   cursor: pointer;
