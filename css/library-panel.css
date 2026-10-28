@@ -111,6 +111,21 @@
 .library-panel__divider-wrap { flex: 0 0 auto; }
 /* 그룹이 하나라도 있으면 안내 박스가 빠지고 버튼 그룹 ~ 구분선 20 (Figma ④) */
 .library-panel__divider-wrap.has-gap { padding-top: 2rem; }
+/* 삭제 안내(42)가 버튼 그룹(32) 자리에 있을 때 — 구분선 위치가 그대로이도록 10만 띄운다 */
+.library-panel__divider-wrap.has-notice-gap { padding-top: 1rem; }
+
+/* 그룹 삭제 안내 — 버튼 그룹 자리, 3초 (사용자 가이드 이미지) */
+.library-panel__notice {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  height: 4.2rem;
+  padding: 0 1.6rem;
+  border: 1px solid var(--inverse-elevation-3);
+  border-radius: var(--radius-lg);
+  background: var(--neutral-variant-3);
+  color: var(--on-surface-elevation-3);
+}
 .library-panel__divider { height: 1px; background: var(--inverse-elevation-3); }
 
 /* 게임 그룹 목록 — 위 16. 아래는 스크롤 영역 여백(TOP 80)만 — 마지막 항목 ~ 바닥 80, 사이드바와 같게.
@@ -308,8 +323,9 @@
 }
 .library-group__btn i { font-size: 1.4rem; }
 .library-group__btn:hover { background: var(--interaction-hover); color: var(--on-surface-elevation-2); }
-.library-group__btn:active,
-.library-group__btn.is-selected { background: var(--interaction-pressed); color: var(--on-surface-elevation-2); }
+.library-group__btn:active { background: var(--interaction-pressed); color: var(--on-surface-elevation-2); }
+/* 그룹 메뉴가 열려 있는 동안 (selected) */
+.library-group__btn.is-selected { background: var(--interaction-selected); color: var(--on-surface-elevation-2); }
 
 /* 게임 없는 그룹의 게임 추가 버튼 (component/game_group/btn_게임 추가) — 56 높이, 보더 inverse-elevation-3 */
 .library-group__add-box {

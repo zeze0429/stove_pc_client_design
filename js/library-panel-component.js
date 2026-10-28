@@ -148,7 +148,8 @@ var LibraryPanel = {
   data: function () {
     return {
       owned: LIBRARY_OWNED.map(libraryGame),
-      groups: [], // { id, title, gameIds: [] } — 만든 순서대로 (그룹 없는 게임 위)
+      groups: [], // { id, title, gameIds: [] } — 새 그룹이 맨 위
+      deletedNotice: false, // 그룹 삭제 직후 버튼 그룹 자리에 "그룹이 삭제되었습니다." (3초)
       collapsed: {}, // 그룹 id → 접힘 여부 ('ungrouped' = 그룹 없는 게임)
       creating: false, // 그룹 만들기 입력칸이 열려 있는지
       renamingId: null, // 이름 변경 중인 그룹 id
@@ -240,13 +241,14 @@ var LibraryPanel = {
       if (!this.canCreate) return;
       this.closeMenu();
       this.renamingId = null;
+      this.deletedNotice = false;
       this.creating = true;
     },
     createGroup: function (name) {
       var id = 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-      this.groups.push({ id: id, title: name, gameIds: [] });
+      this.groups.unshift({ id: id, title: name, gameIds: [] });
       this.creating = false;
-      // 새 그룹은 그룹 목록 맨 끝(그룹 없는 게임 바로 위) — 화면 밖이면 보이는 곳까지 스크롤
+      // 새 그룹은 그룹 목록 맨 위 — 화면 밖이면 보이는 곳까지 스크롤
       this.$nextTick(function () {
         var el = this.$el.querySelector('[data-group-id="' + id + '"]');
         if (el) el.scrollIntoView({ block: 'nearest' });
@@ -268,8 +270,12 @@ var LibraryPanel = {
       this.renamingId = null;
     },
     deleteGroup: function (id) {
+      var self = this;
       this.groups = this.groups.filter(function (g) { return g.id !== id; });
       delete this.collapsed[id];
+      this.deletedNotice = true;
+      clearTimeout(this._noticeTimer);
+      this._noticeTimer = setTimeout(function () { self.deletedNotice = false; }, 3000);
       this.$nextTick(this.updateThumb);
     },
 
@@ -487,6 +493,7 @@ var LibraryPanel = {
     this.updateThumb();
   },
   unmounted: function () {
+    clearTimeout(this._noticeTimer);
     document.removeEventListener('mouseup', this._onRelease);
     document.removeEventListener('mousemove', this.onDocMouseMove);
     document.removeEventListener('mouseleave', this.onDocMouseLeave);
@@ -516,6 +523,8 @@ var LibraryPanel = {
           '<li>그룹은 최대 ' + LIBRARY_GROUP_MAX + '개까지 만들 수 있어요.</li>' +
         '</ul>' +
       '</div>' +
+      // 그룹 삭제 직후 — 버튼 그룹 자리에 안내 (3초 뒤 버튼으로 돌아온다)
+      '<div v-else-if="deletedNotice" class="library-panel__notice stds-text4 fw-medium" role="status">그룹이 삭제되었습니다.</div>' +
       '<div v-else class="library-panel__actions" data-name="btn/create group">' +
         '<button class="library-panel__create stds-btn3 fw-medium" type="button" :disabled="!canCreate" @click="startCreate">' +
           '<i class="ic-v2-control-add-line" aria-hidden="true"></i>그룹 만들기' +
@@ -533,7 +542,8 @@ var LibraryPanel = {
         '</div>' +
       '</div>' +
       // 구분선 — 스크롤 영역의 윗변. 그룹이 있으면 버튼 그룹과 20 띄운다 (안내 박스가 없어서)
-      '<div v-if="showDivider" class="library-panel__divider-wrap" :class="{ \'has-gap\': groups.length && !creating }">' +
+      '<div v-if="showDivider" class="library-panel__divider-wrap" ' +
+        ':class="{ \'has-gap\': groups.length && !creating && !deletedNotice, \'has-notice-gap\': deletedNotice && groups.length && !creating }">' +
         '<div class="library-panel__divider" data-name="element/div"></div>' +
       '</div>' +
 
