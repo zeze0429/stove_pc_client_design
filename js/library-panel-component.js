@@ -189,8 +189,9 @@ var LibraryPanel = {
       var g = this.groups.find(function (x) { return x.id === this.titleTip.id; }, this);
       return g ? g.title : '';
     },
-    // 구분선 — 그룹이나 그룹 없는 게임이 하나라도 있을 때 (둘 다 없으면 아래가 비어 있다)
-    showDivider: function () { return this.groups.length > 0 || this.ungrouped.length > 0; },
+    // 구분선 · 그룹 목록 — 그룹이나 그룹 없는 게임이 하나라도 있을 때.
+    // 그룹 만들기 입력 중에는 구분선부터 아래 목록 전부 숨긴다 (Figma ③ "그룹 목록 미노출")
+    showList: function () { return !this.creating && (this.groups.length > 0 || this.ungrouped.length > 0); },
     // 그룹 메뉴 항목 (Figma ④ 그룹 메뉴 = 우클릭 메뉴). 그룹 없는 게임은 일부만 (화면 보기 · 접기)
     menuItems: function () {
       if (!this.menu) return [];
@@ -211,6 +212,10 @@ var LibraryPanel = {
         { action: 'collapseAll', label: '모든 그룹 접기' },
       ]);
     },
+  },
+  watch: {
+    // 입력 중엔 목록이 숨었다가 돌아오니 스크롤바 길이를 다시 잰다
+    creating: function () { this.$nextTick(this.updateThumb); },
   },
   methods: {
     isCollapsed: function (id) { return !!this.collapsed[id]; },
@@ -248,6 +253,7 @@ var LibraryPanel = {
       var id = 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
       this.groups.unshift({ id: id, title: name, gameIds: [] });
       this.creating = false;
+      this.$refs.scrollEl.scrollTop = 0;
       // 새 그룹은 그룹 목록 맨 위 — 화면 밖이면 보이는 곳까지 스크롤
       this.$nextTick(function () {
         var el = this.$el.querySelector('[data-group-id="' + id + '"]');
@@ -542,7 +548,7 @@ var LibraryPanel = {
         '</div>' +
       '</div>' +
       // 구분선 — 스크롤 영역의 윗변. 그룹이 있으면 버튼 그룹과 20 띄운다 (안내 박스가 없어서)
-      '<div v-if="showDivider" class="library-panel__divider-wrap" ' +
+      '<div v-if="showList" class="library-panel__divider-wrap" ' +
         ':class="{ \'has-gap\': groups.length && !creating && !deletedNotice, \'has-notice-gap\': deletedNotice && groups.length && !creating }">' +
         '<div class="library-panel__divider" data-name="element/div"></div>' +
       '</div>' +
@@ -552,7 +558,7 @@ var LibraryPanel = {
         '<div ref="scrollEl" class="library-panel__scroll" @scroll="onScroll">' +
           '<div ref="hoverIndicator" class="gnb-hover-indicator" aria-hidden="true"></div>' +
 
-          '<div v-if="groups.length || ungrouped.length" class="library-panel__list" data-name="게임그룹">' +
+          '<div v-if="showList" class="library-panel__list" data-name="게임그룹">' +
             // 사용자가 만든 그룹
             '<section v-for="group in groups" :key="group.id" class="game-group library-group" :data-group-id="group.id" ' +
               ':class="{ \'is-collapsed\': isCollapsed(group.id), \'is-empty\': !owned.length }" data-name="component/game_group">' +
