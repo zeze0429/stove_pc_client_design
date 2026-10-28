@@ -57,6 +57,8 @@
 .library-panel__create i { font-size: 1.6rem; }
 .library-panel__create:not(:disabled):hover { background: var(--neutral-variant-1-hover); }
 .library-panel__create:not(:disabled):active { background: var(--neutral-variant-1-pressed); }
+/* 그룹 20개 — 비활성 (Figma ④ 최대 20개, glob 토큰 그대로) */
+.library-panel__create:disabled { background: var(--stove-gray-880); color: var(--stove-gray-750); cursor: default; }
 .library-panel__icon-btn {
   flex: 0 0 auto;
   display: grid;
@@ -106,11 +108,19 @@
 .library-panel__empty-box i { flex: 0 0 auto; font-size: 2.4rem; }
 .library-panel__empty-box p { margin: 0; }
 
-.library-panel__divider { flex: 0 0 auto; height: 1px; background: var(--inverse-elevation-3); }
+.library-panel__divider-wrap { flex: 0 0 auto; }
+/* 그룹이 하나라도 있으면 안내 박스가 빠지고 버튼 그룹 ~ 구분선 20 (Figma ④) */
+.library-panel__divider-wrap.has-gap { padding-top: 2rem; }
+.library-panel__divider { height: 1px; background: var(--inverse-elevation-3); }
 
 /* 게임 그룹 목록 — 위 16. 아래는 스크롤 영역 여백(TOP 80)만 — 마지막 항목 ~ 바닥 80, 사이드바와 같게.
    패널 그룹은 타이틀 ~ 목록 간격 4 (사이드바는 2) */
-.library-panel__list { padding: 1.6rem 0 0; }
+.library-panel__list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem; /* 그룹 사이 16 */
+  padding: 1.6rem 0 0;
+}
 .library-panel .game-group { gap: 0.4rem; }
 
 /* 커스텀 스크롤바 — 패널 오른쪽 벽에서 8, 패널에 마우스가 있을 때만 (썸 색은 gnb.css 공통 규칙) */
@@ -150,3 +160,221 @@
 .library-panel__top.is-visible .gnb-top-btn__img { pointer-events: auto; cursor: pointer; }
 .library-panel__top:hover .gnb-top-btn__img,
 .library-panel__top:active .gnb-top-btn__img { opacity: 0.5; }
+
+/* =============================================================
+   2단계 — 그룹 만들기 · 그룹 타이틀 · 그룹 메뉴
+   ============================================================= */
+
+/* ---- 2-1. 그룹 만들기 입력 — 버튼 그룹 자리, 같은 높이에서 시작. 입력칸 아래 16 안내 문구, 아래 16 ---- */
+.library-panel__create-form {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  padding-bottom: 1.6rem;
+}
+.library-panel__create-field { display: flex; flex-direction: column; gap: 0.8rem; }
+.library-panel__create-label { margin: 0; color: var(--on-surface-elevation-2); }
+.library-panel__create-hints {
+  margin: 0;
+  padding-left: 1.65rem; /* Figma ms-16.5 — 불릿은 바깥 */
+  list-style: disc;
+  color: var(--inverse-elevation-1);
+}
+
+/* 그룹 이름 입력칸 (그룹 만들기 · 이름 변경 공용) — 32 높이, 아래 라인
+   inactive 1px border / activated 2px on-surface-elevation-1 / error 2px system-error */
+.group-name-input {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.8rem;
+  width: 100%;
+}
+.group-name-input__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  width: 100%;
+  height: 3.2rem;
+}
+.group-name-input__field::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--border);
+}
+.group-name-input.is-active .group-name-input__field::after { height: 2px; background: var(--on-surface-elevation-1); }
+.group-name-input.is-error .group-name-input__field::after { height: 2px; background: var(--system-error); }
+.group-name-input__control {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: inherit;
+  font-weight: 400;
+  color: var(--on-surface-elevation-2);
+  caret-color: var(--brand-primary-enabled); /* Figma 커서 brand-primary */
+}
+.group-name-input__control::placeholder { color: var(--placeholder); }
+/* 폭을 넘으면 앞쪽 글자를 흐리게 — 앞에 글자가 더 있다는 표시 */
+.group-name-input__control.is-overflow {
+  -webkit-mask-image: linear-gradient(90deg, transparent, var(--stove-black) 2.4rem);
+  mask-image: linear-gradient(90deg, transparent, var(--stove-black) 2.4rem);
+}
+/* 클리어 버튼 16 — hover 60% · press 80% (2-1 클리어버튼) */
+.group-name-input__clear {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--inverse-elevation-2);
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.group-name-input__clear i { font-size: 1.6rem; }
+.group-name-input__clear:hover { opacity: 0.6; }
+.group-name-input__clear:active { opacity: 0.8; }
+/* 에러 메시지 — 아이콘 14(위 2) + 2 간격 */
+.group-name-input__error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.2rem;
+  width: 100%;
+  margin: 0;
+  color: var(--system-error);
+}
+.group-name-input__error i { flex: 0 0 auto; margin-top: 0.2rem; font-size: 1.4rem; }
+/* 텍스트 버튼 — 취소 | 만들기(확인). 이름이 있으면 brand-primary, 없거나 에러면 placeholder.
+   hover 60% · press 80% (2-1 텍스트버튼) */
+.group-name-input__btns { display: flex; align-items: center; gap: 1.2rem; }
+.group-name-input__btn {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--on-surface-elevation-3);
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.group-name-input__btn--confirm { color: var(--brand-primary-enabled); }
+.group-name-input__btn:disabled { color: var(--placeholder); cursor: default; }
+.group-name-input__btn:not(:disabled):hover { opacity: 0.6; }
+.group-name-input__btn:not(:disabled):active { opacity: 0.8; }
+.group-name-input__btn-div { width: 1px; height: 1.4rem; background: var(--inverse-elevation-3); }
+
+/* ---- 3-1-1. 그룹 타이틀 — hover 배경 · press 배경, 우측 버튼은 호버(또는 메뉴 열림) 때만 ---- */
+.library-group__title {
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: background-color 0.12s;
+}
+.library-group__title.is-hover,
+.library-group__title.is-menu-open { background: var(--interaction-hover); }
+/* 타이틀 자체를 누를 때만 — 안의 버튼을 누를 땐 버튼만 눌린다 */
+.library-group__title:active:not(:has(button:active)) { background: var(--interaction-pressed); }
+/* 우측 버튼 18 x2, 간격 2. 이름과는 최소 28 (Figma gap 28 — 타이틀 gap 6 포함) */
+.library-group__btns {
+  display: none;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.2rem;
+  margin-left: 2.2rem;
+}
+.library-group__title.is-hover .library-group__btns,
+.library-group__title.is-menu-open .library-group__btns { display: flex; }
+.library-group__btn {
+  display: grid;
+  place-items: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--on-surface-elevation-4);
+  cursor: pointer;
+  transition: background-color 0.12s, color 0.12s;
+}
+.library-group__btn i { font-size: 1.4rem; }
+.library-group__btn:hover { background: var(--interaction-hover); color: var(--on-surface-elevation-2); }
+.library-group__btn:active,
+.library-group__btn.is-selected { background: var(--interaction-pressed); color: var(--on-surface-elevation-2); }
+
+/* 게임 없는 그룹의 게임 추가 버튼 (component/game_group/btn_게임 추가) — 56 높이, 보더 inverse-elevation-3 */
+.library-group__add-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  width: 100%;
+  height: 5.6rem;
+  padding: 0;
+  border: 1px solid var(--inverse-elevation-3);
+  border-radius: var(--radius-lg);
+  background: transparent;
+  color: var(--placeholder);
+  cursor: pointer;
+  transition: background-color 0.12s;
+}
+.library-group__add-box i { font-size: 1.4rem; }
+.library-group__add-box:hover { background: var(--interaction-hover); }
+.library-group__add-box:active { background: var(--interaction-pressed); }
+.library-group.is-collapsed .library-group__add-box { display: none; }
+
+/* 타이틀 우측 버튼 툴팁 (Tooltip/iconbtn) — 버튼 중앙 아래 2, 꼬리는 가운데. 몸통·꼬리는 뱃지 툴팁(gnb.css)과 같다 */
+.library-panel__btn-tip {
+  position: fixed;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.library-panel__btn-tip .game-group__badge-tooltip-tail { align-self: center; }
+
+/* ---- 그룹 메뉴 (컨텍스트메뉴) — 항목 32 · 좌우 12, 위아래 6, 구분선 inverse-elevation-7 ---- */
+.library-panel-menu {
+  position: fixed;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  padding: calc(0.6rem - 1px) 0; /* Figma 보더는 안쪽 — 위아래 6 · 좌우 12 안에 보더 1이 포함 */
+  border: 1px solid var(--inverse-variant-1);
+  border-radius: var(--radius-lg);
+  background: var(--surface-layer);
+  box-shadow: 0 0.4rem 1rem var(--stove-black-10); /* Figma shadow/4 */
+}
+.library-panel-menu.is-measuring { visibility: hidden; }
+.library-panel-menu__item {
+  display: flex;
+  align-items: center;
+  height: 3.2rem;
+  padding: 0 calc(1.2rem - 1px);
+  border: 0;
+  background: transparent;
+  color: var(--on-surface-elevation-3);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.library-panel-menu__item:hover { background: var(--interaction-hover); }
+.library-panel-menu__item:active { background: var(--interaction-pressed); }
+.library-panel-menu__div {
+  height: 1px;
+  margin: 0.6rem calc(1.2rem - 1px);
+  background: var(--inverse-elevation-7);
+}
