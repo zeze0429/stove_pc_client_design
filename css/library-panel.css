@@ -345,11 +345,16 @@
   background: transparent;
   color: var(--placeholder);
   cursor: pointer;
-  transition: background-color 0.12s;
+  transition: border-color 0.12s, color 0.12s;
 }
 .library-group__add-box i { font-size: 1.4rem; }
-.library-group__add-box:hover { background: var(--interaction-hover); }
-.library-group__add-box:active { background: var(--interaction-pressed); }
+/* hover (3-3 "hover(게임추가 버튼)") — 배경은 그대로, 아이콘·글자 brand-primary, 보더 brand-primary 20%.
+   Figma 보더는 토큰이 없는 rgba(252,68,32,.2)라 brand-primary를 20%로 섞어 쓴다 */
+.library-group__add-box:hover,
+.library-group__add-box:active {
+  border-color: color-mix(in srgb, var(--brand-primary-enabled) 20%, transparent);
+  color: var(--brand-primary-enabled);
+}
 .library-group.is-collapsed .library-group__add-box { display: none; }
 
 /* 타이틀 우측 버튼 툴팁 (Tooltip/iconbtn) — 버튼 아래 2. 버튼 중앙 기준이되 타이틀 행 밖으로 나가지 않게
