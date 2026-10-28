@@ -356,6 +356,8 @@
   color: var(--brand-primary-enabled);
 }
 .library-group.is-collapsed .library-group__add-box { display: none; }
+/* 이름 변경 중 — 입력칸(취소 | 확인) 바로 아래에 기존 게임 목록 · 게임 추가가 붙는다 (Figma ⑬) */
+.library-panel .library-group.is-renaming { gap: 0; }
 
 /* 타이틀 우측 버튼 툴팁 (Tooltip/iconbtn) — 버튼 아래 2. 버튼 중앙 기준이되 타이틀 행 밖으로 나가지 않게
    행 끝에 붙이고, 꼬리만 버튼 중앙을 가리킨다 (left · 꼬리 위치는 JS). 몸통·꼬리는 뱃지 툴팁(gnb.css)과 같다 */

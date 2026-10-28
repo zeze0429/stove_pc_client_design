@@ -563,20 +563,20 @@ var LibraryPanel = {
           '<div v-if="showList" class="library-panel__list" data-name="게임그룹">' +
             // 사용자가 만든 그룹
             '<section v-for="group in groups" :key="group.id" class="game-group library-group" :data-group-id="group.id" ' +
-              ':class="{ \'is-collapsed\': isCollapsed(group.id), \'is-empty\': !owned.length }" data-name="component/game_group">' +
-              // 이름 변경 중 — 타이틀이 입력칸으로 바뀌고 화살표 · 게임 목록은 숨는다 (Figma ⑬)
+              ':class="{ \'is-collapsed\': isCollapsed(group.id), \'is-empty\': !owned.length, \'is-renaming\': renamingId === group.id }" data-name="component/game_group">' +
+              // 이름 변경 중 — 타이틀(화살표 포함)만 입력칸으로 바뀐다. 아래 게임 추가 · 게임 목록은 그대로 (Figma ⑬)
               '<group-name-input v-if="renamingId === group.id" :initial="group.title" confirm-label="확인" ' +
                 ':validate="validateRename" @submit="renameGroup" @cancel="renamingId = null"></group-name-input>' +
               '<template v-else>' +
                 TITLE_TPL('group.id', 'group.title', 'group.gameIds.length', true) +
-                // 게임 없는 그룹 — 게임 추가 버튼 (Figma ④ "게임이 추가되지 않은 그룹은 게임 추가 버튼이 바로 노출")
-                '<button v-if="!group.gameIds.length && owned.length" class="library-group__add-box stds-btn3 fw-medium" type="button" data-name="component/game_group/btn_게임 추가">' +
-                  '<i class="ic-v2-control-add-circle-fill" aria-hidden="true"></i>게임 추가' +
-                '</button>' +
-                '<ul v-else-if="group.gameIds.length" class="game-group__list-group" data-name="component/game_group/list_group">' +
-                  ROW_TPL('groupGames(group)') +
-                '</ul>' +
               '</template>' +
+              // 게임 없는 그룹 — 게임 추가 버튼 (Figma ④ "게임이 추가되지 않은 그룹은 게임 추가 버튼이 바로 노출")
+              '<button v-if="!group.gameIds.length && owned.length" class="library-group__add-box stds-btn3 fw-medium" type="button" data-name="component/game_group/btn_게임 추가">' +
+                '<i class="ic-v2-control-add-circle-fill" aria-hidden="true"></i>게임 추가' +
+              '</button>' +
+              '<ul v-else-if="group.gameIds.length" class="game-group__list-group" data-name="component/game_group/list_group">' +
+                ROW_TPL('groupGames(group)') +
+              '</ul>' +
             '</section>' +
 
             // 그룹 없는 게임 — 보유게임이 있을 때만. 게임 추가 버튼은 없다 (④)
