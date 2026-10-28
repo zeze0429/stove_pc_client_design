@@ -530,7 +530,7 @@ var LibraryPanel = {
         '</ul>' +
       '</div>' +
       // 그룹 삭제 직후 — 버튼 그룹 자리에 안내 (3초 뒤 버튼으로 돌아온다)
-      '<div v-else-if="deletedNotice" class="library-panel__notice stds-text4 fw-medium" role="status">그룹이 삭제되었습니다.</div>' +
+      '<div v-else-if="deletedNotice" class="library-panel__notice stds-cap1 fw-medium" role="status">그룹이 삭제되었습니다.</div>' +
       '<div v-else class="library-panel__actions" data-name="btn/create group">' +
         '<button class="library-panel__create stds-btn3 fw-medium" type="button" :disabled="!canCreate" @click="startCreate">' +
           '<i class="ic-v2-control-add-line" aria-hidden="true"></i>그룹 만들기' +

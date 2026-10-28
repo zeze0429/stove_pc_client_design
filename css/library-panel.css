@@ -114,17 +114,18 @@
 /* 삭제 안내(42)가 버튼 그룹(32) 자리에 있을 때 — 구분선 위치가 그대로이도록 10만 띄운다 */
 .library-panel__divider-wrap.has-notice-gap { padding-top: 1rem; }
 
-/* 그룹 삭제 안내 — 버튼 그룹 자리, 3초 (사용자 가이드 이미지) */
+/* 그룹 삭제 안내 — 버튼 그룹 자리, 3초. Figma toast popup (10963:80308) — glob 토큰 그대로.
+   위아래 12 · 좌우 16(보더는 안쪽), 둥글기 8, Caption1-M */
 .library-panel__notice {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
   height: 4.2rem;
-  padding: 0 1.6rem;
-  border: 1px solid var(--inverse-elevation-3);
+  padding: 0 calc(1.6rem - 1px);
+  border: 1px solid var(--stove-white-40);
   border-radius: var(--radius-lg);
-  background: var(--neutral-variant-3);
-  color: var(--on-surface-elevation-3);
+  background: var(--stove-gray-200);
+  color: var(--stove-gray-750);
 }
 .library-panel__divider { height: 1px; background: var(--inverse-elevation-3); }
 
