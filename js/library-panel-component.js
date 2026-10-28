@@ -149,7 +149,7 @@ var LibraryPanel = {
     return {
       owned: LIBRARY_OWNED.map(libraryGame),
       groups: [], // { id, title, gameIds: [] } — 새 그룹이 맨 위
-      deletedNotice: false, // 그룹 삭제 직후 버튼 그룹 자리에 "그룹이 삭제되었습니다." (3초)
+      deletedNotice: false, // 그룹 삭제 직후 버튼 그룹 위에 띄우는 "그룹이 삭제되었습니다." (3초)
       collapsed: {}, // 그룹 id → 접힘 여부 ('ungrouped' = 그룹 없는 게임)
       creating: false, // 그룹 만들기 입력칸이 열려 있는지
       renamingId: null, // 이름 변경 중인 그룹 id
@@ -531,9 +531,9 @@ var LibraryPanel = {
           '<li>그룹은 최대 ' + LIBRARY_GROUP_MAX + '개까지 만들 수 있어요.</li>' +
         '</ul>' +
       '</div>' +
-      // 그룹 삭제 직후 — 버튼 그룹 자리에 안내 (3초 뒤 버튼으로 돌아온다)
-      '<div v-else-if="deletedNotice" class="library-panel__notice stds-cap1 fw-medium" role="status">그룹이 삭제되었습니다.</div>' +
       '<div v-else class="library-panel__actions" data-name="btn/create group">' +
+        // 그룹 삭제 직후 — 버튼 그룹 위에 띄우는 토스트 (레이아웃은 그대로, 3초 뒤 사라진다)
+        '<div v-if="deletedNotice" class="library-panel__notice stds-cap1 fw-medium" role="status" data-name="toast popup">그룹이 삭제되었습니다.</div>' +
         '<button class="library-panel__create stds-btn3 fw-medium" type="button" :disabled="!canCreate" @click="startCreate">' +
           '<i class="ic-v2-control-add-line" aria-hidden="true"></i>그룹 만들기' +
         '</button>' +
@@ -551,7 +551,7 @@ var LibraryPanel = {
       '</div>' +
       // 구분선 — 스크롤 영역의 윗변. 그룹이 있으면 버튼 그룹과 20 띄운다 (안내 박스가 없어서)
       '<div v-if="showList" class="library-panel__divider-wrap" ' +
-        ':class="{ \'has-gap\': groups.length && !creating && !deletedNotice, \'has-notice-gap\': deletedNotice && groups.length && !creating }">' +
+        ':class="{ \'has-gap\': groups.length && !creating }">' +
         '<div class="library-panel__divider" data-name="element/div"></div>' +
       '</div>' +
 

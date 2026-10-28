@@ -35,6 +35,7 @@
 
 /* ---- 2. 버튼 그룹 (btn/create group) — 그룹 만들기(남는 폭) + 아이콘 버튼 32 x2, 간격 8 ---- */
 .library-panel__actions {
+  position: relative; /* 삭제 토스트(.library-panel__notice) 기준 */
   flex: 0 0 auto;
   display: flex;
   gap: 0.8rem;
@@ -111,13 +112,15 @@
 .library-panel__divider-wrap { flex: 0 0 auto; }
 /* 그룹이 하나라도 있으면 안내 박스가 빠지고 버튼 그룹 ~ 구분선 20 (Figma ④) */
 .library-panel__divider-wrap.has-gap { padding-top: 2rem; }
-/* 삭제 안내(42)가 버튼 그룹(32) 자리에 있을 때 — 구분선 위치가 그대로이도록 10만 띄운다 */
-.library-panel__divider-wrap.has-notice-gap { padding-top: 1rem; }
 
-/* 그룹 삭제 안내 — 버튼 그룹 자리, 3초. Figma toast popup (10963:80308) — glob 토큰 그대로.
-   위아래 12 · 좌우 16(보더는 안쪽), 둥글기 8, Caption1-M */
+/* 그룹 삭제 안내 — 버튼 그룹 위에 띄운다(z-index, 아래 콘텐츠는 밀리지 않음), 3초.
+   Figma toast popup (10963:80308) — glob 토큰 그대로. 위아래 12 · 좌우 16(보더는 안쪽), 둥글기 8, Caption1-M */
 .library-panel__notice {
-  flex: 0 0 auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
   display: flex;
   align-items: center;
   height: 4.2rem;
