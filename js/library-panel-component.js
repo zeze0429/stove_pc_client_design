@@ -332,8 +332,10 @@ var LibraryPanel = {
     openMenu: function (e, groupId, fromButton) {
       var anchor;
       if (fromButton) {
+        // 오른쪽 끝은 버튼이 아니라 타이틀 행(= 게임명 행) 끝에 맞춘다 — 버튼 툴팁과 같은 정렬
         var r = e.currentTarget.getBoundingClientRect();
-        anchor = { x: r.right, y: r.bottom + 4, alignRight: true, flipY: r.top - 4 };
+        var row = e.currentTarget.closest('.library-group__title').getBoundingClientRect();
+        anchor = { x: row.right, y: r.bottom + 4, alignRight: true, flipY: r.top - 4 };
       } else {
         anchor = { x: e.clientX, y: e.clientY, alignRight: false, flipY: e.clientY };
       }
@@ -347,7 +349,7 @@ var LibraryPanel = {
       this.$nextTick(function () {
         var el = this.$refs.menuEl;
         if (!el || !this.menu) return;
-        var w = el.offsetWidth;
+        var w = el.getBoundingClientRect().width; // 소수점 폭 그대로 — offsetWidth 반올림이면 오른쪽 끝이 0.5 어긋난다
         var h = el.offsetHeight;
         var left = anchor.alignRight ? anchor.x - w : anchor.x;
         var top = anchor.y;
