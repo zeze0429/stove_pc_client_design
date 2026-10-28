@@ -154,7 +154,7 @@ var LibraryPanel = {
       renamingId: null, // 이름 변경 중인 그룹 id
       hoveredTitleId: null, // 마우스가 올라간 그룹 타이틀 — 우측 버튼 노출
       titleTip: null, // 잘린 그룹명 전체 툴팁 { id, left, top, width }
-      btnTip: null, // 타이틀 우측 버튼 툴팁 { text, left(중앙), top }
+      btnTip: null, // 타이틀 우측 버튼 툴팁 { text, left, top, tailLeft, measuring }
       menu: null, // 그룹 메뉴 { groupId, left, top, flip }
       hoveredGameId: null,
       tooltipLeft: 0,
@@ -294,9 +294,23 @@ var LibraryPanel = {
     },
     showBtnTip: function (e, text) {
       if (this.menu) return;
-      var r = e.currentTarget.getBoundingClientRect();
+      var btn = e.currentTarget;
+      var row = btn.closest('.library-group__title');
+      var r = btn.getBoundingClientRect();
       this.titleTip = null; // 버튼 툴팁과 이름 툴팁이 겹치지 않게
-      this.btnTip = { text: text, left: r.left + r.width / 2, top: r.bottom + 2 };
+      this.btnTip = { text: text, left: 0, top: r.bottom + 2, tailLeft: 0, measuring: true };
+      // 버튼 중앙 기준, 타이틀 행 밖으로 나가면 행 끝에 붙인다 — 꼬리는 그래도 버튼 중앙 (뱃지 툴팁과 같은 규칙)
+      this.$nextTick(function () {
+        var tip = this.$refs.btnTipEl;
+        if (!tip || !this.btnTip || this.btnTip.text !== text) return;
+        var rr = row.getBoundingClientRect();
+        var center = r.left + r.width / 2;
+        var w = tip.offsetWidth;
+        var left = Math.min(Math.max(center - w / 2, rr.left), rr.right - w);
+        this.btnTip.left = left;
+        this.btnTip.tailLeft = center - left - 3;
+        this.btnTip.measuring = false;
+      });
     },
     hideBtnTip: function () { this.btnTip = null; },
     // 그룹 타이틀 클릭 = 그룹 화면으로 이동 (3단계)
@@ -569,8 +583,9 @@ var LibraryPanel = {
       // 잘린 그룹명 전체 툴팁 · 타이틀 우측 버튼 툴팁 · 그룹 메뉴 — 화면 고정(스크롤 영역에 잘리지 않게)
       '<div v-if="titleTip" class="game-group__list-tooltip stds-cap2" ' +
         ':style="{ left: titleTip.left + \'px\', top: titleTip.top + \'px\', width: titleTip.width + \'px\' }">{{ titleTipText }}</div>' +
-      '<div v-if="btnTip" class="library-panel__btn-tip" :style="{ left: btnTip.left + \'px\', top: btnTip.top + \'px\' }" data-name="Tooltip/iconbtn">' +
-        '<span class="game-group__badge-tooltip-tail"></span>' +
+      '<div v-if="btnTip" ref="btnTipEl" class="library-panel__btn-tip" :class="{ \'is-measuring\': btnTip.measuring }" ' +
+        ':style="{ left: btnTip.left + \'px\', top: btnTip.top + \'px\' }" data-name="Tooltip/iconbtn">' +
+        '<span class="game-group__badge-tooltip-tail" :style="{ marginLeft: btnTip.tailLeft + \'px\' }"></span>' +
         '<span class="game-group__badge-tooltip-body stds-cap1 fw-medium">{{ btnTip.text }}</span>' +
       '</div>' +
       '<div v-if="menu" ref="menuEl" class="library-panel-menu" :class="{ \'is-measuring\': menu.measuring }" ' +
