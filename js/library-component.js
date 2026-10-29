@@ -150,10 +150,11 @@ function libraryPlayedLabel(min) {
   return Math.floor(min / 43200) + '달 전 플레이';
 }
 
-// 썸네일 아래 뱃지 — 합본팩(collection 표시한 것)은 Collection, 카탈로그 type이 dlc면 DLC (모양은 같은 Badge/Game type)
+// 썸네일 아래 뱃지 — 합본팩(collection 표시한 것)은 Collection, 카탈로그 type이 dlc · demo면 DLC · DEMO (모양은 같은 Badge/Game type)
+var LIBRARY_TYPE_BADGE = { dlc: 'DLC', demo: 'DEMO' };
 function libraryGame(entry) {
   var info = gameInfo(entry.id);
-  var badge = entry.collection ? 'Collection' : info.type === 'dlc' ? 'DLC' : '';
+  var badge = entry.collection ? 'Collection' : LIBRARY_TYPE_BADGE[info.type] || '';
   return Object.assign({}, info, entry, { lastPlayed: libraryPlayedLabel(entry.played), badge: badge });
 }
 
