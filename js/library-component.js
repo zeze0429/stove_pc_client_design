@@ -20,7 +20,8 @@ var LIBRARY_QUICK_STEP = 4; // 화살표 한 번에 넘기는 카드 수 (레퍼
 // 우측 상단 AD 뱃지 + 플레이 시간 자리에 광고 문구, 버튼은 action(play · install).
 var LIBRARY_QUICK_AD_SLOT = 1; // 0부터 — 두 번째 카드
 // 스토브게임(사이드바 고정 그룹)은 광고로도 빠른 실행에 넣지 않는다.
-// 광고 게임은 일반 카드 목록에서 빠진다(같은 게임이 두 번 나오지 않게).
+// 광고 게임(수박 만들기 2048)은 오너십 없이 설치 없이 플레이하는 게임이라 보유게임이 아니다 —
+// LIBRARY_OWNED에 넣지 않으므로 보유게임 · 빠른 실행 일반 카드 · 우측패널에 나오지 않고 이 광고 자리에만 나온다.
 var LIBRARY_QUICK_AD = { game: 'store-30', message: '지금 바로 플레이해보세요!', action: 'play' };
 
 // 보유게임 — action: play(실행) · update(업데이트) · install(설치)
@@ -68,7 +69,7 @@ var LIBRARY_OWNED = [
   { id: 'noexistencen', action: 'update' },
   { id: 'primal-slidey', action: 'install' },
   { id: 'critter-cove', action: 'update' },
-  // 스토어 신작 59개 — 버튼 상태 · 최근 플레이는 시안용 임의 값
+  // 스토어 신작 58개(store-30 수박 만들기는 광고 전용이라 제외) — 버튼 상태 · 최근 플레이는 시안용 임의 값
   { id: 'store-01', action: 'install' },
   { id: 'store-02', action: 'update' },
   { id: 'store-03', action: 'install' },
@@ -98,7 +99,6 @@ var LIBRARY_OWNED = [
   { id: 'store-27', action: 'install' },
   { id: 'store-28', action: 'play', played: 102000, total: '총 11시간 29분' },
   { id: 'store-29', action: 'install' },
-  { id: 'store-30', action: 'play', played: 5, total: '총 198시간 24분' },
   { id: 'store-31', action: 'update' },
   { id: 'store-32', action: 'play', played: 109000, total: '총 27시간 54분' },
   { id: 'store-33', action: 'install' },
@@ -177,11 +177,9 @@ var LibraryMain = {
   },
   computed: {
     // 빠른 실행 — 플레이 기록이 있는 정식 게임(DLC · 데모 · 합본팩 · 부가 콘텐츠 제외)을 최근 순으로 최대 20개
-    // 광고가 켜져 있으면 광고 게임은 일반 카드에서 빠진다
     quick: function () {
-      var adGame = this.quickAd ? LIBRARY_QUICK_AD.game : null;
       return this.owned
-        .filter(function (g) { return g.type === 'game' && g.played != null && g.id !== adGame; })
+        .filter(function (g) { return g.type === 'game' && g.played != null; })
         .sort(function (a, b) { return a.played - b.played; })
         .slice(0, LIBRARY_QUICK_COUNT);
     },
