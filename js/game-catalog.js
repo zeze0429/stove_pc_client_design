@@ -124,6 +124,7 @@ var GAME_CATALOG = {
   'store-57': { name: '기술과 혼돈의 김세브란스밍기뉴', genre: '비주얼 노벨' },
   'store-58': { name: '저녁식사는 천사님이었습니다', genre: '비주얼 노벨' },
   'store-59': { name: '대학 조교 생활 -송하윤편-', genre: '비주얼 노벨' },
+  'store-60': { name: 'Chrono', genre: '액션' },
 };
 
 // 게임 정보 하나 — { id, name, genre, thumb }. 카탈로그에 없는 id면 null

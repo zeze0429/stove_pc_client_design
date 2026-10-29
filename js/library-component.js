@@ -69,7 +69,7 @@ var LIBRARY_OWNED = [
   { id: 'noexistencen', action: 'update' },
   { id: 'primal-slidey', action: 'install' },
   { id: 'critter-cove', action: 'update' },
-  // 스토어 신작 58개(store-30 수박 만들기는 광고 전용이라 제외) — 버튼 상태 · 최근 플레이는 시안용 임의 값
+  // 스토어 신작 59개(store-30 수박 만들기는 광고 전용이라 제외, 대신 store-60) — 버튼 상태 · 최근 플레이는 시안용 임의 값
   { id: 'store-01', action: 'install' },
   { id: 'store-02', action: 'update' },
   { id: 'store-03', action: 'install' },
@@ -128,6 +128,7 @@ var LIBRARY_OWNED = [
   { id: 'store-57', action: 'install' },
   { id: 'store-58', action: 'update' },
   { id: 'store-59', action: 'install' },
+  { id: 'store-60', action: 'update' },
 ];
 
 // 실행 버튼 아이콘
