@@ -404,7 +404,15 @@
   pointer-events: none;
 }
 .library-card__action { position: absolute; right: 1.2rem; bottom: 1.2rem; }
-/* Collection · DLC 뱃지 — 정보 칸 위로 12 걸친다 (Figma Badge/Game type, Inter Bold 11/18) */
+/* Collection · DLC 뱃지 — 정보 칸 위로 12 걸친다 (Figma Badge/Game type, Inter Bold 11/18).
+   Inter는 프로젝트에 없어서 Bold(라틴)만 따로 불러온다 — 온스토브 뱃지도 Inter */
+@font-face {
+  font-family: Inter;
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.16/files/inter-latin-700-normal.woff2') format('woff2');
+}
 .library-card__badge {
   position: absolute;
   left: 0.4rem;
