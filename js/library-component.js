@@ -150,8 +150,11 @@ function libraryPlayedLabel(min) {
   return Math.floor(min / 43200) + '달 전 플레이';
 }
 
+// 썸네일 아래 뱃지 — 합본팩(collection 표시한 것)은 Collection, 카탈로그 type이 dlc면 DLC (모양은 같은 Badge/Game type)
 function libraryGame(entry) {
-  return Object.assign({}, gameInfo(entry.id), entry, { lastPlayed: libraryPlayedLabel(entry.played) });
+  var info = gameInfo(entry.id);
+  var badge = entry.collection ? 'Collection' : info.type === 'dlc' ? 'DLC' : '';
+  return Object.assign({}, info, entry, { lastPlayed: libraryPlayedLabel(entry.played), badge: badge });
 }
 
 var LibraryMain = {
@@ -305,7 +308,7 @@ var LibraryMain = {
               '<span class="library-card__media"><img :src="g.thumb" alt="" loading="lazy" /></span>' +
               '<span class="library-card__border" aria-hidden="true"></span>' +
               '<button class="library-action library-card__action" type="button" :aria-label="actionLabel(g.action)"><i :class="actionIcon(g.action)"></i></button>' +
-              '<span v-if="g.collection" class="library-card__badge">Collection</span>' +
+              '<span v-if="g.badge" class="library-card__badge">{{ g.badge }}</span>' +
             '</div>' +
             '<div class="library-card__text">' +
               '<div class="library-card__main">' +

@@ -404,7 +404,7 @@
   pointer-events: none;
 }
 .library-card__action { position: absolute; right: 1.2rem; bottom: 1.2rem; }
-/* Collection 뱃지 — 정보 칸 위로 12 걸친다 (Figma Badge/Game type, Inter Bold 11/18) */
+/* Collection · DLC 뱃지 — 정보 칸 위로 12 걸친다 (Figma Badge/Game type, Inter Bold 11/18) */
 .library-card__badge {
   position: absolute;
   left: 0.4rem;
