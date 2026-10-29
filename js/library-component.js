@@ -22,7 +22,7 @@ var LIBRARY_QUICK_AD_SLOT = 1; // 0부터 — 두 번째 카드
 // 스토브게임(사이드바 고정 그룹)은 광고로도 빠른 실행에 넣지 않는다.
 // 광고 게임(수박 만들기 2048)은 오너십 없이 설치 없이 플레이하는 게임이라 보유게임이 아니다 —
 // LIBRARY_OWNED에 넣지 않으므로 보유게임 · 빠른 실행 일반 카드 · 우측패널에 나오지 않고 이 광고 자리에만 나온다.
-var LIBRARY_QUICK_AD = { game: 'store-30', message: '지금 바로 플레이해보세요!', action: 'play' };
+var LIBRARY_QUICK_AD = { game: 'store-30', message: '지금 바로 즐겨보세요!', action: 'play' };
 
 // 보유게임 — action: play(실행) · update(업데이트) · install(설치)
 //   played: 마지막 플레이가 몇 분 전인지 (없으면 플레이 기록 없음), total: 총 플레이 시간
@@ -279,7 +279,7 @@ var LibraryMain = {
                 '</div>' +
               '</div>' +
               '<span class="library-quick__border" aria-hidden="true"></span>' +
-              '<span v-if="g.ad" class="library-ad-badge" aria-label="광고">AD</span>' +
+              '<img v-if="g.ad" class="library-ad-badge" src="assets/library/ad.png" alt="AD" />' +
             '</div>' +
            '</div>' +
           '</div>' +
