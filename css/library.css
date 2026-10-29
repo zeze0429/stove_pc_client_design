@@ -219,7 +219,7 @@
 }
 
 /* 게임 광고 AD 뱃지 (Figma 클라이언트_v3.1 67848:465643) — 가이드가 준 2배 이미지(assets/library/ad.png, 44x32)를
-   22 x 16으로 놓고 그림자(0 0 2 black 40%)를 더한다. 카드 우측 상단 12, 접힌 카드 · 펼친 카드 모두 같은 자리 */
+   22 x 16으로 놓고 그림자(0 0 1 black 40%)를 더한다. 카드 우측 상단 12, 접힌 카드 · 펼친 카드 모두 같은 자리 */
 .library-ad-badge {
   position: absolute;
   top: 1.2rem;
@@ -227,7 +227,7 @@
   display: block;
   width: 2.2rem;
   height: 1.6rem;
-  filter: drop-shadow(0 0 0.2rem var(--stove-black-40));
+  filter: drop-shadow(0 0 0.1rem var(--stove-black-40));
   pointer-events: none;
 }
 
