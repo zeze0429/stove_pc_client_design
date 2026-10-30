@@ -219,11 +219,11 @@
 }
 
 /* 게임 광고 AD 뱃지 (Figma 클라이언트_v3.1 67890:76477) — 가이드가 준 2배 이미지(assets/library/ad.png, 52x36)를
-   26 x 18로 놓는다(보더 · 배경이 이미지에 포함, 그림자 없음). 카드 우측 상단 8(테스트 중, 기존 12), 접힌 카드 · 펼친 카드 모두 같은 자리 */
+   26 x 18로 놓는다(보더 · 배경이 이미지에 포함, 그림자 없음). 카드 우측 상단 12(8도 테스트해 봤지만 12로 확정), 접힌 카드 · 펼친 카드 모두 같은 자리 */
 .library-ad-badge {
   position: absolute;
-  top: 0.8rem;
-  right: 0.8rem;
+  top: 1.2rem;
+  right: 1.2rem;
   display: block;
   width: 2.6rem;
   height: 1.8rem;
