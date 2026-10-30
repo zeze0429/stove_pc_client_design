@@ -279,7 +279,7 @@ var LibraryMain = {
                 '</div>' +
               '</div>' +
               '<span class="library-quick__border" aria-hidden="true"></span>' +
-              '<img v-if="g.ad" class="library-ad-badge" src="assets/library/ad.png" alt="AD" />' +
+              '<img v-if="g.ad" class="library-ad-badge" src="assets/library/ad.png?v=2" alt="AD" />' +
             '</div>' +
            '</div>' +
           '</div>' +
