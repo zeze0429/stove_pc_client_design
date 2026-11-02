@@ -38,7 +38,9 @@ var LibraryGroupNameInput = {
     canSubmit: function () { return !this.error && this.text.trim().length > 0; },
   },
   methods: {
-    onInput: function () { this.error = ''; this.checkOverflow(); },
+    // v-model은 한글 조합이 끝나야 값을 넘겨서 첫 글자를 쓰는 중엔 만들기가 꺼져 있다 —
+    // input 이벤트마다(조합 중 포함) 직접 받는다
+    onInput: function (e) { this.text = e.target.value; this.error = ''; this.checkOverflow(); },
     // 입력칸 폭을 넘으면 앞쪽을 흐리게 가려 "앞에 글자가 더 있다"를 보여준다 (2-1 텍스트필드 상세)
     checkOverflow: function () {
       var el = this.$refs.input;
@@ -73,7 +75,7 @@ var LibraryGroupNameInput = {
   template:
     '<div class="group-name-input" :class="{ \'is-active\': focused, \'is-error\': error }" data-name="input">' +
       '<div class="group-name-input__field">' +
-        '<input ref="input" v-model="text" class="group-name-input__control stds-cap1" :class="{ \'is-overflow\': overflow }" type="text" ' +
+        '<input ref="input" :value="text" class="group-name-input__control stds-cap1" :class="{ \'is-overflow\': overflow }" type="text" ' +
           ':maxlength="' + LIBRARY_GROUP_NAME_MAX + '" placeholder="최대 ' + LIBRARY_GROUP_NAME_MAX + '자" ' +
           '@input="onInput" @scroll="checkOverflow" @keyup="checkOverflow" @keydown="onKey" @focus="focused = true" @blur="focused = false" />' +
         '<button v-if="text" class="group-name-input__clear" type="button" aria-label="지우기" @mousedown.prevent @click="clear">' +
