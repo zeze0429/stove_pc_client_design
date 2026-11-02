@@ -21,10 +21,11 @@
   gap: 0.4rem;
   margin: 0;
   color: var(--stds-sem-color-on-surface-elevation-1);
-  font-size: 1.6rem;
+  /* 14/20 — stds-title8, 우측패널 "나의 게임 그룹"과 같은 크기 (사용자 변경, 11-03) */
+  font-size: 1.4rem;
   font-weight: 700;
-  line-height: 2.4rem;
-  letter-spacing: -0.048rem;
+  line-height: 2rem;
+  letter-spacing: -0.03em;
 }
 .library-section__title span { color: var(--stds-sem-color-on-surface-elevation-4); }
 
@@ -469,6 +470,7 @@
 .library-owned.is-selecting .library-owned__head {
   position: sticky;
   z-index: 5;
+  /* 우측패널 "나의 게임 그룹"(14/20)과 같은 높이 y72 (사용자 요청) */
   top: 2.4rem;
   padding-bottom: 1.6rem;
   background: var(--stds-sem-color-background-variant-1);

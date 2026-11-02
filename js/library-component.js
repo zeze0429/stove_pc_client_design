@@ -418,7 +418,7 @@ var LibraryMain = {
     actionLabel: function (a) { return LIBRARY_ACTION_LABEL[a]; },
 
     // 선택 UI를 시작 · 전환 · 종료하면 고른 게임은 비운다.
-    // 시작할 때 보유게임 타이틀을 페이지 타이틀 자리(위 여백 끝)에 앵커로 붙인다 — Figma 레퍼런스 동작
+    // 시작할 때 보유게임 타이틀을 고정 헤더 자리(우측패널 타이틀과 같은 높이)에 앵커로 붙인다 — Figma 레퍼런스 동작
     // 고정 헤더가 sticky 자리(위 여백 + 24)에 닿았는지
     checkHeadStuck: function () {
       var box = this._scrollBox;
@@ -438,9 +438,9 @@ var LibraryMain = {
           var box = el && el.closest('.main');
           if (!box) return;
           var top = el.getBoundingClientRect().top - box.getBoundingClientRect().top;
-          var pageTitle = box.querySelector('.client-page-title');
+          var head = this.$refs.ownedHead;
           var pad = (parseFloat(getComputedStyle(box).paddingTop) || 0) +
-            (pageTitle ? parseFloat(getComputedStyle(pageTitle).marginTop) || 0 : 0);
+            (head ? parseFloat(getComputedStyle(head).top) || 0 : 0);
           box.scrollTo({ top: box.scrollTop + top - pad, behavior: 'smooth' });
         });
       }
