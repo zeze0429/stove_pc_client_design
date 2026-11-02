@@ -181,7 +181,6 @@ var LIBRARY_FLOATING_ICON = {
 var LIBRARY_ADD_GROUP_NAME_MAX = 30;
 var LIBRARY_ADD_GROUP_MAX = 20;
 var LIBRARY_ADD_GROUP_DUP_MSG = '이 이름은 이미 사용 중이에요. 다른 이름을 입력해 주세요.';
-var LIBRARY_ADD_ICON = '<svg class="add-group-dialog__plus" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M9.16662 3.33332C9.16662 2.87308 9.53972 2.49998 9.99996 2.49998C10.4602 2.49998 10.8333 2.87308 10.8333 3.33331V9.16667H16.6667C17.1269 9.16667 17.5 9.53977 17.5 10C17.5 10.4602 17.1269 10.8333 16.6667 10.8333H10.8333V16.6667C10.8333 17.1269 10.4602 17.5 9.99996 17.5C9.53972 17.5 9.16662 17.1269 9.16662 16.6667V10.8333H3.33332C2.87308 10.8333 2.49998 10.4602 2.49998 10C2.49998 9.53977 2.87308 9.16667 3.33331 9.16667H9.16662V3.33332Z"/></svg>';
 
 /**
  * 그룹에 추가 팝업 (Figma 클라이언트_v3.1 67967:409417 "그룹추가 팝업") — 게임 선택으로 들어온 선택 UI에서 하단 "그룹에 추가".
@@ -256,7 +255,10 @@ var LibraryAddToGroupDialog = {
       '<div class="add-group-dialog" :class="{ \'has-groups\': groups.length }" data-name="contents">' +
         // 그룹 만들기 — 버튼(tab) / 누르면 입력칸 + 완료
         '<div v-if="!creating" class="add-group-dialog__create">' +
-          '<button class="add-group-dialog__tab" type="button" :disabled="!canCreate" @click="startCreate" data-name="tab">그룹 만들기' + LIBRARY_ADD_ICON + '</button>' +
+          // 우측패널의 그룹 만들기 버튼 그대로(.library-panel__create) — 폭만 hug
+          '<button class="library-panel__create add-group-dialog__tab stds-btn3 fw-medium" type="button" :disabled="!canCreate" @click="startCreate" data-name="btn/create group">' +
+            '<i class="ic-v2-control-add-line" aria-hidden="true"></i>그룹 만들기' +
+          '</button>' +
         '</div>' +
         '<div v-else class="add-group-dialog__create add-group-dialog__create--input" data-name="그룹 만들기">' +
           '<p class="add-group-dialog__label">그룹 만들기</p>' +
