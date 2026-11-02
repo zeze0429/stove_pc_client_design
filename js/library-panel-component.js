@@ -609,7 +609,7 @@ var LibraryPanel = {
               // 게임 없는 그룹 — 게임 추가 버튼 (Figma ④ "게임이 추가되지 않은 그룹은 게임 추가 버튼이 바로 노출")
               // 게임 추가 중이면 선택 상태(타이틀만)라 이 버튼은 숨긴다 (3-3 "5월에 할 게임 0")
               '<button v-if="!group.gameIds.length && owned.length && addTargetId !== group.id" class="library-group__add-box stds-btn3 fw-medium" type="button" ' +
-                '@click="startAdd(group.id)" data-name="component/game_group/btn_게임 추가">' +
+                ':disabled="renamingId === group.id" @click="startAdd(group.id)" data-name="component/game_group/btn_게임 추가">' +
                 '<i class="ic-v2-control-add-circle-fill" aria-hidden="true"></i>게임 추가' +
               '</button>' +
               '<ul v-else-if="group.gameIds.length" class="game-group__list-group" data-name="component/game_group/list_group">' +

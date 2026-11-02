@@ -357,6 +357,13 @@
   color: var(--brand-primary-enabled);
 }
 .library-group.is-collapsed .library-group__add-box { display: none; }
+/* 이름 변경 중엔 비활성 — 보더는 그대로, 아이콘 · 글자만 inverse-elevation-3, hover 없음 (사용자 지정) */
+.library-group__add-box:disabled,
+.library-group__add-box:disabled:hover {
+  border-color: var(--inverse-elevation-3);
+  color: var(--inverse-elevation-3);
+  cursor: default;
+}
 /* 이름 변경 중 — 입력칸(취소 | 확인) 아래 4에 기존 게임 목록 · 게임 추가 (타이틀 ~ 목록과 같은 간격, 사용자 확정) */
 
 /* ---- 3-3. 선택 UI 전환 — 게임 추가 중인 그룹 (component/game_group 선택 상태) ----
