@@ -481,13 +481,18 @@ var LibraryPanel = {
         var left = anchor.alignRight ? anchor.x - w : anchor.x;
         var top = anchor.y;
         if (top + h > window.innerHeight - 8) top = anchor.flipY - h; // 아래가 모자라면 위로
-        left = Math.max(8, Math.min(left, window.innerWidth - w - 8));
+        left = this.clampToPanel(left, w);
         this.menu.left = left;
         this.menu.top = Math.max(8, top);
         this.menu.measuring = false;
       });
     },
     closeMenu: function () { this.menu = null; },
+    // 컨텍스트메뉴는 패널 밖으로 나가지 않는다 — 패널 안 좌우 16 여백 안에서만 (그룹 메뉴 · 게임 메뉴 공통)
+    clampToPanel: function (left, width) {
+      var r = this.$el.getBoundingClientRect();
+      return Math.max(r.left + 16, Math.min(left, r.right - 16 - width));
+    },
     onMenuAction: function (action) {
       var id = this.menu.groupId;
       this.closeMenu();
@@ -518,9 +523,9 @@ var LibraryPanel = {
         var el = this.$refs.gameMenuEl;
         if (!el || !this.gameMenu) return;
         var r = el.querySelector('.game-menu__face--front').getBoundingClientRect();
-        var left = x + r.width > window.innerWidth - 8 ? x - r.width : x;
+        var left = this.clampToPanel(x, r.width);
         var top = y + r.height > window.innerHeight - 8 ? y - r.height : y; // 아래가 모자라면 위로
-        this.gameMenu.left = Math.max(8, left);
+        this.gameMenu.left = left;
         this.gameMenu.top = Math.max(8, top);
         this.gameMenu.measuring = false;
       });

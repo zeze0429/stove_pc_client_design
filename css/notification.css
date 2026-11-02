@@ -115,9 +115,10 @@
   text-align: left;
   transition: background .15s;
 }
-/* 안 읽은 항목만 파란 틴트 — Figma가 지정한 blue 6%.
+/* 안 읽은 항목만 파란 틴트 — Figma가 지정한 brand-blue 6%. 시멘틱에는 투명도를 걸 수 없어
+   brand-blue가 가리키는 글로벌 blue-500(라이트 · 다크 공통)에 6% (디자인시스템 투명도 규칙).
    안 읽음 상태에서는 호버/프레스를 따로 주지 않고 이 틴트를 그대로 유지한다. */
-.notification-item--unread { background: color-mix(in srgb, var(--brand-blue-enabled) 6%, transparent); }
+.notification-item--unread { background: color-mix(in srgb, var(--stove-blue-500) 6%, transparent); }
 .notification-item:not(.notification-item--unread):hover { background: var(--interaction-hover); }
 .notification-item:not(.notification-item--unread):active { background: var(--interaction-pressed); }
 
