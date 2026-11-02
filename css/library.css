@@ -529,8 +529,11 @@
 .library-card.is-added .library-card__thumb:hover .library-card__media img { transform: none; }
 
 /* 하단 플로팅 (component/selection UI/floating) — 콘텐츠 영역 바닥 120, 배경색으로 페이드. 72 높이 알약.
-   비활성(고르기 전, Figma 2115:32819): gray780 · 글자 · 아이콘 gray650 · 구분선 inverse-elevation-6, 그림자 없음, 페이드 46%
+   비활성(고르기 전): 다크 gray780 · 글자/아이콘 gray650 (Figma 2115:32819) / 라이트 gray200 · gray400 (라이트 시안),
+   구분선 inverse-elevation-6, 그림자 없음, 페이드 46%. 두 테마 값을 함께 만족하는 시멘틱이 없어 테마별 글로벌로 지정
    활성(하나 이상): brand-primary · white · 구분선 black-8, 그림자 0 0 12 black 50%, 페이드 62% */
+:root { --library-floating-off-bg: var(--stds-glob-color-gray780); --library-floating-off-fg: var(--stds-glob-color-gray650); }
+:root[data-theme="light"] { --library-floating-off-bg: var(--stds-glob-color-gray200); --library-floating-off-fg: var(--stds-glob-color-gray400); }
 .library-floating {
   position: fixed;
   z-index: 15;
@@ -553,7 +556,7 @@
   height: 7.2rem;
   padding: 0 2.4rem;
   border-radius: var(--radius-full);
-  background: var(--stds-glob-color-gray780);
+  background: var(--library-floating-off-bg);
   pointer-events: auto;
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -580,7 +583,7 @@
   cursor: pointer;
   transition: color 0.2s ease;
 }
-.library-floating__btn:disabled { color: var(--stds-glob-color-gray650); cursor: default; }
+.library-floating__btn:disabled { color: var(--library-floating-off-fg); cursor: default; }
 .library-floating__btn i { font-size: 2.4rem; line-height: 1; }
 .library-floating__div { width: 1px; height: 4rem; background: var(--stds-sem-color-inverse-elevation-6); transition: background-color 0.2s ease; }
 .library-floating.is-active .library-floating__div { background: var(--stds-glob-color-black-8); }
