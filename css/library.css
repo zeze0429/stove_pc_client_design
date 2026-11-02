@@ -528,8 +528,9 @@
 .library-card.is-added .library-card__name { color: var(--stds-sem-color-on-surface-elevation-4); }
 .library-card.is-added .library-card__thumb:hover .library-card__media img { transform: none; }
 
-/* 하단 플로팅 (component/selection UI/floating) — 콘텐츠 영역 바닥 120, 배경색으로 페이드.
-   72 높이 알약, brand-primary, 그림자 0 0 12 black 50% */
+/* 하단 플로팅 (component/selection UI/floating) — 콘텐츠 영역 바닥 120, 배경색으로 페이드. 72 높이 알약.
+   비활성(고르기 전, Figma 2115:32819): gray780 · 글자 · 아이콘 gray650 · 구분선 inverse-elevation-6, 그림자 없음, 페이드 46%
+   활성(하나 이상): brand-primary · white · 구분선 black-8, 그림자 0 0 12 black 50%, 페이드 62% */
 .library-floating {
   position: fixed;
   z-index: 15;
@@ -537,9 +538,10 @@
   right: var(--client-panel-w);
   bottom: var(--proto-pr-height); /* PR 영역이 켜지면 그 위(앱 바닥)에 붙는다 */
   height: 12rem;
-  background: linear-gradient(to bottom, transparent, var(--stds-sem-color-background-variant-1) 62.363%);
+  background: linear-gradient(to bottom, transparent, var(--stds-sem-color-background-variant-1) 46.195%);
   pointer-events: none;
 }
+.library-floating.is-active { background: linear-gradient(to bottom, transparent, var(--stds-sem-color-background-variant-1) 62.363%); }
 .library-floating__bar {
   position: absolute;
   top: 1.6rem;
@@ -551,9 +553,13 @@
   height: 7.2rem;
   padding: 0 2.4rem;
   border-radius: var(--radius-full);
+  background: var(--stds-glob-color-gray780);
+  pointer-events: auto;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.library-floating.is-active .library-floating__bar {
   background: var(--stds-sem-color-brand-primary);
   box-shadow: 0 0 1.2rem var(--stds-glob-color-black-50);
-  pointer-events: auto;
 }
 .library-floating__group { display: flex; align-items: center; gap: 0.8rem; }
 .library-floating__btn {
@@ -572,9 +578,20 @@
   letter-spacing: -0.024rem;
   white-space: nowrap;
   cursor: pointer;
+  transition: color 0.2s ease;
 }
+.library-floating__btn:disabled { color: var(--stds-glob-color-gray650); cursor: default; }
 .library-floating__btn i { font-size: 2.4rem; line-height: 1; }
-.library-floating__div { width: 1px; height: 4rem; background: var(--stds-glob-color-black-8); }
+.library-floating__div { width: 1px; height: 4rem; background: var(--stds-sem-color-inverse-elevation-6); transition: background-color 0.2s ease; }
+.library-floating.is-active .library-floating__div { background: var(--stds-glob-color-black-8); }
+/* 선택 해제 — 고르면 앞에 펼쳐지고(폭 0 → 내용 폭), 다 풀면 접힌다. 그룹 간격 8도 같이 */
+.library-floating__btn--clear { overflow: hidden; }
+.library-floating-clear-enter-active,
+.library-floating-clear-leave-active { transition: max-width 0.2s ease, opacity 0.2s ease, padding 0.2s ease, margin 0.2s ease; }
+.library-floating-clear-enter-from,
+.library-floating-clear-leave-to { max-width: 0; opacity: 0; padding-left: 0; padding-right: 0; margin-right: -0.8rem; }
+.library-floating-clear-enter-to,
+.library-floating-clear-leave-from { max-width: 8rem; opacity: 1; }
 .library-floating-enter-active,
 .library-floating-leave-active { transition: opacity 0.2s ease; }
 .library-floating-enter-active .library-floating__bar,

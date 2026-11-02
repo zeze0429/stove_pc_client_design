@@ -406,16 +406,19 @@ var LibraryMain = {
         '</ul>' +
       '</section>' +
 
-      // 하단 플로팅 (component/selection UI/floating) — 게임을 하나 이상 고르면 나타난다
+      // 하단 플로팅 (component/selection UI/floating) — 선택 UI 동안 항상. 고르기 전엔 비활성(그레이, 그룹에 추가 · 더보기),
+      // 하나 이상 고르면 오렌지로 바뀌면서 선택 해제가 앞에 펼쳐진다 (Figma 2115:32819 비활성)
       '<transition name="library-floating">' +
-        '<div v-if="selecting && selected.length" class="library-floating" data-name="하단 플로딩 컴포넌트">' +
+        '<div v-if="selecting" class="library-floating" :class="{ \'is-active\': selected.length }" data-name="하단 플로딩 컴포넌트">' +
           '<div class="library-floating__bar" data-name="component/selection UI/floating">' +
             '<div class="library-floating__group">' +
-              '<button class="library-floating__btn" type="button" @click="selected = []" data-name="component/selection UI/btn"><i class="ic-v2-control-close-circle-line" aria-hidden="true"></i>선택 해제</button>' +
-              '<button class="library-floating__btn" type="button" @click="addToGroup" data-name="component/selection UI/btn"><i class="ic-v2-content-folder-add-line" aria-hidden="true"></i>그룹에 추가</button>' +
+              '<transition name="library-floating-clear">' +
+                '<button v-if="selected.length" class="library-floating__btn library-floating__btn--clear" type="button" @click="selected = []" data-name="component/selection UI/btn"><i class="ic-v2-control-close-circle-line" aria-hidden="true"></i>선택 해제</button>' +
+              '</transition>' +
+              '<button class="library-floating__btn" type="button" :disabled="!selected.length" @click="addToGroup" data-name="component/selection UI/btn"><i class="ic-v2-content-folder-add-line" aria-hidden="true"></i>그룹에 추가</button>' +
             '</div>' +
             '<span class="library-floating__div" aria-hidden="true"></span>' +
-            '<button class="library-floating__btn" type="button" data-name="component/selection UI/btn"><i class="ic-v2-navigation-option-horizontal-fill" aria-hidden="true"></i>더보기</button>' +
+            '<button class="library-floating__btn" type="button" :disabled="!selected.length" data-name="component/selection UI/btn"><i class="ic-v2-navigation-option-horizontal-fill" aria-hidden="true"></i>더보기</button>' +
           '</div>' +
         '</div>' +
       '</transition>' +
