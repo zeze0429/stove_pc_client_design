@@ -130,6 +130,45 @@
   background: var(--stove-gray-200);
   color: var(--stove-gray-750);
 }
+/* 게임 그룹 추가 완료 토스트 — 삭제 안내와 같은 자리(버튼 그룹 위), 3초.
+   Figma toast popup 완료 메세지 (10938:80229): 배경 tint_blue_100 · 보더 white/40 · 위아래 12 · 좌우 16, 줄 사이 4.
+   문구 색 #253661은 토큰이 없어 헥스 그대로(사용자 허용), 그룹명 칩 배경은 그 색 50% */
+.library-panel__added {
+  --library-toast-navy: #253661;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  padding: calc(1.2rem - 1px) calc(1.6rem - 1px);
+  border: 1px solid var(--stove-white-40);
+  border-radius: var(--radius-lg);
+  background: var(--stove-tint-blue-100);
+  color: var(--library-toast-navy);
+}
+.library-panel__added-title { margin: 0; }
+.library-panel__added-title b { color: var(--brand-blue-enabled); font-weight: 700; }
+.library-panel__added-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: 100%;
+  height: 2rem;
+  padding: 0 0.6rem 0 0.4rem;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--library-toast-navy) 50%, transparent);
+  color: var(--stove-white);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.02rem;
+  white-space: nowrap;
+}
+.library-panel__added-group i { flex: 0 0 auto; font-size: 1.2rem; }
+.library-panel__added-group span { overflow: hidden; text-overflow: ellipsis; }
 .library-panel__divider { height: 1px; background: var(--inverse-elevation-3); }
 
 /* 게임 그룹 목록 — 위 16. 아래는 스크롤 영역 여백(TOP 80)만 — 마지막 항목 ~ 바닥 80, 사이드바와 같게.

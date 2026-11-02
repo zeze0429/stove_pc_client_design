@@ -243,6 +243,7 @@ var LibraryPanel = {
       owned: LIBRARY_OWNED.map(libraryGame),
       store: LIBRARY_STORE, // groups · addTargetId — 콘텐츠(보유게임 선택 UI)와 같이 쓴다
       deletedNotice: false, // 그룹 삭제 직후 버튼 그룹 위에 띄우는 "그룹이 삭제되었습니다." (3초)
+      addedNotice: null, // 게임을 그룹에 넣은 직후 같은 자리에 띄우는 완료 토스트 { count, title } (3초)
       collapsed: {}, // 그룹 id → 접힘 여부 ('ungrouped' = 그룹 없는 게임)
       creating: false, // 그룹 만들기 입력칸이 열려 있는지
       renamingId: null, // 이름 변경 중인 그룹 id
@@ -402,6 +403,7 @@ var LibraryPanel = {
       if (id === this.addTargetId) this.cancelAdd();
       this.groups = this.groups.filter(function (g) { return g.id !== id; });
       delete this.collapsed[id];
+      this.addedNotice = null;
       this.deletedNotice = true;
       clearTimeout(this._noticeTimer);
       this._noticeTimer = setTimeout(function () { self.deletedNotice = false; }, 3000);
@@ -587,6 +589,14 @@ var LibraryPanel = {
       this.selectedRows = [rowKey];
       this.selectAnchor = rowKey;
     },
+    // 게임 추가 완료 토스트 — 패널 상단(버튼 그룹 위), 3초. 삭제 안내와 자리를 같이 쓰니 하나만 보인다
+    showAddedNotice: function (count, title) {
+      var self = this;
+      this.deletedNotice = false;
+      this.addedNotice = { count: count, title: title };
+      clearTimeout(this._noticeTimer);
+      this._noticeTimer = setTimeout(function () { self.addedNotice = null; }, 3000);
+    },
     clearSelection: function () { this.selectedRows = []; this.selectAnchor = null; },
     // 선택한 행의 게임 (같은 게임이 여러 그룹에서 골라져도 한 번만)
     selectedGameIds: function () {
@@ -602,7 +612,9 @@ var LibraryPanel = {
     },
     addMenuGameTo: function (group) {
       if (this.gameInGroup(group)) return;
-      this.gameMenu.gameIds.forEach(function (id) { if (group.gameIds.indexOf(id) < 0) group.gameIds.push(id); });
+      var added = 0;
+      this.gameMenu.gameIds.forEach(function (id) { if (group.gameIds.indexOf(id) < 0) { group.gameIds.push(id); added++; } });
+      this.showAddedNotice(added, group.title);
       if (this.gameMenu.multi) this.clearSelection();
       this.closeGameMenu();
       this.$nextTick(this.updateThumb);
@@ -623,8 +635,10 @@ var LibraryPanel = {
       this.createDialog = { gameIds: ids };
     },
     createFromDialog: function (name) {
-      this.createGroup(name, this.createDialog.gameIds);
+      var ids = this.createDialog.gameIds;
+      this.createGroup(name, ids);
       this.createDialog = null;
+      if (ids.length) this.showAddedNotice(ids.length, name);
     },
     // 2뎁스 툴팁 — 잘린 그룹명(gray700, 이름 라벨 폭 그대로 · 아래 2) / 이 그룹에서 제거(버튼 아래 2, 메뉴 안쪽에 붙임)
     showNameTip: function (e) {
@@ -834,6 +848,10 @@ var LibraryPanel = {
       '<div v-else class="library-panel__actions" data-name="btn/create group">' +
         // 그룹 삭제 직후 — 버튼 그룹 위에 띄우는 토스트 (레이아웃은 그대로, 3초 뒤 사라진다)
         '<div v-if="deletedNotice" class="library-panel__notice stds-cap1 fw-medium" role="status" data-name="toast popup">그룹이 삭제되었습니다.</div>' +
+        '<div v-if="addedNotice" class="library-panel__added" role="status" data-name="toast popup">' +
+          '<p class="library-panel__added-title stds-cap1 fw-medium"><b>{{ addedNotice.count }}개 게임</b>을 다른 그룹에 추가했습니다.</p>' +
+          '<span class="library-panel__added-group" data-name="group name"><i class="ic-v2-control-long-arrow-right-line" aria-hidden="true"></i><span>{{ addedNotice.title }}</span></span>' +
+        '</div>' +
         '<button class="library-panel__create stds-btn3 fw-medium" type="button" :disabled="!canCreate" @click="startCreate">' +
           '<i class="ic-v2-control-add-line" aria-hidden="true"></i>그룹 만들기' +
         '</button>' +

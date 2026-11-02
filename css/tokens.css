@@ -31,6 +31,9 @@
   --stove-blue-800: #2f5bc7;
   --stove-blue-900: #2a52b3;
 
+  /* ---- 05_tint (Figma 스타일 — 필요한 것만) ------------- */
+  --stove-tint-blue-100: #cae3f2; /* 05_tint/07_tint_blue/$tint_blue_100 — 패널 완료 토스트 */
+
   /* ---- 03_stove_gray / white (흰색 + 불투명도) ---------- */
   --stove-white:    #ffffff;
   --stove-white-02: rgba(255, 255, 255, 0.02);
