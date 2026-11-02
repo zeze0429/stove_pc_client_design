@@ -162,6 +162,12 @@ var LIBRARY_GAME_MENU = [
   { label: '게임 삭제' },
 ];
 var LIBRARY_GAME_TOGGLE_DEFAULT = { autoUpdate: false, cloud: true }; // Figma 1뎁스 예시값
+// 여러 개 선택 후 우클릭 (Figma 3-5-3)
+var LIBRARY_GAME_MENU_MULTI = [
+  { label: '선택한 게임 즐겨찾기 추가' },
+  { label: '선택한 게임 그룹에 추가', sub: 'add' },
+  { label: '선택한 게임 숨기기' },
+];
 
 // 그룹 타이틀 (component/game_group/title) — 화살표 · 이름 · 개수 · 우측 버튼(호버 시).
 // 사용자 그룹은 게임 추가 + 그룹 메뉴, 그룹 없는 게임은 그룹 메뉴만 (Figma ④)
@@ -206,7 +212,8 @@ function TITLE_TPL(idExpr, nameExpr, countExpr, withAdd) {
 function ROW_TPL(listExpr, groupExpr) {
   var key = '(' + groupExpr + ') + \':\' + game.id';
   return '<li v-for="game in ' + listExpr + '" :key="game.id" class="game-group__list" ' +
-      ':class="{ \'is-menu-focus\': gameMenu && gameMenu.rowKey === ' + key + ' }" ' +
+      ':class="{ \'is-menu-focus\': gameMenu && gameMenu.rowKey === ' + key + ', \'is-selected\': selectedRows.indexOf(' + key + ') >= 0 }" ' +
+      ':data-row-key="' + key + '" @click="onRowClick($event, ' + key + ')" ' +
       '@mouseenter="onRowEnter($event, game, ' + key + ')" @mouseleave="onRowLeave" ' +
       '@contextmenu.prevent="openGameMenu($event, game, ' + key + ')" ' +
       '@mousedown="$event.button === 0 && !isStaticRow($event.currentTarget) && setPressed(true)" data-name="component/game_group/list">' +
@@ -246,6 +253,8 @@ var LibraryPanel = {
       gameMenu: null, // 게임 우클릭 메뉴 { gameId, rowKey, left, top, depth(1|2), back('add'|'remove'), measuring }
       gameToggles: {}, // 게임 id → { autoUpdate, cloud } (메뉴 토글)
       menuTip: null, // 2뎁스 툴팁 { text, left, top, kind('name'|'remove') }
+      selectedRows: [], // 선택한 게임 행 (rowKey) — Ctrl/⌘ 클릭 추가 · 해제, Shift 클릭 범위 (Figma ⑫ "여러개 선택 가능(키보드 조작)")
+      selectAnchor: null, // Shift 범위 선택 기준 행
       createDialog: null, // 그룹 만들기 팝업 { gameIds } — 게임 메뉴에서 열면 만든 그룹에 그 게임을 넣는다
       hoveredGameId: null, // 말줄임 툴팁을 띄운 행 (rowKey)
       tooltipLeft: 0,
@@ -290,6 +299,7 @@ var LibraryPanel = {
     },
     // 1뎁스 — 그룹에 하나도 없는 게임은 그룹에서 제거를 뺀다
     gameMenuItems: function () {
+      if (this.gameMenu && this.gameMenu.multi) return LIBRARY_GAME_MENU_MULTI;
       var inGroup = this.menuGameGroups.length > 0;
       return LIBRARY_GAME_MENU.filter(function (item) { return item.sub !== 'remove' || inGroup; });
     },
@@ -528,7 +538,13 @@ var LibraryPanel = {
       if (!this.gameToggles[game.id]) this.gameToggles[game.id] = Object.assign({}, LIBRARY_GAME_TOGGLE_DEFAULT);
       var x = e.clientX;
       var y = e.clientY;
-      this.gameMenu = { gameId: game.id, rowKey: rowKey, left: x, top: y, depth: 1, back: 'add', measuring: true };
+      // 선택한 행(2개 이상)을 우클릭하면 n개 메뉴, 선택 밖 행을 우클릭하면 선택을 풀고 그 게임 1개 메뉴
+      var multi = this.selectedRows.length > 1 && this.selectedRows.indexOf(rowKey) >= 0;
+      if (!multi) { this.selectedRows = []; this.selectAnchor = null; }
+      this.gameMenu = {
+        gameId: game.id, gameIds: multi ? this.selectedGameIds() : [game.id], multi: multi,
+        rowKey: multi ? null : rowKey, left: x, top: y, depth: 1, back: 'add', measuring: true,
+      };
       this.$nextTick(function () {
         var el = this.$refs.gameMenuEl;
         if (!el || !this.gameMenu) return;
@@ -546,12 +562,48 @@ var LibraryPanel = {
       else if (item.toggle) { var t = this.gameToggles[this.gameMenu.gameId]; t[item.toggle] = !t[item.toggle]; }
       else this.closeGameMenu(); // 나머지 항목은 아직 동작 없음
     },
+    // ── 게임 여러 개 선택 (Figma ⑫ · 3-5-3) — 클릭 = 그 행만, Ctrl/⌘ 클릭 = 추가 · 해제, Shift 클릭 = 같은 그룹 안 범위.
+    // 게임 추가 중인 그룹의 행은 고를 수 없다
+    onRowClick: function (e, rowKey) {
+      var li = e.currentTarget;
+      if (this.isStaticRow(li)) return;
+      if (e.metaKey || e.ctrlKey) {
+        var i = this.selectedRows.indexOf(rowKey);
+        if (i >= 0) this.selectedRows.splice(i, 1);
+        else this.selectedRows.push(rowKey);
+        this.selectAnchor = rowKey;
+        return;
+      }
+      if (e.shiftKey && this.selectAnchor) {
+        var section = li.closest('.library-group');
+        var keys = Array.prototype.map.call(section.querySelectorAll('[data-row-key]'), function (el) { return el.dataset.rowKey; });
+        var a = keys.indexOf(this.selectAnchor);
+        var b = keys.indexOf(rowKey);
+        if (a >= 0 && b >= 0) {
+          this.selectedRows = keys.slice(Math.min(a, b), Math.max(a, b) + 1);
+          return;
+        }
+      }
+      this.selectedRows = [rowKey];
+      this.selectAnchor = rowKey;
+    },
+    clearSelection: function () { this.selectedRows = []; this.selectAnchor = null; },
+    // 선택한 행의 게임 (같은 게임이 여러 그룹에서 골라져도 한 번만)
+    selectedGameIds: function () {
+      var seen = {};
+      return this.selectedRows.map(function (k) { return k.slice(k.indexOf(':') + 1); })
+        .filter(function (id) { return seen[id] ? false : (seen[id] = true); });
+    },
     // 2뎁스 상단 메뉴명(← 포함)을 누르면 1뎁스로 다시 뒤집힌다
     flipBack: function () { this.gameMenu.depth = 1; this.menuTip = null; },
-    gameInGroup: function (group) { return !!this.gameMenu && group.gameIds.indexOf(this.gameMenu.gameId) >= 0; },
+    // 고른 게임이 전부 이미 들어 있는 그룹은 비활성
+    gameInGroup: function (group) {
+      return !!this.gameMenu && this.gameMenu.gameIds.every(function (id) { return group.gameIds.indexOf(id) >= 0; });
+    },
     addMenuGameTo: function (group) {
-      if (this.gameInGroup(group)) return; // 이미 들어 있는 그룹은 비활성
-      group.gameIds.push(this.gameMenu.gameId);
+      if (this.gameInGroup(group)) return;
+      this.gameMenu.gameIds.forEach(function (id) { if (group.gameIds.indexOf(id) < 0) group.gameIds.push(id); });
+      if (this.gameMenu.multi) this.clearSelection();
       this.closeGameMenu();
       this.$nextTick(this.updateThumb);
     },
@@ -565,7 +617,8 @@ var LibraryPanel = {
     },
     openCreateFromMenu: function () {
       if (!this.canCreate) return;
-      var ids = [this.gameMenu.gameId];
+      var ids = this.gameMenu.gameIds.slice();
+      if (this.gameMenu.multi) this.clearSelection();
       this.closeGameMenu();
       this.createDialog = { gameIds: ids };
     },
@@ -599,7 +652,10 @@ var LibraryPanel = {
     },
     hideMenuTip: function () { this.menuTip = null; },
     onDocMouseDown: function (e) {
-      if (this.gameMenu && !(this.$refs.gameMenuEl && this.$refs.gameMenuEl.contains(e.target))) this.closeGameMenu();
+      var inGameMenu = this.$refs.gameMenuEl && this.$refs.gameMenuEl.contains(e.target);
+      if (this.gameMenu && !inGameMenu) this.closeGameMenu();
+      // 게임 행 · 메뉴 · 팝업 밖을 누르면 선택이 풀린다
+      if (this.selectedRows.length && !inGameMenu && e.button === 0 && !(e.target.closest && e.target.closest('.game-group__list, .layer-dialog-dim'))) this.clearSelection();
       if (!this.menu) return;
       if (this.$refs.menuEl && this.$refs.menuEl.contains(e.target)) return;
       if (e.target.closest && e.target.closest('[data-menu-btn]')) return; // ⋮ 버튼은 openMenu가 열고/닫는다
@@ -608,6 +664,7 @@ var LibraryPanel = {
     onDocKeyDown: function (e) {
       if (e.key === 'Escape' && this.menu) this.closeMenu();
       if (e.key === 'Escape' && this.gameMenu) this.closeGameMenu();
+      else if (e.key === 'Escape' && this.selectedRows.length && !this.createDialog) this.clearSelection();
     },
 
     // ── 호버 인디케이터 (사이드바와 같은 스프링, Figma 5765:88811 "공통 원칙") ──
@@ -877,7 +934,7 @@ var LibraryPanel = {
           '<div class="game-menu__face game-menu__face--back" role="menu" :aria-hidden="gameMenu.depth === 1">' +
             '<button class="game-menu__head stds-btn3 fw-medium" type="button" @click="flipBack" data-name="menu">' +
               '<span class="game-menu__icon game-menu__back" aria-hidden="true"><i class="ic-v2-control-arrow-left-line"></i></span>' +
-              '<span class="game-menu__label">{{ gameMenu.back === \'add\' ? \'그룹에 추가\' : \'그룹에서 제거\' }}</span>' +
+              '<span class="game-menu__label">{{ gameMenu.back === \'add\' ? (gameMenu.multi ? \'선택한 게임 그룹에 추가\' : \'그룹에 추가\') : \'그룹에서 제거\' }}</span>' +
             '</button>' +
             '<div class="game-menu__div" aria-hidden="true"></div>' +
             '<template v-if="gameMenu.back === \'add\'">' +

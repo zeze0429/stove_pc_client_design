@@ -630,6 +630,8 @@
 .game-menu__name-tip { z-index: 50; background: var(--stove-gray-700); color: var(--stove-white); }
 .game-menu__remove-tip { z-index: 50; }
 
+/* 게임 행 — 선택(여러 개 가능) = interaction-selected (Figma ⑫), 글자는 gnb.css 선택 규칙(elevation-2) */
+.library-panel .game-group__list.is-selected { background: var(--interaction-selected); }
 /* 게임 행 — 우클릭 메뉴가 열려 있는 동안 (사이드바 .is-context-open과 같은 interaction-hover) */
 .library-panel .game-group__list.is-menu-focus { background: var(--interaction-hover); }
 
