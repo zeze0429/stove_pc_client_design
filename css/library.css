@@ -541,6 +541,9 @@
   right: var(--client-panel-w);
   bottom: var(--proto-pr-height); /* PR 영역이 켜지면 그 위(앱 바닥)에 붙는다 */
   height: 12rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
   /* 페이드는 시작 · 끝이 완만한 곡선(smoothstep)으로 — 직선 그라디언트는 시작 지점에 경계선이 보인다.
      완전히 덮이는 지점은 Figma 그대로 (비활성 46% · 활성 62%) */
   background: linear-gradient(
@@ -566,10 +569,10 @@
   );
 }
 .library-floating__bar {
-  position: absolute;
-  top: 1.6rem;
-  left: 50%;
-  transform: translateX(-50%);
+  /* 가운데 정렬은 부모 flex로 — left 50% + translateX(-50%)는 폭이 소수(193.86 등)일 때 반 픽셀에 그려져
+     아이콘 · 글자가 번진다 */
+  position: relative;
+  margin-top: 1.6rem;
   display: flex;
   align-items: center;
   gap: 1.2rem;
@@ -622,7 +625,7 @@
 .library-floating-enter-from,
 .library-floating-leave-to { opacity: 0; }
 .library-floating-enter-from .library-floating__bar,
-.library-floating-leave-to .library-floating__bar { transform: translate(-50%, 1.2rem); }
+.library-floating-leave-to .library-floating__bar { transform: translateY(1.2rem); }
 
 /* 게임 추가 완료 토스트 (toast popup) — 콘텐츠 영역 가운데, 바닥에서 32 */
 .library-toast-wrap {
