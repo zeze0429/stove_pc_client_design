@@ -881,9 +881,7 @@
 .add-group-dialog__empty p {
   margin: 0;
   color: var(--stds-sem-color-on-surface-elevation-3); /* Figma elevation-1 → 3 (사용자 지정) */
-  font-size: 1.4rem;
-  line-height: 2.4rem;
-  letter-spacing: -0.042rem;
+  font-weight: 400; /* Text4-R 13/22 (typography.css .stds-text4, 사용자 지정) */
   text-align: center;
 }
 /* 확인 — 44 꽉 채움, 체크한 그룹이 있어야 활성(brand-primary) */

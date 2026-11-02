@@ -292,7 +292,7 @@ var LibraryAddToGroupDialog = {
           '<div v-else class="add-group-dialog__empty" data-name="항목 없음">' +
             // 임시 정지 이미지 — 사용자가 APNG 리소스를 주면 교체
             '<img src="assets/library/group_empty_placeholder.png" width="120" height="120" alt="" />' +
-            '<p>그룹을 만들어 게임을 추가해 보세요.</p>' +
+            '<p class="stds-text4">그룹을 만들어 게임을 추가해 보세요.</p>' +
           '</div>' +
         '</div>' +
         '<button v-if="groups.length" class="add-group-dialog__confirm" type="button" :disabled="!canConfirm" @click="confirm" data-name="Button">확인</button>' +
