@@ -316,17 +316,22 @@ var LibraryMain = {
       selected: [], // 선택 UI에서 고른 게임 id (고른 순서)
       addedToast: null, // 그룹에 추가한 직후 토스트 { count, title } (3초)
       addGroupDialog: false, // 게임 선택 모드의 그룹에 추가 팝업
+      headStuck: false, // 선택 UI 고정 헤더가 위에 붙어 있음 — 유틸리티 바 뒤까지 배경을 덮는다
     };
   },
   mounted: function () {
     var vm = this;
     protoSettingsSubscribe(function (s) { vm.quickAd = s.libraryQuickAd; });
-    this._onResize = this.snapFloating.bind(this);
+    this._onResize = function () { vm.snapFloating(); vm.checkHeadStuck(); };
     window.addEventListener('resize', this._onResize);
+    this._scrollBox = this.$refs.owned && this.$refs.owned.closest('.main');
+    this._onScroll = this.checkHeadStuck.bind(this);
+    if (this._scrollBox) this._scrollBox.addEventListener('scroll', this._onScroll, { passive: true });
   },
   unmounted: function () {
     clearTimeout(this._toastTimer);
     window.removeEventListener('resize', this._onResize);
+    if (this._scrollBox) this._scrollBox.removeEventListener('scroll', this._onScroll);
   },
   watch: {
     // 선택 UI 진입 경로 두 가지 — 패널 게임 추가(대상 그룹) · 게임 선택 버튼(대상 없음)
@@ -414,8 +419,18 @@ var LibraryMain = {
 
     // 선택 UI를 시작 · 전환 · 종료하면 고른 게임은 비운다.
     // 시작할 때 보유게임 타이틀을 페이지 타이틀 자리(위 여백 끝)에 앵커로 붙인다 — Figma 레퍼런스 동작
+    // 고정 헤더가 sticky 자리(위 여백 + 24)에 닿았는지
+    checkHeadStuck: function () {
+      var box = this._scrollBox;
+      var head = this.selecting && this.$refs.ownedHead;
+      if (!box || !head) { this.headStuck = false; return; }
+      var stickyTop = box.getBoundingClientRect().top + (parseFloat(getComputedStyle(box).paddingTop) || 0) +
+        (parseFloat(getComputedStyle(head).top) || 0);
+      this.headStuck = head.getBoundingClientRect().top <= stickyTop + 0.5;
+    },
     onSelectEnter: function (on, prev) {
       this.selected = [];
+      this.$nextTick(this.checkHeadStuck);
       if (on && !prev) {
         this.addedToast = null;
         this.$nextTick(function () {
@@ -533,9 +548,9 @@ var LibraryMain = {
       '</section>' +
 
       // ---- 보유게임 ----
-      '<section ref="owned" class="library-section library-owned" :class="{ \'is-selecting\': selecting }">' +
+      '<section ref="owned" class="library-section library-owned" :class="{ \'is-selecting\': selecting, \'is-head-stuck\': selecting && headStuck }">' +
         // 선택 UI에서는 타이틀 · 구분선 · 도구 줄이 위에 고정되고 아래 카드만 스크롤된다 (사용자 요청)
-        '<div class="library-owned__head">' +
+        '<div ref="ownedHead" class="library-owned__head">' +
         '<h2 class="library-section__title">보유게임<span>{{ filteredOwned.length }}</span></h2>' +
         '<div class="library-owned__divider"></div>' +
         // 선택 UI — 도구 줄 자리에 게임 추가 취소 + 안내 문구 (Figma ⑦ · 0825 게임 추가 취소)
