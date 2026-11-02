@@ -166,6 +166,17 @@ function libraryGame(entry) {
   return Object.assign({}, info, entry, { lastPlayed: libraryPlayedLabel(entry.played), badge: badge });
 }
 
+// 하단 플로팅 아이콘 — 아이콘 폰트는 맥에서 획이 두껍게 보정돼(font dilation) 폴더 선 · + 선 · 점 굵기가 들쭉날쭉해진다.
+// Figma SVG 패스 그대로 쓰고 색만 currentColor (ic-v2-control-close-circle-line · content-folder-add-line · navigation-option-horizontal-fill)
+function libraryFloatingIcon(paths) {
+  return '<svg class="library-floating__icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' + paths + '</svg>';
+}
+var LIBRARY_FLOATING_ICON = {
+  close: libraryFloatingIcon('<path d="M8.29291 15.7071C7.90239 15.3166 7.90238 14.6834 8.29291 14.2929L10.5858 12L8.29291 9.70711C7.90239 9.31658 7.90238 8.68342 8.29291 8.29289C8.68343 7.90237 9.3166 7.90237 9.70712 8.29289L12 10.5858L14.2929 8.29289C14.6834 7.90237 15.3166 7.90237 15.7071 8.29289C16.0976 8.68342 16.0976 9.31658 15.7071 9.70711L13.4142 12L15.7071 14.2929C16.0976 14.6834 16.0976 15.3166 15.7071 15.7071C15.3166 16.0976 14.6834 16.0976 14.2929 15.7071L12 13.4142L9.70712 15.7071C9.3166 16.0976 8.68343 16.0976 8.29291 15.7071Z"/><path d="M12 1.5C6.20103 1.5 1.50002 6.20101 1.50002 12C1.50002 17.799 6.20103 22.5 12 22.5C17.799 22.5 22.5 17.799 22.5 12C22.5 6.20101 17.799 1.5 12 1.5ZM12 3.5C7.3056 3.5 3.50002 7.30558 3.50002 12C3.50002 16.6944 7.3056 20.5 12 20.5C16.6944 20.5 20.5 16.6944 20.5 12C20.5 7.30558 16.6944 3.5 12 3.5Z" fill-rule="evenodd" clip-rule="evenodd"/>'),
+  folderAdd: libraryFloatingIcon('<path d="M21.581 7.87C21.21 7.144 20.629 6.565 19.9 6.195C19.079 5.778 18.145 5.778 16.452 5.778H13.091L12.311 4.222C11.979 3.561 11.78 3.163 11.432 2.824C11.127 2.526 10.753 2.296 10.35 2.157C9.892 2 9.47 2 8.705 2H6.031C4.85 2 4.199 2 3.581 2.314C3.033 2.593 2.595 3.029 2.315 3.576C1.999 4.195 1.999 4.844 1.999 6.022V16.466C1.999 18.155 1.999 19.086 2.418 19.907C2.789 20.632 3.369 21.211 4.098 21.582C4.919 21.999 5.852 21.999 7.546 21.999H16.451C18.144 21.999 19.078 21.999 19.9 21.582C20.628 21.212 21.209 20.633 21.58 19.907C21.999 19.086 21.999 18.156 21.999 16.466V11.31C21.999 9.62 21.999 8.689 21.58 7.869L21.581 7.87ZM4.097 4.486C4.183 4.318 4.318 4.183 4.488 4.097C4.68 3.999 5.247 3.999 6.032 3.999H8.706C9.22 3.999 9.559 3.999 9.701 4.048C9.826 4.09 9.941 4.162 10.035 4.254C10.142 4.358 10.294 4.661 10.523 5.118L10.854 5.777H4C4 5.123 4.01 4.655 4.097 4.485V4.486ZM20 16.467C20 17.846 20 18.607 19.8 18.998C19.623 19.345 19.345 19.623 18.996 19.8C18.6 20 17.838 20 16.452 20H7.547C6.162 20 5.399 20 5.005 19.8C4.655 19.622 4.377 19.345 4.2 18.998C4 18.606 4 17.846 4 16.466V7.778H12.454C12.468 7.778 12.482 7.778 12.496 7.778H16.453C17.839 7.778 18.601 7.778 18.996 7.978C19.346 8.155 19.624 8.433 19.801 8.78C20.001 9.172 20.001 9.931 20.001 11.311L20 16.467ZM16.182 13.813C16.182 14.365 15.735 14.813 15.182 14.813H13.002V17.07C13.002 17.622 12.554 18.07 12.002 18.07C11.45 18.07 11.002 17.622 11.002 17.07V14.813H8.818C8.266 14.813 7.818 14.365 7.818 13.813C7.818 13.261 8.266 12.813 8.818 12.813H11.002V10.707C11.002 10.155 11.45 9.707 12.002 9.707C12.554 9.707 13.002 10.155 13.002 10.707V12.813H15.182C15.735 12.813 16.182 13.261 16.182 13.813Z"/>'),
+  more: libraryFloatingIcon('<path d="M5.25 14.25C6.49264 14.25 7.5 13.2426 7.5 12C7.5 10.7574 6.49264 9.75 5.25 9.75C4.00736 9.75 3 10.7574 3 12C3 13.2426 4.00736 14.25 5.25 14.25Z"/><path d="M14.25 12C14.25 13.2426 13.2426 14.25 12 14.25C10.7574 14.25 9.75 13.2426 9.75 12C9.75 10.7574 10.7574 9.75 12 9.75C13.2426 9.75 14.25 10.7574 14.25 12Z"/><path d="M21 12C21 13.2426 19.9926 14.25 18.75 14.25C17.5074 14.25 16.5 13.2426 16.5 12C16.5 10.7574 17.5074 9.75 18.75 9.75C19.9926 9.75 21 10.7574 21 12Z"/>'),
+};
+
 var LibraryMain = {
   data: function () {
     return {
@@ -184,12 +195,18 @@ var LibraryMain = {
   mounted: function () {
     var vm = this;
     protoSettingsSubscribe(function (s) { vm.quickAd = s.libraryQuickAd; });
+    this._onResize = this.snapFloating.bind(this);
+    window.addEventListener('resize', this._onResize);
   },
-  unmounted: function () { clearTimeout(this._toastTimer); },
+  unmounted: function () {
+    clearTimeout(this._toastTimer);
+    window.removeEventListener('resize', this._onResize);
+  },
   watch: {
     // 선택 UI 진입 경로 두 가지 — 패널 게임 추가(대상 그룹) · 게임 선택 버튼(대상 없음)
     'store.addTargetId': function (id, prev) { this.onSelectEnter(id, prev); },
     'store.selectMode': function (on, prev) { this.onSelectEnter(on, prev); },
+    'selected.length': function () { this.$nextTick(this.snapFloating); },
     // 광고를 켜고 끄면 카드 수가 바뀐다 — 없어진 페이지에 머물지 않게
     quickPages: function (n) {
       if (this.quickPage > n - 1) this.goQuick(n - 1 - this.quickPage);
@@ -292,6 +309,20 @@ var LibraryMain = {
       var i = this.selected.indexOf(g.id);
       if (i >= 0) this.selected.splice(i, 1);
       else this.selected.push(g.id);
+    },
+    // 하단 플로팅을 정수 픽셀에 맞춘다 — 버튼 폭(글자 폭)이 소수면 아이콘이 반 픽셀에 그려져 굵기가 번지고
+    // 더보기 점 세 개 크기가 달라 보인다. 버튼 폭은 짝수 정수로 올리고(아이콘이 가운데 정수 위치),
+    // 바 전체는 translate로 남은 소수만큼 당긴다. 펼쳐지는 중인 선택 해제는 끝난 뒤(after-enter) 다시 맞춘다
+    snapFloating: function () {
+      var bar = this.$el.querySelector('.library-floating__bar');
+      if (!bar) return;
+      var btns = bar.querySelectorAll('.library-floating__btn:not(.library-floating-clear-enter-active):not(.library-floating-clear-leave-active)');
+      Array.prototype.forEach.call(btns, function (b) { b.style.width = ''; });
+      Array.prototype.forEach.call(btns, function (b) { b.style.width = Math.ceil(b.getBoundingClientRect().width / 2) * 2 + 'px'; });
+      bar.style.translate = '';
+      var x = bar.getBoundingClientRect().left;
+      var frac = x - Math.round(x);
+      if (frac) bar.style.translate = -frac + 'px 0';
     },
     // 게임 선택 버튼 — 대상 그룹 없이 선택 UI로 (패널 게임 추가 중이면 그것을 끝내고)
     startSelect: function () { this.store.addTargetId = null; this.store.selectMode = true; },
@@ -408,17 +439,17 @@ var LibraryMain = {
 
       // 하단 플로팅 (component/selection UI/floating) — 선택 UI 동안 항상. 고르기 전엔 비활성(그레이, 그룹에 추가 · 더보기),
       // 하나 이상 고르면 오렌지로 바뀌면서 선택 해제가 앞에 펼쳐진다 (Figma 2115:32819 비활성)
-      '<transition name="library-floating">' +
+      '<transition name="library-floating" @after-enter="snapFloating">' +
         '<div v-if="selecting" class="library-floating" :class="{ \'is-active\': selected.length }" data-name="하단 플로딩 컴포넌트">' +
           '<div class="library-floating__bar" data-name="component/selection UI/floating">' +
             '<div class="library-floating__group">' +
-              '<transition name="library-floating-clear">' +
-                '<button v-if="selected.length" class="library-floating__btn library-floating__btn--clear" type="button" @click="selected = []" data-name="component/selection UI/btn"><i class="ic-v2-control-close-circle-line" aria-hidden="true"></i>선택 해제</button>' +
+              '<transition name="library-floating-clear" @after-enter="snapFloating" @after-leave="snapFloating">' +
+                '<button v-if="selected.length" class="library-floating__btn library-floating__btn--clear" type="button" @click="selected = []" data-name="component/selection UI/btn">' + LIBRARY_FLOATING_ICON.close + '선택 해제</button>' +
               '</transition>' +
-              '<button class="library-floating__btn" type="button" :disabled="!selected.length" @click="addToGroup" data-name="component/selection UI/btn"><i class="ic-v2-content-folder-add-line" aria-hidden="true"></i>그룹에 추가</button>' +
+              '<button class="library-floating__btn" type="button" :disabled="!selected.length" @click="addToGroup" data-name="component/selection UI/btn">' + LIBRARY_FLOATING_ICON.folderAdd + '그룹에 추가</button>' +
             '</div>' +
             '<span class="library-floating__div" aria-hidden="true"></span>' +
-            '<button class="library-floating__btn" type="button" :disabled="!selected.length" data-name="component/selection UI/btn"><i class="ic-v2-navigation-option-horizontal-fill" aria-hidden="true"></i>더보기</button>' +
+            '<button class="library-floating__btn" type="button" :disabled="!selected.length" data-name="component/selection UI/btn">' + LIBRARY_FLOATING_ICON.more + '더보기</button>' +
           '</div>' +
         '</div>' +
       '</transition>' +
