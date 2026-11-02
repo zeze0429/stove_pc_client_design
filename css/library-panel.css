@@ -142,10 +142,11 @@
 }
 .library-panel .game-group { gap: 0.4rem; }
 
-/* 커스텀 스크롤바 — 패널 오른쪽 벽에서 8, 패널에 마우스가 있을 때만 (썸 색은 gnb.css 공통 규칙) */
+/* 커스텀 스크롤바 — 패널 오른쪽 벽에서 8, 패널에 마우스가 있을 때만 (썸 색은 gnb.css 공통 규칙).
+   트랙은 첫 그룹 타이틀 높이에서 시작 — 목록 위 여백(16)만큼 내린다 */
 .library-panel__scrollbar {
   position: absolute;
-  top: 0;
+  top: 1.6rem;
   right: -1.2rem; /* 패널 좌우 여백 20 안쪽 기준 → 벽에서 8 */
   bottom: 2rem; /* 패널 하단에서 20 — 사이드바와 동일 */
   width: 0.4rem;
