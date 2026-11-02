@@ -760,13 +760,14 @@
   cursor: pointer;
 }
 .add-group-dialog__clear i { font-size: 1.6rem; }
+/* 완료 — 이름을 쓰면 brand-primary (사용자 지정, 가이드의 neutral-variant-1 대신) / 비어 있거나 에러면 비활성 */
 .add-group-dialog__done {
   flex: 0 0 auto;
   height: 4.4rem;
   padding: 0 2rem;
   border: 0;
   border-radius: var(--radius-lg);
-  background: var(--stds-sem-color-neutral-variant-1);
+  background: var(--stds-sem-color-brand-primary);
   color: var(--stds-glob-color-white);
   font-size: 1.4rem;
   font-weight: 500;
@@ -776,8 +777,8 @@
   cursor: pointer;
   transition: background-color 0.12s;
 }
-.add-group-dialog__done:hover { background: var(--stds-sem-color-neutral-variant-1-hover); }
-.add-group-dialog__done:active { background: var(--stds-sem-color-neutral-variant-1-pressed); }
+.add-group-dialog__done:not(:disabled):hover { background: var(--stds-sem-color-brand-primary-hover); }
+.add-group-dialog__done:not(:disabled):active { background: var(--stds-sem-color-brand-primary-pressed); }
 .add-group-dialog__done:disabled { background: var(--stds-sem-color-disabled-variant-3); color: var(--stds-sem-color-disabled-variant-1); cursor: default; }
 .add-group-dialog__error {
   display: flex;
