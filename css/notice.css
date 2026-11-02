@@ -46,7 +46,7 @@
   width: 100%;
   height: 10.4rem;
   padding: var(--spacing-16) var(--spacing-40) var(--spacing-16) var(--spacing-20);
-  background: var(--surface-elevation-1);
+  background: var(--stds-sem-color-surface-elevation-1);
   border-radius: 1.6rem; /* STDS 스케일에 없는 값 — Figma 원본값 유지 */
   box-shadow: var(--shadow-12);
   overflow: hidden;
@@ -76,9 +76,9 @@
   width: 6.4rem;
   height: 6.4rem;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--inverse-variant-3);
+  border: 1px solid var(--stds-sem-color-inverse-variant-3);
   overflow: hidden;
-  background: var(--surface-elevation-2);
+  background: var(--stds-sem-color-surface-elevation-2);
 }
 .notice__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -92,7 +92,7 @@
 
 .notice__title {
   margin: 0; /* <p> 기본 마진 리셋 — 없으면 flex gap(4px) 위에 브라우저 기본 마진이 겹쳐 간격이 벌어짐 */
-  color: var(--on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -100,7 +100,7 @@
 
 .notice__desc {
   margin: 0; /* 위와 동일한 이유 */
-  color: var(--on-surface-elevation-2);
+  color: var(--stds-sem-color-on-surface-elevation-2);
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -110,7 +110,7 @@
      Figma 원본은 음절 단위로 줄바꿈(필요하면 단어 중간도 끊음)하므로 그것과 맞춘다. */
   word-break: normal;
 }
-.notice__desc b { color: var(--on-surface-elevation-2); font-weight: 700; }
+.notice__desc b { color: var(--stds-sem-color-on-surface-elevation-2); font-weight: 700; }
 
 /* 제목 없이 본문만 있는 알림 — 제목 줄이 없는 만큼 카드 높이(104px) 안에서 3줄까지 확보 가능 */
 .notice--desc-only .notice__desc { -webkit-line-clamp: 3; }
@@ -124,11 +124,11 @@
   border-radius: var(--radius-full);
   display: grid;
   place-items: center;
-  color: var(--on-surface-elevation-2);
+  color: var(--stds-sem-color-on-surface-elevation-2);
   transition: background 0.12s, color 0.12s;
 }
 .notice__close i { font-size: 1.6rem; }
-.notice__close:hover { background: var(--interaction-hover); color: var(--on-surface-elevation-1); }
+.notice__close:hover { background: var(--stds-sem-color-interaction-hover); color: var(--stds-sem-color-on-surface-elevation-1); }
 
 /* ---- 리치 알림 (배너 이미지 + 버튼) ------------------------- */
 .notice--rich {
@@ -144,7 +144,7 @@
   width: 100%;
   height: 20rem;
   overflow: hidden;
-  background: var(--stove-white);
+  background: var(--stds-glob-color-white);
 }
 .notice--rich__banner img {
   /* object-fit:cover 대신 Figma 원본 좌표(594x251, -96/-33)를 그대로 재현
@@ -159,8 +159,8 @@
 .notice--rich__banner .notice__close {
   top: var(--spacing-8);
   right: var(--spacing-8);
-  background: var(--stove-black-30);
-  color: var(--stove-white);
+  background: var(--stds-glob-color-black-30);
+  color: var(--stds-glob-color-white);
 }
 .notice--rich__banner .notice__close:hover { background: rgba(0, 0, 0, 0.45); }
 
@@ -185,13 +185,13 @@
   justify-content: center;
   height: 4.4rem;
   padding: var(--spacing-12) var(--spacing-20);
-  border: 1px solid var(--stove-white-50);
+  border: 1px solid var(--stds-glob-color-white-50);
   border-radius: var(--radius-lg);
-  color: var(--stove-white);
+  color: var(--stds-glob-color-white);
   background: transparent;
   transition: background 0.12s;
 }
-.notice__cta:hover { background: var(--stove-white-08); }
+.notice__cta:hover { background: var(--stds-glob-color-white-8); }
 
 /* ---- 프로토타입 데모 컨트롤 (디자인 스펙 아님) --------------- */
 .notice-demo-btn {
@@ -206,11 +206,11 @@
   padding: 0 var(--spacing-20) 0 var(--spacing-16);
   border: 0;
   border-radius: var(--radius-full);
-  background: var(--brand-primary-enabled);
-  color: var(--stove-white);
+  background: var(--stds-sem-color-brand-primary);
+  color: var(--stds-glob-color-white);
   box-shadow: var(--shadow-4);
   transition: background 0.12s;
 }
 .notice-demo-btn i { font-size: 2rem; } /* 아이콘은 텍스트보다 크게 — icon-btn 등 기존 아이콘 버튼 비례와 동일 */
-.notice-demo-btn:hover { background: var(--brand-primary-hover); }
-.notice-demo-btn:active { background: var(--brand-primary-pressed); }
+.notice-demo-btn:hover { background: var(--stds-sem-color-brand-primary-hover); }
+.notice-demo-btn:active { background: var(--stds-sem-color-brand-primary-pressed); }

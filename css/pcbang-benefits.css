@@ -10,7 +10,7 @@
   flex: 0 0 auto;
   margin: 0;
   text-align: center;
-  color: var(--on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-1);
 }
 /* PC방 이름만 포인트 컬러 — Figma가 토큰이 아닌 고정 색(#1fff86)을 지정 */
 .pcbang-store { color: #1fff86; }
@@ -32,7 +32,7 @@
   gap: 1.2rem;
   padding: 2rem;
   border-radius: 1.6rem; /* Figma 16px — radius 스케일에 없는 값 */
-  background: var(--stove-gray-700); /* 배경 이미지 미등록 시 기본 컬러 */
+  background: var(--stds-glob-color-gray700); /* 배경 이미지 미등록 시 기본 컬러 */
   overflow: hidden;
 }
 /* 등록 규격 1272x400(2배수) = 표시 636x200, 카드가 더 낮으면 TOP 기준 크롭 */
@@ -49,7 +49,7 @@
 }
 .pcbang-card__title {
   margin: 0;
-  color: var(--stove-white);
+  color: var(--stds-glob-color-white);
 }
 
 .pcbang-card__game {
@@ -78,7 +78,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  border: 1px solid var(--stove-white-04); /* 팝업은 테마 상관없이 글로벌 고정 */
+  border: 1px solid var(--stds-glob-color-white-4); /* 팝업은 테마 상관없이 글로벌 고정 */
   border-radius: inherit;
   pointer-events: none;
 }
@@ -86,22 +86,22 @@
 .pcbang-card__thumb--empty {
   display: grid;
   place-items: center;
-  background: var(--stove-white-04);
-  color: var(--stove-white-04);
+  background: var(--stds-glob-color-white-4);
+  color: var(--stds-glob-color-white-4);
 }
 .pcbang-card__thumb--empty i { font-size: 2rem; }
 
 .pcbang-card__info { min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; }
 .pcbang-card__name {
   margin: 0;
-  color: var(--stove-white);
+  color: var(--stds-glob-color-white);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .pcbang-card__genre {
   margin: 0;
-  color: var(--stove-white-50);
+  color: var(--stds-glob-color-white-50);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -127,13 +127,13 @@
   gap: 0.2rem;
   padding: 1rem 1.6rem;
   border-radius: var(--radius-lg);
-  background: var(--stove-white-10);
-  color: var(--stove-white);
+  background: var(--stds-glob-color-white-10);
+  color: var(--stds-glob-color-white);
   overflow: hidden;
   transition: background .15s;
 }
-.pcbang-btn:hover { background: var(--stove-white-15); }
-.pcbang-btn:active { background: var(--stove-white-20); }
+.pcbang-btn:hover { background: var(--stds-glob-color-white-15); }
+.pcbang-btn:active { background: var(--stds-glob-color-white-20); }
 .pcbang-btn__label { display: flex; align-items: center; justify-content: center; gap: 0.4rem; min-width: 0; text-align: center; }
 .pcbang-btn__label i { flex: 0 0 auto; font-size: 1.6rem; }
 /* 업데이트 있을 때 라벨 오른쪽 어깨에 붙는 도트 — 박스는 글줄 높이(1.8rem)만큼
@@ -147,7 +147,7 @@
   width: 0.4rem;
   height: 0.4rem;
   border-radius: var(--radius-full);
-  background: var(--brand-primary-enabled);
+  background: var(--stds-sem-color-brand-primary);
 }
 
 /* ---- 항목 없음 --------------------------------------------- */
@@ -156,7 +156,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
-  background: var(--inverse-elevation-7);
+  background: var(--stds-sem-color-inverse-elevation-7);
 }
-.pcbang-card--empty i { font-size: 4.8rem; color: var(--on-surface-elevation-4); }
-.pcbang-card--empty p { margin: 0; color: var(--on-surface-elevation-4); text-align: center; }
+.pcbang-card--empty i { font-size: 4.8rem; color: var(--stds-sem-color-on-surface-elevation-4); }
+.pcbang-card--empty p { margin: 0; color: var(--stds-sem-color-on-surface-elevation-4); text-align: center; }

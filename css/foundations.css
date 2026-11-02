@@ -33,7 +33,7 @@
 
   /* ---- Shadow ------------------------------------------- */
   --shadow-0:  none;
-  --shadow-2:  0 0.2rem 0.4rem var(--stove-black-06);
-  --shadow-4:  0 0.4rem 1.0rem var(--stove-black-10);
-  --shadow-12: 0 1.2rem 2.8rem var(--stove-black-20);
+  --shadow-2:  0 0.2rem 0.4rem var(--stds-glob-color-black-6);
+  --shadow-4:  0 0.4rem 1.0rem var(--stds-glob-color-black-10);
+  --shadow-12: 0 1.2rem 2.8rem var(--stds-glob-color-black-20);
 }

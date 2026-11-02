@@ -26,12 +26,12 @@
   gap: 0.8rem;
   padding: 2.4rem 0;
 }
-.library-panel__title > i { font-size: 1.8rem; color: var(--on-surface-elevation-4); }
+.library-panel__title > i { font-size: 1.8rem; color: var(--stds-sem-color-on-surface-elevation-4); }
 .library-panel__title-text { display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
-.library-panel__title-name { color: var(--on-surface-elevation-1); }
+.library-panel__title-name { color: var(--stds-sem-color-on-surface-elevation-1); }
 /* 그룹 수 — 0이면 placeholder, 하나라도 있으면 brand-primary */
-.library-panel__title-count { color: var(--placeholder); }
-.library-panel__title-count.is-active { color: var(--brand-primary-enabled); }
+.library-panel__title-count { color: var(--stds-sem-color-placeholder); }
+.library-panel__title-count.is-active { color: var(--stds-sem-color-brand-primary); }
 
 /* ---- 2. 버튼 그룹 (btn/create group) — 그룹 만들기(남는 폭) + 아이콘 버튼 32 x2, 간격 8 ---- */
 .library-panel__actions {
@@ -50,16 +50,16 @@
   height: 3.2rem;
   padding: 0 1.2rem;
   border-radius: var(--radius-lg);
-  background: var(--neutral-variant-1);
-  color: var(--stove-white); /* Figma glob white — 테마 상관없이 */
+  background: var(--stds-sem-color-neutral-variant-1);
+  color: var(--stds-glob-color-white); /* Figma glob white — 테마 상관없이 */
   cursor: pointer;
   transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .library-panel__create i { font-size: 1.6rem; }
-.library-panel__create:not(:disabled):hover { background: var(--neutral-variant-1-hover); }
-.library-panel__create:not(:disabled):active { background: var(--neutral-variant-1-pressed); }
+.library-panel__create:not(:disabled):hover { background: var(--stds-sem-color-neutral-variant-1-hover); }
+.library-panel__create:not(:disabled):active { background: var(--stds-sem-color-neutral-variant-1-pressed); }
 /* 그룹 20개 — 비활성 (Figma ④ 최대 20개, glob 토큰 그대로) */
-.library-panel__create:disabled { background: var(--stove-gray-880); color: var(--stove-gray-750); cursor: default; }
+.library-panel__create:disabled { background: var(--stds-glob-color-gray880); color: var(--stds-glob-color-gray750); cursor: default; }
 .library-panel__icon-btn {
   flex: 0 0 auto;
   display: grid;
@@ -68,14 +68,14 @@
   height: 3.2rem;
   padding: 0;
   border-radius: var(--radius-lg);
-  background: var(--neutral-variant-2);
-  color: var(--on-surface-elevation-2);
+  background: var(--stds-sem-color-neutral-variant-2);
+  color: var(--stds-sem-color-on-surface-elevation-2);
   cursor: pointer;
   transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .library-panel__icon-btn i { font-size: 1.6rem; }
-.library-panel__icon-btn:hover { background: var(--neutral-variant-2-hover); }
-.library-panel__icon-btn:active { background: var(--neutral-variant-2-pressed); }
+.library-panel__icon-btn:hover { background: var(--stds-sem-color-neutral-variant-2-hover); }
+.library-panel__icon-btn:active { background: var(--stds-sem-color-neutral-variant-2-pressed); }
 
 /* ---- 3. 스크롤 영역 — 구분선 아래 전부 (안내 박스·구분선은 고정). 하단 TOP(80)에 가리지 않게 그만큼 여백 ---- */
 .library-panel__body {
@@ -103,8 +103,8 @@
   height: 5.6rem;
   padding: 0 1.2rem;
   border-radius: var(--radius-lg);
-  background: var(--inverse-elevation-6);
-  color: var(--inverse-elevation-1);
+  background: var(--stds-sem-color-inverse-elevation-6);
+  color: var(--stds-sem-color-inverse-elevation-1);
 }
 .library-panel__empty-box i { flex: 0 0 auto; font-size: 2.4rem; }
 .library-panel__empty-box p { margin: 0; }
@@ -125,10 +125,10 @@
   align-items: center;
   height: 4.2rem;
   padding: 0 calc(1.6rem - 1px);
-  border: 1px solid var(--stove-white-40);
+  border: 1px solid var(--stds-glob-color-white-40);
   border-radius: var(--radius-lg);
-  background: var(--stove-gray-200);
-  color: var(--stove-gray-750);
+  background: var(--stds-glob-color-gray200);
+  color: var(--stds-glob-color-gray750);
 }
 /* 게임 그룹 추가 완료 토스트 — 삭제 안내와 같은 자리(버튼 그룹 위), 3초.
    Figma toast popup 완료 메세지 (10938:80229): 배경 tint_blue_100 · 보더 white/40 · 위아래 12 · 좌우 16, 줄 사이 4.
@@ -145,13 +145,13 @@
   align-items: flex-start;
   gap: 0.4rem;
   padding: calc(1.2rem - 1px) calc(1.6rem - 1px);
-  border: 1px solid var(--stove-white-40);
+  border: 1px solid var(--stds-glob-color-white-40);
   border-radius: var(--radius-lg);
-  background: var(--stove-tint-blue-100);
+  background: var(--stds-glob-color-tint-blue100);
   color: var(--library-toast-navy);
 }
 .library-panel__added-title { margin: 0; }
-.library-panel__added-title b { color: var(--brand-blue-enabled); font-weight: 700; }
+.library-panel__added-title b { color: var(--stds-sem-color-brand-blue); font-weight: 700; }
 .library-panel__added-group {
   display: flex;
   align-items: center;
@@ -161,7 +161,7 @@
   padding: 0 0.6rem 0 0.4rem;
   border-radius: var(--radius-full);
   background: color-mix(in srgb, var(--library-toast-navy) 50%, transparent);
-  color: var(--stove-white);
+  color: var(--stds-glob-color-white);
   font-size: 1rem;
   font-weight: 500;
   letter-spacing: -0.02rem;
@@ -169,7 +169,7 @@
 }
 .library-panel__added-group i { flex: 0 0 auto; font-size: 1.2rem; }
 .library-panel__added-group span { overflow: hidden; text-overflow: ellipsis; }
-.library-panel__divider { height: 1px; background: var(--inverse-elevation-3); }
+.library-panel__divider { height: 1px; background: var(--stds-sem-color-inverse-elevation-3); }
 
 /* 게임 그룹 목록 — 위 16. 아래는 스크롤 영역 여백(TOP 80)만 — 마지막 항목 ~ 바닥 80, 사이드바와 같게.
    패널 그룹은 타이틀 ~ 목록 간격 4 (사이드바는 2) */
@@ -233,12 +233,12 @@
   padding-bottom: 1.6rem;
 }
 .library-panel__create-field { display: flex; flex-direction: column; gap: 0.8rem; }
-.library-panel__create-label { margin: 0; color: var(--on-surface-elevation-2); }
+.library-panel__create-label { margin: 0; color: var(--stds-sem-color-on-surface-elevation-2); }
 .library-panel__create-hints {
   margin: 0;
   padding-left: 1.65rem; /* Figma ms-16.5 — 불릿은 바깥 */
   list-style: disc;
-  color: var(--inverse-elevation-1);
+  color: var(--stds-sem-color-inverse-elevation-1);
 }
 
 /* 그룹 이름 입력칸 (그룹 만들기 · 이름 변경 공용) — 32 높이, 아래 라인
@@ -265,10 +265,10 @@
   right: 0;
   bottom: 0;
   height: 1px;
-  background: var(--border);
+  background: var(--stds-sem-color-border);
 }
-.group-name-input.is-active .group-name-input__field::after { height: 2px; background: var(--on-surface-elevation-1); }
-.group-name-input.is-error .group-name-input__field::after { height: 2px; background: var(--system-error); }
+.group-name-input.is-active .group-name-input__field::after { height: 2px; background: var(--stds-sem-color-on-surface-elevation-1); }
+.group-name-input.is-error .group-name-input__field::after { height: 2px; background: var(--stds-sem-color-error); }
 .group-name-input__control {
   flex: 1 1 auto;
   min-width: 0;
@@ -279,14 +279,14 @@
   background: transparent;
   font-family: inherit;
   font-weight: 400;
-  color: var(--on-surface-elevation-2);
-  caret-color: var(--brand-primary-enabled); /* Figma 커서 brand-primary */
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  caret-color: var(--stds-sem-color-brand-primary); /* Figma 커서 brand-primary */
 }
-.group-name-input__control::placeholder { color: var(--placeholder); }
+.group-name-input__control::placeholder { color: var(--stds-sem-color-placeholder); }
 /* 폭을 넘으면 앞쪽 글자를 흐리게 — 앞에 글자가 더 있다는 표시 */
 .group-name-input__control.is-overflow {
-  -webkit-mask-image: linear-gradient(90deg, transparent, var(--stove-black) 2.4rem);
-  mask-image: linear-gradient(90deg, transparent, var(--stove-black) 2.4rem);
+  -webkit-mask-image: linear-gradient(90deg, transparent, var(--stds-glob-color-black) 2.4rem);
+  mask-image: linear-gradient(90deg, transparent, var(--stds-glob-color-black) 2.4rem);
 }
 /* 클리어 버튼 16 — hover 60% · press 80% (2-1 클리어버튼) */
 .group-name-input__clear {
@@ -298,7 +298,7 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--inverse-elevation-2);
+  color: var(--stds-sem-color-inverse-elevation-2);
   cursor: pointer;
   transition: opacity 0.15s;
 }
@@ -312,7 +312,7 @@
   gap: 0.2rem;
   width: 100%;
   margin: 0;
-  color: var(--system-error);
+  color: var(--stds-sem-color-error);
 }
 .group-name-input__error i { flex: 0 0 auto; margin-top: 0.2rem; font-size: 1.4rem; }
 /* 텍스트 버튼 — 취소 | 만들기(확인). 이름이 있으면 brand-primary, 없거나 에러면 placeholder.
@@ -322,15 +322,15 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--on-surface-elevation-3);
+  color: var(--stds-sem-color-on-surface-elevation-3);
   cursor: pointer;
   transition: opacity 0.15s;
 }
-.group-name-input__btn--confirm { color: var(--brand-primary-enabled); }
-.group-name-input__btn:disabled { color: var(--placeholder); cursor: default; }
+.group-name-input__btn--confirm { color: var(--stds-sem-color-brand-primary); }
+.group-name-input__btn:disabled { color: var(--stds-sem-color-placeholder); cursor: default; }
 .group-name-input__btn:not(:disabled):hover { opacity: 0.6; }
 .group-name-input__btn:not(:disabled):active { opacity: 0.8; }
-.group-name-input__btn-div { width: 1px; height: 1.4rem; background: var(--inverse-elevation-3); }
+.group-name-input__btn-div { width: 1px; height: 1.4rem; background: var(--stds-sem-color-inverse-elevation-3); }
 
 /* ---- 3-1-1. 그룹 타이틀 — hover 배경 · press 배경, 우측 버튼은 호버(또는 메뉴 열림) 때만 ---- */
 .library-group__title {
@@ -339,9 +339,9 @@
   transition: background-color 0.12s;
 }
 .library-group__title.is-hover,
-.library-group__title.is-menu-open { background: var(--interaction-hover); }
+.library-group__title.is-menu-open { background: var(--stds-sem-color-interaction-hover); }
 /* 타이틀 자체를 누를 때만 — 안의 버튼을 누를 땐 버튼만 눌린다 */
-.library-group__title:active:not(:has(button:active)) { background: var(--interaction-pressed); }
+.library-group__title:active:not(:has(button:active)) { background: var(--stds-sem-color-interaction-pressed); }
 /* 우측 버튼 18 x2, 간격 2. 이름과는 최소 28 (Figma gap 28 — 타이틀 gap 6 포함) */
 .library-group__btns {
   display: none;
@@ -361,15 +361,15 @@
   border: 0;
   border-radius: var(--radius-md);
   background: transparent;
-  color: var(--on-surface-elevation-4);
+  color: var(--stds-sem-color-on-surface-elevation-4);
   cursor: pointer;
   transition: background-color 0.12s, color 0.12s;
 }
 .library-group__btn i { font-size: 1.4rem; }
-.library-group__btn:hover { background: var(--interaction-hover); color: var(--on-surface-elevation-2); }
-.library-group__btn:active { background: var(--interaction-pressed); color: var(--on-surface-elevation-2); }
+.library-group__btn:hover { background: var(--stds-sem-color-interaction-hover); color: var(--stds-sem-color-on-surface-elevation-2); }
+.library-group__btn:active { background: var(--stds-sem-color-interaction-pressed); color: var(--stds-sem-color-on-surface-elevation-2); }
 /* 그룹 메뉴가 열려 있는 동안 (selected) */
-.library-group__btn.is-selected { background: var(--interaction-selected); color: var(--on-surface-elevation-2); }
+.library-group__btn.is-selected { background: var(--stds-sem-color-interaction-selected); color: var(--stds-sem-color-on-surface-elevation-2); }
 
 /* 게임 없는 그룹의 게임 추가 버튼 (component/game_group/btn_게임 추가) — 56 높이, 보더 inverse-elevation-3,
    아이콘 · 글자 on-surface-elevation-4 (Figma) */
@@ -381,10 +381,10 @@
   width: 100%;
   height: 5.6rem;
   padding: 0;
-  border: 1px solid var(--inverse-elevation-3);
+  border: 1px solid var(--stds-sem-color-inverse-elevation-3);
   border-radius: var(--radius-lg);
   background: transparent;
-  color: var(--on-surface-elevation-4);
+  color: var(--stds-sem-color-on-surface-elevation-4);
   cursor: pointer;
   transition: border-color 0.12s, color 0.12s;
 }
@@ -393,15 +393,15 @@
    투명도가 붙는 자리는 시멘틱에 투명도를 걸 수 없어 글로벌 orange-500(brand-primary 라이트·다크 공통)에 20% */
 .library-group__add-box:hover,
 .library-group__add-box:active {
-  border-color: color-mix(in srgb, var(--stove-orange-500) 20%, transparent);
-  color: var(--brand-primary-enabled);
+  border-color: color-mix(in srgb, var(--stds-glob-color-orange500) 20%, transparent);
+  color: var(--stds-sem-color-brand-primary);
 }
 .library-group.is-collapsed .library-group__add-box { display: none; }
 /* 이름 변경 중엔 비활성 — 보더는 그대로, 아이콘 · 글자만 inverse-elevation-3, hover 없음 (사용자 지정) */
 .library-group__add-box:disabled,
 .library-group__add-box:disabled:hover {
-  border-color: var(--inverse-elevation-3);
-  color: var(--inverse-elevation-3);
+  border-color: var(--stds-sem-color-inverse-elevation-3);
+  color: var(--stds-sem-color-inverse-elevation-3);
   cursor: default;
 }
 /* 이름 변경 중 — 입력칸(취소 | 확인) 아래 4에 기존 게임 목록 · 게임 추가 (타이틀 ~ 목록과 같은 간격, 사용자 확정) */
@@ -412,28 +412,28 @@
    투명도가 붙는 자리는 글로벌 orange-500(= brand-primary)에 5% · 20% (시멘틱은 투명도 적용 불가 — 디자인시스템 규칙) */
 .library-panel .library-group.is-add-target {
   border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--stove-orange-500) 5%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--stove-orange-500) 20%, transparent);
+  background: color-mix(in srgb, var(--stds-glob-color-orange500) 5%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--stds-glob-color-orange500) 20%, transparent);
 }
 .library-group.is-add-target .library-group__title { cursor: default; }
 .library-group.is-add-target .library-group__title.is-hover,
 .library-group.is-add-target .library-group__title:active { background: transparent; }
-.library-group.is-add-target .game-group__name { color: var(--brand-primary-enabled); }
-.library-group.is-add-target .badge-menu-title { background: var(--brand-primary-enabled); }
+.library-group.is-add-target .game-group__name { color: var(--stds-sem-color-brand-primary); }
+.library-group.is-add-target .badge-menu-title { background: var(--stds-sem-color-brand-primary); }
 /* 게임 행은 상태값(hover · press) 없이 보여주기만 — 인디케이터는 JS에서 막는다 */
 .library-group.is-add-target .game-group__list { opacity: 0.6; cursor: default; }
-.library-group.is-add-target .game-group__list-name { color: var(--brand-primary-enabled); }
+.library-group.is-add-target .game-group__list-name { color: var(--stds-sem-color-brand-primary); }
 /* 접기/펼치기 비활성 — 호버 · 프레스 배경 없음 */
-.library-group .game-group__btn-left-arrow:disabled { color: var(--disabled-variant-3); cursor: default; background: transparent; }
+.library-group .game-group__btn-left-arrow:disabled { color: var(--stds-sem-color-disabled-variant-3); cursor: default; background: transparent; }
 /* 선택 상태의 비활성 화살표 (btn_left_arrow disabled_2) — 글로벌 orange-500 30% */
-.library-group.is-add-target .game-group__btn-left-arrow:disabled { color: color-mix(in srgb, var(--stove-orange-500) 30%, transparent); }
+.library-group.is-add-target .game-group__btn-left-arrow:disabled { color: color-mix(in srgb, var(--stds-glob-color-orange500) 30%, transparent); }
 /* 게임 추가 취소 (0825) — 항상 노출. enabled 배경 없음 / hover orange-500 4% + 툴팁 / press 10% */
 .library-group__btns--target { display: flex; }
 .library-group__cancel,
 .library-group__cancel:hover,
-.library-group__cancel:active { color: var(--brand-primary-enabled); }
-.library-group__cancel:hover { background: color-mix(in srgb, var(--stove-orange-500) 4%, transparent); }
-.library-group__cancel:active { background: color-mix(in srgb, var(--stove-orange-500) 10%, transparent); }
+.library-group__cancel:active { color: var(--stds-sem-color-brand-primary); }
+.library-group__cancel:hover { background: color-mix(in srgb, var(--stds-glob-color-orange500) 4%, transparent); }
+.library-group__cancel:active { background: color-mix(in srgb, var(--stds-glob-color-orange500) 10%, transparent); }
 
 /* 타이틀 우측 버튼 툴팁 (Tooltip/iconbtn) — 버튼 아래 2. 버튼 중앙 기준이되 타이틀 행 밖으로 나가지 않게
    행 끝에 붙이고, 꼬리만 버튼 중앙을 가리킨다 (left · 꼬리 위치는 JS). 몸통·꼬리는 뱃지 툴팁(gnb.css)과 같다 */
@@ -456,10 +456,10 @@
   flex-direction: column;
   width: max-content;
   padding: calc(0.6rem - 1px) 0; /* Figma 보더는 안쪽 — 위아래 6 · 좌우 12 안에 보더 1이 포함 */
-  border: 1px solid var(--inverse-variant-1);
+  border: 1px solid var(--stds-sem-color-inverse-variant-1);
   border-radius: var(--radius-lg);
-  background: var(--surface-layer);
-  box-shadow: 0 0.4rem 1rem var(--stove-black-10); /* Figma shadow/4 */
+  background: var(--stds-sem-color-surface-layer);
+  box-shadow: 0 0.4rem 1rem var(--stds-glob-color-black-10); /* Figma shadow/4 */
 }
 .library-panel-menu.is-measuring { visibility: hidden; }
 .library-panel-menu__item {
@@ -469,17 +469,17 @@
   padding: 0 calc(1.2rem - 1px);
   border: 0;
   background: transparent;
-  color: var(--on-surface-elevation-3);
+  color: var(--stds-sem-color-on-surface-elevation-3);
   text-align: left;
   white-space: nowrap;
   cursor: pointer;
 }
-.library-panel-menu__item:hover { background: var(--interaction-hover); }
-.library-panel-menu__item:active { background: var(--interaction-pressed); }
+.library-panel-menu__item:hover { background: var(--stds-sem-color-interaction-hover); }
+.library-panel-menu__item:active { background: var(--stds-sem-color-interaction-pressed); }
 .library-panel-menu__div {
   height: 1px;
   margin: 0.6rem calc(1.2rem - 1px);
-  background: var(--inverse-elevation-7);
+  background: var(--stds-sem-color-inverse-elevation-7);
 }
 
 /* =============================================================
@@ -505,10 +505,10 @@
 .game-menu__face {
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--inverse-variant-1);
+  border: 1px solid var(--stds-sem-color-inverse-variant-1);
   border-radius: var(--radius-lg);
-  background: var(--surface-layer);
-  box-shadow: 0 0.4rem 1rem var(--stove-black-10); /* Figma shadow/4 */
+  background: var(--stds-sem-color-surface-layer);
+  box-shadow: 0 0.4rem 1rem var(--stds-glob-color-black-10); /* Figma shadow/4 */
   backface-visibility: hidden;
 }
 /* 1뎁스 — 위아래 6(보더 포함), 폭은 내용만큼 176~240 (긴 항목은 줄바꿈) */
@@ -541,15 +541,15 @@
   padding: 0.7rem calc(1.2rem - 1px) 0.7rem calc(1.2rem - 1px); /* 보더 1 안쪽 기준 좌우 12 */
   border: 0;
   background: transparent;
-  color: var(--on-surface-elevation-3);
+  color: var(--stds-sem-color-on-surface-elevation-3);
   text-align: left;
   cursor: pointer;
 }
 .game-menu__item.has-sub { gap: 0.4rem; padding-right: calc(0.6rem - 1px); }
 .game-menu__item--remove { padding-right: calc(0.6rem - 1px); cursor: default; }
-.game-menu__item:hover { background: var(--interaction-hover); }
-.game-menu__item:active:not(:has(.game-menu__remove:active)) { background: var(--interaction-pressed); color: var(--on-surface-elevation-2); }
-.game-menu__item:disabled { color: var(--disabled-variant-1); background: transparent; cursor: default; }
+.game-menu__item:hover { background: var(--stds-sem-color-interaction-hover); }
+.game-menu__item:active:not(:has(.game-menu__remove:active)) { background: var(--stds-sem-color-interaction-pressed); color: var(--stds-sem-color-on-surface-elevation-2); }
+.game-menu__item:disabled { color: var(--stds-sem-color-disabled-variant-1); background: transparent; cursor: default; }
 .game-menu__label { flex: 1 1 auto; min-width: 0; }
 .game-menu__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* 18 버튼 안 아이콘 14 (component/game_group/title/btn) */
@@ -563,7 +563,7 @@
   border: 0;
   border-radius: var(--radius-md);
   background: transparent;
-  color: var(--on-surface-elevation-3);
+  color: var(--stds-sem-color-on-surface-elevation-3);
 }
 .game-menu__icon i { font-size: 1.4rem; }
 
@@ -574,7 +574,7 @@
   width: 2.6rem;
   height: 1.6rem;
   border-radius: var(--radius-full);
-  background: var(--neutral-variant-1);
+  background: var(--stds-sem-color-neutral-variant-1);
   transition: background-color 0.15s;
 }
 .game-menu__toggle::after {
@@ -585,10 +585,10 @@
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
-  background: var(--stove-white);
+  background: var(--stds-glob-color-white);
   transition: transform 0.15s;
 }
-.game-menu__toggle.is-on { background: var(--brand-primary-enabled); }
+.game-menu__toggle.is-on { background: var(--stds-sem-color-brand-primary); }
 .game-menu__toggle.is-on::after { transform: translateX(1rem); }
 
 /* 2뎁스 상단 — ← + 메뉴명(elevation-1), 좌 6 · 우 12. 상태값은 ← 버튼에만 (hover · press 배경) */
@@ -601,18 +601,18 @@
   padding: 0 calc(1.2rem - 1px) 0 calc(0.6rem - 1px);
   border: 0;
   background: transparent;
-  color: var(--on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   text-align: left;
   cursor: pointer;
 }
 .game-menu__head .game-menu__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.game-menu__head .game-menu__back { color: var(--on-surface-elevation-2); transition: background-color 0.12s; }
-.game-menu__head:hover .game-menu__back { background: var(--interaction-hover); }
-.game-menu__head:active .game-menu__back { background: var(--interaction-pressed); }
+.game-menu__head .game-menu__back { color: var(--stds-sem-color-on-surface-elevation-2); transition: background-color 0.12s; }
+.game-menu__head:hover .game-menu__back { background: var(--stds-sem-color-interaction-hover); }
+.game-menu__head:active .game-menu__back { background: var(--stds-sem-color-interaction-pressed); }
 .game-menu__div {
   height: 1px;
   margin: 0.6rem calc(1.2rem - 1px);
-  background: var(--inverse-elevation-7);
+  background: var(--stds-sem-color-inverse-elevation-7);
 }
 /* 그룹 목록 — 5개(160)까지, 넘으면 스크롤 */
 .game-menu__groups {
@@ -621,12 +621,12 @@
   overscroll-behavior: contain;
 }
 .game-menu__groups::-webkit-scrollbar { width: 0.4rem; }
-.game-menu__groups::-webkit-scrollbar-thumb { border-radius: var(--radius-full); background-color: var(--inverse-elevation-2); }
-.game-menu__groups::-webkit-scrollbar-thumb:hover { background-color: var(--inverse-elevation-1); }
+.game-menu__groups::-webkit-scrollbar-thumb { border-radius: var(--radius-full); background-color: var(--stds-sem-color-inverse-elevation-2); }
+.game-menu__groups::-webkit-scrollbar-thumb:hover { background-color: var(--stds-sem-color-inverse-elevation-1); }
 /* 그룹에서 제거 ⊗ — on-surface-elevation-4, hover · press 배경 + 툴팁 */
-.game-menu__remove { color: var(--on-surface-elevation-4); cursor: pointer; transition: background-color 0.12s; }
-.game-menu__remove:hover { background: var(--interaction-hover); }
-.game-menu__remove:active { background: var(--interaction-pressed); }
+.game-menu__remove { color: var(--stds-sem-color-on-surface-elevation-4); cursor: pointer; transition: background-color 0.12s; }
+.game-menu__remove:hover { background: var(--stds-sem-color-interaction-hover); }
+.game-menu__remove:active { background: var(--stds-sem-color-interaction-pressed); }
 
 /* 그룹 없음 (최초 생성) — 폴더 28 + 문구 3줄, inverse-elevation-1 */
 .game-menu__empty {
@@ -635,7 +635,7 @@
   align-items: center;
   gap: 0.4rem;
   padding: 0.6rem 1.2rem 1.2rem;
-  color: var(--inverse-elevation-1);
+  color: var(--stds-sem-color-inverse-elevation-1);
   text-align: center;
 }
 .game-menu__empty i { font-size: 2.8rem; }
@@ -653,26 +653,26 @@
   padding: 0 1.2rem;
   border: 0;
   border-radius: var(--radius-md);
-  background: var(--neutral-variant-1);
-  color: var(--stove-white);
+  background: var(--stds-sem-color-neutral-variant-1);
+  color: var(--stds-glob-color-white);
   cursor: pointer;
   transition: background-color 0.12s;
 }
 .game-menu__create-wrap.is-empty .game-menu__create { width: 16rem; }
 .game-menu__create i { font-size: 1.6rem; }
-.game-menu__create:hover { background: var(--neutral-variant-1-hover); }
-.game-menu__create:active { background: var(--neutral-variant-1-pressed); }
+.game-menu__create:hover { background: var(--stds-sem-color-neutral-variant-1-hover); }
+.game-menu__create:active { background: var(--stds-sem-color-neutral-variant-1-pressed); }
 /* 그룹 20개 — 비활성 (disabled-variant-3 배경 · disabled-variant-1 글자) */
-.game-menu__create:disabled { background: var(--disabled-variant-3); color: var(--disabled-variant-1); cursor: default; }
+.game-menu__create:disabled { background: var(--stds-sem-color-disabled-variant-3); color: var(--stds-sem-color-disabled-variant-1); cursor: default; }
 
 /* 툴팁 — 메뉴(40) 위. 잘린 그룹명은 이 메뉴에서만 gray700 배경 (0901 가이드, 다른 툴팁은 그대로) */
-.game-menu__name-tip { z-index: 50; background: var(--stove-gray-700); color: var(--stove-white); }
+.game-menu__name-tip { z-index: 50; background: var(--stds-glob-color-gray700); color: var(--stds-glob-color-white); }
 .game-menu__remove-tip { z-index: 50; }
 
 /* 게임 행 — 선택(여러 개 가능) = interaction-selected (Figma ⑫), 글자는 gnb.css 선택 규칙(elevation-2) */
-.library-panel .game-group__list.is-selected { background: var(--interaction-selected); }
+.library-panel .game-group__list.is-selected { background: var(--stds-sem-color-interaction-selected); }
 /* 게임 행 — 우클릭 메뉴가 열려 있는 동안 (사이드바 .is-context-open과 같은 interaction-hover) */
-.library-panel .game-group__list.is-menu-focus { background: var(--interaction-hover); }
+.library-panel .game-group__list.is-menu-focus { background: var(--stds-sem-color-interaction-hover); }
 
 /* =============================================================
    그룹 만들기 팝업 (Figma 3-6) — 셸은 css/layer-dialog.css
@@ -681,7 +681,7 @@
 .group-dialog__hints {
   margin: 0;
   padding-left: 2.1rem;
-  color: var(--on-surface-elevation-4);
+  color: var(--stds-sem-color-on-surface-elevation-4);
   font-size: 1.4rem;
   line-height: 2.4rem;
   letter-spacing: -0.042rem;
@@ -695,12 +695,12 @@
   gap: 0.8rem;
   height: 4.4rem;
   padding: 0 1.4rem;
-  border: 2px solid var(--stove-gray-400);
+  border: 2px solid var(--stds-glob-color-gray400);
   border-radius: var(--radius-lg);
-  background: var(--neutral-variant-3);
+  background: var(--stds-sem-color-neutral-variant-3);
   cursor: text;
 }
-.group-dialog__field.is-error { border-color: var(--system-error); }
+.group-dialog__field.is-error { border-color: var(--stds-sem-color-error); }
 .group-dialog__input {
   flex: 1 1 auto;
   min-width: 0;
@@ -708,14 +708,14 @@
   border: 0;
   outline: none;
   background: transparent;
-  color: var(--on-surface-elevation-2);
-  caret-color: var(--brand-primary-enabled);
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  caret-color: var(--stds-sem-color-brand-primary);
   font: inherit;
   font-size: 1.4rem;
   line-height: 2rem;
   letter-spacing: -0.042rem;
 }
-.group-dialog__input::placeholder { color: var(--placeholder); }
+.group-dialog__input::placeholder { color: var(--stds-sem-color-placeholder); }
 /* 지우기 — 그룹 이름 입력칸(.group-name-input__clear)과 같은 모양 */
 .group-dialog__clear {
   flex: 0 0 auto;
@@ -724,7 +724,7 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--inverse-elevation-2);
+  color: var(--stds-sem-color-inverse-elevation-2);
   cursor: pointer;
   transition: opacity 0.15s;
 }
@@ -736,7 +736,7 @@
   align-items: flex-start;
   gap: 0.2rem;
   margin: 0;
-  color: var(--system-error);
+  color: var(--stds-sem-color-error);
   font-size: 1.2rem;
   line-height: 1.8rem;
   letter-spacing: -0.024rem;
@@ -750,8 +750,8 @@
   padding: 0;
   border: 0;
   border-radius: var(--radius-lg);
-  background: var(--brand-primary-enabled);
-  color: var(--stove-white);
+  background: var(--stds-sem-color-brand-primary);
+  color: var(--stds-glob-color-white);
   font-size: 1.4rem;
   font-weight: 500;
   line-height: 2rem;
@@ -759,6 +759,6 @@
   cursor: pointer;
   transition: background-color 0.12s;
 }
-.group-dialog__submit:hover { background: var(--brand-primary-hover); }
-.group-dialog__submit:active { background: var(--brand-primary-pressed); }
-.group-dialog__submit:disabled { background: var(--disabled-variant-3); color: var(--disabled-variant-1); cursor: default; }
+.group-dialog__submit:hover { background: var(--stds-sem-color-brand-primary-hover); }
+.group-dialog__submit:active { background: var(--stds-sem-color-brand-primary-pressed); }
+.group-dialog__submit:disabled { background: var(--stds-sem-color-disabled-variant-3); color: var(--stds-sem-color-disabled-variant-1); cursor: default; }

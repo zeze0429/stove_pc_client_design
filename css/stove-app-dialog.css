@@ -19,15 +19,15 @@
   width: 16rem;
   height: 16rem;
   border-radius: 1.2rem;
-  background: var(--stove-white);
+  background: var(--stds-glob-color-white);
   overflow: hidden;
 }
 .stove-app__qr img { width: 14.72rem; height: 14.72rem; display: block; }
 
 .stove-app__text { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; text-align: center; }
-.stove-app__lead { margin: 0; color: var(--stove-white); }
-.stove-app__title { margin: 0; color: var(--brand-primary-enabled); }
-.stove-app__desc { margin: 0; color: var(--on-surface-elevation-3); }
+.stove-app__lead { margin: 0; color: var(--stds-glob-color-white); }
+.stove-app__title { margin: 0; color: var(--stds-sem-color-brand-primary); }
+.stove-app__desc { margin: 0; color: var(--stds-sem-color-on-surface-elevation-3); }
 
 /* ---- 스토어 배지 ------------------------------------------- */
 .stove-app__stores { display: flex; align-items: center; justify-content: center; gap: 1.2rem; }
@@ -37,4 +37,4 @@
 .stove-app__store-logo { flex: 0 0 auto; display: grid; place-items: center; width: 1.846rem; height: 1.846rem; }
 .stove-app__store-logo img { display: block; }
 .stove-app__store-word { display: block; height: 2rem; }
-.stove-app__stores-div { flex: 0 0 auto; width: 1px; height: 1.6rem; background: var(--stove-white-10); }
+.stove-app__stores-div { flex: 0 0 auto; width: 1px; height: 1.6rem; background: var(--stds-glob-color-white-10); }

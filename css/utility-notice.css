@@ -20,11 +20,11 @@
   gap: 0.8rem;
   height: 2.8rem; /* Figma 고정 — 안쪽 콘텐츠(18)+패딩(8)만으론 26이라 직접 지정 */
   padding: 0.4rem 0;
-  background: var(--stove-gray-750); /* Figma가 글로벌 gray750 지정 */
+  background: var(--stds-glob-color-gray750); /* Figma가 글로벌 gray750 지정 */
   cursor: pointer;
 }
 /* 긴급 공지 — 배경과 뱃지 글자색만 에러 컬러로 바뀐다 */
-.utility-notice--urgent { background: var(--system-error); }
+.utility-notice--urgent { background: var(--stds-sem-color-error); }
 
 .utility-notice__badge {
   flex: 0 0 auto;
@@ -35,14 +35,14 @@
   height: 1.6rem;
   padding: 0.2rem 0.3rem;
   border-radius: var(--radius-md);
-  background: var(--stove-white);
-  color: var(--stove-gray-750);
+  background: var(--stds-glob-color-white);
+  color: var(--stds-glob-color-gray750);
 }
-.utility-notice--urgent .utility-notice__badge { color: var(--system-error); }
+.utility-notice--urgent .utility-notice__badge { color: var(--stds-sem-color-error); }
 
 .utility-notice__message {
   margin: 0;
-  color: var(--stove-white);
+  color: var(--stds-glob-color-white);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -61,7 +61,7 @@
   min-width: 1.6rem;
   padding: 0;
   border-radius: var(--radius-full);
-  color: var(--stove-white-60);
+  color: var(--stds-glob-color-white-60);
   transition: opacity .15s;
 }
 .utility-notice__close i { font-size: 1.2rem; }
@@ -81,16 +81,16 @@
   margin-top: -0.8rem;
   margin-bottom: -3.2rem;
 }
-.notice-dialog__title { margin: 0; color: var(--on-surface-elevation-1); }
+.notice-dialog__title { margin: 0; color: var(--stds-sem-color-on-surface-elevation-1); }
 .notice-dialog__box {
   padding: 1.6rem 2rem;
   border-radius: 1.2rem;
-  background: var(--surface-elevation-2);
-  color: var(--on-surface-elevation-2);
+  background: var(--stds-sem-color-surface-elevation-2);
+  color: var(--stds-sem-color-on-surface-elevation-2);
 }
 .notice-dialog__box p { margin: 0; }
 /* 본문 속 링크 한 줄 — Figma가 토큰이 아닌 브랜드 오렌지를 직접 지정 */
-.notice-dialog__link { color: var(--brand-primary-enabled); text-decoration: underline; }
+.notice-dialog__link { color: var(--stds-sem-color-brand-primary); text-decoration: underline; }
 
 .notice-dialog__close-btn {
   width: 12.8rem;
@@ -99,11 +99,11 @@
   height: 4.4rem;
   padding: 0 2rem;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
-  background: var(--neutral-variant-3);
-  color: var(--on-surface-elevation-2);
+  border: 1px solid var(--stds-sem-color-border);
+  background: var(--stds-sem-color-neutral-variant-3);
+  color: var(--stds-sem-color-on-surface-elevation-2);
   text-align: center;
   transition: background .15s;
 }
-.notice-dialog__close-btn:hover { background: var(--neutral-variant-3-hover); }
-.notice-dialog__close-btn:active { background: var(--neutral-variant-3-pressed); }
+.notice-dialog__close-btn:hover { background: var(--stds-sem-color-neutral-variant-3-hover); }
+.notice-dialog__close-btn:active { background: var(--stds-sem-color-neutral-variant-3-pressed); }

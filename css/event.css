@@ -53,13 +53,13 @@
   width: 2.8rem;
   height: 2.8rem;
   border-radius: var(--radius-full);
-  background: var(--neutral-variant-3);
-  color: var(--on-surface-elevation-1);
+  background: var(--stds-sem-color-neutral-variant-3);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   cursor: pointer;
 }
 .event-hero__arrow i { font-size: 1.6rem; }
-.event-hero__arrow:hover { background: var(--neutral-variant-3-hover); }
-.event-hero__arrow:active { background: var(--neutral-variant-3-pressed); }
+.event-hero__arrow:hover { background: var(--stds-sem-color-neutral-variant-3-hover); }
+.event-hero__arrow:active { background: var(--stds-sem-color-neutral-variant-3-pressed); }
 
 /* 점 6, 간격 5 — 폭 50 창에 다섯 개만 보이고 현재 점을 따라 밀린다 */
 .event-hero__dots-window {
@@ -78,11 +78,11 @@
   height: 0.6rem;
   padding: 0;
   border-radius: var(--radius-full);
-  background: var(--neutral-variant-4);
+  background: var(--stds-sem-color-neutral-variant-4);
   transition: all 0.2s;
   cursor: pointer;
 }
-.event-hero__dot.is-active { background: var(--on-surface-elevation-1); }
+.event-hero__dot.is-active { background: var(--stds-sem-color-on-surface-elevation-1); }
 
 /* ---- 진행 중 / 종료된 이벤트 ---------------------------------
    배너 영역 아래 40, 20/700/30, 간격 20, 아래 16 */
@@ -98,12 +98,12 @@
   line-height: 3rem;
   letter-spacing: -0.06rem;
   white-space: nowrap;
-  color: var(--on-surface-elevation-4);
+  color: var(--stds-sem-color-on-surface-elevation-4);
   cursor: pointer;
 }
 .event-tabs__tab:hover,
 .event-tabs__tab:active,
-.event-tabs__tab.is-selected { color: var(--on-surface-elevation-1); }
+.event-tabs__tab.is-selected { color: var(--stds-sem-color-on-surface-elevation-1); }
 
 /* ---- 서비스 필터 칩 ------------------------------------------
    높이 44, 좌우 20, 16/24, 간격 8, 아래 24.
@@ -121,8 +121,8 @@
   padding: 1rem 2rem;
   border-radius: var(--radius-full);
   overflow: hidden;
-  background: var(--inverse-elevation-5);
-  color: var(--on-surface-elevation-1);
+  background: var(--stds-sem-color-inverse-elevation-5);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   font-size: 1.6rem;
   font-weight: 500;
   line-height: 2.4rem;
@@ -136,13 +136,13 @@
   inset: 0;
   z-index: 2;
   display: none;
-  background: var(--stove-white-10);
+  background: var(--stds-glob-color-white-10);
 }
 .event-chip:hover::before,
 .event-chip:active::before { display: block; }
 .event-chip.is-selected {
-  background: var(--on-surface-elevation-1);
-  color: var(--background-variant-2);
+  background: var(--stds-sem-color-on-surface-elevation-1);
+  color: var(--stds-sem-color-background-variant-2);
   font-weight: 700;
 }
 
@@ -159,7 +159,7 @@
   font-size: 1.4rem;
   line-height: 2rem;
   letter-spacing: -0.04rem;
-  color: var(--on-surface-elevation-3);
+  color: var(--stds-sem-color-on-surface-elevation-3);
 }
 .event-list-head__sort {
   display: flex;
@@ -219,8 +219,8 @@
   height: 2.2rem;
   padding: 0 0.8rem;
   border-radius: var(--radius-full);
-  background: var(--brand-blue-enabled);
-  color: var(--stove-white);
+  background: var(--stds-sem-color-brand-blue);
+  color: var(--stds-glob-color-white);
   font-size: 1.2rem;
   font-weight: 500;
   line-height: 1.8rem;
@@ -236,7 +236,7 @@
   gap: 0.2rem;
   height: 16.8rem;
   padding: 1.6rem 2rem 2rem;
-  background: var(--surface-elevation-1);
+  background: var(--stds-sem-color-surface-elevation-1);
 }
 /* 기간 칩 — 본문 왼쪽 8, 썸네일 위로 16 걸친다 */
 .event-card__date {
@@ -247,10 +247,10 @@
   align-items: center;
   max-height: 2.6rem;
   padding: 0.4rem 1.2rem;
-  border: 0.1rem solid var(--brand-blue-enabled);
+  border: 0.1rem solid var(--stds-sem-color-brand-blue);
   border-radius: 2rem;
-  background: var(--surface-elevation-1);
-  color: var(--brand-blue-enabled);
+  background: var(--stds-sem-color-surface-elevation-1);
+  color: var(--stds-sem-color-brand-blue);
   font-size: 1.2rem;
   line-height: 1.8rem;
   letter-spacing: -0.024rem;
@@ -268,14 +268,14 @@
 }
 .event-card__title {
   flex: 0 0 auto;
-  color: var(--on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   font-size: 1.6rem;
   font-weight: 700;
   line-height: 2.4rem;
   letter-spacing: 0.048rem; /* 웹 -tracking-title7 (부호가 뒤집혀 +) 그대로 */
 }
 .event-card__desc {
-  color: var(--on-surface-elevation-3);
+  color: var(--stds-sem-color-on-surface-elevation-3);
   font-size: 1.4rem;
   line-height: 2.4rem;
   letter-spacing: -0.042em;
@@ -296,7 +296,7 @@
   align-items: center;
   min-width: 0;
   min-height: 2.6rem;
-  color: var(--on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   font-size: 1.4rem;
   line-height: 2rem;
   letter-spacing: -0.04rem;
@@ -319,7 +319,7 @@
   padding: 0.4rem 0.8rem;
   border-radius: var(--radius-lg);
   background: #e8f0ff;
-  color: var(--brand-blue-enabled);
+  color: var(--stds-sem-color-brand-blue);
   font-size: 1.1rem;
   font-weight: 500;
   line-height: 1.8rem;
@@ -339,8 +339,8 @@
   margin: 6rem auto 0;
   padding: 0 1.2rem;
   border-radius: var(--radius-full);
-  background: var(--inverse-elevation-6);
-  color: var(--on-surface-elevation-2);
+  background: var(--stds-sem-color-inverse-elevation-6);
+  color: var(--stds-sem-color-on-surface-elevation-2);
   font-size: 1.4rem;
   font-weight: 500;
   line-height: 2rem;
@@ -348,4 +348,4 @@
   cursor: pointer;
 }
 .event-more:hover,
-.event-more:active { background: var(--neutral-variant-2-pressed); }
+.event-more:active { background: var(--stds-sem-color-neutral-variant-2-pressed); }

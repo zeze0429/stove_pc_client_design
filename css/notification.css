@@ -18,8 +18,8 @@
   width: 40rem;
   max-height: 48.5rem;
   border-radius: 2rem; /* Figma radius/3xl 20px — 스케일에 없는 값 */
-  background: var(--surface-elevation-1);
-  box-shadow: 0 1.2rem 1.4rem var(--stove-black-20);
+  background: var(--stds-sem-color-surface-elevation-1);
+  box-shadow: 0 1.2rem 1.4rem var(--stds-glob-color-black-20);
   overflow: hidden;
 }
 
@@ -45,9 +45,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-1);
 }
-.notification-popup__count { flex: 0 0 auto; color: var(--brand-primary-enabled); }
+.notification-popup__count { flex: 0 0 auto; color: var(--stds-sem-color-brand-primary); }
 
 /* 상단 텍스트 버튼 — 배경 없이 글자색만 단계적으로 흐려진다 */
 .notification-popup__actions { flex: 0 0 auto; display: flex; align-items: center; gap: 1.2rem; }
@@ -57,13 +57,13 @@
   gap: 0.4rem;
   padding: 0;
   white-space: nowrap;
-  color: var(--on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   transition: color .15s;
 }
 .notification-popup__action i { font-size: 1.6rem; }
-.notification-popup__action:hover { color: var(--on-surface-elevation-2); }
-.notification-popup__action:active { color: var(--on-surface-elevation-3); }
-.notification-popup__action:disabled { color: var(--disabled-variant-2); cursor: default; }
+.notification-popup__action:hover { color: var(--stds-sem-color-on-surface-elevation-2); }
+.notification-popup__action:active { color: var(--stds-sem-color-on-surface-elevation-3); }
+.notification-popup__action:disabled { color: var(--stds-sem-color-disabled-variant-2); cursor: default; }
 
 /* ---- 목록 --------------------------------------------------
    항목이 팝업 폭을 꽉 채우고 스크롤바가 그 위에 겹쳐야 해서, 네이티브
@@ -99,11 +99,11 @@
   left: 0;
   width: 100%;
   border-radius: var(--radius-full);
-  background: var(--inverse-elevation-2);
+  background: var(--stds-sem-color-inverse-elevation-2);
   pointer-events: auto;
 }
 .notification-popup__scrollbar-thumb:hover,
-.notification-popup__scrollbar-thumb:active { background: var(--inverse-elevation-1); }
+.notification-popup__scrollbar-thumb:active { background: var(--stds-sem-color-inverse-elevation-1); }
 
 /* ---- Notification List Item -------------------------------- */
 .notification-item {
@@ -118,9 +118,9 @@
 /* 안 읽은 항목만 파란 틴트 — Figma가 지정한 brand-blue 6%. 시멘틱에는 투명도를 걸 수 없어
    brand-blue가 가리키는 글로벌 blue-500(라이트 · 다크 공통)에 6% (디자인시스템 투명도 규칙).
    안 읽음 상태에서는 호버/프레스를 따로 주지 않고 이 틴트를 그대로 유지한다. */
-.notification-item--unread { background: color-mix(in srgb, var(--stove-blue-500) 6%, transparent); }
-.notification-item:not(.notification-item--unread):hover { background: var(--interaction-hover); }
-.notification-item:not(.notification-item--unread):active { background: var(--interaction-pressed); }
+.notification-item--unread { background: color-mix(in srgb, var(--stds-glob-color-blue500) 6%, transparent); }
+.notification-item:not(.notification-item--unread):hover { background: var(--stds-sem-color-interaction-hover); }
+.notification-item:not(.notification-item--unread):active { background: var(--stds-sem-color-interaction-pressed); }
 
 .notification-item__avatar {
   flex: 0 0 auto;
@@ -136,8 +136,8 @@
 .notification-item__avatar--icon {
   display: grid;
   place-items: center;
-  background: var(--stove-blue-100);
-  color: var(--brand-blue-enabled);
+  background: var(--stds-glob-color-blue100);
+  color: var(--stds-sem-color-brand-blue);
 }
 .notification-item__avatar--icon i { font-size: 2.4rem; }
 
@@ -148,7 +148,7 @@
 .notification-item__message {
   margin: 0;
   word-break: break-all;
-  color: var(--on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
@@ -157,7 +157,7 @@
 .notification-item__message b { font-weight: 700; }
 /* 영문 단어는 중간에서 끊지 않는다 — 위 break-all을 이 덩어리에서만 해제 */
 .notification-item__keep { word-break: keep-all; }
-.notification-item__time { margin: 0; color: var(--on-surface-elevation-4); }
+.notification-item__time { margin: 0; color: var(--stds-sem-color-on-surface-elevation-4); }
 
 /* ---- 알림 없음 ---------------------------------------------- */
 .notification-popup__empty {
@@ -165,5 +165,5 @@
   display: grid;
   place-items: center;
   margin: 0;
-  color: var(--on-surface-elevation-4);
+  color: var(--stds-sem-color-on-surface-elevation-4);
 }

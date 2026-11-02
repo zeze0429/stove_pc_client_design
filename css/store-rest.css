@@ -12,7 +12,7 @@
 .store-rest-title {
   margin: 0;
   padding-bottom: 1.6rem;
-  color: var(--on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   font-size: 2rem;
   font-weight: 700;
   line-height: 3rem;
@@ -47,8 +47,8 @@
   height: 3.2rem;
   padding: 0.7rem 0.8rem 0.7rem 1.2rem;
   border-radius: var(--radius-full);
-  background: var(--neutral-variant-3);
-  color: var(--on-surface-elevation-1);
+  background: var(--stds-sem-color-neutral-variant-3);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   font-size: 1.2rem;
   font-weight: 500;
   line-height: 1.8rem;
@@ -56,7 +56,7 @@
   cursor: pointer;
 }
 .store-rest-more i { font-size: 1.6rem; }
-.store-rest-more:active { background: var(--neutral-variant-3-pressed); }
+.store-rest-more:active { background: var(--stds-sem-color-neutral-variant-3-pressed); }
 
 /* ---- 캐러셀 공통 — 페이지 단위로 0.3초 동안 넘어간다 ---------- */
 .store-rest-viewport { overflow: hidden; }
@@ -89,13 +89,13 @@
   width: 2.8rem;
   height: 2.8rem;
   border-radius: var(--radius-full);
-  background: var(--neutral-variant-3);
-  color: var(--on-surface-elevation-1);
+  background: var(--stds-sem-color-neutral-variant-3);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   cursor: pointer;
 }
 .store-rest-indicator__arrow i { font-size: 1.6rem; }
-.store-rest-indicator__arrow:hover { background: var(--neutral-variant-3-hover); }
-.store-rest-indicator__arrow:active { background: var(--neutral-variant-3-pressed); }
+.store-rest-indicator__arrow:hover { background: var(--stds-sem-color-neutral-variant-3-hover); }
+.store-rest-indicator__arrow:active { background: var(--stds-sem-color-neutral-variant-3-pressed); }
 .store-rest-indicator__window {
   display: flex;
   justify-content: center;
@@ -113,11 +113,11 @@
   height: 0.6rem;
   padding: 0;
   border-radius: var(--radius-full);
-  background: var(--neutral-variant-4);
+  background: var(--stds-sem-color-neutral-variant-4);
   transition: all 0.2s;
   cursor: pointer;
 }
-.store-rest-indicator__dot.is-active { background: var(--on-surface-elevation-1); }
+.store-rest-indicator__dot.is-active { background: var(--stds-sem-color-on-surface-elevation-1); }
 
 /* ---- 바로가기 아이콘 — 10개, 칸 94 · 아이콘 60 / 모서리 20 ------- */
 .store-shortcuts {
@@ -152,7 +152,7 @@
 .store-shortcuts__label {
   width: 100%;
   margin: 0;
-  color: var(--on-surface-elevation-3);
+  color: var(--stds-sem-color-on-surface-elevation-3);
   font-size: 1.2rem;
   font-weight: 500;
   line-height: 1.8rem;
@@ -189,7 +189,7 @@
   height: 100%;
   margin: 0;
   padding: 0 22rem 0 4rem;
-  color: var(--stove-white); /* 배너 위 글자 — 테마 무관 */
+  color: var(--stds-glob-color-white); /* 배너 위 글자 — 테마 무관 */
   font-size: 1.8rem;
   font-weight: 700;
   line-height: 2.6rem;
@@ -255,8 +255,8 @@
   gap: 0.6rem;
   height: 9rem;
   padding: 2rem;
-  background: var(--stove-black-25);
-  color: var(--stove-white); /* 이미지 위 글자 — 테마 무관 */
+  background: var(--stds-glob-color-black-25);
+  color: var(--stds-glob-color-white); /* 이미지 위 글자 — 테마 무관 */
 }
 .store-recent__info {
   display: flex;
@@ -293,10 +293,10 @@
   align-items: center;
   height: 4.4rem;
   padding: 0 2rem;
-  border: 0.2rem solid var(--stove-white);
+  border: 0.2rem solid var(--stds-glob-color-white);
   border-radius: var(--radius-full);
-  background: var(--stove-white);
-  color: var(--stove-gray-880);
+  background: var(--stds-glob-color-white);
+  color: var(--stds-glob-color-gray880);
   font-size: 1.4rem;
   font-weight: 500;
   line-height: 2rem;
@@ -304,8 +304,8 @@
   cursor: pointer;
 }
 .store-recent__play i { margin-right: 0.8rem; font-size: 2rem; }
-.store-recent__play:hover { background: var(--stove-gray-20); border-color: var(--stove-gray-20); }
-.store-recent__play:active { background: var(--stove-gray-40); border-color: var(--stove-gray-40); }
+.store-recent__play:hover { background: var(--stds-glob-color-gray20); border-color: var(--stds-glob-color-gray20); }
+.store-recent__play:active { background: var(--stds-glob-color-gray40); border-color: var(--stds-glob-color-gray40); }
 /* 좌우 40 화살표 — 검정 40%, 카드에 마우스를 올리면 0.3초 동안 나타난다.
    세로 위치는 이미지 영역(띠 90 제외) 가운데 */
 .store-recent__arrow {
@@ -318,15 +318,15 @@
   width: 4rem;
   height: 4rem;
   border-radius: var(--radius-full);
-  background: var(--stove-black-40);
-  color: var(--stove-white);
+  background: var(--stds-glob-color-black-40);
+  color: var(--stds-glob-color-white);
   opacity: 0;
   cursor: pointer;
 }
 .store-recent__arrow i { font-size: 2rem; }
 .store-recent:hover .store-recent__arrow { opacity: 1; transition: opacity 0.3s ease-in-out; }
-.store-recent__arrow:hover { background: var(--stove-black-50); }
-.store-recent__arrow:active { background: var(--stove-black-60); }
+.store-recent__arrow:hover { background: var(--stds-glob-color-black-50); }
+.store-recent__arrow:active { background: var(--stds-glob-color-black-60); }
 .store-recent__arrow--prev { left: 1.2rem; }
 .store-recent__arrow--next { right: 1.2rem; }
 /* 점 — 띠 위 12 (아래 102), 6 · 간격 5 */
@@ -344,10 +344,10 @@
   height: 0.6rem;
   padding: 0;
   border-radius: 50%;
-  background: var(--neutral-variant-4);
+  background: var(--stds-sem-color-neutral-variant-4);
   cursor: pointer;
 }
-.store-recent__dot.is-active { background: var(--on-surface-elevation-1); }
+.store-recent__dot.is-active { background: var(--stds-sem-color-on-surface-elevation-1); }
 
 .store-pick__panel {
   display: flex;
@@ -356,13 +356,13 @@
   padding: 2.4rem 0;
   border-radius: 3.2rem;
   overflow: hidden;
-  background: var(--surface-elevation-1);
+  background: var(--stds-sem-color-surface-elevation-1);
 }
 .store-pick__panel--me { padding: 2.4rem 0 0.8rem; }
 .store-pick__title {
   margin: 0;
   padding: 0 3.2rem;
-  color: var(--on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   font-size: 1.8rem;
   font-weight: 700;
   line-height: 2.6rem;
@@ -383,13 +383,13 @@
   width: 4rem;
   height: 4rem;
   border-radius: var(--radius-full);
-  background: var(--neutral-variant-2);
-  color: var(--on-surface-elevation-1);
+  background: var(--stds-sem-color-neutral-variant-2);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   cursor: pointer;
 }
 .store-pick__arrow i { font-size: 2rem; }
-.store-pick__arrow:hover { background: var(--neutral-variant-2-hover); }
-.store-pick__arrow:active { background: var(--neutral-variant-2-pressed); }
+.store-pick__arrow:hover { background: var(--stds-sem-color-neutral-variant-2-hover); }
+.store-pick__arrow:active { background: var(--stds-sem-color-neutral-variant-2-pressed); }
 .store-pick__arrow--prev { left: 1.2rem; }
 .store-pick__arrow--next { right: 1.2rem; }
 .store-pick__panel:hover .store-pick__arrow { display: inline-flex; }
@@ -403,7 +403,7 @@
   aspect-ratio: 4 / 5;
   border-radius: 2rem;
   overflow: hidden;
-  background: var(--inverse-elevation-6);
+  background: var(--stds-sem-color-inverse-elevation-6);
 }
 .store-game__thumb img {
   display: block;
@@ -420,8 +420,8 @@
   height: 2.2rem;
   padding: 0 0.6rem;
   border-radius: var(--radius-full);
-  background: var(--brand-blue-enabled);
-  color: var(--stove-white);
+  background: var(--stds-sem-color-brand-blue);
+  color: var(--stds-glob-color-white);
   font-family: Inter, stds-font-kr, sans-serif;
   font-size: 1.1rem;
   font-weight: 800;
@@ -443,7 +443,7 @@
 .store-game--featured .store-game__info { height: 7rem; }
 .store-game__title {
   margin: 0;
-  color: var(--on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   font-size: 1.6rem;
   font-weight: 700;
   line-height: 2.4rem;
@@ -468,7 +468,7 @@
 .store-game:hover .store-game__slide { transform: translate3d(0, calc(var(--lift) * -1), 0); }
 .store-game__genre {
   margin: 0;
-  color: var(--on-surface-elevation-3);
+  color: var(--stds-sem-color-on-surface-elevation-3);
   font-size: 1.3rem;
   line-height: 2.2rem;
   letter-spacing: -0.0325rem;
@@ -480,7 +480,7 @@
 /* 가격 — 정가·할인 / 판매가 / 무료 / 출시예정 */
 .store-game__price {
   margin: 0.4rem 0 0;
-  color: var(--on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   font-size: 1.6rem;
   font-weight: 700;
   line-height: 2.4rem;
@@ -492,7 +492,7 @@
   line-height: 2rem;
   letter-spacing: -0.042rem;
 }
-.store-game__price--free { color: var(--brand-primary-enabled); }
+.store-game__price--free { color: var(--stds-sem-color-brand-primary); }
 .store-game__price--soon {
   font-size: 1.4rem;
   line-height: 2rem;
@@ -500,7 +500,7 @@
 }
 .store-game__price--sale { display: flex; flex-direction: column; }
 .store-game__strike {
-  color: var(--inverse-elevation-1);
+  color: var(--stds-sem-color-inverse-elevation-1);
   font-size: 1.3rem;
   font-weight: 500;
   line-height: 2.2rem;
@@ -512,7 +512,7 @@
   gap: 0.2rem;
   margin-top: -0.2rem;
 }
-.store-game__final b { flex: 0 0 auto; font-weight: 700; color: var(--brand-primary-enabled); }
+.store-game__final b { flex: 0 0 auto; font-weight: 700; color: var(--stds-sem-color-brand-primary); }
 .store-game__final span {
   flex: 1 1 auto;
   min-width: 0;
@@ -541,8 +541,8 @@
 }
 .store-game__rating i { font-size: 1.6rem; }
 .store-game__rating span { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.store-game__rating.is-blue { color: var(--brand-blue-enabled); }
-.store-game__rating.is-gray { color: var(--on-surface-elevation-4); }
+.store-game__rating.is-blue { color: var(--stds-sem-color-brand-blue); }
+.store-game__rating.is-gray { color: var(--stds-sem-color-on-surface-elevation-4); }
 .store-game__actions {
   display: flex;
   align-items: center;
@@ -571,18 +571,18 @@
   height: 3.2rem;
   padding: 0;
   border-radius: var(--radius-full);
-  background: var(--neutral-variant-3);
-  color: var(--on-surface-elevation-1);
+  background: var(--stds-sem-color-neutral-variant-3);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   transition: background-color 0.15s;
   cursor: pointer;
 }
 .store-game__btn i { font-size: 1.6rem; }
-.store-game__btn:hover { background: var(--neutral-variant-3-hover); }
-.store-game__btn:active { background: var(--neutral-variant-3-pressed); }
-.store-game--mypick .store-game__btn { background: var(--neutral-variant-2); }
-.store-game--mypick .store-game__btn:hover { background: var(--neutral-variant-2-hover); }
-.store-game--mypick .store-game__btn:active { background: var(--neutral-variant-2-pressed); }
-.store-game--mypick .store-game__btn:first-child { color: var(--on-surface-elevation-2); } /* 보유 중(체크) */
+.store-game__btn:hover { background: var(--stds-sem-color-neutral-variant-3-hover); }
+.store-game__btn:active { background: var(--stds-sem-color-neutral-variant-3-pressed); }
+.store-game--mypick .store-game__btn { background: var(--stds-sem-color-neutral-variant-2); }
+.store-game--mypick .store-game__btn:hover { background: var(--stds-sem-color-neutral-variant-2-hover); }
+.store-game--mypick .store-game__btn:active { background: var(--stds-sem-color-neutral-variant-2-pressed); }
+.store-game--mypick .store-game__btn:first-child { color: var(--stds-sem-color-on-surface-elevation-2); } /* 보유 중(체크) */
 .store-game__btn span {
   font-size: 1.2rem;
   font-weight: 500;
@@ -593,11 +593,11 @@
   text-overflow: ellipsis;
 }
 .store-game .store-game__btn--primary {
-  background: var(--on-surface-elevation-1);
-  color: var(--surface-elevation-1);
+  background: var(--stds-sem-color-on-surface-elevation-1);
+  color: var(--stds-sem-color-surface-elevation-1);
 }
-.store-game .store-game__btn--primary:hover { background: var(--on-surface-elevation-2); }
-.store-game .store-game__btn--primary:active { background: var(--on-surface-elevation-3); }
+.store-game .store-game__btn--primary:hover { background: var(--stds-sem-color-on-surface-elevation-2); }
+.store-game .store-game__btn--primary:active { background: var(--stds-sem-color-on-surface-elevation-3); }
 .store-game--product .store-game__btn--primary,
 .store-game--featured .store-game__btn--primary,
 .store-game__btn--wide {
@@ -606,7 +606,7 @@
   min-width: 0;
   padding: 0 0.4rem;
 }
-.store-game--featured .store-game__btn--primary { color: var(--background-variant-2); }
+.store-game--featured .store-game__btn--primary { color: var(--stds-sem-color-background-variant-2); }
 
 /* ---- 와이드 배너 — 960 x 310, 모서리 32, 호버 1.05 확대(0.5초) ---- */
 .store-wide-banner {
@@ -632,7 +632,7 @@
   aspect-ratio: 4 / 3;
   border-radius: 3.2rem;
   overflow: hidden;
-  background: var(--inverse-elevation-6);
+  background: var(--stds-sem-color-inverse-elevation-6);
   cursor: pointer;
 }
 .store-gift__img { transition-duration: 0.3s; }
@@ -648,8 +648,8 @@
   gap: 0.8rem;
   height: 50%;
   padding: 2.4rem;
-  background: linear-gradient(180deg, transparent 0%, var(--stove-black-80) 100%);
-  color: var(--stove-white); /* 이미지 위 글자 — 테마 무관 */
+  background: linear-gradient(180deg, transparent 0%, var(--stds-glob-color-black-80) 100%);
+  color: var(--stds-glob-color-white); /* 이미지 위 글자 — 테마 무관 */
 }
 .store-gift__text h4 {
   margin: 0;
@@ -693,7 +693,7 @@
   aspect-ratio: 92 / 55; /* 1040 폭(md) 기준 470 x 281 */
   border-radius: 3.2rem;
   overflow: hidden;
-  background: var(--inverse-elevation-6);
+  background: var(--stds-sem-color-inverse-elevation-6);
   cursor: pointer;
 }
 .store-today1__item img { transition-duration: 0.3s; }

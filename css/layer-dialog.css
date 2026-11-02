@@ -12,7 +12,7 @@
   position: fixed;
   inset: 0;
   z-index: 200; /* 유틸리티 바(110)·공지 바(100)보다 위 */
-  background: var(--stove-black-60);
+  background: var(--stds-glob-color-black-60);
   display: grid;
   place-items: center;
 }
@@ -26,8 +26,8 @@
      PC방 혜택 시안만 8px이었는데, 센터 레이어 팝업은 같은 셸을 쓴다는
      기준에 맞춰 이쪽으로 모았다. */
   border-radius: 2rem;
-  background: var(--surface-elevation-1);
-  box-shadow: 0 0.4rem 1rem var(--stove-black-10); /* Figma shadow/4 */
+  background: var(--stds-sem-color-surface-elevation-1);
+  box-shadow: 0 0.4rem 1rem var(--stds-glob-color-black-10); /* Figma shadow/4 */
   overflow: hidden;
 }
 
@@ -38,13 +38,13 @@
   align-items: center;
   gap: 0.8rem;
   padding: 2rem 3.2rem 1.6rem; /* 합계 높이 6rem */
-  background: var(--surface-elevation-1);
+  background: var(--stds-sem-color-surface-elevation-1);
 }
 .layer-dialog__title {
   flex: 1 1 auto;
   min-width: 0;
   margin: 0;
-  color: var(--on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-1);
 }
 /* 닫기는 배경이 깔리는 게 아니라 아이콘 자체가 흐려진다 —
    Figma 가이드: hover = 기본값의 50%, press = 70%. */
@@ -53,7 +53,7 @@
   display: grid;
   place-items: center;
   padding: 0;
-  color: var(--on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   transition: opacity .15s;
 }
 .layer-dialog__close i { font-size: 2.4rem; }
@@ -89,7 +89,7 @@
   align-items: center;
   justify-content: center;
   padding: 2.4rem;
-  background: var(--surface-elevation-1);
+  background: var(--stds-sem-color-surface-elevation-1);
 }
 
 /* 스크롤바 — 폭 12짜리 트랙에 보더 + background-clip:content-box로 4px만
@@ -104,6 +104,6 @@
 .layer-dialog__body::-webkit-scrollbar-track { margin: 0.8rem 0 3.2rem; }
 .layer-dialog__body::-webkit-scrollbar-thumb {
   border-radius: var(--radius-full);
-  background-color: var(--inverse-elevation-2);
+  background-color: var(--stds-sem-color-inverse-elevation-2);
 }
-.layer-dialog__body::-webkit-scrollbar-thumb:hover { background-color: var(--inverse-elevation-1); }
+.layer-dialog__body::-webkit-scrollbar-thumb:hover { background-color: var(--stds-sem-color-inverse-elevation-1); }

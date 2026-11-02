@@ -17,8 +17,8 @@
   width: 60rem;
   padding: 3.2rem 2.4rem; /* 안쪽 콘텐츠 폭 55.2rem */
   border-radius: 2rem;
-  background: var(--surface-elevation-1);
-  box-shadow: 0 1.2rem 2.8rem var(--stove-black-20); /* Figma shadow/12 */
+  background: var(--stds-sem-color-surface-elevation-1);
+  box-shadow: 0 1.2rem 2.8rem var(--stds-glob-color-black-20); /* Figma shadow/12 */
   overflow: hidden;
 }
 
@@ -42,7 +42,7 @@
 .profile-popup__info { min-width: 0; display: flex; flex-direction: column; gap: 0.4rem; }
 .profile-popup__name {
   margin: 0;
-  color: var(--on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -52,7 +52,7 @@
   flex: 0 0 auto;
   width: 1px;
   height: 1.6rem;
-  background: var(--stove-white-06); /* Figma가 글로벌 white/6 지정 */
+  background: var(--stds-glob-color-white-6); /* Figma가 글로벌 white/6 지정 */
 }
 
 /* 아이콘+글자만 있는 텍스트 버튼(btn_text) — 색을 바꾸는 게 아니라 아이콘·글자가
@@ -64,7 +64,7 @@
   padding: 0;
   border-radius: var(--radius-md);
   white-space: nowrap;
-  color: var(--on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   transition: opacity .15s;
 }
 .profile-popup__link i { font-size: 1.6rem; }
@@ -80,14 +80,14 @@
   gap: 0.4rem;
   padding: 0.7rem 1.2rem;
   border-radius: var(--radius-full);
-  background: var(--stove-white);
-  color: var(--stove-gray-880);
+  background: var(--stds-glob-color-white);
+  color: var(--stds-glob-color-gray880);
   white-space: nowrap;
   transition: background .15s;
 }
 .profile-popup__setting i { font-size: 1.6rem; }
-.profile-popup__setting:hover { background: var(--stove-white-80); }
-.profile-popup__setting:active { background: var(--stove-white-70); }
+.profile-popup__setting:hover { background: var(--stds-glob-color-white-80); }
+.profile-popup__setting:active { background: var(--stds-glob-color-white-70); }
 
 /* ---- 위계1: 재화 + 보안 안내 -------------------------------- */
 .profile-popup__contents { display: flex; flex-direction: column; gap: 3.2rem; width: 100%; }
@@ -100,7 +100,7 @@
   flex-direction: column;
   padding: 0.8rem;
   border-radius: 1.6rem;
-  background: var(--surface-elevation-2);
+  background: var(--stds-sem-color-surface-elevation-2);
 }
 /* 세 행 모두 기본/호버/프레스를 갖는다 (Figma의 캐시 행 배경은 고정 강조가
    아니라 호버 상태를 보여준 것). */
@@ -115,30 +115,30 @@
   cursor: pointer;
   transition: background .15s;
 }
-.profile-money__row:hover { background: var(--interaction-hover); }
-.profile-money__row:active { background: var(--interaction-pressed); }
+.profile-money__row:hover { background: var(--stds-sem-color-interaction-hover); }
+.profile-money__row:active { background: var(--stds-sem-color-interaction-pressed); }
 .profile-money__left { display: flex; align-items: center; gap: 1rem; min-width: 0; }
 .profile-money__title { display: flex; align-items: center; gap: 0.6rem; min-width: 0; }
 .profile-money__title img { width: 2rem; height: 2rem; display: block; flex: 0 0 auto; }
 .profile-money__label {
   margin: 0;
-  color: var(--on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.profile-money__value { margin: 0; color: var(--on-surface-elevation-1); white-space: nowrap; }
+.profile-money__value { margin: 0; color: var(--stds-sem-color-on-surface-elevation-1); white-space: nowrap; }
 .profile-money__charge {
   flex: 0 0 auto;
   padding: 0.3rem 0.8rem;
   border-radius: var(--radius-full);
-  background: var(--neutral-variant-2);
-  color: var(--on-surface-elevation-2);
+  background: var(--stds-sem-color-neutral-variant-2);
+  color: var(--stds-sem-color-on-surface-elevation-2);
   white-space: nowrap;
   transition: background .15s;
 }
-.profile-money__charge:hover { background: var(--neutral-variant-2-hover); }
-.profile-money__charge:active { background: var(--neutral-variant-2-pressed); }
+.profile-money__charge:hover { background: var(--stds-sem-color-neutral-variant-2-hover); }
+.profile-money__charge:active { background: var(--stds-sem-color-neutral-variant-2-pressed); }
 
 .profile-security {
   flex: 0 0 auto;
@@ -149,7 +149,7 @@
   height: 14.8rem;
   padding: 1.6rem;
   border-radius: 1.6rem;
-  background: var(--surface-elevation-2);
+  background: var(--stds-sem-color-surface-elevation-2);
 }
 .profile-security__badge { flex: 0 0 auto; width: 6.4rem; display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
 .profile-security__icon {
@@ -159,16 +159,16 @@
   height: 4.4rem;
   border-radius: var(--radius-full);
   /* Figma가 토큰이 아닌 blue400 10%를 직접 지정 */
-  background: color-mix(in srgb, var(--stove-blue-400) 10%, transparent);
-  color: var(--stove-blue-400);
+  background: color-mix(in srgb, var(--stds-glob-color-blue400) 10%, transparent);
+  color: var(--stds-glob-color-blue400);
 }
 .profile-security__icon i { font-size: 2.4rem; }
-.profile-security__grade { margin: 0; color: var(--stove-blue-400); white-space: nowrap; }
-.profile-security__line { flex: 0 0 auto; width: 1px; align-self: stretch; background: var(--inverse-elevation-5); }
+.profile-security__grade { margin: 0; color: var(--stds-glob-color-blue400); white-space: nowrap; }
+.profile-security__line { flex: 0 0 auto; width: 1px; align-self: stretch; background: var(--stds-sem-color-inverse-elevation-5); }
 .profile-security__body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 1.2rem; }
 .profile-security__texts { display: flex; flex-direction: column; gap: 0.2rem; }
-.profile-security__title { margin: 0; color: var(--stove-blue-400); }
-.profile-security__desc { margin: 0; color: var(--on-surface-elevation-2); }
+.profile-security__title { margin: 0; color: var(--stds-glob-color-blue400); }
+.profile-security__desc { margin: 0; color: var(--stds-sem-color-on-surface-elevation-2); }
 .profile-security__more {
   align-self: flex-start;
   display: flex;
@@ -176,7 +176,7 @@
   gap: 0.4rem;
   padding: 0;
   border-radius: var(--radius-md);
-  color: var(--on-surface-elevation-4);
+  color: var(--stds-sem-color-on-surface-elevation-4);
   white-space: nowrap;
   transition: opacity .15s;
 }
@@ -198,7 +198,7 @@
   gap: 0.4rem;
   padding: 0 0.8rem;
   border-radius: var(--radius-lg);
-  color: var(--on-surface-elevation-4);
+  color: var(--stds-sem-color-on-surface-elevation-4);
   transition: background .15s, color .15s;
 }
 .profile-menu-item i { font-size: 2.8rem; }
@@ -206,6 +206,6 @@
 /* 박스는 상태값 없이 그대로 두고 아이콘·글자만 바뀐다 — 흐린 회색에서
    밝은 색 + 볼드로 (Figma component/list/user_menu 상태값). */
 .profile-menu-item:hover,
-.profile-menu-item:active { color: var(--on-surface-elevation-1); }
+.profile-menu-item:active { color: var(--stds-sem-color-on-surface-elevation-1); }
 .profile-menu-item:hover span,
 .profile-menu-item:active span { font-weight: 700; }
