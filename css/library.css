@@ -459,7 +459,8 @@
 .library-owned.is-selecting .library-section__title,
 .library-owned.is-selecting .library-section__title span { color: var(--stds-sem-color-brand-primary); }
 
-/* 도구 줄 — 왼쪽 게임 추가 취소, 가운데 안내 문구 (14/20, 그룹명 · 개수만 Bold) */
+/* 도구 줄 — 왼쪽 게임 추가 취소, 가운데 메시지 영역 (Figma 클라이언트_v3.1 67953:409405 선택UI - 메세지 영역)
+   아이콘 20(2배수 이미지) + 간격 4, Button2-R 14/20 on-surface-elevation-2, 게임 수만 Bold glob white */
 .library-toolbar--select { position: relative; }
 .library-select-msg {
   position: absolute;
@@ -472,15 +473,13 @@
   margin: 0;
   color: var(--stds-sem-color-on-surface-elevation-2);
   font-size: 1.4rem;
+  font-weight: 400;
   line-height: 2rem;
   letter-spacing: -0.042rem;
   white-space: nowrap;
 }
-/* 아이콘은 warning-circle을 180도 돌린 정보(i) 모양 (Figma 그대로) */
-.library-select-msg i { font-size: 2rem; transform: rotate(180deg); }
-.library-select-msg b { font-weight: 700; }
-.library-select-msg__group { color: var(--stds-sem-color-on-surface-elevation-1); }
-.library-select-msg__count { color: var(--stds-glob-color-white); } /* Figma가 글로벌 white로 지정 */
+.library-select-msg__icon { display: block; flex: 0 0 auto; width: 2rem; height: 2rem; }
+.library-select-msg__count { color: var(--stds-glob-color-white); font-weight: 700; } /* Figma가 글로벌 white로 지정 */
 
 /* 카드 — 아무 곳이나 누르면 선택/해제. 체크박스 32 원, 썸네일 좌상단 12 */
 .library-card__check {
