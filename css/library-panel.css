@@ -442,3 +442,282 @@
   margin: 0.6rem calc(1.2rem - 1px);
   background: var(--inverse-elevation-7);
 }
+
+/* =============================================================
+   게임 우클릭 메뉴 (Figma 3-5-2) — 1뎁스(앞면) → 2뎁스(뒷면) 카드 플립
+   플립 가이드: perspective 1200 · rotateY 0↔180 · 600ms cubic-bezier(0.4,0,0.2,1) · 피벗 50% 50%.
+   뒷면은 absolute · width 100%로 앞면 위에 겹친다 — 너비는 1뎁스 기준(0907), 높이는 면마다 다르다.
+   면 모양은 그룹 메뉴와 같은 컨텍스트메뉴(surface-layer · 보더 inverse-variant-1 · 둥글기 8 · shadow/4)
+   ============================================================= */
+.game-menu {
+  position: fixed;
+  z-index: 40;
+  perspective: 1200px;
+}
+.game-menu.is-measuring { visibility: hidden; }
+.game-menu__flip {
+  position: relative;
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.game-menu__flip.is-flipped { transform: rotateY(180deg); }
+.game-menu__face {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--inverse-variant-1);
+  border-radius: var(--radius-lg);
+  background: var(--surface-layer);
+  box-shadow: 0 0.4rem 1rem var(--stove-black-10); /* Figma shadow/4 */
+  backface-visibility: hidden;
+}
+/* 1뎁스 — 위아래 6(보더 포함), 폭은 내용만큼 176~240 (긴 항목은 줄바꿈) */
+.game-menu__face--front {
+  width: max-content;
+  min-width: 17.6rem;
+  max-width: 24rem;
+  padding: calc(0.6rem - 1px) 0;
+}
+/* 2뎁스 — 위 6 · 아래 8 */
+.game-menu__face--back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: calc(0.6rem - 1px) 0 calc(0.8rem - 1px);
+  transform: rotateY(180deg);
+}
+/* 안 보이는 면은 클릭을 받지 않는다 */
+.game-menu__flip:not(.is-flipped) .game-menu__face--back,
+.game-menu__flip.is-flipped .game-menu__face--front { pointer-events: none; }
+
+/* 항목 (menu) — 32, 좌 12 · 우 12(화살표 · 버튼이 있으면 6). enabled elevation-3 / hover · press · selected */
+.game-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  width: 100%;
+  min-height: 3.2rem;
+  padding: 0.7rem calc(1.2rem - 1px) 0.7rem calc(1.2rem - 1px); /* 보더 1 안쪽 기준 좌우 12 */
+  border: 0;
+  background: transparent;
+  color: var(--on-surface-elevation-3);
+  text-align: left;
+  cursor: pointer;
+}
+.game-menu__item.has-sub { gap: 0.4rem; padding-right: calc(0.6rem - 1px); }
+.game-menu__item--remove { padding-right: calc(0.6rem - 1px); cursor: default; }
+.game-menu__item:hover { background: var(--interaction-hover); }
+.game-menu__item:active:not(:has(.game-menu__remove:active)) { background: var(--interaction-pressed); color: var(--on-surface-elevation-2); }
+.game-menu__item:disabled { color: var(--disabled-variant-1); background: transparent; cursor: default; }
+.game-menu__label { flex: 1 1 auto; min-width: 0; }
+.game-menu__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* 18 버튼 안 아이콘 14 (component/game_group/title/btn) */
+.game-menu__icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--on-surface-elevation-3);
+}
+.game-menu__icon i { font-size: 1.4rem; }
+
+/* 토글 26 x 16 — off neutral-variant-1(Figma #4c4c4c) / on brand-primary, 손잡이 10 */
+.game-menu__toggle {
+  position: relative;
+  flex: 0 0 auto;
+  width: 2.6rem;
+  height: 1.6rem;
+  border-radius: var(--radius-full);
+  background: var(--neutral-variant-1);
+  transition: background-color 0.15s;
+}
+.game-menu__toggle::after {
+  content: '';
+  position: absolute;
+  top: 0.3rem;
+  left: 0.3rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--stove-white);
+  transition: transform 0.15s;
+}
+.game-menu__toggle.is-on { background: var(--brand-primary-enabled); }
+.game-menu__toggle.is-on::after { transform: translateX(1rem); }
+
+/* 2뎁스 상단 — ← + 메뉴명(elevation-1), 좌 6 · 우 12. 상태값은 ← 버튼에만 (hover · press 배경) */
+.game-menu__head {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  height: 3.2rem;
+  padding: 0 calc(1.2rem - 1px) 0 calc(0.6rem - 1px);
+  border: 0;
+  background: transparent;
+  color: var(--on-surface-elevation-1);
+  text-align: left;
+  cursor: pointer;
+}
+.game-menu__head .game-menu__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.game-menu__head .game-menu__back { color: var(--on-surface-elevation-2); transition: background-color 0.12s; }
+.game-menu__head:hover .game-menu__back { background: var(--interaction-hover); }
+.game-menu__head:active .game-menu__back { background: var(--interaction-pressed); }
+.game-menu__div {
+  height: 1px;
+  margin: 0.6rem calc(1.2rem - 1px);
+  background: var(--inverse-elevation-7);
+}
+/* 그룹 목록 — 5개(160)까지, 넘으면 스크롤 */
+.game-menu__groups {
+  max-height: 16rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.game-menu__groups::-webkit-scrollbar { width: 0.4rem; }
+.game-menu__groups::-webkit-scrollbar-thumb { border-radius: var(--radius-full); background-color: var(--inverse-elevation-2); }
+.game-menu__groups::-webkit-scrollbar-thumb:hover { background-color: var(--inverse-elevation-1); }
+/* 그룹에서 제거 ⊗ — on-surface-elevation-4, hover · press 배경 + 툴팁 */
+.game-menu__remove { color: var(--on-surface-elevation-4); cursor: pointer; transition: background-color 0.12s; }
+.game-menu__remove:hover { background: var(--interaction-hover); }
+.game-menu__remove:active { background: var(--interaction-pressed); }
+
+/* 그룹 없음 (최초 생성) — 폴더 28 + 문구 3줄, inverse-elevation-1 */
+.game-menu__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.2rem 1.2rem;
+  color: var(--inverse-elevation-1);
+  text-align: center;
+}
+.game-menu__empty i { font-size: 2.8rem; }
+.game-menu__empty p { margin: 0; }
+/* 그룹 만들기 — 32, 둥글기 4, neutral-variant-1. 그룹이 있으면 좌우 8 꽉 채움, 없으면 160 가운데 */
+.game-menu__create-wrap { display: flex; justify-content: center; padding: 0.8rem calc(0.8rem - 1px) 0; }
+.game-menu__create-wrap.is-empty { padding-top: 0; }
+.game-menu__create {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  height: 3.2rem;
+  padding: 0 1.2rem;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--neutral-variant-1);
+  color: var(--stove-white);
+  cursor: pointer;
+  transition: background-color 0.12s;
+}
+.game-menu__create-wrap.is-empty .game-menu__create { width: 16rem; }
+.game-menu__create i { font-size: 1.6rem; }
+.game-menu__create:hover { background: var(--neutral-variant-1-hover); }
+.game-menu__create:active { background: var(--neutral-variant-1-pressed); }
+/* 그룹 20개 — 비활성 (disabled-variant-3 배경 · disabled-variant-1 글자) */
+.game-menu__create:disabled { background: var(--disabled-variant-3); color: var(--disabled-variant-1); cursor: default; }
+
+/* 툴팁 — 메뉴(40) 위. 잘린 그룹명은 이 메뉴에서만 gray700 배경 (0901 가이드, 다른 툴팁은 그대로) */
+.game-menu__name-tip { z-index: 50; background: var(--stove-gray-700); color: var(--stove-white); }
+.game-menu__remove-tip { z-index: 50; }
+
+/* 게임 행 — 우클릭 메뉴가 열려 있는 동안 (1개 포커싱) */
+.library-panel .game-group__list.is-menu-focus { background: var(--interaction-selected); }
+
+/* =============================================================
+   그룹 만들기 팝업 (Figma 3-6) — 셸은 css/layer-dialog.css
+   ============================================================= */
+.group-dialog { display: flex; flex-direction: column; gap: 2.4rem; }
+.group-dialog__hints {
+  margin: 0;
+  padding-left: 2.1rem;
+  color: var(--on-surface-elevation-4);
+  font-size: 1.4rem;
+  line-height: 2.4rem;
+  letter-spacing: -0.042rem;
+}
+.group-dialog__row { display: flex; align-items: flex-start; gap: 0.8rem; }
+.group-dialog__field-wrap { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 0.8rem; }
+/* 입력칸 — 2px gray400(Figma 글로벌 지정), 에러면 system-error. 좌우 16 · 위아래 12 */
+.group-dialog__field {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  height: 4.4rem;
+  padding: 0 1.4rem;
+  border: 2px solid var(--stove-gray-400);
+  border-radius: var(--radius-lg);
+  background: var(--neutral-variant-3);
+  cursor: text;
+}
+.group-dialog__field.is-error { border-color: var(--system-error); }
+.group-dialog__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--on-surface-elevation-2);
+  caret-color: var(--brand-primary-enabled);
+  font: inherit;
+  font-size: 1.4rem;
+  line-height: 2rem;
+  letter-spacing: -0.042rem;
+}
+.group-dialog__input::placeholder { color: var(--placeholder); }
+/* 지우기 — 그룹 이름 입력칸(.group-name-input__clear)과 같은 모양 */
+.group-dialog__clear {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--inverse-elevation-2);
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.group-dialog__clear i { font-size: 1.6rem; }
+.group-dialog__clear:hover { opacity: 0.6; }
+.group-dialog__clear:active { opacity: 0.8; }
+.group-dialog__error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.2rem;
+  margin: 0;
+  color: var(--system-error);
+  font-size: 1.2rem;
+  line-height: 1.8rem;
+  letter-spacing: -0.024rem;
+}
+.group-dialog__error i { flex: 0 0 auto; margin-top: 0.1rem; font-size: 1.6rem; }
+/* 만들기 — 90 x 44, brand-primary / 비활성 disabled-variant-3 · disabled-variant-1 */
+.group-dialog__submit {
+  flex: 0 0 auto;
+  width: 9rem;
+  height: 4.4rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--brand-primary-enabled);
+  color: var(--stove-white);
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 2rem;
+  letter-spacing: -0.042rem;
+  cursor: pointer;
+  transition: background-color 0.12s;
+}
+.group-dialog__submit:hover { background: var(--brand-primary-hover); }
+.group-dialog__submit:active { background: var(--brand-primary-pressed); }
+.group-dialog__submit:disabled { background: var(--disabled-variant-3); color: var(--disabled-variant-1); cursor: default; }

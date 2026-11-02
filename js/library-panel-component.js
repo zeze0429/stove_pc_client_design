@@ -95,6 +95,74 @@ var LibraryGroupNameInput = {
 
 var LIBRARY_GROUP_DUP_MSG = '이 이름은 이미 사용 중이예요. 다른 이름을 입력해 주세요.';
 
+/**
+ * 그룹 만들기 팝업 (Figma 3-6 — 게임 우클릭 > 그룹에 추가 > 그룹 만들기). 센터 레이어 팝업 공용 셸(LayerDialog), 너비 560.
+ * 입력칸: 기본 · 입력 중 2px gray400(Figma 글로벌 지정) / 에러 2px system-error + 메시지. 만들기 버튼은 이름이 있고 에러가 없을 때만.
+ */
+var LibraryCreateGroupDialog = {
+  components: { 'layer-dialog': LayerDialog },
+  props: { validate: { type: Function, default: function () { return ''; } } },
+  emits: ['submit', 'close'],
+  data: function () { return { text: '', error: '' }; },
+  computed: {
+    canSubmit: function () { return !this.error && this.text.trim().length > 0; },
+  },
+  mounted: function () { this.$refs.input.focus(); },
+  methods: {
+    // 한글 조합 중에도 값을 받는다 (그룹 이름 입력칸과 같은 이유)
+    onInput: function (e) { this.text = e.target.value; this.error = ''; },
+    clear: function () { this.text = ''; this.error = ''; this.$refs.input.focus(); },
+    submit: function () {
+      if (!this.canSubmit) return;
+      var name = this.text.trim();
+      var msg = this.validate(name);
+      if (msg) { this.error = msg; return; }
+      this.$emit('submit', name);
+    },
+    onKey: function (e) {
+      if (e.isComposing) return;
+      if (e.key === 'Enter') { e.preventDefault(); this.submit(); }
+    },
+  },
+  template:
+    '<layer-dialog title="그룹 만들기" width="56rem" @close="$emit(\'close\')">' +
+      '<div class="group-dialog" data-name="contents">' +
+        '<ul class="group-dialog__hints">' +
+          '<li>라이브러리에 있는 게임을 원하는 방식으로 정리할 수 있어요.</li>' +
+          '<li>그룹은 최대 ' + LIBRARY_GROUP_MAX + '개까지 만들 수 있어요.</li>' +
+        '</ul>' +
+        '<div class="group-dialog__row" data-name="input">' +
+          '<div class="group-dialog__field-wrap">' +
+            '<label class="group-dialog__field" :class="{ \'is-error\': error }" data-name="Input">' +
+              '<input ref="input" class="group-dialog__input" type="text" :value="text" :maxlength="' + LIBRARY_GROUP_NAME_MAX + '" ' +
+                'placeholder="그룹 이름을 입력해 주세요 (최대 ' + LIBRARY_GROUP_NAME_MAX + '자)" @input="onInput" @keydown="onKey" />' +
+              '<button v-if="text" class="group-dialog__clear" type="button" aria-label="지우기" @mousedown.prevent @click="clear"><i class="ic-v2-control-close-circle-fill"></i></button>' +
+            '</label>' +
+            '<p v-if="error" class="group-dialog__error" data-name="Input/Tag"><i class="ic-v2-state-warning-circle-fill" aria-hidden="true"></i>{{ error }}</p>' +
+          '</div>' +
+          '<button class="group-dialog__submit" type="button" :disabled="!canSubmit" @click="submit" data-name="Button">만들기</button>' +
+        '</div>' +
+      '</div>' +
+    '</layer-dialog>',
+};
+
+// 게임 우클릭 메뉴 1뎁스 (Figma 3-5-2) — sub: 2뎁스로 플립, toggle: 토글(메뉴 유지), 나머지는 누르면 닫힌다(동작은 아직 없음)
+var LIBRARY_GAME_MENU = [
+  { label: '즐겨찾기 추가' },
+  { label: '그룹에 추가', sub: 'add' },
+  { label: '그룹에서 제거', sub: 'remove' },
+  { label: '자동업데이트', toggle: 'autoUpdate' },
+  { label: '클라우드 저장 사용', toggle: 'cloud' },
+  { label: '실행옵션' },
+  { label: '게임 파일 검사 및 복구' },
+  { label: '바탕화면 바로가기 만들기' },
+  { label: 'DLC' },
+  { label: '게임 옵션 설정' },
+  { label: '로컬 파일 보기' },
+  { label: '게임 삭제' },
+];
+var LIBRARY_GAME_TOGGLE_DEFAULT = { autoUpdate: false, cloud: true }; // Figma 1뎁스 예시값
+
 // 그룹 타이틀 (component/game_group/title) — 화살표 · 이름 · 개수 · 우측 버튼(호버 시).
 // 사용자 그룹은 게임 추가 + 그룹 메뉴, 그룹 없는 게임은 그룹 메뉴만 (Figma ④)
 // 게임 추가 중인 그룹은 우측 버튼 대신 게임 추가 취소(X)가 항상 보이고, 접기/펼치기는 비활성 (3-3 · 0825)
@@ -133,22 +201,26 @@ function TITLE_TPL(idExpr, nameExpr, countExpr, withAdd) {
   '</div>';
 }
 
-// 게임 한 줄 (component/game_group/list) — 사이드바와 같은 컴포넌트
-function ROW_TPL(listExpr) {
+// 게임 한 줄 (component/game_group/list) — 사이드바와 같은 컴포넌트.
+// 같은 게임이 여러 그룹에 들어갈 수 있어 행은 "그룹 id:게임 id"(rowKey)로 구분한다 (툴팁 · 우클릭 포커스)
+function ROW_TPL(listExpr, groupExpr) {
+  var key = '(' + groupExpr + ') + \':\' + game.id';
   return '<li v-for="game in ' + listExpr + '" :key="game.id" class="game-group__list" ' +
-      '@mouseenter="onRowEnter($event, game)" @mouseleave="onRowLeave" ' +
+      ':class="{ \'is-menu-focus\': gameMenu && gameMenu.rowKey === ' + key + ' }" ' +
+      '@mouseenter="onRowEnter($event, game, ' + key + ')" @mouseleave="onRowLeave" ' +
+      '@contextmenu.prevent="openGameMenu($event, game, ' + key + ')" ' +
       '@mousedown="$event.button === 0 && !isStaticRow($event.currentTarget) && setPressed(true)" data-name="component/game_group/list">' +
     '<span class="game-group__thumbnail" :style="{ backgroundImage: \'url(\' + game.thumb + \')\' }" data-name="component/thumnail/game"></span>' +
     '<span class="game-group__list-name stds-cap1 fw-medium">{{ game.name }}</span>' +
     '<span v-if="game.badges && game.badges.length" class="game-group__badges">' +
       '<span v-for="b in game.badges" :key="b" class="badge-game-list" data-name="component/badge/game_list" ' +
-        '@mouseenter="showBadgeTip($event, game, b)" @mouseleave="hideBadgeTip">' +
+        '@mouseenter="showBadgeTip($event, ' + key + ', b)" @mouseleave="hideBadgeTip">' +
         '<img :src="badgeIcon[b]" alt="" />' +
       '</span>' +
     '</span>' +
-    '<div v-if="hoveredGameId === game.id && !(badgeTip && badgeTip.gameId === game.id)" ' +
+    '<div v-if="hoveredGameId === ' + key + ' && !(badgeTip && badgeTip.gameId === ' + key + ')" ' +
       'class="game-group__list-tooltip stds-cap2" :style="tooltipStyle">{{ game.name }}</div>' +
-    '<div v-if="badgeTip && badgeTip.gameId === game.id" class="game-group__badge-tooltip" ' +
+    '<div v-if="badgeTip && badgeTip.gameId === ' + key + '" class="game-group__badge-tooltip" ' +
       ':class="{ \'is-measuring\': badgeTip.measuring }" ' +
       ':style="{ left: badgeTip.left + \'px\', top: badgeTip.top + \'px\' }" data-name="Tooltip/iconbtn">' +
       '<span class="game-group__badge-tooltip-tail" :style="{ marginLeft: badgeTip.tailLeft + \'px\' }"></span>' +
@@ -158,7 +230,7 @@ function ROW_TPL(listExpr) {
 }
 
 var LibraryPanel = {
-  components: { 'group-name-input': LibraryGroupNameInput },
+  components: { 'group-name-input': LibraryGroupNameInput, 'create-group-dialog': LibraryCreateGroupDialog },
   data: function () {
     return {
       owned: LIBRARY_OWNED.map(libraryGame),
@@ -171,7 +243,11 @@ var LibraryPanel = {
       titleTip: null, // 잘린 그룹명 전체 툴팁 { id, left, top, width }
       btnTip: null, // 타이틀 우측 버튼 툴팁 { text, left, top, tailLeft, measuring }
       menu: null, // 그룹 메뉴 { groupId, left, top, flip }
-      hoveredGameId: null,
+      gameMenu: null, // 게임 우클릭 메뉴 { gameId, rowKey, left, top, depth(1|2), back('add'|'remove'), measuring }
+      gameToggles: {}, // 게임 id → { autoUpdate, cloud } (메뉴 토글)
+      menuTip: null, // 2뎁스 툴팁 { text, left, top, kind('name'|'remove') }
+      createDialog: null, // 그룹 만들기 팝업 { gameIds } — 게임 메뉴에서 열면 만든 그룹에 그 게임을 넣는다
+      hoveredGameId: null, // 말줄임 툴팁을 띄운 행 (rowKey)
       tooltipLeft: 0,
       tooltipTop: 0,
       tooltipWidth: 0,
@@ -203,6 +279,20 @@ var LibraryPanel = {
       return { height: this.thumbHeight + 'px', top: this.thumbTop + 'px' };
     },
     canCreate: function () { return this.groups.length < LIBRARY_GROUP_MAX; },
+    menuGame: function () {
+      var id = this.gameMenu && this.gameMenu.gameId;
+      return id ? this.owned.find(function (g) { return g.id === id; }) : null;
+    },
+    // 그 게임이 들어 있는 그룹 — 그룹에서 제거 2뎁스 목록
+    menuGameGroups: function () {
+      var id = this.gameMenu && this.gameMenu.gameId;
+      return id ? this.groups.filter(function (g) { return g.gameIds.indexOf(id) >= 0; }) : [];
+    },
+    // 1뎁스 — 그룹에 하나도 없는 게임은 그룹에서 제거를 뺀다
+    gameMenuItems: function () {
+      var inGroup = this.menuGameGroups.length > 0;
+      return LIBRARY_GAME_MENU.filter(function (item) { return item.sub !== 'remove' || inGroup; });
+    },
     titleTipText: function () {
       if (!this.titleTip) return '';
       if (this.titleTip.id === 'ungrouped') return '그룹 없는 게임';
@@ -270,9 +360,10 @@ var LibraryPanel = {
       this.deletedNotice = false;
       this.creating = true;
     },
-    createGroup: function (name) {
+    // gameIds — 게임 메뉴 > 그룹 만들기 팝업에서 만들면 그 게임을 바로 넣는다
+    createGroup: function (name, gameIds) {
       var id = 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-      this.groups.unshift({ id: id, title: name, gameIds: [] });
+      this.groups.unshift({ id: id, title: name, gameIds: gameIds ? gameIds.slice() : [] });
       this.creating = false;
       this.$refs.scrollEl.scrollTop = 0;
       // 새 그룹은 그룹 목록 맨 위 — 화면 밖이면 보이는 곳까지 스크롤
@@ -380,6 +471,7 @@ var LibraryPanel = {
       }
       this.btnTip = null;
       this.titleTip = null;
+      this.closeGameMenu();
       this.menu = { groupId: groupId, fromButton: !!fromButton, left: anchor.x, top: anchor.y, measuring: true };
       this.$nextTick(function () {
         var el = this.$refs.menuEl;
@@ -407,7 +499,92 @@ var LibraryPanel = {
       else if (action === 'add') this.startAdd(id);
       // 'view'(그룹 화면)는 다음 단계
     },
+
+    // ── 게임 우클릭 메뉴 (Figma 3-5-2) — 1뎁스에서 그룹에 추가 · 그룹에서 제거를 누르면 카드처럼 뒤집혀 2뎁스로.
+    // 1 · 2뎁스 너비는 같다(1뎁스 기준, 0907). 위치는 열 때 한 번만 잡고 플립 중엔 다시 재지 않는다 (플립 가이드)
+    openGameMenu: function (e, game, rowKey) {
+      if (this.isStaticRow(e.currentTarget)) return;
+      this.closeMenu();
+      this.btnTip = null;
+      this.titleTip = null;
+      this.hoveredGameId = null;
+      this.badgeTip = null;
+      this.menuTip = null;
+      if (!this.gameToggles[game.id]) this.gameToggles[game.id] = Object.assign({}, LIBRARY_GAME_TOGGLE_DEFAULT);
+      var x = e.clientX;
+      var y = e.clientY;
+      this.gameMenu = { gameId: game.id, rowKey: rowKey, left: x, top: y, depth: 1, back: 'add', measuring: true };
+      this.$nextTick(function () {
+        var el = this.$refs.gameMenuEl;
+        if (!el || !this.gameMenu) return;
+        var r = el.querySelector('.game-menu__face--front').getBoundingClientRect();
+        var left = x + r.width > window.innerWidth - 8 ? x - r.width : x;
+        var top = y + r.height > window.innerHeight - 8 ? y - r.height : y; // 아래가 모자라면 위로
+        this.gameMenu.left = Math.max(8, left);
+        this.gameMenu.top = Math.max(8, top);
+        this.gameMenu.measuring = false;
+      });
+    },
+    closeGameMenu: function () { this.gameMenu = null; this.menuTip = null; },
+    onGameMenuItem: function (item) {
+      if (item.sub) { this.gameMenu.back = item.sub; this.gameMenu.depth = 2; this.menuTip = null; }
+      else if (item.toggle) { var t = this.gameToggles[this.gameMenu.gameId]; t[item.toggle] = !t[item.toggle]; }
+      else this.closeGameMenu(); // 나머지 항목은 아직 동작 없음
+    },
+    // 2뎁스 상단 메뉴명(← 포함)을 누르면 1뎁스로 다시 뒤집힌다
+    flipBack: function () { this.gameMenu.depth = 1; this.menuTip = null; },
+    gameInGroup: function (group) { return !!this.gameMenu && group.gameIds.indexOf(this.gameMenu.gameId) >= 0; },
+    addMenuGameTo: function (group) {
+      if (this.gameInGroup(group)) return; // 이미 들어 있는 그룹은 비활성
+      group.gameIds.push(this.gameMenu.gameId);
+      this.closeGameMenu();
+      this.$nextTick(this.updateThumb);
+    },
+    // 그룹에서 제거 — 그 행만 빠지고 메뉴는 그대로. 남은 그룹이 없으면 1뎁스로 돌아간다
+    removeMenuGameFrom: function (group) {
+      var i = group.gameIds.indexOf(this.gameMenu.gameId);
+      if (i >= 0) group.gameIds.splice(i, 1);
+      this.menuTip = null;
+      if (!this.menuGameGroups.length) this.flipBack();
+      this.$nextTick(this.updateThumb);
+    },
+    openCreateFromMenu: function () {
+      if (!this.canCreate) return;
+      var ids = [this.gameMenu.gameId];
+      this.closeGameMenu();
+      this.createDialog = { gameIds: ids };
+    },
+    createFromDialog: function (name) {
+      this.createGroup(name, this.createDialog.gameIds);
+      this.createDialog = null;
+    },
+    // 2뎁스 툴팁 — 잘린 그룹명(gray700, 이름 라벨 폭 그대로 · 아래 2) / 이 그룹에서 제거(버튼 아래 2, 메뉴 안쪽에 붙임)
+    showNameTip: function (e) {
+      var nameEl = e.currentTarget.querySelector('.game-menu__name');
+      if (!nameEl || nameEl.scrollWidth <= nameEl.clientWidth) return;
+      var r = nameEl.getBoundingClientRect();
+      this.menuTip = { kind: 'name', text: nameEl.textContent, left: r.left, top: r.bottom + 2, width: r.width };
+    },
+    showRemoveTip: function (e) {
+      var btn = e.currentTarget;
+      var face = btn.closest('.game-menu__face');
+      var r = btn.getBoundingClientRect();
+      this.menuTip = { kind: 'remove', text: '이 그룹에서 제거', left: 0, top: r.bottom + 2, tailLeft: 0, measuring: true };
+      this.$nextTick(function () {
+        var tip = this.$refs.menuTipEl;
+        if (!tip || !this.menuTip || this.menuTip.kind !== 'remove') return;
+        var fr = face.getBoundingClientRect();
+        var center = r.left + r.width / 2;
+        var w = tip.offsetWidth;
+        var left = Math.min(Math.max(center - w / 2, fr.left), fr.right - w);
+        this.menuTip.left = left;
+        this.menuTip.tailLeft = center - left - 3;
+        this.menuTip.measuring = false;
+      });
+    },
+    hideMenuTip: function () { this.menuTip = null; },
     onDocMouseDown: function (e) {
+      if (this.gameMenu && !(this.$refs.gameMenuEl && this.$refs.gameMenuEl.contains(e.target))) this.closeGameMenu();
       if (!this.menu) return;
       if (this.$refs.menuEl && this.$refs.menuEl.contains(e.target)) return;
       if (e.target.closest && e.target.closest('[data-menu-btn]')) return; // ⋮ 버튼은 openMenu가 열고/닫는다
@@ -415,6 +592,7 @@ var LibraryPanel = {
     },
     onDocKeyDown: function (e) {
       if (e.key === 'Escape' && this.menu) this.closeMenu();
+      if (e.key === 'Escape' && this.gameMenu) this.closeGameMenu();
     },
 
     // ── 호버 인디케이터 (사이드바와 같은 스프링, Figma 5765:88811 "공통 원칙") ──
@@ -433,7 +611,7 @@ var LibraryPanel = {
     // 숨어 있다가 나타날 땐 그 자리에 바로, 이미 보이는 중이면 스프링으로 미끄러진다
     // 게임 추가 중인 그룹의 게임 행은 상태값(hover · press) 없이 보여주기만 한다
     isStaticRow: function (el) { return !!el.closest('.is-add-target'); },
-    onRowEnter: function (e, game) {
+    onRowEnter: function (e, game, rowKey) {
       var li = e.currentTarget;
       clearTimeout(this._hoverLeaveTimer);
       if (this.isStaticRow(li)) {
@@ -448,7 +626,7 @@ var LibraryPanel = {
       var nameEl = li.querySelector('.game-group__list-name');
       if (nameEl && nameEl.scrollWidth > nameEl.clientWidth) {
         var nr = nameEl.getBoundingClientRect();
-        this.hoveredGameId = game.id;
+        this.hoveredGameId = rowKey;
         this.tooltipLeft = nr.left;
         this.tooltipWidth = nr.width;
         this.tooltipTop = nr.bottom + 2;
@@ -471,12 +649,12 @@ var LibraryPanel = {
     },
 
     // 뱃지 툴팁 — 뱃지 중앙 기준, 행 밖으로 나가면 행 끝에 붙인다 (사이드바와 같은 규칙)
-    showBadgeTip: function (e, game, badge) {
+    showBadgeTip: function (e, rowKey, badge) {
       var badgeEl = e.currentTarget;
       var li = badgeEl.closest('.game-group__list');
       var self = this;
       this.badgeTip = {
-        gameId: game.id,
+        gameId: rowKey,
         text: GNB_BADGE_TOOLTIP[badge],
         left: 0,
         top: li.getBoundingClientRect().bottom - 4,
@@ -485,7 +663,7 @@ var LibraryPanel = {
       };
       this.$nextTick(function () {
         var tip = li.querySelector('.game-group__badge-tooltip');
-        if (!tip || !self.badgeTip || self.badgeTip.gameId !== game.id) return;
+        if (!tip || !self.badgeTip || self.badgeTip.gameId !== rowKey) return;
         var lr = li.getBoundingClientRect();
         var br = badgeEl.getBoundingClientRect();
         var center = br.left + br.width / 2 - lr.left;
@@ -507,6 +685,7 @@ var LibraryPanel = {
       this.titleTip = null;
       this.btnTip = null;
       this.closeMenu();
+      this.closeGameMenu();
       this.showTopBtn = box.scrollTop >= box.clientHeight;
       this.updateThumb();
     },
@@ -541,6 +720,7 @@ var LibraryPanel = {
     document.addEventListener('keydown', this.onDocKeyDown);
     window.addEventListener('resize', this.updateThumb);
     window.addEventListener('resize', this.closeMenu);
+    window.addEventListener('resize', this.closeGameMenu);
     this.updateThumb();
   },
   unmounted: function () {
@@ -552,6 +732,7 @@ var LibraryPanel = {
     document.removeEventListener('keydown', this.onDocKeyDown);
     window.removeEventListener('resize', this.updateThumb);
     window.removeEventListener('resize', this.closeMenu);
+    window.removeEventListener('resize', this.closeGameMenu);
   },
   template:
     '<div class="library-panel" data-name="layout/library/pannel">' +
@@ -567,7 +748,7 @@ var LibraryPanel = {
       '<div v-if="creating" class="library-panel__create-form" data-name="btn/create group">' +
         '<div class="library-panel__create-field">' +
           '<p class="library-panel__create-label stds-text4 fw-medium">그룹 이름을 입력해 주세요.</p>' +
-          '<group-name-input confirm-label="만들기" :validate="validateNew" @submit="createGroup" @cancel="creating = false"></group-name-input>' +
+          '<group-name-input confirm-label="만들기" :validate="validateNew" @submit="createGroup($event)" @cancel="creating = false"></group-name-input>' +
         '</div>' +
         '<ul class="library-panel__create-hints stds-cap2">' +
           '<li>라이브러리에 있는 게임을 원하는 방식으로 정리할 수 있어요.</li>' +
@@ -620,7 +801,7 @@ var LibraryPanel = {
                 '<i class="ic-v2-control-add-circle-fill" aria-hidden="true"></i>게임 추가' +
               '</button>' +
               '<ul v-else-if="group.gameIds.length" class="game-group__list-group" data-name="component/game_group/list_group">' +
-                ROW_TPL('groupGames(group)') +
+                ROW_TPL('groupGames(group)', 'group.id') +
               '</ul>' +
             '</section>' +
 
@@ -628,7 +809,7 @@ var LibraryPanel = {
             '<section v-if="ungrouped.length" class="game-group library-group" :class="{ \'is-collapsed\': isCollapsed(\'ungrouped\') }" data-name="component/game_group">' +
               TITLE_TPL("'ungrouped'", "'그룹 없는 게임'", 'ungrouped.length', false) +
               '<ul class="game-group__list-group" data-name="component/game_group/list_group">' +
-                ROW_TPL('ungrouped') +
+                ROW_TPL('ungrouped', "'ungrouped'") +
               '</ul>' +
             '</section>' +
           '</div>' +
@@ -658,6 +839,68 @@ var LibraryPanel = {
           '<button v-else class="library-panel-menu__item stds-btn3 fw-medium" type="button" role="menuitem" @click="onMenuAction(item.action)">{{ item.label }}</button>' +
         '</template>' +
       '</div>' +
+
+      // 게임 우클릭 메뉴 — 앞면(1뎁스) · 뒷면(2뎁스)을 rotateY로 뒤집는다 (Figma 컨텍스트메뉴 플립 애니메이션 가이드)
+      '<div v-if="gameMenu" ref="gameMenuEl" class="game-menu" :class="{ \'is-measuring\': gameMenu.measuring }" ' +
+        ':style="{ left: gameMenu.left + \'px\', top: gameMenu.top + \'px\' }" @contextmenu.prevent data-name="컨텍스트메뉴">' +
+        '<div class="game-menu__flip" :class="{ \'is-flipped\': gameMenu.depth === 2 }">' +
+          // 앞면 — 1뎁스
+          '<div class="game-menu__face game-menu__face--front" role="menu" :aria-hidden="gameMenu.depth === 2">' +
+            '<button v-for="item in gameMenuItems" :key="item.label" class="game-menu__item stds-btn3 fw-medium" ' +
+              ':class="{ \'has-sub\': item.sub, \'has-toggle\': item.toggle }" type="button" role="menuitem" @click="onGameMenuItem(item)" data-name="menu">' +
+              '<span class="game-menu__label">{{ item.label }}</span>' +
+              '<span v-if="item.sub" class="game-menu__icon" aria-hidden="true"><i class="ic-v2-control-arrow-right-line"></i></span>' +
+              '<span v-if="item.toggle" class="game-menu__toggle" :class="{ \'is-on\': gameToggles[gameMenu.gameId][item.toggle] }" ' +
+                'role="switch" :aria-checked="String(gameToggles[gameMenu.gameId][item.toggle])" data-name="Toggle"></span>' +
+            '</button>' +
+          '</div>' +
+          // 뒷면 — 2뎁스 (그룹에 추가 · 그룹에서 제거)
+          '<div class="game-menu__face game-menu__face--back" role="menu" :aria-hidden="gameMenu.depth === 1">' +
+            '<button class="game-menu__head stds-btn3 fw-medium" type="button" @click="flipBack" data-name="menu">' +
+              '<span class="game-menu__icon game-menu__back" aria-hidden="true"><i class="ic-v2-control-arrow-left-line"></i></span>' +
+              '<span class="game-menu__label">{{ gameMenu.back === \'add\' ? \'그룹에 추가\' : \'그룹에서 제거\' }}</span>' +
+            '</button>' +
+            '<div class="game-menu__div" aria-hidden="true"></div>' +
+            '<template v-if="gameMenu.back === \'add\'">' +
+              // 그룹 있음 — 5개까지 보이고 그 이상은 스크롤. 이미 들어 있는 그룹은 비활성
+              '<div v-if="groups.length" class="game-menu__groups" @scroll="hideMenuTip">' +
+                '<button v-for="g in groups" :key="g.id" class="game-menu__item stds-btn3 fw-medium" type="button" ' +
+                  ':disabled="gameInGroup(g)" @click="addMenuGameTo(g)" @mouseenter="showNameTip" @mouseleave="hideMenuTip" data-name="menu">' +
+                  '<span class="game-menu__label game-menu__name">{{ g.title }}</span>' +
+                '</button>' +
+              '</div>' +
+              // 그룹 없음 (최초 생성)
+              '<div v-else class="game-menu__empty">' +
+                '<i class="ic-v2-content-folder-add-fill" aria-hidden="true"></i>' +
+                '<p class="stds-cap1 fw-medium">그룹으로<br />나만의 라이브러리를<br />만들어 보세요.</p>' +
+              '</div>' +
+              '<div class="game-menu__create-wrap" :class="{ \'is-empty\': !groups.length }">' +
+                '<button class="game-menu__create stds-btn3 fw-medium" type="button" :disabled="!canCreate" @click="openCreateFromMenu" data-name="Button">' +
+                  '<i class="ic-v2-control-add-line" aria-hidden="true"></i>그룹 만들기' +
+                '</button>' +
+              '</div>' +
+            '</template>' +
+            '<div v-else class="game-menu__groups" @scroll="hideMenuTip">' +
+              '<div v-for="g in menuGameGroups" :key="g.id" class="game-menu__item game-menu__item--remove stds-btn3 fw-medium" ' +
+                '@mouseenter="showNameTip" @mouseleave="hideMenuTip" data-name="menu">' +
+                '<span class="game-menu__label game-menu__name">{{ g.title }}</span>' +
+                '<button class="game-menu__icon game-menu__remove" type="button" aria-label="이 그룹에서 제거" ' +
+                  '@click="removeMenuGameFrom(g)" @mouseenter.stop="showRemoveTip" @mouseleave="hideMenuTip" data-name="component/game_group/title/btn_right">' +
+                  '<i class="ic-v2-control-close-circle-fill"></i>' +
+                '</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div v-if="menuTip && menuTip.kind === \'name\'" class="game-group__list-tooltip game-menu__name-tip stds-cap2" ' +
+        ':style="{ left: menuTip.left + \'px\', top: menuTip.top + \'px\', width: menuTip.width + \'px\' }">{{ menuTip.text }}</div>' +
+      '<div v-if="menuTip && menuTip.kind === \'remove\'" ref="menuTipEl" class="library-panel__btn-tip game-menu__remove-tip" ' +
+        ':class="{ \'is-measuring\': menuTip.measuring }" :style="{ left: menuTip.left + \'px\', top: menuTip.top + \'px\' }" data-name="Tooltip/iconbtn">' +
+        '<span class="game-group__badge-tooltip-tail" :style="{ marginLeft: menuTip.tailLeft + \'px\' }"></span>' +
+        '<span class="game-group__badge-tooltip-body stds-cap1 fw-medium">{{ menuTip.text }}</span>' +
+      '</div>' +
+      '<create-group-dialog v-if="createDialog" :validate="validateNew" @submit="createFromDialog" @close="createDialog = null"></create-group-dialog>' +
     '</div>',
 };
 
