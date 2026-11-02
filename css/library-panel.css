@@ -381,10 +381,13 @@
 .library-group.is-add-target .library-group__title:active { background: transparent; }
 .library-group.is-add-target .game-group__name { color: var(--brand-primary-enabled); }
 .library-group.is-add-target .badge-menu-title { background: var(--brand-primary-enabled); }
-.library-group.is-add-target .game-group__list { opacity: 0.6; }
+/* 게임 행은 상태값(hover · press) 없이 보여주기만 — 인디케이터는 JS에서 막는다 */
+.library-group.is-add-target .game-group__list { opacity: 0.6; cursor: default; }
 .library-group.is-add-target .game-group__list-name { color: var(--brand-primary-enabled); }
-/* 접기/펼치기 비활성 — 그룹 없음(.is-empty)과 같은 disabled-variant-3, 호버 · 프레스 배경 없음 */
+/* 접기/펼치기 비활성 — 호버 · 프레스 배경 없음 */
 .library-group .game-group__btn-left-arrow:disabled { color: var(--disabled-variant-3); cursor: default; background: transparent; }
+/* 선택 상태의 비활성 화살표 (btn_left_arrow disabled_2) — Figma #FC4420 30%(토큰 없음)라 brand-primary를 30%로 섞는다 */
+.library-group.is-add-target .game-group__btn-left-arrow:disabled { color: color-mix(in srgb, var(--brand-primary-enabled) 30%, transparent); }
 /* 게임 추가 취소 (0825) — 항상 노출. enabled 배경 없음 / hover brand-primary 4% + 툴팁 / press 10% */
 .library-group__btns--target { display: flex; }
 .library-group__cancel,

@@ -137,7 +137,7 @@ function TITLE_TPL(idExpr, nameExpr, countExpr, withAdd) {
 function ROW_TPL(listExpr) {
   return '<li v-for="game in ' + listExpr + '" :key="game.id" class="game-group__list" ' +
       '@mouseenter="onRowEnter($event, game)" @mouseleave="onRowLeave" ' +
-      '@mousedown="$event.button === 0 && setPressed(true)" data-name="component/game_group/list">' +
+      '@mousedown="$event.button === 0 && !isStaticRow($event.currentTarget) && setPressed(true)" data-name="component/game_group/list">' +
     '<span class="game-group__thumbnail" :style="{ backgroundImage: \'url(\' + game.thumb + \')\' }" data-name="component/thumnail/game"></span>' +
     '<span class="game-group__list-name stds-cap1 fw-medium">{{ game.name }}</span>' +
     '<span v-if="game.badges && game.badges.length" class="game-group__badges">' +
@@ -431,12 +431,19 @@ var LibraryPanel = {
       }, mode);
     },
     // 숨어 있다가 나타날 땐 그 자리에 바로, 이미 보이는 중이면 스프링으로 미끄러진다
+    // 게임 추가 중인 그룹의 게임 행은 상태값(hover · press) 없이 보여주기만 한다
+    isStaticRow: function (el) { return !!el.closest('.is-add-target'); },
     onRowEnter: function (e, game) {
       var li = e.currentTarget;
       clearTimeout(this._hoverLeaveTimer);
-      this.moveHoverTo(li, this._hoverVisible ? undefined : 'instant');
-      this._hoverSpring.show();
-      this._hoverVisible = true;
+      if (this.isStaticRow(li)) {
+        this._hoverSpring.hide();
+        this._hoverVisible = false;
+      } else {
+        this.moveHoverTo(li, this._hoverVisible ? undefined : 'instant');
+        this._hoverSpring.show();
+        this._hoverVisible = true;
+      }
       // 이름이 말줄임될 때만 전체 이름 툴팁 (Figma ⑥) — 이름 라벨 폭 그대로, 라벨 바닥 + 2
       var nameEl = li.querySelector('.game-group__list-name');
       if (nameEl && nameEl.scrollWidth > nameEl.clientWidth) {
