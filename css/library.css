@@ -462,6 +462,26 @@
 /* 도구 줄 — 왼쪽 게임 추가 취소, 가운데 메시지 영역 (Figma 클라이언트_v3.1 67953:409405 선택UI - 메세지 영역)
    아이콘 20 — 2배수 이미지 img_info · img_done · img_error (Figma 레이어명, 셋 다 이미지 — 사용자 지정) + 간격 4,
    Button2-R 14/20 on-surface-elevation-2, 게임 수만 Button2-B on-surface-elevation-1 */
+/* 선택 UI 고정 헤더 — 보유게임 타이틀 · 게임 선택 취소 · 안내 문구는 페이지 타이틀 자리(y72)에 붙고 카드만 스크롤.
+   카드가 비치지 않게 아래 그리드 간격(16)까지, 위로는 유틸리티 바 아래 여백(24)까지 배경으로 덮는다.
+   유틸리티 바 뒤로 지나가는 건 다른 페이지 스크롤과 같다. 위 여백(24)은 보유게임 위 간격(32)보다 작아 고정 전엔 빠른 실행을 가리지 않는다 */
+.library-owned.is-selecting .library-owned__head {
+  position: sticky;
+  z-index: 5;
+  top: 2.4rem;
+  padding-bottom: 1.6rem;
+  background: var(--stds-sem-color-background-variant-1);
+}
+.library-owned.is-selecting .library-owned__head::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 2.4rem;
+  background: inherit;
+}
+.library-owned.is-selecting .library-grid { margin-top: 0; }
 .library-toolbar--select { position: relative; }
 .library-select-msg {
   position: absolute;

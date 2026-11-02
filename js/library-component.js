@@ -534,6 +534,8 @@ var LibraryMain = {
 
       // ---- 보유게임 ----
       '<section ref="owned" class="library-section library-owned" :class="{ \'is-selecting\': selecting }">' +
+        // 선택 UI에서는 타이틀 · 구분선 · 도구 줄이 위에 고정되고 아래 카드만 스크롤된다 (사용자 요청)
+        '<div class="library-owned__head">' +
         '<h2 class="library-section__title">보유게임<span>{{ filteredOwned.length }}</span></h2>' +
         '<div class="library-owned__divider"></div>' +
         // 선택 UI — 도구 줄 자리에 게임 추가 취소 + 안내 문구 (Figma ⑦ · 0825 게임 추가 취소)
@@ -559,6 +561,7 @@ var LibraryMain = {
               '<i class="ic-v2-navigation-search-line" aria-hidden="true"></i>' +
             '</label>' +
           '</div>' +
+        '</div>' +
         '</div>' +
         '<ul class="library-grid">' +
           '<li v-for="g in filteredOwned" :key="g.id" class="library-card" ' +
