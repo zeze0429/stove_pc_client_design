@@ -400,11 +400,12 @@ var LibraryPanel = {
 
     // ── 그룹 타이틀 호버 — 우측 버튼(게임 추가 · 그룹 메뉴) 노출, 잘린 그룹명은 툴팁 (Figma ④ · 3-1-1) ──
     onTitleEnter: function (e, id) {
+      if (this.anyMenuOpen()) return;
       var title = e.currentTarget;
       this.hoveredTitleId = id;
       // 버튼이 나타나면 이름 칸이 줄어드니 다음 틱에 재서 잘렸을 때만 띄운다
       this.$nextTick(function () {
-        if (this.hoveredTitleId !== id) return;
+        if (this.hoveredTitleId !== id || this.anyMenuOpen()) return;
         var nameEl = title.querySelector('.game-group__name');
         if (nameEl && nameEl.scrollWidth > nameEl.clientWidth) {
           var r = nameEl.getBoundingClientRect();
@@ -418,7 +419,7 @@ var LibraryPanel = {
       this.btnTip = null;
     },
     showBtnTip: function (e, text) {
-      if (this.menu) return;
+      if (this.anyMenuOpen()) return;
       var btn = e.currentTarget;
       var row = btn.closest('.library-group__title');
       var r = btn.getBoundingClientRect();
@@ -472,6 +473,7 @@ var LibraryPanel = {
       this.btnTip = null;
       this.titleTip = null;
       this.closeGameMenu();
+      this.clearHover();
       this.menu = { groupId: groupId, fromButton: !!fromButton, left: anchor.x, top: anchor.y, measuring: true };
       this.$nextTick(function () {
         var el = this.$refs.menuEl;
@@ -488,6 +490,15 @@ var LibraryPanel = {
       });
     },
     closeMenu: function () { this.menu = null; },
+    // 메뉴가 뜨면 호버 인디케이터 · 행 툴팁을 바로 치운다 (사이드바 openGameContextMenu와 같다)
+    clearHover: function () {
+      clearTimeout(this._hoverLeaveTimer);
+      this._hoverSpring.hide();
+      this._hoverVisible = false;
+      this.hoveredGameId = null;
+      this.badgeTip = null;
+    },
+    anyMenuOpen: function () { return !!(this.menu || this.gameMenu); },
     // 컨텍스트메뉴는 패널 밖으로 나가지 않는다 — 패널 안 좌우 16 여백 안에서만 (그룹 메뉴 · 게임 메뉴 공통)
     clampToPanel: function (left, width) {
       var r = this.$el.getBoundingClientRect();
@@ -512,9 +523,8 @@ var LibraryPanel = {
       this.closeMenu();
       this.btnTip = null;
       this.titleTip = null;
-      this.hoveredGameId = null;
-      this.badgeTip = null;
       this.menuTip = null;
+      this.clearHover();
       if (!this.gameToggles[game.id]) this.gameToggles[game.id] = Object.assign({}, LIBRARY_GAME_TOGGLE_DEFAULT);
       var x = e.clientX;
       var y = e.clientY;
@@ -616,7 +626,10 @@ var LibraryPanel = {
     // 숨어 있다가 나타날 땐 그 자리에 바로, 이미 보이는 중이면 스프링으로 미끄러진다
     // 게임 추가 중인 그룹의 게임 행은 상태값(hover · press) 없이 보여주기만 한다
     isStaticRow: function (el) { return !!el.closest('.is-add-target'); },
+    // 컨텍스트메뉴가 떠 있는 동안은 호버 인디케이터 · 툴팁 전부 비활성 (사이드바와 같은 규칙 —
+    // 메뉴 쪽으로 마우스를 옮기며 지나치는 행이 반응하면 안 된다)
     onRowEnter: function (e, game, rowKey) {
+      if (this.anyMenuOpen()) return;
       var li = e.currentTarget;
       clearTimeout(this._hoverLeaveTimer);
       if (this.isStaticRow(li)) {
@@ -627,7 +640,7 @@ var LibraryPanel = {
         this._hoverSpring.show();
         this._hoverVisible = true;
       }
-      // 이름이 말줄임될 때만 전체 이름 툴팁 (Figma ⑥) — 이름 라벨 폭 그대로, 라벨 바닥 + 2
+      // 이름이 말줄임될 때만 전체 이름 툴팁 (Figma ⑥) — 이름 라벨 폭 그대로, 라벨 바닥 + 2.
       var nameEl = li.querySelector('.game-group__list-name');
       if (nameEl && nameEl.scrollWidth > nameEl.clientWidth) {
         var nr = nameEl.getBoundingClientRect();
@@ -655,6 +668,7 @@ var LibraryPanel = {
 
     // 뱃지 툴팁 — 뱃지 중앙 기준, 행 밖으로 나가면 행 끝에 붙인다 (사이드바와 같은 규칙)
     showBadgeTip: function (e, rowKey, badge) {
+      if (this.anyMenuOpen()) return;
       var badgeEl = e.currentTarget;
       var li = badgeEl.closest('.game-group__list');
       var self = this;

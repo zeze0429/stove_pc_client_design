@@ -630,8 +630,8 @@
 .game-menu__name-tip { z-index: 50; background: var(--stove-gray-700); color: var(--stove-white); }
 .game-menu__remove-tip { z-index: 50; }
 
-/* 게임 행 — 우클릭 메뉴가 열려 있는 동안 (1개 포커싱) */
-.library-panel .game-group__list.is-menu-focus { background: var(--interaction-selected); }
+/* 게임 행 — 우클릭 메뉴가 열려 있는 동안 (사이드바 .is-context-open과 같은 interaction-hover) */
+.library-panel .game-group__list.is-menu-focus { background: var(--interaction-hover); }
 
 /* =============================================================
    그룹 만들기 팝업 (Figma 3-6) — 셸은 css/layer-dialog.css
