@@ -498,6 +498,14 @@
   color: var(--stds-glob-color-white);
 }
 .library-card__check i { font-size: 2rem; }
+/* 체크박스 상태값 (Figma 클라이언트-Library 0.3.1 3984:13440 checkbox_circle_32) — 카드에 마우스를 올리면 hover, 누르면 pressed.
+   미체크 hover · pressed: 보더 gray300(Figma 글로벌 지정), 배경 rgba(73,73,73,.9)는 토큰이 없어 가장 가까운 gray700(#4c4c4c) 90%.
+   체크 hover · pressed: Figma orange400 · orange300 = 시멘틱 brand-primary-hover · pressed */
+.library-card.is-selectable:not(.is-added, .is-selected):hover .library-card__check,
+.library-card.is-selectable:not(.is-added, .is-selected):active .library-card__check {
+  background: color-mix(in srgb, var(--stds-glob-color-gray700) 90%, transparent);
+  box-shadow: inset 0 0 0 0.2rem var(--stds-glob-color-gray300);
+}
 /* 선택 / 이미 그룹에 있음 — 이미지 위 검정 40%, 보더 3 */
 .library-card.is-selected .library-card__media::after,
 .library-card.is-added .library-card__media::after {
@@ -507,7 +515,11 @@
   background: var(--stds-glob-color-black-40);
 }
 .library-card.is-selected .library-card__border { border: 0.3rem solid var(--stds-sem-color-brand-primary); }
-.library-card.is-selected .library-card__check { background: var(--stds-sem-color-brand-primary); box-shadow: none; }
+.library-card.is-selected .library-card__check,
+.library-card.is-selected:hover .library-card__check,
+.library-card.is-selected:active .library-card__check { background: var(--stds-sem-color-brand-primary); box-shadow: none; }
+.library-card.is-selected:hover .library-card__check { background: var(--stds-sem-color-brand-primary-hover); }
+.library-card.is-selected:active .library-card__check { background: var(--stds-sem-color-brand-primary-pressed); }
 .library-card.is-added { cursor: default; }
 .library-card.is-added .library-card__border { border: 0.3rem solid var(--stds-sem-color-disabled-variant-1); }
 .library-card.is-added .library-card__check { background: var(--stds-sem-color-disabled-variant-2); box-shadow: none; }
