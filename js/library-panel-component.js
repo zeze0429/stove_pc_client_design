@@ -695,7 +695,7 @@ var LibraryPanel = {
       }, mode);
     },
     // 숨어 있다가 나타날 땐 그 자리에 바로, 이미 보이는 중이면 스프링으로 미끄러진다
-    // 게임 추가 중인 그룹의 게임 행은 상태값(hover · press) 없이 보여주기만 한다
+    // 게임 추가 중인 그룹(선택모드)의 게임 행은 상태값(hover · press) · 툴팁 없이 보여주기만 한다
     isStaticRow: function (el) { return !!el.closest('.is-add-target'); },
     // 컨텍스트메뉴가 떠 있는 동안은 호버 인디케이터 · 툴팁 전부 비활성 (사이드바와 같은 규칙 —
     // 메뉴 쪽으로 마우스를 옮기며 지나치는 행이 반응하면 안 된다)
@@ -703,14 +703,15 @@ var LibraryPanel = {
       if (this.anyMenuOpen()) return;
       var li = e.currentTarget;
       clearTimeout(this._hoverLeaveTimer);
+      // 선택모드(게임 추가 중) 그룹의 행은 상태값 · 툴팁 전부 없이 보여주기만
       if (this.isStaticRow(li)) {
         this._hoverSpring.hide();
         this._hoverVisible = false;
-      } else {
-        this.moveHoverTo(li, this._hoverVisible ? undefined : 'instant');
-        this._hoverSpring.show();
-        this._hoverVisible = true;
+        return;
       }
+      this.moveHoverTo(li, this._hoverVisible ? undefined : 'instant');
+      this._hoverSpring.show();
+      this._hoverVisible = true;
       // 이름이 말줄임될 때만 전체 이름 툴팁 (Figma ⑥) — 이름 라벨 폭 그대로, 라벨 바닥 + 2.
       var nameEl = li.querySelector('.game-group__list-name');
       if (nameEl && nameEl.scrollWidth > nameEl.clientWidth) {
@@ -739,7 +740,7 @@ var LibraryPanel = {
 
     // 뱃지 툴팁 — 뱃지 중앙 기준, 행 밖으로 나가면 행 끝에 붙인다 (사이드바와 같은 규칙)
     showBadgeTip: function (e, rowKey, badge) {
-      if (this.anyMenuOpen()) return;
+      if (this.anyMenuOpen() || this.isStaticRow(e.currentTarget)) return;
       var badgeEl = e.currentTarget;
       var li = badgeEl.closest('.game-group__list');
       var self = this;
