@@ -682,7 +682,8 @@
 
 /* =============================================================
    그룹에 추가 팝업 (Figma 클라이언트_v3.1 67967:409417 그룹추가 팝업) — 공용 셸 너비 404.
-   Figma 다이얼로그 472 고정: 헤더 60 + 본문 위 8(셸) + 12 → 내용 360 + 아래 32(셸). 확인 버튼은 내용 바닥(=Figma top 396)
+   다이얼로그 472 고정: 헤더 60 + 본문 위 8(셸 — 헤더 ~ 그룹 만들기 버튼 · 입력 타이틀 간격, 사용자 지정) + 내용 372 + 아래 32(셸).
+   확인 버튼은 내용 바닥(top 396)
    ============================================================= */
 .add-group-dialog {
   position: relative; /* 확인 버튼을 바닥에 겹쳐 둔다 — 목록은 버튼 뒤까지 이어지고 아래 72가 흐려진다 (Figma 48960:385264) */
@@ -691,7 +692,6 @@
   gap: 2rem;
   width: 34rem;
   height: 37.2rem;
-  padding-top: 1.2rem;
 }
 .add-group-dialog__label {
   margin: 0;
@@ -790,7 +790,7 @@
   letter-spacing: -0.024rem;
 }
 .add-group-dialog__error i { flex: 0 0 auto; margin-top: 0.1rem; font-size: 1.6rem; }
-.add-group-dialog__div { flex: 0 0 auto; height: 1px; background: var(--stds-glob-color-white-8); }
+.add-group-dialog__div { flex: 0 0 auto; height: 1px; background: var(--stds-sem-color-inverse-elevation-3); }
 
 /* 나의 그룹 목록 — 남은 높이만큼, 넘치면 스크롤 + 아래 그라디언트 */
 .add-group-dialog__groups { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 1rem; }
