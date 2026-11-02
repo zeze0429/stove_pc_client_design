@@ -357,8 +357,7 @@
   color: var(--brand-primary-enabled);
 }
 .library-group.is-collapsed .library-group__add-box { display: none; }
-/* 이름 변경 중 — 입력칸(취소 | 확인) 바로 아래에 기존 게임 목록 · 게임 추가가 붙는다 (Figma ⑬) */
-.library-panel .library-group.is-renaming { gap: 0; }
+/* 이름 변경 중 — 입력칸(취소 | 확인) 아래 4에 기존 게임 목록 · 게임 추가 (타이틀 ~ 목록과 같은 간격, 사용자 확정) */
 
 /* ---- 3-3. 선택 UI 전환 — 게임 추가 중인 그룹 (component/game_group 선택 상태) ----
    프라이머리 오렌지 테마: 배경 5% · 보더 20%(안쪽 1, 레이아웃은 그대로), 그룹명 · 뱃지 brand-primary,
