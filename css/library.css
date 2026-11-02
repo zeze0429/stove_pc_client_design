@@ -522,7 +522,8 @@
 .library-card.is-selected:active .library-card__check { background: var(--stds-sem-color-brand-primary-pressed); }
 .library-card.is-added { cursor: default; }
 .library-card.is-added .library-card__border { border: 0.3rem solid var(--stds-sem-color-disabled-variant-1); }
-.library-card.is-added .library-card__check { background: var(--stds-sem-color-disabled-variant-2); box-shadow: none; }
+/* 이미 그룹에 있음 (Figma 2026_웹전환 1545:51480) — 원 disabled-variant-2, ✓ disabled-variant-4 */
+.library-card.is-added .library-card__check { background: var(--stds-sem-color-disabled-variant-2); box-shadow: none; color: var(--stds-sem-color-disabled-variant-4); }
 .library-card.is-added .library-card__genre,
 .library-card.is-added .library-card__name { color: var(--stds-sem-color-on-surface-elevation-4); }
 .library-card.is-added .library-card__thumb:hover .library-card__media img { transform: none; }
