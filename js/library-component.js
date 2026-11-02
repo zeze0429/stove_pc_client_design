@@ -356,7 +356,7 @@ var LibraryMain = {
           '<button class="library-btn" type="button" @click="cancelAdd"><i class="ic-v2-control-long-arrow-left-line"></i>게임 추가 취소</button>' +
           // 메시지 영역 (Figma 클라이언트_v3.1 67953:409405) — 게임 선택 전 / 선택 후
           '<p class="library-select-msg" role="status" data-name="안내 문구">' +
-            '<img class="library-select-msg__icon" src="assets/library/ic_2_control_info_circle_color.png" alt="" />' +
+            '<img class="library-select-msg__icon" src="assets/library/img_info.png" alt="" />' +
             '<span v-if="!selected.length">게임을 먼저 선택해 주세요.</span>' +
             '<span v-else><b class="library-select-msg__count">{{ selected.length }}개 게임</b>이 선택되었습니다.</span>' +
           '</p>' +

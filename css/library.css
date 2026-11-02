@@ -460,7 +460,7 @@
 .library-owned.is-selecting .library-section__title span { color: var(--stds-sem-color-brand-primary); }
 
 /* 도구 줄 — 왼쪽 게임 추가 취소, 가운데 메시지 영역 (Figma 클라이언트_v3.1 67953:409405 선택UI - 메세지 영역)
-   아이콘 20 — 2배수 이미지(정보 · 체크 · 경고 셋 다 이미지로, 사용자 지정) + 간격 4,
+   아이콘 20 — 2배수 이미지 img_info · img_done · img_error (Figma 레이어명, 셋 다 이미지 — 사용자 지정) + 간격 4,
    Button2-R 14/20 on-surface-elevation-2, 게임 수만 Bold glob white */
 .library-toolbar--select { position: relative; }
 .library-select-msg {
