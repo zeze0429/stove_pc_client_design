@@ -332,7 +332,8 @@
 /* 그룹 메뉴가 열려 있는 동안 (selected) */
 .library-group__btn.is-selected { background: var(--interaction-selected); color: var(--on-surface-elevation-2); }
 
-/* 게임 없는 그룹의 게임 추가 버튼 (component/game_group/btn_게임 추가) — 56 높이, 보더 inverse-elevation-3 */
+/* 게임 없는 그룹의 게임 추가 버튼 (component/game_group/btn_게임 추가) — 56 높이, 보더 inverse-elevation-3,
+   아이콘 · 글자 on-surface-elevation-4 (Figma) */
 .library-group__add-box {
   display: flex;
   align-items: center;
@@ -344,7 +345,7 @@
   border: 1px solid var(--inverse-elevation-3);
   border-radius: var(--radius-lg);
   background: transparent;
-  color: var(--placeholder);
+  color: var(--on-surface-elevation-4);
   cursor: pointer;
   transition: border-color 0.12s, color 0.12s;
 }
