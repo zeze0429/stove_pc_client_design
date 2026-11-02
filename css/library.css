@@ -541,10 +541,30 @@
   right: var(--client-panel-w);
   bottom: var(--proto-pr-height); /* PR 영역이 켜지면 그 위(앱 바닥)에 붙는다 */
   height: 12rem;
-  background: linear-gradient(to bottom, transparent, var(--stds-sem-color-background-variant-1) 46.195%);
+  /* 페이드는 시작 · 끝이 완만한 곡선(smoothstep)으로 — 직선 그라디언트는 시작 지점에 경계선이 보인다.
+     완전히 덮이는 지점은 Figma 그대로 (비활성 46% · 활성 62%) */
+  background: linear-gradient(
+    to bottom,
+    transparent 0.0%,
+    color-mix(in srgb, var(--stds-sem-color-background-variant-1) 10.4%, transparent) 9.24%,
+    color-mix(in srgb, var(--stds-sem-color-background-variant-1) 35.2%, transparent) 18.48%,
+    color-mix(in srgb, var(--stds-sem-color-background-variant-1) 64.8%, transparent) 27.72%,
+    color-mix(in srgb, var(--stds-sem-color-background-variant-1) 89.6%, transparent) 36.96%,
+    var(--stds-sem-color-background-variant-1) 46.2%
+  );
   pointer-events: none;
 }
-.library-floating.is-active { background: linear-gradient(to bottom, transparent, var(--stds-sem-color-background-variant-1) 62.363%); }
+.library-floating.is-active {
+  background: linear-gradient(
+    to bottom,
+    transparent 0.0%,
+    color-mix(in srgb, var(--stds-sem-color-background-variant-1) 10.4%, transparent) 12.47%,
+    color-mix(in srgb, var(--stds-sem-color-background-variant-1) 35.2%, transparent) 24.95%,
+    color-mix(in srgb, var(--stds-sem-color-background-variant-1) 64.8%, transparent) 37.42%,
+    color-mix(in srgb, var(--stds-sem-color-background-variant-1) 89.6%, transparent) 49.89%,
+    var(--stds-sem-color-background-variant-1) 62.36%
+  );
+}
 .library-floating__bar {
   position: absolute;
   top: 1.6rem;
