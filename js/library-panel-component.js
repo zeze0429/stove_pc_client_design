@@ -7,9 +7,11 @@
  *
  * 단계별 구현 — 1단계: 뼈대(헤더 · 버튼 · 빈 상태 · 그룹 없는 게임 · 스크롤 · TOP)
  * 2단계: 그룹 만들기(입력칸) · 그룹 타이틀(호버 버튼 · 툴팁) · 그룹 메뉴 · 이름 변경 · 삭제 · 모두 접기/펼치기
- * 게임 추가 · 그룹 화면 · 필터 · 검색 · 게임 우클릭 메뉴는 다음 단계에서 붙인다.
+ * 3단계: 게임 추가 — 패널에서 게임 추가를 누르면 그 그룹이 선택 상태(오렌지)가 되고 보유게임 영역이 선택 UI로 바뀐다
+ * 그룹 화면 · 필터 · 검색 · 게임 우클릭 메뉴는 다음 단계에서 붙인다.
  *
- * 데이터: 보유게임은 js/library-component.js의 LIBRARY_OWNED(+ libraryGame)를 같이 쓴다.
+ * 데이터: 보유게임은 js/library-component.js의 LIBRARY_OWNED(+ libraryGame)를,
+ * 그룹 · 게임 추가 대상은 LIBRARY_STORE를 콘텐츠(보유게임)와 같이 쓴다.
  */
 
 // 그룹은 최대 20개 (Figma ③ "최대 20개까지 생성 가능"), 이름은 최대 30자 (2-1 "최대 30자")
@@ -93,21 +95,31 @@ var LIBRARY_GROUP_DUP_MSG = '이 이름은 이미 사용 중이예요. 다른 �
 
 // 그룹 타이틀 (component/game_group/title) — 화살표 · 이름 · 개수 · 우측 버튼(호버 시).
 // 사용자 그룹은 게임 추가 + 그룹 메뉴, 그룹 없는 게임은 그룹 메뉴만 (Figma ④)
+// 게임 추가 중인 그룹은 우측 버튼 대신 게임 추가 취소(X)가 항상 보이고, 접기/펼치기는 비활성 (3-3 · 0825)
 function TITLE_TPL(idExpr, nameExpr, countExpr, withAdd) {
+  var isTarget = 'addTargetId === ' + idExpr;
   return '<div class="game-group__title library-group__title" ' +
       ':class="{ \'is-hover\': hoveredTitleId === ' + idExpr + ', \'is-menu-open\': menu && menu.groupId === ' + idExpr + ' }" ' +
       '@mouseenter="onTitleEnter($event, ' + idExpr + ')" @mouseleave="onTitleLeave" ' +
-      '@click="openGroupPage(' + idExpr + ')" @contextmenu.prevent="openMenu($event, ' + idExpr + ', false)" data-name="component/game_group/title">' +
-    '<button class="game-group__btn-left-arrow" type="button" aria-label="펼치기/접기" @click.stop="toggleGroup(' + idExpr + ')" data-name="component/game_group/title/btn_left_arrow">' +
+      '@click="openGroupPage(' + idExpr + ')" @contextmenu.prevent="' + isTarget + ' || openMenu($event, ' + idExpr + ', false)" data-name="component/game_group/title">' +
+    '<button class="game-group__btn-left-arrow" type="button" aria-label="펼치기/접기" :disabled="' + isTarget + '" @click.stop="toggleGroup(' + idExpr + ')" data-name="component/game_group/title/btn_left_arrow">' +
       '<i class="ic-v2-control-select-arrow-down-fill"></i>' +
     '</button>' +
     '<span class="game-group__title-inner">' +
       '<span class="game-group__name stds-title8 fw-medium">{{ ' + nameExpr + ' }}</span>' +
       '<span class="badge-menu-title" data-name="component/badge/menu_title">{{ ' + countExpr + ' }}</span>' +
     '</span>' +
-    '<span class="library-group__btns" data-name="btn">' +
+    (withAdd
+      ? '<span v-if="' + isTarget + '" class="library-group__btns library-group__btns--target" data-name="btn">' +
+          '<button class="library-group__btn library-group__cancel" type="button" aria-label="게임 추가 취소" ' +
+            '@click.stop="cancelAdd" @mouseenter="showBtnTip($event, \'게임 추가 취소\')" @mouseleave="hideBtnTip" data-name="component/game_group/title/btn">' +
+            '<i class="ic-v2-control-close-line"></i>' +
+          '</button>' +
+        '</span>'
+      : '') +
+    '<span' + (withAdd ? ' v-else' : '') + ' class="library-group__btns" data-name="btn">' +
       (withAdd
-        ? '<button class="library-group__btn" type="button" aria-label="게임 추가" @click.stop @mouseenter="showBtnTip($event, \'게임 추가\')" @mouseleave="hideBtnTip" data-name="component/game_group/title/btn">' +
+        ? '<button class="library-group__btn" type="button" aria-label="게임 추가" @click.stop="startAdd(' + idExpr + ')" @mouseenter="showBtnTip($event, \'게임 추가\')" @mouseleave="hideBtnTip" data-name="component/game_group/title/btn">' +
             '<i class="ic-v2-control-add-circle-fill"></i>' +
           '</button>'
         : '') +
@@ -148,7 +160,7 @@ var LibraryPanel = {
   data: function () {
     return {
       owned: LIBRARY_OWNED.map(libraryGame),
-      groups: [], // { id, title, gameIds: [] } — 새 그룹이 맨 위
+      store: LIBRARY_STORE, // groups · addTargetId — 콘텐츠(보유게임 선택 UI)와 같이 쓴다
       deletedNotice: false, // 그룹 삭제 직후 버튼 그룹 위에 띄우는 "그룹이 삭제되었습니다." (3초)
       collapsed: {}, // 그룹 id → 접힘 여부 ('ungrouped' = 그룹 없는 게임)
       creating: false, // 그룹 만들기 입력칸이 열려 있는지
@@ -170,6 +182,12 @@ var LibraryPanel = {
     };
   },
   computed: {
+    // { id, title, gameIds: [] } — 새 그룹이 맨 위
+    groups: {
+      get: function () { return this.store.groups; },
+      set: function (v) { this.store.groups = v; },
+    },
+    addTargetId: function () { return this.store.addTargetId; },
     // 그룹에 들어간 게임을 뺀 나머지 — 보유게임 순서 그대로
     ungrouped: function () {
       var inGroup = {};
@@ -218,7 +236,8 @@ var LibraryPanel = {
     creating: function () { this.$nextTick(this.updateThumb); },
   },
   methods: {
-    isCollapsed: function (id) { return !!this.collapsed[id]; },
+    // 게임 추가 중인 그룹은 항상 펼쳐 둔다 (접기/펼치기 비활성)
+    isCollapsed: function (id) { return id !== this.addTargetId && !!this.collapsed[id]; },
     groupGames: function (group) {
       var byId = {};
       this.owned.forEach(function (g) { byId[g.id] = g; });
@@ -277,6 +296,7 @@ var LibraryPanel = {
     },
     deleteGroup: function (id) {
       var self = this;
+      if (id === this.addTargetId) this.cancelAdd();
       this.groups = this.groups.filter(function (g) { return g.id !== id; });
       delete this.collapsed[id];
       this.deletedNotice = true;
@@ -325,8 +345,21 @@ var LibraryPanel = {
       });
     },
     hideBtnTip: function () { this.btnTip = null; },
-    // 그룹 타이틀 클릭 = 그룹 화면으로 이동 (3단계)
+    // 그룹 타이틀 클릭 = 그룹 화면으로 이동 (다음 단계)
     openGroupPage: function () {},
+
+    // ── 게임 추가 (Figma ⑦ · 3-3) — 그 그룹이 선택 상태가 되고 보유게임 영역이 선택 UI로 바뀐다.
+    // 다른 그룹에서 게임 추가를 누르면 대상만 바뀐다 (고른 게임은 비워진다)
+    startAdd: function (id) {
+      this.closeMenu();
+      this.btnTip = null;
+      this.store.addTargetId = id;
+      this.collapsed[id] = false;
+    },
+    cancelAdd: function () {
+      this.btnTip = null;
+      this.store.addTargetId = null;
+    },
 
     // ── 그룹 메뉴 — ⋮ 버튼 클릭(버튼 오른쪽 끝에 맞춰 아래로) · 타이틀 우클릭(커서 위치) ──
     openMenu: function (e, groupId, fromButton) {
@@ -369,7 +402,8 @@ var LibraryPanel = {
       else if (action === 'delete') this.deleteGroup(id);
       else if (action === 'expandAll') this.setAllCollapsed(false);
       else if (action === 'collapseAll') this.setAllCollapsed(true);
-      // 'view'(그룹 화면) · 'add'(게임 추가)는 3단계
+      else if (action === 'add') this.startAdd(id);
+      // 'view'(그룹 화면)는 다음 단계
     },
     onDocMouseDown: function (e) {
       if (!this.menu) return;
@@ -563,7 +597,7 @@ var LibraryPanel = {
           '<div v-if="showList" class="library-panel__list" data-name="게임그룹">' +
             // 사용자가 만든 그룹
             '<section v-for="group in groups" :key="group.id" class="game-group library-group" :data-group-id="group.id" ' +
-              ':class="{ \'is-collapsed\': isCollapsed(group.id), \'is-empty\': !owned.length, \'is-renaming\': renamingId === group.id }" data-name="component/game_group">' +
+              ':class="{ \'is-collapsed\': isCollapsed(group.id), \'is-empty\': !owned.length, \'is-renaming\': renamingId === group.id, \'is-add-target\': addTargetId === group.id }" data-name="component/game_group">' +
               // 이름 변경 중 — 타이틀(화살표 포함)만 입력칸으로 바뀐다. 아래 게임 추가 · 게임 목록은 그대로 (Figma ⑬)
               '<group-name-input v-if="renamingId === group.id" :initial="group.title" confirm-label="확인" ' +
                 ':validate="validateRename" @submit="renameGroup" @cancel="renamingId = null"></group-name-input>' +
@@ -571,7 +605,9 @@ var LibraryPanel = {
                 TITLE_TPL('group.id', 'group.title', 'group.gameIds.length', true) +
               '</template>' +
               // 게임 없는 그룹 — 게임 추가 버튼 (Figma ④ "게임이 추가되지 않은 그룹은 게임 추가 버튼이 바로 노출")
-              '<button v-if="!group.gameIds.length && owned.length" class="library-group__add-box stds-btn3 fw-medium" type="button" data-name="component/game_group/btn_게임 추가">' +
+              // 게임 추가 중이면 선택 상태(타이틀만)라 이 버튼은 숨긴다 (3-3 "5월에 할 게임 0")
+              '<button v-if="!group.gameIds.length && owned.length && addTargetId !== group.id" class="library-group__add-box stds-btn3 fw-medium" type="button" ' +
+                '@click="startAdd(group.id)" data-name="component/game_group/btn_게임 추가">' +
                 '<i class="ic-v2-control-add-circle-fill" aria-hidden="true"></i>게임 추가' +
               '</button>' +
               '<ul v-else-if="group.gameIds.length" class="game-group__list-group" data-name="component/game_group/list_group">' +

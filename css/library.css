@@ -451,3 +451,175 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* =============================================================
+   선택 UI — 우측패널에서 게임 추가 (Figma 2026_웹전환 1131:5779 ⑦ · 3-3)
+   ============================================================= */
+/* 보유게임 타이틀 · 개수가 brand-primary로 바뀐다 */
+.library-owned.is-selecting .library-section__title,
+.library-owned.is-selecting .library-section__title span { color: var(--brand-primary-enabled); }
+
+/* 도구 줄 — 왼쪽 게임 추가 취소, 가운데 안내 문구 (14/20, 그룹명 · 개수만 Bold) */
+.library-toolbar--select { position: relative; }
+.library-select-msg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  color: var(--on-surface-elevation-2);
+  font-size: 1.4rem;
+  line-height: 2rem;
+  letter-spacing: -0.042rem;
+  white-space: nowrap;
+}
+/* 아이콘은 warning-circle을 180도 돌린 정보(i) 모양 (Figma 그대로) */
+.library-select-msg i { font-size: 2rem; transform: rotate(180deg); }
+.library-select-msg b { font-weight: 700; }
+.library-select-msg__group { color: var(--on-surface-elevation-1); }
+.library-select-msg__count { color: var(--stove-white); } /* Figma가 글로벌 white로 지정 */
+
+/* 카드 — 아무 곳이나 누르면 선택/해제. 체크박스 32 원, 썸네일 좌상단 12 */
+.library-card__check {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.2rem;
+  display: grid;
+  place-items: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: var(--radius-full);
+  /* 기본(빈 원) — Figma rgba(47,47,47,.8)는 토큰이 없어 가장 가까운 gray-820(#2e2e2e)을 80%로 */
+  background: color-mix(in srgb, var(--stove-gray-820) 80%, transparent);
+  box-shadow: inset 0 0 0 0.2rem var(--stove-gray-500);
+  color: var(--stove-white);
+}
+.library-card__check i { font-size: 2rem; }
+/* 선택 / 이미 그룹에 있음 — 이미지 위 검정 40%, 보더 3 */
+.library-card.is-selected .library-card__media::after,
+.library-card.is-added .library-card__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--stove-black-40);
+}
+.library-card.is-selected .library-card__border { border: 0.3rem solid var(--brand-primary-enabled); }
+.library-card.is-selected .library-card__check { background: var(--brand-primary-enabled); box-shadow: none; }
+.library-card.is-added { cursor: default; }
+.library-card.is-added .library-card__border { border: 0.3rem solid var(--disabled-variant-1); }
+.library-card.is-added .library-card__check { background: var(--disabled-variant-2); box-shadow: none; }
+.library-card.is-added .library-card__genre,
+.library-card.is-added .library-card__name { color: var(--on-surface-elevation-4); }
+.library-card.is-added .library-card__thumb:hover .library-card__media img { transform: none; }
+
+/* 하단 플로팅 (component/selection UI/floating) — 콘텐츠 영역 바닥 120, 배경색으로 페이드.
+   72 높이 알약, brand-primary, 그림자 0 0 12 black 50% */
+.library-floating {
+  position: fixed;
+  z-index: 15;
+  left: 24rem;
+  right: var(--client-panel-w);
+  bottom: var(--proto-pr-height); /* PR 영역이 켜지면 그 위(앱 바닥)에 붙는다 */
+  height: 12rem;
+  background: linear-gradient(to bottom, transparent, var(--background-variant-1) 62.363%);
+  pointer-events: none;
+}
+.library-floating__bar {
+  position: absolute;
+  top: 1.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  height: 7.2rem;
+  padding: 0 2.4rem;
+  border-radius: var(--radius-full);
+  background: var(--brand-primary-enabled);
+  box-shadow: 0 0 1.2rem var(--stove-black-50);
+  pointer-events: auto;
+}
+.library-floating__group { display: flex; align-items: center; gap: 0.8rem; }
+.library-floating__btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.6rem 0.8rem;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: transparent;
+  color: var(--stove-white);
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.8rem;
+  letter-spacing: -0.024rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.library-floating__btn i { font-size: 2.4rem; line-height: 1; }
+.library-floating__div { width: 1px; height: 4rem; background: var(--stove-black-08); }
+.library-floating-enter-active,
+.library-floating-leave-active { transition: opacity 0.2s ease; }
+.library-floating-enter-active .library-floating__bar,
+.library-floating-leave-active .library-floating__bar { transition: transform 0.2s ease; }
+.library-floating-enter-from,
+.library-floating-leave-to { opacity: 0; }
+.library-floating-enter-from .library-floating__bar,
+.library-floating-leave-to .library-floating__bar { transform: translate(-50%, 1.2rem); }
+
+/* 게임 추가 완료 토스트 (toast popup) — 콘텐츠 영역 가운데, 바닥에서 32 */
+.library-toast-wrap {
+  position: fixed;
+  z-index: 15;
+  left: 24rem;
+  right: var(--client-panel-w);
+  bottom: calc(var(--proto-pr-height) + 3.2rem);
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.library-toast {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: calc(1.2rem - 1px);
+  border: 1px solid var(--stove-white-20);
+  border-radius: var(--radius-lg);
+  background: var(--neutral-variant-2);
+  box-shadow: 0 1.2rem 2.4rem 1rem var(--stove-black-80);
+}
+.library-toast__icon { display: block; width: 3.2rem; height: 3.2rem; }
+.library-toast__body { display: flex; flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+.library-toast__text {
+  margin: 0;
+  color: var(--on-surface-elevation-3);
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.8rem;
+  letter-spacing: -0.024rem;
+  white-space: nowrap;
+}
+.library-toast__text b { color: var(--on-surface-elevation-1); font-weight: 700; }
+.library-toast__group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 2rem;
+  padding: 0 0.6rem 0 0.4rem;
+  border-radius: var(--radius-full);
+  background: var(--inverse-elevation-5);
+  color: var(--on-surface-elevation-3);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.02rem;
+  white-space: nowrap;
+}
+.library-toast__group i { font-size: 1.2rem; }
+.library-toast-enter-active,
+.library-toast-leave-active { transition: opacity 0.2s ease; }
+.library-toast-enter-from,
+.library-toast-leave-to { opacity: 0; }

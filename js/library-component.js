@@ -8,7 +8,7 @@
  * 게임 이름 · 장르 · 썸네일은 공통 카탈로그(js/game-catalog.js)에서 가져오고,
  * 여기엔 라이브러리 고유 정보(최근 플레이 · 총 플레이 시간 · 실행 버튼 상태)만 둔다.
  * 색은 레퍼런스가 쓰는 STDS 시멘틱 토큰 그대로 (css/library.css).
- * 우측 패널(내 게임 폴더)은 다음 단계.
+ * 우측패널(js/library-panel-component.js)과는 LIBRARY_STORE로 그룹 · 게임 추가 상태를 같이 쓴다.
  */
 
 // 빠른 실행 — 보유게임 중 플레이한 정식 게임을 최근 플레이 순으로 최대 20개 (별도 목록 없음)
@@ -151,6 +151,12 @@ function libraryPlayedLabel(min) {
   return Math.floor(min / 43200) + '달 전 플레이';
 }
 
+// 우측패널과 콘텐츠가 같이 쓰는 상태 — 두 Vue 앱이 같은 reactive 객체를 본다.
+//   groups: 나의 게임 그룹 [{ id, title, gameIds }] (새 그룹이 맨 위)
+//   addTargetId: 게임 추가 중인 그룹 — 있으면 보유게임 영역이 선택 UI로 바뀐다 (Figma 1131:5779 ⑦ · 3-3)
+var LIBRARY_STORE = Vue.reactive({ groups: [], addTargetId: null });
+var LIBRARY_TOAST_MS = 3000;
+
 // 썸네일 아래 뱃지 — 합본팩(collection 표시한 것)은 Collection, 카탈로그 type이 dlc · demo면 DLC · DEMO (모양은 같은 Badge/Game type)
 var LIBRARY_TYPE_BADGE = { dlc: 'DLC', demo: 'DEMO' };
 function libraryGame(entry) {
@@ -169,13 +175,33 @@ var LibraryMain = {
       query: '',
       quickAd: protoSettingsRead().libraryQuickAd, // 하단 메뉴패널 > 빠른 실행 > 광고
       arrowRest: 0, // 방금 누른 화살표(-1 · 1) — 마우스가 나갈 때까지 hover 배경을 끈다
+      store: LIBRARY_STORE,
+      selected: [], // 선택 UI에서 고른 게임 id (고른 순서)
+      addedToast: null, // 그룹에 추가한 직후 토스트 { count, title } (3초)
     };
   },
   mounted: function () {
     var vm = this;
     protoSettingsSubscribe(function (s) { vm.quickAd = s.libraryQuickAd; });
   },
+  unmounted: function () { clearTimeout(this._toastTimer); },
   watch: {
+    // 게임 추가 대상이 바뀌면(시작 · 다른 그룹으로 전환 · 취소) 고른 게임은 비운다.
+    // 시작할 때 보유게임이 화면 아래에 있으면 타이틀이 보이게 올려 준다
+    'store.addTargetId': function (id, prev) {
+      this.selected = [];
+      if (id && !prev) {
+        this.addedToast = null;
+        this.$nextTick(function () {
+          var el = this.$refs.owned;
+          var box = el && el.closest('.main');
+          if (!box) return;
+          var top = el.getBoundingClientRect().top - box.getBoundingClientRect().top;
+          var pad = parseFloat(getComputedStyle(box).paddingTop) || 0;
+          if (top > box.clientHeight / 2) box.scrollTo({ top: box.scrollTop + top - pad - 20, behavior: 'smooth' });
+        });
+      }
+    },
     // 광고를 켜고 끄면 카드 수가 바뀐다 — 없어진 페이지에 머물지 않게
     quickPages: function (n) {
       if (this.quickPage > n - 1) this.goQuick(n - 1 - this.quickPage);
@@ -216,9 +242,22 @@ var LibraryMain = {
       var p = this.quickPage;
       return { transform: 'translateX(calc(' + (-p * 100) + '% - ' + (p * 20) + 'px))' };
     },
+    // 게임 추가 중인 그룹 (없으면 기본 UI)
+    addTarget: function () {
+      var id = this.store.addTargetId;
+      return id ? this.store.groups.find(function (g) { return g.id === id; }) || null : null;
+    },
+    selecting: function () { return !!this.addTarget; },
+    // 이미 그 그룹에 들어 있는 게임 — 선택 UI에서 비활성(회색 체크)으로 보인다
+    addedIds: function () {
+      var map = {};
+      if (this.addTarget) this.addTarget.gameIds.forEach(function (id) { map[id] = true; });
+      return map;
+    },
+    // 선택 UI에서는 검색 칸이 사라지니 검색어 없이 보유게임 전체
     filteredOwned: function () {
       var q = this.query.trim().toLowerCase();
-      if (!q) return this.owned;
+      if (!q || this.selecting) return this.owned;
       return this.owned.filter(function (g) {
         return g.name.toLowerCase().indexOf(q) >= 0 || g.genre.toLowerCase().indexOf(q) >= 0;
       });
@@ -241,6 +280,28 @@ var LibraryMain = {
     },
     actionIcon: function (a) { return LIBRARY_ACTION_ICON[a]; },
     actionLabel: function (a) { return LIBRARY_ACTION_LABEL[a]; },
+
+    // ── 선택 UI (게임 추가) — 카드 아무 곳이나 누르면 선택/해제, 이미 그룹에 있는 게임은 못 고른다 ──
+    isSelected: function (g) { return this.selected.indexOf(g.id) >= 0; },
+    toggleSelect: function (g) {
+      if (!this.selecting || this.addedIds[g.id]) return;
+      var i = this.selected.indexOf(g.id);
+      if (i >= 0) this.selected.splice(i, 1);
+      else this.selected.push(g.id);
+    },
+    cancelAdd: function () { this.store.addTargetId = null; },
+    // 그룹에 추가 — 패널 그룹에 게임이 들어가고, 선택 UI는 풀리고, 보유게임 영역 하단에 토스트 (⑦)
+    addToGroup: function () {
+      var group = this.addTarget;
+      if (!group || !this.selected.length) return;
+      var count = this.selected.length;
+      Array.prototype.push.apply(group.gameIds, this.selected);
+      this.store.addTargetId = null;
+      var self = this;
+      this.addedToast = { count: count, title: group.title };
+      clearTimeout(this._toastTimer);
+      this._toastTimer = setTimeout(function () { self.addedToast = null; }, LIBRARY_TOAST_MS);
+    },
   },
   template:
     '<div class="library">' +
@@ -287,10 +348,18 @@ var LibraryMain = {
       '</section>' +
 
       // ---- 보유게임 ----
-      '<section class="library-section library-owned">' +
+      '<section ref="owned" class="library-section library-owned" :class="{ \'is-selecting\': selecting }">' +
         '<h2 class="library-section__title">보유게임<span>{{ filteredOwned.length }}</span></h2>' +
         '<div class="library-owned__divider"></div>' +
-        '<div class="library-toolbar" data-name="filter area">' +
+        // 선택 UI — 도구 줄 자리에 게임 추가 취소 + 안내 문구 (Figma ⑦ · 0825 게임 추가 취소)
+        '<div v-if="selecting" class="library-toolbar library-toolbar--select" data-name="filter area">' +
+          '<button class="library-btn" type="button" @click="cancelAdd"><i class="ic-v2-control-long-arrow-left-line"></i>게임 추가 취소</button>' +
+          '<p class="library-select-msg" role="status" data-name="안내 문구">' +
+            '<i class="ic-v2-state-warning-circle-fill" aria-hidden="true"></i>' +
+            '<span><b class="library-select-msg__group">‘{{ addTarget.title }}’</b>에 추가할 <b class="library-select-msg__count">{{ selected.length }}개 게임</b>이 선택되었습니다.</span>' +
+          '</p>' +
+        '</div>' +
+        '<div v-else class="library-toolbar" data-name="filter area">' +
           '<button class="library-btn" type="button"><i class="ic-v2-control-check-circle-line"></i>게임 선택</button>' +
           '<div class="library-toolbar__right">' +
             '<div class="library-view-toggle" role="tablist" aria-label="보기 방식">' +
@@ -305,11 +374,17 @@ var LibraryMain = {
           '</div>' +
         '</div>' +
         '<ul class="library-grid">' +
-          '<li v-for="g in filteredOwned" :key="g.id" class="library-card">' +
+          '<li v-for="g in filteredOwned" :key="g.id" class="library-card" ' +
+            ':class="{ \'is-selectable\': selecting, \'is-selected\': selecting && isSelected(g), \'is-added\': selecting && addedIds[g.id] }" ' +
+            ':aria-checked="selecting ? String(isSelected(g)) : null" :role="selecting ? \'checkbox\' : null" @click="toggleSelect(g)">' +
             '<div class="library-card__thumb">' +
               '<span class="library-card__media"><img :src="g.thumb" alt="" loading="lazy" /></span>' +
               '<span class="library-card__border" aria-hidden="true"></span>' +
-              '<button class="library-action library-card__action" type="button" :aria-label="actionLabel(g.action)"><i :class="actionIcon(g.action)"></i></button>' +
+              // 선택 UI 체크 — 기본(빈 원) · 선택(brand-primary + 체크) · 이미 그룹에 있음(회색 + 체크)
+              '<span v-if="selecting" class="library-card__check" aria-hidden="true" data-name="Checkbox">' +
+                '<i v-if="isSelected(g) || addedIds[g.id]" class="ic-v2-control-check-bold-line"></i>' +
+              '</span>' +
+              '<button v-else class="library-action library-card__action" type="button" :aria-label="actionLabel(g.action)"><i :class="actionIcon(g.action)"></i></button>' +
               '<span v-if="g.badge" class="library-card__badge">{{ g.badge }}</span>' +
             '</div>' +
             '<div class="library-card__text">' +
@@ -317,11 +392,38 @@ var LibraryMain = {
                 '<p class="library-card__genre">{{ g.genre }}</p>' +
                 '<p class="library-card__name">{{ g.name }}</p>' +
               '</div>' +
-              '<p v-if="g.lastPlayed" class="library-card__played">{{ g.lastPlayed }}</p>' +
+              '<p v-if="g.lastPlayed && !selecting" class="library-card__played">{{ g.lastPlayed }}</p>' +
             '</div>' +
           '</li>' +
         '</ul>' +
       '</section>' +
+
+      // 하단 플로팅 (component/selection UI/floating) — 게임을 하나 이상 고르면 나타난다
+      '<transition name="library-floating">' +
+        '<div v-if="selecting && selected.length" class="library-floating" data-name="하단 플로딩 컴포넌트">' +
+          '<div class="library-floating__bar" data-name="component/selection UI/floating">' +
+            '<div class="library-floating__group">' +
+              '<button class="library-floating__btn" type="button" @click="selected = []" data-name="component/selection UI/btn"><i class="ic-v2-control-close-circle-line" aria-hidden="true"></i>선택 해제</button>' +
+              '<button class="library-floating__btn" type="button" @click="addToGroup" data-name="component/selection UI/btn"><i class="ic-v2-content-folder-add-line" aria-hidden="true"></i>그룹에 추가</button>' +
+            '</div>' +
+            '<span class="library-floating__div" aria-hidden="true"></span>' +
+            '<button class="library-floating__btn" type="button" data-name="component/selection UI/btn"><i class="ic-v2-navigation-option-horizontal-fill" aria-hidden="true"></i>더보기</button>' +
+          '</div>' +
+        '</div>' +
+      '</transition>' +
+
+      // 게임 추가 완료 토스트 — 보유게임 영역 하단 가운데, 3초 뒤 사라진다
+      '<transition name="library-toast">' +
+        '<div v-if="addedToast" class="library-toast-wrap">' +
+          '<div class="library-toast" role="status" data-name="toast popup">' +
+            '<img class="library-toast__icon" src="assets/library/check_circle_color.svg" alt="" />' +
+            '<div class="library-toast__body">' +
+              '<p class="library-toast__text"><b>{{ addedToast.count }}개 게임</b>을 추가했습니다.</p>' +
+              '<span class="library-toast__group"><i class="ic-v2-control-long-arrow-right-line" aria-hidden="true"></i>{{ addedToast.title }}</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</transition>' +
     '</div>',
 };
 
