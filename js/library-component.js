@@ -154,7 +154,8 @@ function libraryPlayedLabel(min) {
 // 우측패널과 콘텐츠가 같이 쓰는 상태 — 두 Vue 앱이 같은 reactive 객체를 본다.
 //   groups: 나의 게임 그룹 [{ id, title, gameIds }] (새 그룹이 맨 위)
 //   addTargetId: 게임 추가 중인 그룹 — 있으면 보유게임 영역이 선택 UI로 바뀐다 (Figma 1131:5779 ⑦ · 3-3)
-var LIBRARY_STORE = Vue.reactive({ groups: [], addTargetId: null });
+//   selectMode: 보유게임 "게임 선택" 버튼으로 들어간 선택 UI (대상 그룹 없음, Figma 클라이언트_v3.1 67959:409416)
+var LIBRARY_STORE = Vue.reactive({ groups: [], addTargetId: null, selectMode: false });
 var LIBRARY_TOAST_MS = 3000;
 
 // 썸네일 아래 뱃지 — 합본팩(collection 표시한 것)은 Collection, 카탈로그 type이 dlc · demo면 DLC · DEMO (모양은 같은 Badge/Game type)
@@ -186,22 +187,9 @@ var LibraryMain = {
   },
   unmounted: function () { clearTimeout(this._toastTimer); },
   watch: {
-    // 게임 추가 대상이 바뀌면(시작 · 다른 그룹으로 전환 · 취소) 고른 게임은 비운다.
-    // 시작할 때 보유게임이 화면 아래에 있으면 타이틀이 보이게 올려 준다
-    'store.addTargetId': function (id, prev) {
-      this.selected = [];
-      if (id && !prev) {
-        this.addedToast = null;
-        this.$nextTick(function () {
-          var el = this.$refs.owned;
-          var box = el && el.closest('.main');
-          if (!box) return;
-          var top = el.getBoundingClientRect().top - box.getBoundingClientRect().top;
-          var pad = parseFloat(getComputedStyle(box).paddingTop) || 0;
-          if (top > box.clientHeight / 2) box.scrollTo({ top: box.scrollTop + top - pad - 20, behavior: 'smooth' });
-        });
-      }
-    },
+    // 선택 UI 진입 경로 두 가지 — 패널 게임 추가(대상 그룹) · 게임 선택 버튼(대상 없음)
+    'store.addTargetId': function (id, prev) { this.onSelectEnter(id, prev); },
+    'store.selectMode': function (on, prev) { this.onSelectEnter(on, prev); },
     // 광고를 켜고 끄면 카드 수가 바뀐다 — 없어진 페이지에 머물지 않게
     quickPages: function (n) {
       if (this.quickPage > n - 1) this.goQuick(n - 1 - this.quickPage);
@@ -247,7 +235,7 @@ var LibraryMain = {
       var id = this.store.addTargetId;
       return id ? this.store.groups.find(function (g) { return g.id === id; }) || null : null;
     },
-    selecting: function () { return !!this.addTarget; },
+    selecting: function () { return !!this.addTarget || this.store.selectMode; },
     // 이미 그 그룹에 들어 있는 게임 — 선택 UI에서 비활성(회색 체크)으로 보인다
     addedIds: function () {
       var map = {};
@@ -281,6 +269,22 @@ var LibraryMain = {
     actionIcon: function (a) { return LIBRARY_ACTION_ICON[a]; },
     actionLabel: function (a) { return LIBRARY_ACTION_LABEL[a]; },
 
+    // 선택 UI를 시작 · 전환 · 종료하면 고른 게임은 비운다.
+    // 시작할 때 보유게임이 화면 아래에 있으면 타이틀이 보이게 올려 준다
+    onSelectEnter: function (on, prev) {
+      this.selected = [];
+      if (on && !prev) {
+        this.addedToast = null;
+        this.$nextTick(function () {
+          var el = this.$refs.owned;
+          var box = el && el.closest('.main');
+          if (!box) return;
+          var top = el.getBoundingClientRect().top - box.getBoundingClientRect().top;
+          var pad = parseFloat(getComputedStyle(box).paddingTop) || 0;
+          if (top > box.clientHeight / 2) box.scrollTo({ top: box.scrollTop + top - pad - 20, behavior: 'smooth' });
+        });
+      }
+    },
     // ── 선택 UI (게임 추가) — 카드 아무 곳이나 누르면 선택/해제, 이미 그룹에 있는 게임은 못 고른다 ──
     isSelected: function (g) { return this.selected.indexOf(g.id) >= 0; },
     toggleSelect: function (g) {
@@ -289,7 +293,9 @@ var LibraryMain = {
       if (i >= 0) this.selected.splice(i, 1);
       else this.selected.push(g.id);
     },
-    cancelAdd: function () { this.store.addTargetId = null; },
+    // 게임 선택 버튼 — 대상 그룹 없이 선택 UI로 (패널 게임 추가 중이면 그것을 끝내고)
+    startSelect: function () { this.store.addTargetId = null; this.store.selectMode = true; },
+    cancelAdd: function () { this.store.addTargetId = null; this.store.selectMode = false; },
     // 그룹에 추가 — 패널 그룹에 게임이 들어가고, 선택 UI는 풀리고, 보유게임 영역 하단에 토스트 (⑦)
     addToGroup: function () {
       var group = this.addTarget;
@@ -353,7 +359,7 @@ var LibraryMain = {
         '<div class="library-owned__divider"></div>' +
         // 선택 UI — 도구 줄 자리에 게임 추가 취소 + 안내 문구 (Figma ⑦ · 0825 게임 추가 취소)
         '<div v-if="selecting" class="library-toolbar library-toolbar--select" data-name="filter area">' +
-          '<button class="library-btn" type="button" @click="cancelAdd"><i class="ic-v2-control-long-arrow-left-line"></i>게임 추가 취소</button>' +
+          '<button class="library-btn" type="button" @click="cancelAdd"><i class="ic-v2-control-long-arrow-left-line"></i>{{ addTarget ? \'게임 추가 취소\' : \'게임 선택 취소\' }}</button>' +
           // 메시지 영역 (Figma 클라이언트_v3.1 67953:409405) — 게임 선택 전 / 선택 후
           '<p class="library-select-msg" role="status" data-name="안내 문구">' +
             '<img class="library-select-msg__icon" src="assets/library/img_info.png" alt="" />' +
@@ -362,7 +368,7 @@ var LibraryMain = {
           '</p>' +
         '</div>' +
         '<div v-else class="library-toolbar" data-name="filter area">' +
-          '<button class="library-btn" type="button"><i class="ic-v2-control-check-circle-line"></i>게임 선택</button>' +
+          '<button class="library-btn" type="button" @click="startSelect"><i class="ic-v2-control-check-circle-line"></i>게임 선택</button>' +
           '<div class="library-toolbar__right">' +
             '<div class="library-view-toggle" role="tablist" aria-label="보기 방식">' +
               '<button type="button" role="tab" :aria-selected="view === \'grid\'" :class="{ \'is-selected\': view === \'grid\' }" aria-label="카드 보기" @click="view = \'grid\'"><i class="ic-v2-community-view-card-fill"></i></button>' +

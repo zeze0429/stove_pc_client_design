@@ -459,6 +459,7 @@ var LibraryPanel = {
     startAdd: function (id) {
       this.closeMenu();
       this.btnTip = null;
+      this.store.selectMode = false; // 게임 선택으로 들어온 선택 UI 중이면 그 그룹 추가로 바꾼다
       this.store.addTargetId = id;
       this.collapsed[id] = false;
     },
