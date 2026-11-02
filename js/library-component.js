@@ -177,7 +177,129 @@ var LIBRARY_FLOATING_ICON = {
   more: libraryFloatingIcon('<path d="M5.25 14.25C6.49264 14.25 7.5 13.2426 7.5 12C7.5 10.7574 6.49264 9.75 5.25 9.75C4.00736 9.75 3 10.7574 3 12C3 13.2426 4.00736 14.25 5.25 14.25Z"/><path d="M14.25 12C14.25 13.2426 13.2426 14.25 12 14.25C10.7574 14.25 9.75 13.2426 9.75 12C9.75 10.7574 10.7574 9.75 12 9.75C13.2426 9.75 14.25 10.7574 14.25 12Z"/><path d="M21 12C21 13.2426 19.9926 14.25 18.75 14.25C17.5074 14.25 16.5 13.2426 16.5 12C16.5 10.7574 17.5074 9.75 18.75 9.75C19.9926 9.75 21 10.7574 21 12Z"/>'),
 };
 
+// 그룹명 최대 길이 · 중복 문구 — 우측패널과 같은 규칙 (가이드의 20자 대신 패널과 통일, 사용자 결정)
+var LIBRARY_ADD_GROUP_NAME_MAX = 30;
+var LIBRARY_ADD_GROUP_MAX = 20;
+var LIBRARY_ADD_GROUP_DUP_MSG = '이 이름은 이미 사용 중이에요. 다른 이름을 입력해 주세요.';
+var LIBRARY_ADD_ICON = '<svg class="add-group-dialog__plus" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M9.16662 3.33332C9.16662 2.87308 9.53972 2.49998 9.99996 2.49998C10.4602 2.49998 10.8333 2.87308 10.8333 3.33331V9.16667H16.6667C17.1269 9.16667 17.5 9.53977 17.5 10C17.5 10.4602 17.1269 10.8333 16.6667 10.8333H10.8333V16.6667C10.8333 17.1269 10.4602 17.5 9.99996 17.5C9.53972 17.5 9.16662 17.1269 9.16662 16.6667V10.8333H3.33332C2.87308 10.8333 2.49998 10.4602 2.49998 10C2.49998 9.53977 2.87308 9.16667 3.33331 9.16667H9.16662V3.33332Z"/></svg>';
+
+/**
+ * 그룹에 추가 팝업 (Figma 클라이언트_v3.1 67967:409417 "그룹추가 팝업") — 게임 선택으로 들어온 선택 UI에서 하단 "그룹에 추가".
+ * 공용 레이어 셸(LayerDialog) · 너비 404. 위: 그룹 만들기(버튼 → 누르면 입력칸 + 완료), 아래: 나의 그룹 목록(체크박스, 여러 개).
+ * 고른 게임이 전부 이미 들어 있는 그룹은 비활성(체크된 채). 새로 만든 그룹은 목록 맨 위에 체크된 채로 들어온다.
+ * 확인 = 체크한 그룹에 게임 추가 (부모가 그룹 데이터에 넣고 선택 UI를 끝낸다)
+ */
+var LibraryAddToGroupDialog = {
+  components: { 'layer-dialog': LayerDialog },
+  props: {
+    groups: { type: Array, required: true }, // LIBRARY_STORE.groups (새 그룹은 여기에 바로 넣는다)
+    gameIds: { type: Array, required: true },
+  },
+  emits: ['confirm', 'close'],
+  data: function () {
+    return { checked: [], creating: false, text: '', error: '', focused: false, overflow: false, listOverflow: false };
+  },
+  computed: {
+    canCreate: function () { return this.groups.length < LIBRARY_ADD_GROUP_MAX; },
+    canSubmitName: function () { return !this.error && this.text.trim().length > 0; },
+    canConfirm: function () { return this.checked.length > 0; },
+  },
+  mounted: function () { this.$nextTick(this.checkListOverflow); },
+  methods: {
+    // 고른 게임이 전부 이미 들어 있는 그룹 — 비활성
+    isFull: function (g) {
+      return this.gameIds.every(function (id) { return g.gameIds.indexOf(id) >= 0; });
+    },
+    isChecked: function (g) { return this.checked.indexOf(g.id) >= 0; },
+    toggle: function (g) {
+      if (this.isFull(g)) return;
+      var i = this.checked.indexOf(g.id);
+      if (i >= 0) this.checked.splice(i, 1); else this.checked.push(g.id);
+    },
+    startCreate: function () {
+      if (!this.canCreate) return;
+      this.creating = true;
+      this.$nextTick(function () { this.$refs.input.focus(); });
+    },
+    // 한글 조합 중에도 값을 받는다 (패널 입력칸과 같은 이유)
+    onInput: function (e) { this.text = e.target.value; this.error = ''; this.checkOverflow(); },
+    checkOverflow: function () { var el = this.$refs.input; this.overflow = !!el && el.scrollLeft > 0; },
+    clear: function () { this.text = ''; this.error = ''; this.overflow = false; this.$refs.input.focus(); },
+    submitName: function () {
+      if (!this.canSubmitName) return;
+      var name = this.text.trim();
+      if (this.groups.some(function (g) { return g.title === name; })) { this.error = LIBRARY_ADD_GROUP_DUP_MSG; return; }
+      var id = 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      this.groups.unshift({ id: id, title: name, gameIds: [] }); // 최신 생성 순 — 맨 위
+      this.checked.push(id);
+      this.text = '';
+      this.creating = false;
+      this.$nextTick(this.checkListOverflow);
+    },
+    onKey: function (e) {
+      if (e.isComposing) return;
+      if (e.key === 'Enter') { e.preventDefault(); this.submitName(); }
+    },
+    // 목록이 넘치면 아래쪽에 배경색 그라디언트 (가이드 "목록 갯수가 늘어날 경우 gradiant 노출")
+    checkListOverflow: function () {
+      var el = this.$refs.list;
+      this.listOverflow = !!el && el.scrollHeight - el.scrollTop - el.clientHeight > 1;
+    },
+    confirm: function () {
+      if (!this.canConfirm) return;
+      var ids = this.checked.slice();
+      this.$emit('confirm', ids);
+    },
+  },
+  template:
+    '<layer-dialog title="그룹에 추가" width="40.4rem" @close="$emit(\'close\')">' +
+      '<div class="add-group-dialog" :class="{ \'has-groups\': groups.length }" data-name="contents">' +
+        // 그룹 만들기 — 버튼(tab) / 누르면 입력칸 + 완료
+        '<div v-if="!creating" class="add-group-dialog__create">' +
+          '<button class="add-group-dialog__tab" type="button" :disabled="!canCreate" @click="startCreate" data-name="tab">그룹 만들기' + LIBRARY_ADD_ICON + '</button>' +
+        '</div>' +
+        '<div v-else class="add-group-dialog__create add-group-dialog__create--input" data-name="그룹 만들기">' +
+          '<p class="add-group-dialog__label">그룹 만들기</p>' +
+          '<div class="add-group-dialog__row" data-name="input">' +
+            '<label class="add-group-dialog__field" :class="{ \'is-active\': focused || text, \'is-error\': error }" data-name="Input">' +
+              '<span v-if="overflow" class="add-group-dialog__fade" aria-hidden="true"></span>' +
+              '<input ref="input" class="add-group-dialog__input" type="text" :value="text" :maxlength="' + LIBRARY_ADD_GROUP_NAME_MAX + '" ' +
+                'placeholder="그룹 이름을 입력해주세요 (최대 ' + LIBRARY_ADD_GROUP_NAME_MAX + '자)" @input="onInput" @scroll="checkOverflow" @keyup="checkOverflow" @keydown="onKey" @focus="focused = true" @blur="focused = false" />' +
+              '<button v-if="text" class="add-group-dialog__clear" type="button" aria-label="지우기" @mousedown.prevent @click="clear"><i class="ic-v2-control-close-circle-fill"></i></button>' +
+            '</label>' +
+            '<button class="add-group-dialog__done" type="button" :disabled="!canSubmitName" @mousedown.prevent @click="submitName" data-name="Button">완료</button>' +
+          '</div>' +
+          '<p v-if="error" class="add-group-dialog__error" data-name="유효성문구"><i class="ic-v2-state-warning-circle-fill" aria-hidden="true"></i>{{ error }}</p>' +
+        '</div>' +
+        '<div class="add-group-dialog__div" aria-hidden="true"></div>' +
+        // 나의 그룹 목록
+        '<div class="add-group-dialog__groups" data-name="나의 게임 그룹">' +
+          '<p class="add-group-dialog__label">나의 그룹 목록</p>' +
+          '<div v-if="groups.length" class="add-group-dialog__list-wrap">' +
+            '<div ref="list" class="add-group-dialog__list" @scroll="checkListOverflow">' +
+              '<button v-for="g in groups" :key="g.id" class="add-group-dialog__item" type="button" ' +
+                ':class="{ \'is-checked\': isChecked(g), \'is-full\': isFull(g) }" :disabled="isFull(g)" role="checkbox" :aria-checked="String(isChecked(g) || isFull(g))" ' +
+                '@click="toggle(g)" data-name="component/selection UI/dialog/list">' +
+                '<span class="add-group-dialog__check" aria-hidden="true" data-name="Checkbox"><i v-if="isChecked(g) || isFull(g)" class="ic-v2-control-check-bold-line"></i></span>' +
+                '<span class="add-group-dialog__name">{{ g.title }}</span>' +
+                '<span class="add-group-dialog__count" data-name="badge">{{ g.gameIds.length }}</span>' +
+              '</button>' +
+            '</div>' +
+            '<span v-if="listOverflow" class="add-group-dialog__list-fade" aria-hidden="true"></span>' +
+          '</div>' +
+          '<div v-else class="add-group-dialog__empty" data-name="항목 없음">' +
+            // 임시 정지 이미지 — 사용자가 APNG 리소스를 주면 교체
+            '<img src="assets/library/group_empty_placeholder.png" width="120" height="120" alt="" />' +
+            '<p>그룹을 만들어 게임을 추가해 보세요.</p>' +
+          '</div>' +
+        '</div>' +
+        '<button v-if="groups.length" class="add-group-dialog__confirm" type="button" :disabled="!canConfirm" @click="confirm" data-name="Button">확인</button>' +
+      '</div>' +
+    '</layer-dialog>',
+};
+
 var LibraryMain = {
+  components: { 'add-to-group-dialog': LibraryAddToGroupDialog },
   data: function () {
     return {
       owned: LIBRARY_OWNED.map(libraryGame),
@@ -190,6 +312,7 @@ var LibraryMain = {
       store: LIBRARY_STORE,
       selected: [], // 선택 UI에서 고른 게임 id (고른 순서)
       addedToast: null, // 그룹에 추가한 직후 토스트 { count, title } (3초)
+      addGroupDialog: false, // 게임 선택 모드의 그룹에 추가 팝업
     };
   },
   mounted: function () {
@@ -310,6 +433,21 @@ var LibraryMain = {
       if (i >= 0) this.selected.splice(i, 1);
       else this.selected.push(g.id);
     },
+    // 그룹에 추가 팝업 확인 — 체크한 그룹마다 아직 없는 게임만 넣고, 선택 UI를 끝내고 토스트 (사용자 결정: 종료 + 토스트)
+    confirmAddGroups: function (groupIds) {
+      var self = this;
+      var games = this.selected.slice();
+      var picked = this.store.groups.filter(function (g) { return groupIds.indexOf(g.id) >= 0; });
+      picked.forEach(function (g) {
+        games.forEach(function (id) { if (g.gameIds.indexOf(id) < 0) g.gameIds.push(id); });
+      });
+      this.addGroupDialog = false;
+      this.store.selectMode = false;
+      var title = picked.length > 1 ? picked[0].title + ' 외 ' + (picked.length - 1) + '개 그룹' : (picked[0] && picked[0].title) || '';
+      this.addedToast = { count: games.length, title: title };
+      clearTimeout(this._toastTimer);
+      this._toastTimer = setTimeout(function () { self.addedToast = null; }, LIBRARY_TOAST_MS);
+    },
     // 하단 플로팅을 정수 픽셀에 맞춘다 — 버튼 폭(글자 폭)이 소수면 아이콘이 반 픽셀에 그려져 굵기가 번지고
     // 더보기 점 세 개 크기가 달라 보인다. 버튼 폭은 짝수 정수로 올리고(아이콘이 가운데 정수 위치),
     // 바 전체는 translate로 남은 소수만큼 당긴다. 펼쳐지는 중인 선택 해제는 끝난 뒤(after-enter) 다시 맞춘다
@@ -329,6 +467,11 @@ var LibraryMain = {
     cancelAdd: function () { this.store.addTargetId = null; this.store.selectMode = false; },
     // 그룹에 추가 — 패널 그룹에 게임이 들어가고, 선택 UI는 풀리고, 보유게임 영역 하단에 토스트 (⑦)
     addToGroup: function () {
+      // 게임 선택으로 들어온 선택 UI — 대상 그룹이 없으니 그룹에 추가 팝업에서 고른다
+      if (!this.addTarget && this.store.selectMode) {
+        if (this.selected.length) this.addGroupDialog = true;
+        return;
+      }
       var group = this.addTarget;
       if (!group || !this.selected.length) return;
       var count = this.selected.length;
@@ -453,6 +596,8 @@ var LibraryMain = {
           '</div>' +
         '</div>' +
       '</transition>' +
+
+      '<add-to-group-dialog v-if="addGroupDialog" :groups="store.groups" :game-ids="selected" @confirm="confirmAddGroups" @close="addGroupDialog = false"></add-to-group-dialog>' +
 
       // 게임 추가 완료 토스트 — 보유게임 영역 하단 가운데, 3초 뒤 사라진다
       '<transition name="library-toast">' +
