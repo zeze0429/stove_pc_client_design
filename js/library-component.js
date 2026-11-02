@@ -201,8 +201,8 @@ var LibraryAddToGroupDialog = {
   computed: {
     canCreate: function () { return this.groups.length < LIBRARY_ADD_GROUP_MAX; },
     canSubmitName: function () { return !this.error && this.text.trim().length > 0; },
-    // 그룹 이름 입력이 에러(중복)면 확인도 비활성 — 에러를 풀어야 진행 (사용자 지정)
-    canConfirm: function () { return this.checked.length > 0 && !this.error; },
+    // 확인은 체크한 그룹만 본다 — 이름 입력 에러는 완료 버튼만 막는다 (사용자 정정)
+    canConfirm: function () { return this.checked.length > 0; },
   },
   mounted: function () { this.$nextTick(this.checkListOverflow); },
   methods: {
