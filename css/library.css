@@ -461,7 +461,7 @@
 
 /* 도구 줄 — 왼쪽 게임 추가 취소, 가운데 메시지 영역 (Figma 클라이언트_v3.1 67953:409405 선택UI - 메세지 영역)
    아이콘 20 — 2배수 이미지 img_info · img_done · img_error (Figma 레이어명, 셋 다 이미지 — 사용자 지정) + 간격 4,
-   Button2-R 14/20 on-surface-elevation-2, 게임 수만 Bold glob white */
+   Button2-R 14/20 on-surface-elevation-2, 게임 수만 Button2-B on-surface-elevation-1 */
 .library-toolbar--select { position: relative; }
 .library-select-msg {
   position: absolute;
@@ -480,7 +480,7 @@
   white-space: nowrap;
 }
 .library-select-msg__icon { display: block; flex: 0 0 auto; width: 2rem; height: 2rem; }
-.library-select-msg__count { color: var(--stds-glob-color-white); font-weight: 700; } /* Figma가 글로벌 white로 지정 */
+.library-select-msg__count { color: var(--stds-sem-color-on-surface-elevation-1); font-weight: 700; }
 
 /* 카드 — 아무 곳이나 누르면 선택/해제. 체크박스 32 원, 썸네일 좌상단 12 */
 .library-card__check {
