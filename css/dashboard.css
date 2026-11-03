@@ -229,7 +229,8 @@ ul { list-style: none; margin: 0; padding: 0; }
   flex: 0 0 auto;
   align-items: center;
   height: 4rem;
-  margin: 2.4rem 4rem 2rem;
+  /* 위 34 — 타이틀 윗변을 사이드바 첫 메뉴 "스토어" 글자 줄 · 우측패널 "나의 게임 그룹"과 같은 y82에 (사용자 요청 24 → 34, 11-03) */
+  margin: 3.4rem 4rem 2rem;
 }
 .client-page-title__text {
   margin: 0;
