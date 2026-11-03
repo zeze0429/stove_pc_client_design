@@ -56,14 +56,16 @@
   height: 3.2rem;
   padding: 0;
   border-radius: var(--stds-glob-border-radius-lg);
-  background: var(--stds-sem-color-neutral-variant-2);
+  /* 라이트에서 neutral-variant-2가 눈에 안 띄어 Figma 레퍼런스 사이트의 neutral-variant-5로.
+     다크 값은 neutral-variant-2와 같아서 다크는 그대로 (사용자 11-03) */
+  background: var(--stds-sem-color-neutral-variant-5);
   color: var(--stds-sem-color-on-surface-elevation-2);
   cursor: pointer;
   transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .library-panel__icon-btn i { font-size: 1.6rem; }
-.library-panel__icon-btn:hover { background: var(--stds-sem-color-neutral-variant-2-hover); }
-.library-panel__icon-btn:active { background: var(--stds-sem-color-neutral-variant-2-pressed); }
+.library-panel__icon-btn:hover { background: var(--stds-sem-color-neutral-variant-5-hover); }
+.library-panel__icon-btn:active { background: var(--stds-sem-color-neutral-variant-5-pressed); }
 
 /* ---- 3. 스크롤 영역 — 구분선 아래 전부 (안내 박스·구분선은 고정). 하단 TOP(80)에 가리지 않게 그만큼 여백 ---- */
 .library-panel__body {

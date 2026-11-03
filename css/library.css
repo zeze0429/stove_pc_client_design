@@ -254,7 +254,11 @@
 }
 .library-toolbar__right { display: flex; align-items: center; gap: 0.8rem; }
 /* 게임 선택 · 게임 선택 취소 · 필터 — 공통 버튼 tertiary sm (css/button.css, 사용자 11-03).
-   예전 neutral-variant-3 + on-surface-elevation-1에서 시스템 값으로 */
+   예외: 라이트에서 배경(neutral-variant-2)이 눈에 안 띄어 Figma 레퍼런스 사이트의 neutral-variant-5로.
+   다크 값은 neutral-variant-2와 같아서 다크는 그대로 (사용자 11-03) */
+.stds-button-tertiary.library-tool-btn { --stds-button-bg: var(--stds-sem-color-neutral-variant-5); }
+.stds-button-tertiary.library-tool-btn:is(:hover, .is-hover):enabled   { --stds-button-bg: var(--stds-sem-color-neutral-variant-5-hover); }
+.stds-button-tertiary.library-tool-btn:is(:active, .is-pressed):enabled { --stds-button-bg: var(--stds-sem-color-neutral-variant-5-pressed); }
 
 /* 카드 / 목록 보기 토글 — 바탕은 아직 시멘틱 토큰이 없어 레퍼런스대로 글로벌 토큰
    (다크 gray-940 / 라이트 gray-100) */

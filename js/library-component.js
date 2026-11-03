@@ -555,7 +555,7 @@ var LibraryMain = {
         '<div class="library-owned__divider"></div>' +
         // 선택 UI — 도구 줄 자리에 게임 추가 취소 + 안내 문구 (Figma ⑦ · 0825 게임 추가 취소)
         '<div v-if="selecting" class="library-toolbar library-toolbar--select" data-name="filter area">' +
-          '<button class="stds-button stds-button-tertiary stds-button-sm" type="button" @click="cancelAdd"><i class="ic-v2-control-long-arrow-left-line"></i>{{ addTarget ? \'게임 추가 취소\' : \'게임 선택 취소\' }}</button>' +
+          '<button class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" type="button" @click="cancelAdd"><i class="ic-v2-control-long-arrow-left-line"></i>{{ addTarget ? \'게임 추가 취소\' : \'게임 선택 취소\' }}</button>' +
           // 메시지 영역 (Figma 클라이언트_v3.1 67953:409405) — 게임 선택 전 / 선택 후
           '<p class="library-select-msg" role="status" data-name="안내 문구">' +
             '<img class="library-select-msg__icon" src="assets/library/img_info.png" alt="" />' +
@@ -564,13 +564,13 @@ var LibraryMain = {
           '</p>' +
         '</div>' +
         '<div v-else class="library-toolbar" data-name="filter area">' +
-          '<button class="stds-button stds-button-tertiary stds-button-sm" type="button" @click="startSelect"><i class="ic-v2-control-check-circle-line"></i>게임 선택</button>' +
+          '<button class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" type="button" @click="startSelect"><i class="ic-v2-control-check-circle-line"></i>게임 선택</button>' +
           '<div class="library-toolbar__right">' +
             '<div class="library-view-toggle" role="tablist" aria-label="보기 방식">' +
               '<button type="button" role="tab" :aria-selected="view === \'grid\'" :class="{ \'is-selected\': view === \'grid\' }" aria-label="카드 보기" @click="view = \'grid\'"><i class="ic-v2-community-view-card-fill"></i></button>' +
               '<button type="button" role="tab" :aria-selected="view === \'list\'" :class="{ \'is-selected\': view === \'list\' }" aria-label="목록 보기" @click="view = \'list\'"><i class="ic-v2-community-view-list-fill"></i></button>' +
             '</div>' +
-            '<button class="stds-button stds-button-tertiary stds-button-sm" type="button"><i class="ic-v2-community-filter-line"></i>필터</button>' +
+            '<button class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" type="button"><i class="ic-v2-community-filter-line"></i>필터</button>' +
             '<label class="library-search">' +
               '<input type="text" v-model="query" placeholder="게임 또는 검색어 입력" />' +
               '<i class="ic-v2-navigation-search-line" aria-hidden="true"></i>' +
