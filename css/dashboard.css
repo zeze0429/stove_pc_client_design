@@ -189,7 +189,8 @@ ul { list-style: none; margin: 0; padding: 0; }
   overflow-y: auto;
   overflow-x: hidden;
   background: var(--stds-sem-color-background-variant-1);
-  padding-top: calc(4.8rem + var(--utility-notice-h, 0px)); /* 공지 띠가 뜨면 그만큼 밀린다 */
+  /* 공지 띠가 뜨면 그만큼 밀린다 — 페이지마다 --client-notice-push로 밀리는 양을 바꿀 수 있다 (라이브러리는 절반) */
+  padding-top: calc(4.8rem + var(--client-notice-push, var(--utility-notice-h, 0px)));
 }
 /* 오른쪽 패널 — 옵션이 꺼져 있으면 없음 */
 .client-panel { display: none; }
@@ -203,7 +204,7 @@ ul { list-style: none; margin: 0; padding: 0; }
   overflow-x: hidden;
   overscroll-behavior: none;
   scrollbar-width: none;
-  padding-top: calc(4.8rem + var(--utility-notice-h, 0px));
+  padding-top: calc(4.8rem + var(--client-notice-push, var(--utility-notice-h, 0px)));
   background: var(--client-panel-bg);
 }
 .client-panel::-webkit-scrollbar { display: none; }
