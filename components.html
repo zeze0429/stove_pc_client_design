@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STOVE 클라이언트 · 컴포넌트</title>
+  <link rel="stylesheet" href="css/tokens.css?v=11" />
+  <link rel="stylesheet" href="css/foundations.css?v=10" />
+  <link rel="stylesheet" href="css/typography.css?v=12" />
+  <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=8" />
+  <link rel="stylesheet" href="css/button.css?v=1" />
+  <style>
+    /* 미리보기 페이지 전용 배치 — 컴포넌트 스타일은 각 css 파일에 있다 */
+    body {
+      margin: 0;
+      padding: 4rem;
+      background: var(--stds-sem-color-background-variant-1);
+      color: var(--stds-sem-color-on-surface-elevation-1);
+    }
+    .cp-head { display: flex; align-items: center; gap: 1.6rem; margin-bottom: 3.2rem; }
+    .cp-head h1 { margin: 0; flex: 1 1 auto; }
+    .cp-section { margin-bottom: 4.8rem; }
+    .cp-section h2 { margin: 0 0 0.4rem; }
+    .cp-section > p { margin: 0 0 2rem; color: var(--stds-sem-color-on-surface-elevation-3); }
+    .cp-table { border-collapse: collapse; }
+    .cp-table th {
+      padding: 0 2.4rem 1.2rem 0;
+      text-align: left;
+      font-weight: 400;
+      color: var(--stds-sem-color-on-surface-elevation-3);
+    }
+    .cp-table td { padding: 0 2.4rem 1.6rem 0; vertical-align: middle; }
+    /* ghost는 유색 배경·이미지 위에서 쓰는 버튼이라 어두운 판 위에 놓는다 (Figma도 검정 판) */
+    .cp-table tr.is-on-dark td:not(:first-child) { background: var(--stds-glob-color-gray880); padding-left: 1.2rem; }
+    .cp-row { display: flex; align-items: center; flex-wrap: wrap; gap: 1.6rem; }
+  </style>
+</head>
+<body>
+  <div id="components-mount"></div>
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="js/button-component.js?v=1"></script>
+  <script>
+    Vue.createApp({
+      components: { StdsButton: StdsButton },
+      data: function () {
+        return {
+          theme: document.documentElement.getAttribute('data-theme'),
+          variants: STDS_BUTTON_VARIANTS,
+          sizes: STDS_BUTTON_SIZES,
+          states: [
+            { key: 'enabled', label: 'Enabled', cls: '' },
+            { key: 'hover', label: 'Hover', cls: 'is-hover' },
+            { key: 'pressed', label: 'Pressed', cls: 'is-pressed' },
+            { key: 'focus', label: 'Focus', cls: 'is-focus' },
+            { key: 'disabled', label: 'Disabled', cls: '' },
+          ],
+        };
+      },
+      methods: {
+        setTheme: function (t) {
+          this.theme = t;
+          document.documentElement.setAttribute('data-theme', t);
+        },
+      },
+      template:
+        '<div>' +
+          '<header class="cp-head">' +
+            '<h1 class="stds-title4 fw-bold">Components</h1>' +
+            '<stds-button size="sm" :variant="theme === \'dark\' ? \'primary\' : \'outline\'" @click="setTheme(\'dark\')">Dark</stds-button>' +
+            '<stds-button size="sm" :variant="theme === \'light\' ? \'primary\' : \'outline\'" @click="setTheme(\'light\')">Light</stds-button>' +
+          '</header>' +
+
+          '<section class="cp-section">' +
+            '<h2 class="stds-title6 fw-bold">Button · Variant × Status</h2>' +
+            '<p class="stds-text3">Figma STDS_StoveUI_v0.3.2 · Button (966:4473) · Size=md, Icon=leading, Radius=Default</p>' +
+            '<table class="cp-table stds-text4"><thead><tr><th></th>' +
+              '<th v-for="s in states" :key="s.key">{{ s.label }}</th>' +
+            '</tr></thead><tbody>' +
+              '<tr v-for="v in variants" :key="v" :class="{ \'is-on-dark\': v === \'ghost\' }">' +
+                '<th>{{ v }}</th>' +
+                '<td v-for="s in states" :key="s.key">' +
+                  '<stds-button :variant="v" :class="s.cls" :is-disabled="s.key === \'disabled\'" icon="ic-v2-sample">버튼</stds-button>' +
+                '</td>' +
+              '</tr>' +
+            '</tbody></table>' +
+          '</section>' +
+
+          '<section class="cp-section">' +
+            '<h2 class="stds-title6 fw-bold">Button · Size × Icon</h2>' +
+            '<p class="stds-text3">xs 24 · sm 32 · md 44 · lg 56 — 텍스트만 / 왼쪽 아이콘 / 오른쪽 화살표 / 아이콘만</p>' +
+            '<table class="cp-table stds-text4"><tbody>' +
+              '<tr v-for="z in sizes" :key="z"><th>{{ z }}</th>' +
+                '<td><stds-button :size="z">버튼</stds-button></td>' +
+                '<td><stds-button :size="z" icon="ic-v2-sample">버튼</stds-button></td>' +
+                '<td><stds-button :size="z" has-arrow>버튼</stds-button></td>' +
+                '<td><stds-button :size="z" icon="ic-v2-sample" aria-label="버튼"></stds-button></td>' +
+              '</tr>' +
+            '</tbody></table>' +
+          '</section>' +
+        '</div>',
+    }).mount('#components-mount');
+  </script>
+</body>
+</html>
