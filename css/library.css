@@ -255,22 +255,38 @@
 }
 .library-toolbar__right { display: flex; align-items: center; gap: 0.8rem; }
 /* 게임 선택 · 게임 선택 취소 · 필터 — 공통 버튼 tertiary sm (css/button.css, 사용자 11-03).
-   예외: 라이트에서 배경(neutral-variant-2)이 눈에 안 띄어 Figma 레퍼런스 사이트의 neutral-variant-5로.
-   다크 값은 neutral-variant-2와 같아서 다크는 그대로 (사용자 11-03) */
-.stds-button-tertiary.library-tool-btn { --stds-button-bg: var(--stds-sem-color-neutral-variant-5); }
+   예외 (Figma 2026_웹전환 12009:64658): 배경 다크 #333 · 라이트 #ccc = neutral-variant-5,
+   글자·아이콘은 tertiary 기본(elevation-2)보다 진한 on-surface-elevation-1 */
+.stds-button-tertiary.library-tool-btn {
+  --stds-button-bg: var(--stds-sem-color-neutral-variant-5);
+  --stds-button-fg: var(--stds-sem-color-on-surface-elevation-1);
+}
 .stds-button-tertiary.library-tool-btn:is(:hover, .is-hover):enabled   { --stds-button-bg: var(--stds-sem-color-neutral-variant-5-hover); }
 .stds-button-tertiary.library-tool-btn:is(:active, .is-pressed):enabled { --stds-button-bg: var(--stds-sem-color-neutral-variant-5-pressed); }
 
-/* 카드 / 목록 보기 토글 — 바탕과 선택 안 된 아이콘은 우측패널 그룹 만들기 비활성과 같은 색
-   (--library-create-off-bg/fg, css/library-panel.css: 다크 gray880/gray750 · 라이트 gray150/gray300, 사용자 11-03) */
+/* 카드 / 목록 보기 토글 — Figma 2026_웹전환 12009:64658 (사용자 11-03)
+   바탕 다크 gray940 · 라이트 gray100 + 이너쉐도우 0 1 1 black-10 (선택 칸 위에도 덮인다)
+   선택 칸 다크 gray860 · 라이트 gray20 + 드롭쉐도우 0 1 1 black-20, 아이콘 on-surface-elevation-3
+   선택 안 된 아이콘 inverse-elevation-2 (white/black 15%). 시멘틱 토큰이 없는 자리는 Figma대로 글로벌 */
+:root { --library-toggle-bg: var(--stds-glob-color-gray940); --library-toggle-on-bg: var(--stds-glob-color-gray860); }
+:root[data-theme="light"] { --library-toggle-bg: var(--stds-glob-color-gray100); --library-toggle-on-bg: var(--stds-glob-color-gray20); }
 .library-view-toggle {
+  position: relative;
   display: flex;
   gap: 0;
   width: 6rem;
   height: 3.2rem;
   padding: 0.2rem;
   border-radius: var(--stds-glob-border-radius-lg);
-  background: var(--library-create-off-bg);
+  background: var(--library-toggle-bg);
+}
+.library-view-toggle::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0.1rem 0.1rem var(--stds-glob-color-black-10);
+  pointer-events: none;
 }
 .library-view-toggle button {
   display: grid;
@@ -279,13 +295,17 @@
   height: 2.8rem;
   padding: 0;
   border-radius: 0.6rem;
-  color: var(--library-create-off-fg);
+  color: var(--stds-sem-color-inverse-elevation-2);
   cursor: pointer;
   transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 /* 버튼 28 안에 아이콘 16 (레퍼런스 실측) */
 .library-view-toggle button i { display: block; font-size: 1.6rem; line-height: 1; }
-.library-view-toggle button.is-selected { background: var(--stds-sem-color-surface-variant-1); color: var(--stds-sem-color-on-surface-elevation-3); }
+.library-view-toggle button.is-selected {
+  background: var(--library-toggle-on-bg);
+  color: var(--stds-sem-color-on-surface-elevation-3);
+  box-shadow: 0 0.1rem 0.1rem var(--stds-glob-color-black-20);
+}
 
 /* 검색 — 186 x 32 */
 .library-search {
