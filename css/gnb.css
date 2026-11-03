@@ -608,7 +608,7 @@ body { margin: 0; }
   border: 1px solid var(--stds-sem-color-border);
   border-radius: var(--stds-glob-border-radius-lg);
   background: linear-gradient(var(--stds-sem-color-interaction-hover), var(--stds-sem-color-interaction-hover)), var(--stds-sem-color-surface-layer);
-  box-shadow: 0 0.4rem 0.4rem rgba(0, 0, 0, 0.32);
+  box-shadow: 0 0.4rem 0.4rem var(--stds-glob-color-black-30); /* 스케일에 없는 그림자 — 원본 32% → black-30 (사용자 11-03) */
   opacity: 0.9;
   pointer-events: none;
   cursor: grabbing;
