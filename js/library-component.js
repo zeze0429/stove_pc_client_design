@@ -307,7 +307,7 @@ var LibraryAddToGroupDialog = {
 };
 
 var LibraryMain = {
-  components: { 'add-to-group-dialog': LibraryAddToGroupDialog, 'stds-search-field': StdsSearchField },
+  components: { 'add-to-group-dialog': LibraryAddToGroupDialog, 'stds-search-field': StdsSearchField, 'library-filter-layer': LibraryFilterLayer },
   data: function () {
     return {
       owned: LIBRARY_OWNED.map(libraryGame),
@@ -315,6 +315,8 @@ var LibraryMain = {
       quickActive: 0, // 넓게 펼쳐진 카드 — 마우스를 올린 카드, 없으면 지금 페이지 첫 카드
       view: 'grid',
       query: '',
+      filter: libraryFilterDefault(), // 필터 레이어 (js/library-filter-component.js) — 보유게임은 정렬에 게임 줄만
+      filterOpen: false,
       quickAd: protoSettingsRead().libraryQuickAd, // 하단 메뉴패널 > 빠른 실행 > 광고
       arrowRest: 0, // 방금 누른 화살표(-1 · 1) — 마우스가 나갈 때까지 hover 배경을 끈다
       store: LIBRARY_STORE,
@@ -332,9 +334,13 @@ var LibraryMain = {
     this._scrollBox = this.$refs.owned && this.$refs.owned.closest('.main');
     this._onScroll = this.checkHeadStuck.bind(this);
     if (this._scrollBox) this._scrollBox.addEventListener('scroll', this._onScroll, { passive: true });
+    // 필터 레이어 바깥을 누르면 닫는다 (레이어 · 버튼은 click.stop)
+    this._onDocClick = function () { vm.filterOpen = false; };
+    document.addEventListener('click', this._onDocClick);
   },
   unmounted: function () {
     clearTimeout(this._toastTimer);
+    document.removeEventListener('click', this._onDocClick);
     window.removeEventListener('resize', this._onResize);
     if (this._scrollBox) this._scrollBox.removeEventListener('scroll', this._onScroll);
   },
@@ -398,8 +404,9 @@ var LibraryMain = {
     // 선택 UI에서는 검색 칸이 사라지니 검색어 없이 보유게임 전체
     filteredOwned: function () {
       var q = this.query.trim().toLowerCase();
-      if (!q || this.selecting) return this.owned;
-      return this.owned.filter(function (g) {
+      var list = libraryFilterGames(this.owned, this.filter);
+      if (!q || this.selecting) return list;
+      return list.filter(function (g) {
         return g.name.toLowerCase().indexOf(q) >= 0 || g.genre.toLowerCase().indexOf(q) >= 0;
       });
     },
@@ -582,7 +589,11 @@ var LibraryMain = {
               '<button type="button" role="tab" :aria-selected="view === \'grid\'" :class="{ \'is-selected\': view === \'grid\' }" aria-label="카드 보기" @click="view = \'grid\'"><i class="ic-v2-community-view-card-fill"></i></button>' +
               '<button type="button" role="tab" :aria-selected="view === \'list\'" :class="{ \'is-selected\': view === \'list\' }" aria-label="목록 보기" @click="view = \'list\'"><i class="ic-v2-community-view-list-fill"></i></button>' +
             '</div>' +
-            '<button class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" type="button"><i class="ic-v2-community-filter-line"></i>필터</button>' +
+            // 필터 — 누르면 아래에 레이어(폭 260), 열려 있는 동안 버튼은 선택 테두리
+            '<div class="library-filter-anchor">' +
+              '<button class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" :class="{ \'is-selected\': filterOpen }" type="button" :aria-expanded="String(filterOpen)" @click.stop="filterOpen = !filterOpen"><i class="ic-v2-community-filter-line"></i>필터</button>' +
+              '<library-filter-layer v-if="filterOpen" v-model="filter" width="26rem" @close="filterOpen = false"></library-filter-layer>' +
+            '</div>' +
             // 공통 서치필드 outline sm (js/search-field-component.js, 사용자 11-03) — 폭만 186
             '<stds-search-field v-model="query" class="library-search" placeholder="게임 또는 검색어 입력"></stds-search-field>' +
           '</div>' +

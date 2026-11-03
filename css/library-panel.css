@@ -69,6 +69,8 @@
 .library-panel__icon-btn i { font-size: 1.6rem; }
 .library-panel__icon-btn:hover { background: var(--stds-sem-color-neutral-variant-5-hover); }
 .library-panel__icon-btn:active { background: var(--stds-sem-color-neutral-variant-5-pressed); }
+/* selected (레이어팝업 열린 상태) — 2px on-surface-elevation-2 (Figma 12007:57385) */
+.library-panel__icon-btn.is-selected { box-shadow: inset 0 0 0 2px var(--stds-sem-color-on-surface-elevation-2); }
 
 /* ---- 3. 스크롤 영역 — 구분선 아래 전부 (안내 박스·구분선은 고정). 하단 TOP(80)에 가리지 않게 그만큼 여백 ---- */
 .library-panel__body {

@@ -1,0 +1,115 @@
+/* =============================================================
+   라이브러리 필터 레이어 — 보유게임 도구 줄 · 우측패널 공용
+   Figma 2026_웹전환 layer (1727:32579). 폭은 쓰는 쪽에서 (보유게임 260 · 우측패널 240)
+   ============================================================= */
+
+.library-filter {
+  position: absolute;
+  top: calc(100% + 0.8rem);
+  left: 0;
+  z-index: 30; /* 보유게임 고정 헤더(5) · 카드보다 위 */
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  box-sizing: border-box;
+  padding: 0 1.6rem 1.6rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  border: 1px solid var(--stds-sem-color-inverse-variant-1);
+  border-radius: var(--stds-glob-border-radius-lg);
+  background: var(--stds-sem-color-surface-elevation-2);
+  box-shadow: var(--stds-glob-box-shadow-12); /* Figma shadow/12 */
+  text-align: left;
+  cursor: default;
+}
+.library-filter::-webkit-scrollbar { display: none; }
+
+/* 헤더 — 타이틀 text3-B · 초기화 btn3-M (위 12 · 아래 4) */
+.library-filter__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 0 0.4rem;
+}
+.library-filter__title {
+  margin: 0;
+  color: var(--stds-sem-color-on-surface-elevation-1);
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 2.4rem;
+  letter-spacing: -0.03em;
+}
+.library-filter__reset {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--stds-sem-color-on-surface-elevation-4);
+  font: inherit;
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.8rem;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+}
+.library-filter__reset i { font-size: 1.2rem; }
+
+.library-filter__body { display: flex; flex-direction: column; gap: 1.2rem; }
+.library-filter__section { display: flex; flex-direction: column; gap: 0.4rem; }
+/* 섹션 라벨 — caption2-M 11/18 */
+.library-filter__label {
+  margin: 0;
+  color: var(--stds-sem-color-on-surface-elevation-4);
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.8rem;
+  letter-spacing: -0.02em;
+}
+.library-filter__list,
+.library-filter__sorts { display: flex; flex-direction: column; gap: 0.2rem; }
+.library-filter__div {
+  flex: 0 0 auto;
+  height: 1px;
+  margin: 0;
+  border: 0;
+  background: var(--stds-sem-color-inverse-elevation-5);
+}
+
+/* 정렬 줄 — 이름 text4-R · 옵션 caption2-M + 정렬 아이콘 14 */
+.library-filter__sort {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  font-size: 1.3rem;
+  line-height: 2.2rem;
+  letter-spacing: -0.025em;
+}
+.library-filter__sort button {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--stds-sem-color-on-surface-elevation-3);
+  font: inherit;
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.8rem;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+}
+.library-filter__sort button i { font-size: 1.4rem; }
+
+/* 체크박스 — 공통 sm 상자, 라벨만 이 레이어 스펙 text4-R 13/22 (Figma) · 한 줄 22 */
+.library-filter .stds-checkbox { display: flex; }
+.library-filter .stds-checkbox__label {
+  flex: 1 1 auto;
+  font-size: 1.3rem;
+  line-height: 2.2rem;
+  letter-spacing: -0.025em;
+}

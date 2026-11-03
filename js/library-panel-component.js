@@ -237,7 +237,7 @@ function ROW_TPL(listExpr, groupExpr) {
 }
 
 var LibraryPanel = {
-  components: { 'group-name-input': LibraryGroupNameInput, 'create-group-dialog': LibraryCreateGroupDialog },
+  components: { 'group-name-input': LibraryGroupNameInput, 'create-group-dialog': LibraryCreateGroupDialog, 'library-filter-layer': LibraryFilterLayer },
   data: function () {
     return {
       owned: LIBRARY_OWNED.map(libraryGame),
@@ -257,6 +257,8 @@ var LibraryPanel = {
       selectedRows: [], // 선택한 게임 행 (rowKey) — Ctrl/⌘ 클릭 추가 · 해제, Shift 클릭 범위 (Figma ⑫ "여러개 선택 가능(키보드 조작)")
       selectAnchor: null, // Shift 범위 선택 기준 행
       createDialog: null, // 그룹 만들기 팝업 { gameIds } — 게임 메뉴에서 열면 만든 그룹에 그 게임을 넣는다
+      filter: libraryFilterDefault(), // 필터 레이어 (js/library-filter-component.js) — 패널은 정렬에 그룹 · 게임 둘 다
+      filterOpen: false,
       hoveredGameId: null, // 말줄임 툴팁을 띄운 행 (rowKey)
       tooltipLeft: 0,
       tooltipTop: 0,
@@ -280,8 +282,10 @@ var LibraryPanel = {
     ungrouped: function () {
       var inGroup = {};
       this.groups.forEach(function (g) { g.gameIds.forEach(function (id) { inGroup[id] = true; }); });
-      return this.owned.filter(function (g) { return !inGroup[g.id]; });
+      return libraryFilterGames(this.owned.filter(function (g) { return !inGroup[g.id]; }), this.filter);
     },
+    // 필터 정렬을 적용한 그룹 순서 (설정 순이면 그대로)
+    shownGroups: function () { return librarySortGroups(this.groups, this.filter); },
     tooltipStyle: function () {
       return { left: this.tooltipLeft + 'px', top: this.tooltipTop + 'px', width: this.tooltipWidth + 'px' };
     },
@@ -337,6 +341,8 @@ var LibraryPanel = {
   watch: {
     // 입력 중엔 목록이 숨었다가 돌아오니 스크롤바 길이를 다시 잰다
     creating: function () { this.$nextTick(this.updateThumb); },
+    // 필터로 목록 길이가 바뀌어도 마찬가지
+    filter: function () { this.$nextTick(this.updateThumb); },
   },
   methods: {
     // 게임 추가 중인 그룹은 항상 펼쳐 둔다 (접기/펼치기 비활성)
@@ -344,7 +350,7 @@ var LibraryPanel = {
     groupGames: function (group) {
       var byId = {};
       this.owned.forEach(function (g) { byId[g.id] = g; });
-      return group.gameIds.map(function (id) { return byId[id]; }).filter(Boolean);
+      return libraryFilterGames(group.gameIds.map(function (id) { return byId[id]; }).filter(Boolean), this.filter);
     },
     toggleGroup: function (id) {
       this.collapsed[id] = !this.collapsed[id];
@@ -813,10 +819,14 @@ var LibraryPanel = {
     window.addEventListener('resize', this.updateThumb);
     window.addEventListener('resize', this.closeMenu);
     window.addEventListener('resize', this.closeGameMenu);
+    // 필터 레이어 바깥을 누르면 닫는다 (레이어 · 버튼은 click.stop)
+    this._onDocClick = function () { this.filterOpen = false; }.bind(this);
+    document.addEventListener('click', this._onDocClick);
     this.updateThumb();
   },
   unmounted: function () {
     clearTimeout(this._noticeTimer);
+    document.removeEventListener('click', this._onDocClick);
     document.removeEventListener('mouseup', this._onRelease);
     document.removeEventListener('mousemove', this.onDocMouseMove);
     document.removeEventListener('mouseleave', this.onDocMouseLeave);
@@ -857,8 +867,10 @@ var LibraryPanel = {
         '<button class="stds-button stds-button-secondary stds-button-sm library-panel__create" type="button" :disabled="!canCreate" @click="startCreate">' +
           '<i class="ic-v2-control-add-line" aria-hidden="true"></i>그룹 만들기' +
         '</button>' +
-        '<button class="library-panel__icon-btn" type="button" aria-label="필터" data-name="btn/icon"><i class="ic-v2-community-filter-line"></i></button>' +
+        // 필터 — 버튼 그룹 아래에 레이어(폭 240 = 버튼 그룹 폭), 열려 있는 동안 버튼은 선택 테두리
+        '<button class="library-panel__icon-btn" :class="{ \'is-selected\': filterOpen }" type="button" aria-label="필터" :aria-expanded="String(filterOpen)" data-name="btn/icon" @click.stop="filterOpen = !filterOpen"><i class="ic-v2-community-filter-line"></i></button>' +
         '<button class="library-panel__icon-btn" type="button" aria-label="검색" data-name="btn/icon"><i class="ic-v2-navigation-search-line"></i></button>' +
+        '<library-filter-layer v-if="filterOpen" v-model="filter" width="24rem" group-sort @close="filterOpen = false"></library-filter-layer>' +
       '</div>' +
 
       // 그룹 없음 — 고정 (스크롤 영역 밖). 보유게임이 없어도 그룹은 만들 수 있어 항상 이 안내를 둔다.
@@ -882,7 +894,7 @@ var LibraryPanel = {
 
           '<div v-if="showList" class="library-panel__list" data-name="게임그룹">' +
             // 사용자가 만든 그룹
-            '<section v-for="group in groups" :key="group.id" class="game-group library-group" :data-group-id="group.id" ' +
+            '<section v-for="group in shownGroups" :key="group.id" class="game-group library-group" :data-group-id="group.id" ' +
               ':class="{ \'is-collapsed\': isCollapsed(group.id), \'is-empty\': !owned.length, \'is-renaming\': renamingId === group.id, \'is-add-target\': addTargetId === group.id }" data-name="component/game_group">' +
               // 이름 변경 중 — 타이틀(화살표 포함)만 입력칸으로 바뀐다. 아래 게임 추가 · 게임 목록은 그대로 (Figma ⑬)
               '<group-name-input v-if="renamingId === group.id" :initial="group.title" confirm-label="확인" ' +
