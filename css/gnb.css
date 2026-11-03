@@ -527,7 +527,7 @@ body { margin: 0; }
   padding: 0.4rem 0.8rem;
   border-radius: var(--stds-glob-border-radius-lg);
   background: var(--stds-sem-color-surface-layer);
-  box-shadow: 0 1.2rem 1.4rem var(--stds-glob-color-black-20); /* Figma drop-shadow 0/12/14/.2 근사 */
+  box-shadow: var(--stds-glob-box-shadow-12); /* Figma effect 스타일 shadow/12 (5884:58851) */
   color: var(--stds-sem-color-on-surface-elevation-2);
   white-space: normal; /* 부모의 nowrap을 상속하지 않고 툴팁 안에서는 줄바꿈 */
   /* 단어(공백) 단위가 아니라 글자 단위로 줄바꿈 — Figma 스펙: 박스 너비는
