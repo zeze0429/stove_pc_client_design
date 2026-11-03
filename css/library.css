@@ -508,11 +508,12 @@
 .library-select-msg__icon { display: block; flex: 0 0 auto; width: 2rem; height: 2rem; }
 .library-select-msg__count { color: var(--stds-sem-color-on-surface-elevation-1); font-weight: 700; }
 
-/* 카드 — 아무 곳이나 누르면 선택/해제. 체크박스 28 원(사용자 변경 32 → 28, 11-03 — ✓ 아이콘 20은 유지), 썸네일 좌상단 12 */
+/* 카드 — 아무 곳이나 누르면 선택/해제. 체크박스 28 원(사용자 변경 32 → 28, 11-03 — ✓ 아이콘 20은 유지),
+   썸네일 좌상단 10 (사용자 변경 12 → 10, 11-03) */
 .library-card__check {
   position: absolute;
-  top: 1.2rem;
-  left: 1.2rem;
+  top: 1rem;
+  left: 1rem;
   display: grid;
   place-items: center;
   width: 2.8rem;
