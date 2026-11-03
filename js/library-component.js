@@ -463,6 +463,8 @@ var LibraryMain = {
       });
       this.addGroupDialog = false;
       this.store.selectMode = false;
+      // 취소와 같이 앵커를 풀고 맨 위(라이브러리 타이틀)로 (사용자 11-03)
+      if (this._scrollBox) this._scrollBox.scrollTo({ top: 0, behavior: 'smooth' });
       var title = picked.length > 1 ? picked[0].title + ' 외 ' + (picked.length - 1) + '개 그룹' : (picked[0] && picked[0].title) || '';
       this.addedToast = { count: games.length, title: title };
       clearTimeout(this._toastTimer);
