@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=8" />
   <link rel="stylesheet" href="css/button.css?v=2" />
   <link rel="stylesheet" href="css/search-field.css?v=1" />
+  <link rel="stylesheet" href="css/checkbox.css?v=1" />
   <style>
     /* 미리보기 페이지 전용 배치 — 컴포넌트 스타일은 각 css 파일에 있다 */
     body {
@@ -42,9 +43,10 @@
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <script src="js/button-component.js?v=2"></script>
   <script src="js/search-field-component.js?v=2"></script>
+  <script src="js/checkbox-component.js?v=1"></script>
   <script>
     Vue.createApp({
-      components: { StdsButton: StdsButton, StdsSearchField: StdsSearchField },
+      components: { StdsButton: StdsButton, StdsSearchField: StdsSearchField, StdsCheckbox: StdsCheckbox },
       data: function () {
         return {
           theme: document.documentElement.getAttribute('data-theme'),
@@ -52,6 +54,19 @@
           sfSizes: STDS_SEARCH_FIELD_SIZES,
           sfFilled: '스토브',
           sfLive: '',
+          cbSizes: STDS_CHECKBOX_SIZES,
+          cbLive: false,
+          cbStates: [
+            { key: 'on', label: '선택', checked: true, ind: false, dis: false, cls: '' },
+            { key: 'on-focus', label: '선택 · 포커스', checked: true, ind: false, dis: false, cls: 'is-focus' },
+            { key: 'on-dis', label: '선택 · 비활성', checked: true, ind: false, dis: true, cls: '' },
+            { key: 'ind', label: '일부', checked: false, ind: true, dis: false, cls: '' },
+            { key: 'ind-focus', label: '일부 · 포커스', checked: false, ind: true, dis: false, cls: 'is-focus' },
+            { key: 'ind-dis', label: '일부 · 비활성', checked: false, ind: true, dis: true, cls: '' },
+            { key: 'off', label: '미선택', checked: false, ind: false, dis: false, cls: '' },
+            { key: 'off-focus', label: '미선택 · 포커스', checked: false, ind: false, dis: false, cls: 'is-focus' },
+            { key: 'off-dis', label: '미선택 · 비활성', checked: false, ind: false, dis: true, cls: '' },
+          ],
           variants: STDS_BUTTON_VARIANTS,
           sizes: STDS_BUTTON_SIZES,
           states: [
@@ -130,6 +145,21 @@
                   '<td><stds-search-field :variant="v" :size="z" v-model="sfLive" placeholder="입력해 보세요" style="width: 20rem"></stds-search-field></td>' +
                 '</tr>' +
               '</template>' +
+            '</tbody></table>' +
+          '</section>' +
+
+          '<section class="cp-section">' +
+            '<h2 class="stds-title6 fw-bold">Checkbox · Size × State</h2>' +
+            '<p class="stds-text3">Figma STDS_StoveUI_v0.3.2 · Checkbox (1040:9786) · Checkbox Variants (1142:18510) — 마지막 줄은 직접 눌러 보는 칸</p>' +
+            '<table class="cp-table stds-text4"><thead><tr><th></th><th v-for="st in cbStates" :key="st.key">{{ st.label }}</th></tr></thead><tbody>' +
+              '<tr v-for="z in cbSizes" :key="z"><th>{{ z }}</th>' +
+                '<td v-for="st in cbStates" :key="st.key"><stds-checkbox :size="z" :class="st.cls" :model-value="st.checked" :is-indeterminate="st.ind" :is-disabled="st.dis"></stds-checkbox></td>' +
+              '</tr>' +
+              '<tr v-for="z in cbSizes" :key="\'t\' + z"><th>{{ z }}</th>' +
+                '<td v-for="st in cbStates" :key="st.key"><stds-checkbox :size="z" :class="st.cls" :model-value="st.checked" :is-indeterminate="st.ind" :is-disabled="st.dis">텍스트</stds-checkbox></td>' +
+              '</tr>' +
+              '<tr><th>top</th><td colspan="3"><stds-checkbox align="top" :model-value="true" style="width: 16rem">두 줄로 넘어가는 긴 라벨 텍스트 예시입니다</stds-checkbox></td>' +
+                '<td colspan="6"><stds-checkbox v-model="cbLive">직접 눌러 보세요 ({{ cbLive ? \'선택\' : \'미선택\' }})</stds-checkbox></td></tr>' +
             '</tbody></table>' +
           '</section>' +
         '</div>',
