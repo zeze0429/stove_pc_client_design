@@ -20,14 +20,28 @@ var LIBRARY_FILTER_TYPES = [
 // 순서는 Figma 순서를 따르고 Figma에 없던 소프트웨어는 기타 앞에
 var LIBRARY_FILTER_GENRES = ['액션', 'RPG', '어드벤처', '퍼즐', '시뮬레이션', '스포츠', '슈팅', '공포', '리듬', '디펜스',
   '전략', '레이싱', '캐주얼', '플랫포머', '비주얼 노벨', '기능성 게임', '소프트웨어', '기타'];
-// 정렬 옵션 — Figma엔 기본값(설정 순 · 최근 보유 순)만 있어 나머지는 임시. 누를 때마다 다음 옵션으로
-var LIBRARY_GROUP_SORTS = ['설정 순', '이름 순'];
+// 정렬 옵션 — 정렬 줄을 누르면 드롭다운에서 고른다 (Figma 상세 12016:70742)
+// 게임 4개(기본 최근 보유 순) · 그룹 2개(기본 설정 순) — 사용자 지정 (11-03)
+var LIBRARY_GAME_SORTS = [
+  { key: 'lastPlayed', label: '마지막 플레이 순' },
+  { key: 'playTime', label: '총 플레이 시간 순' },
+  { key: 'owned', label: '최근 보유 순' },
+  { key: 'name', label: '게임 명 오름차순' },
+];
+var LIBRARY_GROUP_SORTS = [
+  { key: 'custom', label: '설정 순' },
+  { key: 'name', label: '그룹 명 오름차순' },
+];
 var LIBRARY_FILTER_GAP = 8; // 버튼과 레이어 사이 (사용자 11-03)
 var LIBRARY_FILTER_BOTTOM_GAP = 20; // 런처 영역(.app — PR 배너 제외) 아래 고정 여백 (사용자 11-03)
-var LIBRARY_GAME_SORTS = ['최근 보유 순', '최근 플레이 순', '이름 순'];
 
 function libraryFilterDefault() {
-  return { installedOnly: false, types: [], genres: [], groupSort: 0, gameSort: 0 };
+  return { installedOnly: false, types: [], genres: [], groupSort: 'custom', gameSort: 'owned' };
+}
+// "총 172시간 35분" → 분 (기록 없으면 0)
+function libraryPlayMinutes(game) {
+  var m = /(\d+)\s*시간(?:\s*(\d+)\s*분)?/.exec(game.total || '');
+  return m ? Number(m[1]) * 60 + Number(m[2] || 0) : 0;
 }
 function libraryFilterActive(f) {
   return f.installedOnly || f.types.length > 0 || f.genres.length > 0;
@@ -49,19 +63,21 @@ function libraryFilterGames(list, f) {
     if (f.genres.length && f.genres.indexOf(libraryGenreKey(g.genre)) < 0) return false;
     return true;
   });
-  var sort = LIBRARY_GAME_SORTS[f.gameSort];
-  if (sort === '최근 플레이 순') {
+  // 최근 보유 순 = 보유게임 목록 순서 그대로
+  if (f.gameSort === 'lastPlayed') {
     // played = 마지막 플레이 후 지난 분 — 작을수록 최근, 기록 없으면 뒤로
     out = out.slice().sort(function (a, b) {
       return (a.played == null ? Infinity : a.played) - (b.played == null ? Infinity : b.played);
     });
-  } else if (sort === '이름 순') {
+  } else if (f.gameSort === 'playTime') {
+    out = out.slice().sort(function (a, b) { return libraryPlayMinutes(b) - libraryPlayMinutes(a); });
+  } else if (f.gameSort === 'name') {
     out = out.slice().sort(function (a, b) { return a.name.localeCompare(b.name, 'ko'); });
   }
   return out;
 }
 function librarySortGroups(groups, f) {
-  if (LIBRARY_GROUP_SORTS[f.groupSort] !== '이름 순') return groups;
+  if (f.groupSort !== 'name') return groups;
   return groups.slice().sort(function (a, b) { return a.title.localeCompare(b.title, 'ko'); });
 }
 
@@ -79,7 +95,7 @@ var LibraryFilterLayer = {
   },
   emits: ['update:modelValue', 'close'],
   data: function () {
-    return { types: LIBRARY_FILTER_TYPES, genres: LIBRARY_FILTER_GENRES, pos: null };
+    return { types: LIBRARY_FILTER_TYPES, genres: LIBRARY_FILTER_GENRES, pos: null, sortOpen: null };
   },
   computed: {
     layerStyle: function () {
@@ -87,21 +103,38 @@ var LibraryFilterLayer = {
       return p ? { left: p.left + 'px', top: p.top + 'px', width: p.width || this.width, maxHeight: p.maxHeight + 'px' }
         : { visibility: 'hidden', width: this.width };
     },
-    groupSortLabel: function () { return LIBRARY_GROUP_SORTS[this.modelValue.groupSort]; },
-    gameSortLabel: function () { return LIBRARY_GAME_SORTS[this.modelValue.gameSort]; },
+    sortRows: function () {
+      var rows = [{ field: 'gameSort', title: '게임', options: LIBRARY_GAME_SORTS }];
+      if (this.groupSort) rows.unshift({ field: 'groupSort', title: '그룹', options: LIBRARY_GROUP_SORTS });
+      return rows;
+    },
   },
   mounted: function () {
     this.place();
     this.onResize = this.place.bind(this);
     window.addEventListener('resize', this.onResize);
     window.addEventListener('scroll', this.onResize, true); // 보유게임 영역이 스크롤되면 레이어 위치가 바뀐다
-    this.onKeydown = function (e) { if (e.key === 'Escape') this.$emit('close'); }.bind(this);
+    // Esc — 정렬 드롭다운이 열려 있으면 그것만, 아니면 레이어를 닫는다
+    this.onKeydown = function (e) {
+      if (e.key !== 'Escape') return;
+      if (this.sortOpen) this.sortOpen = null;
+      else this.$emit('close');
+    }.bind(this);
     document.addEventListener('keydown', this.onKeydown);
+    // 열려 있는 동안 바닥 페이지(보유게임 · 우측패널 목록)는 스크롤되지 않는다 — 레이어 안만 스크롤 (사용자 11-03)
+    this.onWheel = function (e) {
+      var layer = this.$refs.layer;
+      if (!layer || !layer.contains(e.target)) e.preventDefault();
+    }.bind(this);
+    document.addEventListener('wheel', this.onWheel, { passive: false, capture: true });
+    document.addEventListener('touchmove', this.onWheel, { passive: false, capture: true });
   },
   beforeUnmount: function () {
     window.removeEventListener('resize', this.onResize);
     window.removeEventListener('scroll', this.onResize, true);
     document.removeEventListener('keydown', this.onKeydown);
+    document.removeEventListener('wheel', this.onWheel, { capture: true });
+    document.removeEventListener('touchmove', this.onWheel, { capture: true });
   },
   methods: {
     // 레이어는 body로 띄워(teleport) 런처 · 패널의 overflow에 그림자(shadow/12)가 잘리지 않게 하고,
@@ -133,13 +166,26 @@ var LibraryFilterLayer = {
       patch[field] = list;
       this.update(patch);
     },
-    cycle: function (field, options) { var p = {}; p[field] = (this.modelValue[field] + 1) % options.length; this.update(p); },
-    cycleGroup: function () { this.cycle('groupSort', LIBRARY_GROUP_SORTS); },
-    cycleGame: function () { this.cycle('gameSort', LIBRARY_GAME_SORTS); },
+    sortLabel: function (row) {
+      var v = this.modelValue[row.field];
+      var o = row.options.find(function (x) { return x.key === v; });
+      return o ? o.label : '';
+    },
+    // 레이어 안 다른 곳을 누르면 정렬 드롭다운만 닫는다 (정렬 버튼 · 드롭다운 안은 제외)
+    onLayerClick: function (e) {
+      if (this.sortOpen && !e.target.closest('.library-filter__sort')) this.sortOpen = null;
+    },
+    toggleSort: function (field) { this.sortOpen = this.sortOpen === field ? null : field; },
+    pickSort: function (field, key) {
+      var p = {};
+      p[field] = key;
+      this.update(p);
+      this.sortOpen = null;
+    },
     reset: function () { this.$emit('update:modelValue', libraryFilterDefault()); },
   },
   template:
-    '<teleport to="body"><div class="library-filter" role="dialog" aria-label="필터" :style="layerStyle" data-name="layer" @click.stop>' +
+    '<teleport to="body"><div ref="layer" class="library-filter" role="dialog" aria-label="필터" :style="layerStyle" data-name="layer" @click.stop="onLayerClick">' +
       '<div class="library-filter__head" data-name="header">' +
         '<p class="library-filter__title">필터</p>' +
         '<button class="library-filter__reset" type="button" @click="reset"><i class="ic-v2-control-refresh-line" aria-hidden="true"></i>초기화</button>' +
@@ -148,10 +194,17 @@ var LibraryFilterLayer = {
         '<div class="library-filter__section">' +
           '<p class="library-filter__label">정렬</p>' +
           '<div class="library-filter__sorts">' +
-            '<div v-if="groupSort" class="library-filter__sort"><span>그룹</span>' +
-              '<button type="button" @click="cycleGroup">{{ groupSortLabel }}<i class="ic-v2-control-sort-line" aria-hidden="true"></i></button></div>' +
-            '<div class="library-filter__sort"><span>게임</span>' +
-              '<button type="button" @click="cycleGame">{{ gameSortLabel }}<i class="ic-v2-control-sort-line" aria-hidden="true"></i></button></div>' +
+            // 정렬 줄 — 누르면 activated(선택값 Bold · elevation-1) + 오른쪽 맞춤 드롭다운 (Figma 12016:70742)
+            '<div v-for="row in sortRows" :key="row.field" class="library-filter__sort" :class="{ \'is-open\': sortOpen === row.field }">' +
+              '<span>{{ row.title }}</span>' +
+              '<button type="button" :aria-expanded="String(sortOpen === row.field)" @click="toggleSort(row.field)">{{ sortLabel(row) }}<i class="ic-v2-control-sort-line" aria-hidden="true"></i></button>' +
+              '<ul v-if="sortOpen === row.field" class="library-filter__menu" role="listbox" data-name="컨텍스트메뉴">' +
+                '<li v-for="o in row.options" :key="o.key" role="option" :aria-selected="String(modelValue[row.field] === o.key)" ' +
+                  ':class="{ \'is-selected\': modelValue[row.field] === o.key }" @click="pickSort(row.field, o.key)">' +
+                  '<i class="ic-v2-control-check-bold-line" aria-hidden="true"></i><span>{{ o.label }}</span>' +
+                '</li>' +
+              '</ul>' +
+            '</div>' +
           '</div>' +
         '</div>' +
         '<hr class="library-filter__div" />' +
