@@ -559,7 +559,7 @@
    비활성(고르기 전): 다크 gray780 · 글자/아이콘 gray650 (Figma 2115:32819) / 라이트 gray200 · gray400 (라이트 시안),
    구분선 inverse-elevation-6. 두 테마 값을 함께 만족하는 시멘틱이 없어 테마별 글로벌로 지정
    활성(하나 이상): brand-primary · white · 구분선 black-8
-   그림자는 두 상태 모두 black 50% 블러 12 — y 12 내려서 위쪽으로는 안 보이게 (사용자 요청, 11-03)
+   그림자는 두 상태 모두 black-30 블러 6 — y 6 내려서 위쪽으로는 안 보이게 (사용자 요청, 11-03)
    페이드는 두 상태 모두 62.363% (Figma 48960:385042 · 385043) */
 :root { --library-floating-off-bg: var(--stds-glob-color-gray780); --library-floating-off-fg: var(--stds-glob-color-gray650); }
 :root[data-theme="light"] { --library-floating-off-bg: var(--stds-glob-color-gray200); --library-floating-off-fg: var(--stds-glob-color-gray400); }
@@ -598,7 +598,7 @@
   padding: 0 2.4rem;
   border-radius: var(--radius-full);
   background: var(--library-floating-off-bg);
-  box-shadow: 0 1.2rem 1.2rem var(--stds-glob-color-black-50);
+  box-shadow: 0 0.6rem 0.6rem var(--stds-glob-color-black-30);
   pointer-events: auto;
   transition: background-color 0.2s ease;
 }
