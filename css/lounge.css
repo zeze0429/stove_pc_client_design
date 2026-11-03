@@ -40,7 +40,7 @@
   min-width: 2.2rem;
   min-height: 2.2rem;
   padding: 0 0.6rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   background:
     linear-gradient(98.34deg, transparent 35%, var(--stds-glob-color-white-50) 50%, transparent 65%) no-repeat,
     linear-gradient(98.34deg, #ff1fad 34.08%, var(--stds-glob-color-orange500) 68.32%) no-repeat;
@@ -68,7 +68,7 @@
   min-width: 2.2rem;
   min-height: 2.2rem;
   padding: 0 0.8rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   background: rgba(133, 142, 180, 0.2);
   color: #858eb4;
   font-size: 1.1rem;
@@ -82,7 +82,7 @@
   position: relative;
   flex-shrink: 0;
   overflow: hidden;
-  border-radius: var(--radius-lg);
+  border-radius: var(--stds-glob-border-radius-lg);
   background: var(--stds-sem-color-inverse-elevation-4);
 }
 .lounge-thumb::after {
@@ -90,7 +90,7 @@
   position: absolute;
   inset: 0;
   border: 1px solid var(--stds-sem-color-inverse-elevation-4);
-  border-radius: var(--radius-lg);
+  border-radius: var(--stds-glob-border-radius-lg);
 }
 .lounge-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .lounge-thumb--feed { width: 11.1rem; height: 7.4rem; }
@@ -105,7 +105,7 @@
   min-width: 1.6rem;
   height: 1.6rem;
   padding: 0 0.4rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   background: var(--stds-glob-color-black-50);
   color: var(--stds-glob-color-white);
   font-size: 1.1rem;
@@ -131,7 +131,7 @@
   width: 6.4rem;
   min-height: 6.8rem;
   padding: 1.2rem 0.4rem;
-  border-radius: var(--radius-lg);
+  border-radius: var(--stds-glob-border-radius-lg);
   color: var(--stds-sem-color-on-surface-elevation-1);
   cursor: pointer;
 }
@@ -182,7 +182,7 @@
   place-items: center;
   width: 2.8rem;
   height: 2.8rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   background: var(--stds-sem-color-neutral-variant-2);
   color: var(--stds-sem-color-on-surface-elevation-2);
   cursor: pointer;
@@ -202,7 +202,7 @@
   height: 4rem;
   margin-top: -1.2rem; /* 시계 블록과 사이 12 (블록 간격 24에서 당김) */
   overflow: hidden;
-  border-radius: var(--radius-lg);
+  border-radius: var(--stds-glob-border-radius-lg);
   background: var(--stds-glob-color-black);
   box-shadow: inset 0 0 0 1px var(--stds-glob-color-white-10);
 }
@@ -336,7 +336,7 @@
   flex-shrink: 0;
   width: 2rem;
   height: 2rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   background: var(--stds-sem-color-inverse-elevation-4);
   object-fit: cover;
 }
@@ -353,7 +353,7 @@
   flex-shrink: 0;
   width: 0.3rem;
   height: 0.3rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   background: var(--stds-sem-color-on-surface-elevation-4);
 }
 .lounge-post__time {
@@ -424,7 +424,7 @@
   gap: 0.8rem;
   height: 4.4rem;
   padding: 0 1.6rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   background: var(--stds-sem-color-neutral-variant-2);
 }
 :root[data-theme="light"] .lounge-search { background: var(--stds-sem-color-neutral-variant-2-hover); }
@@ -442,7 +442,7 @@
   display: flex;
   flex-direction: column;
   padding: 2rem;
-  border-radius: 1.2rem;
+  border-radius: var(--stds-glob-border-radius-xl);
   background: var(--stds-sem-color-neutral-variant-3);
   box-shadow: 0 0.4rem 1rem var(--stds-glob-color-black-10);
 }
@@ -466,7 +466,7 @@
   gap: 0.2rem;
   min-height: 3.2rem;
   padding: 0.6rem 1.2rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   font-size: 1.2rem;
   font-weight: 500;
   line-height: 1.8rem;
@@ -530,7 +530,7 @@
   flex: 0 0 auto;
   width: 0.2rem;
   height: 0.2rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   background: var(--stds-sem-color-on-surface-elevation-4);
 }
 .lounge-profile__avatar {
@@ -538,7 +538,7 @@
   flex: 0 0 auto;
   width: 6.2rem;
   height: 6.2rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   overflow: hidden;
 }
 .lounge-profile__avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }

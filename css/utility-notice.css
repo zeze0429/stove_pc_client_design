@@ -34,7 +34,7 @@
   min-width: 1.6rem;
   height: 1.6rem;
   padding: 0.2rem 0.3rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--stds-glob-border-radius-md);
   background: var(--stds-glob-color-white);
   color: var(--stds-glob-color-gray750);
 }
@@ -60,7 +60,7 @@
   gap: 0.2rem;
   min-width: 1.6rem;
   padding: 0;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   color: var(--stds-glob-color-white-60);
   transition: opacity .15s;
 }
@@ -84,7 +84,7 @@
 .notice-dialog__title { margin: 0; color: var(--stds-sem-color-on-surface-elevation-1); }
 .notice-dialog__box {
   padding: 1.6rem 2rem;
-  border-radius: 1.2rem;
+  border-radius: var(--stds-glob-border-radius-xl);
   background: var(--stds-sem-color-surface-elevation-2);
   color: var(--stds-sem-color-on-surface-elevation-2);
 }
@@ -98,7 +98,7 @@
   /* 보더까지 포함해 44 — 패딩 12로 두면 보더 2px만큼 더 커진다 */
   height: 4.4rem;
   padding: 0 2rem;
-  border-radius: var(--radius-lg);
+  border-radius: var(--stds-glob-border-radius-lg);
   border: 1px solid var(--stds-sem-color-border);
   background: var(--stds-sem-color-neutral-variant-3);
   color: var(--stds-sem-color-on-surface-elevation-2);

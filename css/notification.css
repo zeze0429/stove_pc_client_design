@@ -17,7 +17,7 @@
   flex-direction: column;
   width: 40rem;
   max-height: 48.5rem;
-  border-radius: 2rem; /* Figma radius/3xl 20px — 스케일에 없는 값 */
+  border-radius: var(--stds-glob-border-radius-3xl); /* Figma radius/3xl 20px */
   background: var(--stds-sem-color-surface-elevation-1);
   box-shadow: 0 1.2rem 1.4rem var(--stds-glob-color-black-20);
   overflow: hidden;
@@ -98,7 +98,7 @@
   position: absolute;
   left: 0;
   width: 100%;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   background: var(--stds-sem-color-inverse-elevation-2);
   pointer-events: auto;
 }
@@ -126,7 +126,7 @@
   flex: 0 0 auto;
   width: 3.6rem;
   height: 3.6rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   object-fit: cover;
   display: block;
 }

@@ -18,7 +18,7 @@
   place-items: center;
   width: 16rem;
   height: 16rem;
-  border-radius: 1.2rem;
+  border-radius: var(--stds-glob-border-radius-xl);
   background: var(--stds-glob-color-white);
   overflow: hidden;
 }

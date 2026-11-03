@@ -47,7 +47,7 @@
   height: 10.4rem;
   padding: var(--spacing-16) var(--spacing-40) var(--spacing-16) var(--spacing-20);
   background: var(--stds-sem-color-surface-elevation-1);
-  border-radius: 1.6rem; /* STDS 스케일에 없는 값 — Figma 원본값 유지 */
+  border-radius: var(--stds-glob-border-radius-2xl);
   box-shadow: var(--shadow-12);
   overflow: hidden;
 
@@ -75,7 +75,7 @@
   flex: 0 0 auto;
   width: 6.4rem;
   height: 6.4rem;
-  border-radius: var(--radius-lg);
+  border-radius: var(--stds-glob-border-radius-lg);
   border: 1px solid var(--stds-sem-color-inverse-variant-3);
   overflow: hidden;
   background: var(--stds-sem-color-surface-elevation-2);
@@ -121,7 +121,7 @@
   right: var(--spacing-8);
   width: 3.2rem;
   height: 3.2rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   display: grid;
   place-items: center;
   color: var(--stds-sem-color-on-surface-elevation-2);
@@ -186,7 +186,7 @@
   height: 4.4rem;
   padding: var(--spacing-12) var(--spacing-20);
   border: 1px solid var(--stds-glob-color-white-50);
-  border-radius: var(--radius-lg);
+  border-radius: var(--stds-glob-border-radius-lg);
   color: var(--stds-glob-color-white);
   background: transparent;
   transition: background 0.12s;
@@ -205,7 +205,7 @@
   height: 4rem;
   padding: 0 var(--spacing-20) 0 var(--spacing-16);
   border: 0;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   background: var(--stds-sem-color-brand-primary);
   color: var(--stds-glob-color-white);
   box-shadow: var(--shadow-4);

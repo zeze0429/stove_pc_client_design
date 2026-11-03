@@ -16,7 +16,7 @@
   gap: 2.4rem;
   width: 60rem;
   padding: 3.2rem 2.4rem; /* 안쪽 콘텐츠 폭 55.2rem */
-  border-radius: 2rem;
+  border-radius: var(--stds-glob-border-radius-3xl);
   background: var(--stds-sem-color-surface-elevation-1);
   box-shadow: 0 1.2rem 2.8rem var(--stds-glob-color-black-20); /* Figma shadow/12 */
   overflow: hidden;
@@ -35,7 +35,7 @@
   flex: 0 0 auto;
   width: 5.6rem;
   height: 5.6rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   object-fit: cover;
   display: block;
 }
@@ -62,7 +62,7 @@
   align-items: center;
   gap: 0.4rem;
   padding: 0;
-  border-radius: var(--radius-md);
+  border-radius: var(--stds-glob-border-radius-md);
   white-space: nowrap;
   color: var(--stds-sem-color-on-surface-elevation-1);
   transition: opacity .15s;
@@ -79,7 +79,7 @@
   justify-content: center;
   gap: 0.4rem;
   padding: 0.7rem 1.2rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   background: var(--stds-glob-color-white);
   color: var(--stds-glob-color-gray880);
   white-space: nowrap;
@@ -99,7 +99,7 @@
   display: flex;
   flex-direction: column;
   padding: 0.8rem;
-  border-radius: 1.6rem;
+  border-radius: var(--stds-glob-border-radius-2xl);
   background: var(--stds-sem-color-surface-elevation-2);
 }
 /* 세 행 모두 기본/호버/프레스를 갖는다 (Figma의 캐시 행 배경은 고정 강조가
@@ -111,7 +111,7 @@
   gap: 0.8rem;
   height: 4.4rem;
   padding: 1rem 1.6rem;
-  border-radius: 1.2rem;
+  border-radius: var(--stds-glob-border-radius-xl);
   cursor: pointer;
   transition: background .15s;
 }
@@ -131,7 +131,7 @@
 .profile-money__charge {
   flex: 0 0 auto;
   padding: 0.3rem 0.8rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   background: var(--stds-sem-color-neutral-variant-2);
   color: var(--stds-sem-color-on-surface-elevation-2);
   white-space: nowrap;
@@ -148,7 +148,7 @@
   width: 27rem;
   height: 14.8rem;
   padding: 1.6rem;
-  border-radius: 1.6rem;
+  border-radius: var(--stds-glob-border-radius-2xl);
   background: var(--stds-sem-color-surface-elevation-2);
 }
 .profile-security__badge { flex: 0 0 auto; width: 6.4rem; display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
@@ -157,7 +157,7 @@
   place-items: center;
   width: 4.4rem;
   height: 4.4rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   /* Figma가 토큰이 아닌 blue400 10%를 직접 지정 */
   background: color-mix(in srgb, var(--stds-glob-color-blue400) 10%, transparent);
   color: var(--stds-glob-color-blue400);
@@ -175,7 +175,7 @@
   align-items: center;
   gap: 0.4rem;
   padding: 0;
-  border-radius: var(--radius-md);
+  border-radius: var(--stds-glob-border-radius-md);
   color: var(--stds-sem-color-on-surface-elevation-4);
   white-space: nowrap;
   transition: opacity .15s;
@@ -197,7 +197,7 @@
   justify-content: center;
   gap: 0.4rem;
   padding: 0 0.8rem;
-  border-radius: var(--radius-lg);
+  border-radius: var(--stds-glob-border-radius-lg);
   color: var(--stds-sem-color-on-surface-elevation-4);
   transition: background .15s, color .15s;
 }

@@ -31,7 +31,7 @@
   flex-direction: column;
   gap: 1.2rem;
   padding: 2rem;
-  border-radius: 1.6rem; /* Figma 16px — radius 스케일에 없는 값 */
+  border-radius: var(--stds-glob-border-radius-2xl);
   background: var(--stds-glob-color-gray700); /* 배경 이미지 미등록 시 기본 컬러 */
   overflow: hidden;
 }
@@ -64,7 +64,7 @@
   flex: 0 0 auto;
   width: 4.8rem;
   height: 4.8rem;
-  border-radius: var(--radius-lg);
+  border-radius: var(--stds-glob-border-radius-lg);
   overflow: hidden;
   display: block;
 }
@@ -126,7 +126,7 @@
   justify-content: center;
   gap: 0.2rem;
   padding: 1rem 1.6rem;
-  border-radius: var(--radius-lg);
+  border-radius: var(--stds-glob-border-radius-lg);
   background: var(--stds-glob-color-white-10);
   color: var(--stds-glob-color-white);
   overflow: hidden;
@@ -146,7 +146,7 @@
   top: 0;
   width: 0.4rem;
   height: 0.4rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   background: var(--stds-sem-color-brand-primary);
 }
 

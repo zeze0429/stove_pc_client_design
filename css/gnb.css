@@ -61,7 +61,7 @@ body { margin: 0; }
   height: 3.2rem;
   padding: 0;
   border: none;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   overflow: hidden;
   flex: 0 0 auto;
   cursor: pointer;
@@ -190,7 +190,7 @@ body { margin: 0; }
   position: absolute;
   left: 0;
   width: 100%;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   background: var(--stds-sem-color-inverse-elevation-2);
   pointer-events: auto;
 }
@@ -225,7 +225,7 @@ body { margin: 0; }
   min-width: 1.6rem;
   height: 1.6rem;
   padding: 0 0.4rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   background: var(--stds-sem-color-brand-blue);
   color: var(--stds-glob-color-white);
   font-size: 1.1rem;
@@ -293,7 +293,7 @@ body { margin: 0; }
   place-items: center;
   width: 100%;
   height: 100%;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   background: var(--stds-sem-color-brand-blue);
   color: var(--stds-glob-color-white);
 }
@@ -305,7 +305,7 @@ body { margin: 0; }
   z-index: 0;
   width: 1.6rem;
   height: 1.6rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   background: var(--stds-sem-color-brand-blue);
   pointer-events: none;
   animation: download-check-pulse 1400ms ease-out 3 both;
@@ -323,7 +323,7 @@ body { margin: 0; }
   gap: 0.6rem;
   height: 3.2rem;
   padding: var(--spacing-8) var(--spacing-8) var(--spacing-8) 0.6rem;
-  border-radius: var(--radius-lg);
+  border-radius: var(--stds-glob-border-radius-lg);
   /* 아이콘 색 (기본 = dim). 아이콘은 color 상속, 텍스트는 아래에서 항상 밝게 고정 */
   color: var(--stds-sem-color-on-surface-elevation-4);
   cursor: pointer;
@@ -375,7 +375,7 @@ body { margin: 0; }
   display: block;
   width: 6rem;
   height: 1.8rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   overflow: hidden;
 }
 .badge-menu-img img { display: block; width: 100%; height: 100%; }
@@ -402,7 +402,7 @@ body { margin: 0; }
   display: block;
   width: 20rem;
   height: 4rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--stds-glob-border-radius-md);
   overflow: hidden;
   cursor: pointer;
 }
@@ -436,7 +436,7 @@ body { margin: 0; }
   width: 1.8rem;
   height: 1.8rem;
   border: 0;
-  border-radius: var(--radius-md);
+  border-radius: var(--stds-glob-border-radius-md);
   background: transparent;
   padding: 0;
   display: grid;
@@ -479,7 +479,7 @@ body { margin: 0; }
   min-width: 1.4rem;
   height: 1.4rem;
   padding: 0 0.3rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   background: var(--stds-sem-color-on-surface-elevation-3);
   color: var(--stds-sem-color-background-variant-2);
   font-size: 1rem;
@@ -509,7 +509,7 @@ body { margin: 0; }
   gap: 0.6rem; /* Figma 6px — 스케일에 없는 값 */
   height: 2.8rem;
   padding: 0.6rem 0.5rem; /* Figma py-6 px-5 — 스케일에 없는 값 */
-  border-radius: var(--radius-lg);
+  border-radius: var(--stds-glob-border-radius-lg);
   cursor: pointer;
   user-select: none; /* 즐겨찾기 롱프레스 드래그 중 텍스트가 파랗게 선택되는 것 방지 */
 }
@@ -525,7 +525,7 @@ body { margin: 0; }
   position: fixed;
   z-index: 30;
   padding: 0.4rem 0.8rem;
-  border-radius: var(--radius-lg);
+  border-radius: var(--stds-glob-border-radius-lg);
   background: var(--stds-sem-color-surface-layer);
   box-shadow: 0 1.2rem 1.4rem var(--stds-glob-color-black-20); /* Figma drop-shadow 0/12/14/.2 근사 */
   color: var(--stds-sem-color-on-surface-elevation-2);
@@ -591,7 +591,7 @@ body { margin: 0; }
   z-index: 35;
   height: 2px;
   background: var(--stds-sem-color-on-surface-elevation-1);
-  border-radius: var(--radius-full);
+  border-radius: var(--stds-glob-border-radius-circle);
   pointer-events: none;
 }
 
@@ -606,7 +606,7 @@ body { margin: 0; }
   height: 2.8rem; /* 기존 항목(.game-group__list)과 동일한 높이로 고정 — 보더 두께만큼 더 커지지 않게 */
   padding: 0.6rem 0.5rem 0.6rem 0.8rem;
   border: 1px solid var(--stds-sem-color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--stds-glob-border-radius-lg);
   background: linear-gradient(var(--stds-sem-color-interaction-hover), var(--stds-sem-color-interaction-hover)), var(--stds-sem-color-surface-layer);
   box-shadow: 0 0.4rem 0.4rem rgba(0, 0, 0, 0.32);
   opacity: 0.9;
@@ -640,7 +640,7 @@ body { margin: 0; }
   width: max-content;
   padding: 0.6rem 0;
   border: 1px solid var(--stds-sem-color-inverse-variant-1); /* Figma: inverse/variant-1 = #FFF 15% */
-  border-radius: var(--radius-lg);
+  border-radius: var(--stds-glob-border-radius-lg);
   background: var(--stds-sem-color-surface-layer);
   box-shadow: 0 1.2rem 1.4rem var(--stds-glob-color-black-20);
 }
@@ -672,7 +672,7 @@ body { margin: 0; }
   top: 0;
   left: 0;
   z-index: 0;
-  border-radius: var(--radius-lg);
+  border-radius: var(--stds-glob-border-radius-lg);
   pointer-events: none;
   opacity: 0;
 }
@@ -682,7 +682,7 @@ body { margin: 0; }
 .game-group__thumbnail {
   width: 1.8rem;
   height: 1.8rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--stds-glob-border-radius-md);
   overflow: hidden; /* 배경 이미지가 둥근 모서리 밖으로 삐져나오지 않게 확실히 클립 */
   /* Figma "Stroke: inside" → border 대신 inset box-shadow로 표현.
      border는 border-box라도 곡률 경계에서 배경 클립과 미세하게 어긋나 보일 수 있어

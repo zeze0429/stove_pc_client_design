@@ -24,12 +24,17 @@
   --spacing-80:  8.0rem;
   --spacing-200: 20rem;
 
-  /* ---- Radius ------------------------------------------- */
-  --radius-none: 0;
-  --radius-sm:   0.2rem;
-  --radius-md:   0.4rem;
-  --radius-lg:   0.8rem;
-  --radius-full: 9999px;
+  /* ---- Radius — Foundation > Object style > Radius (Figma 변수 stds.glob.border-radius.*, 최신 9단계 — 11-03 사용자)
+     예전 --radius-none/sm/md/lg/full(9999px)에서 교체. 스케일에 없는 값(6 · 24 등)은 쓰는 자리에 원본값 + 주석 */
+  --stds-glob-border-radius-none:   0;
+  --stds-glob-border-radius-sm:     0.2rem; /*   2 */
+  --stds-glob-border-radius-md:     0.4rem; /*   4 */
+  --stds-glob-border-radius-lg:     0.8rem; /*   8 */
+  --stds-glob-border-radius-xl:     1.2rem; /*  12 */
+  --stds-glob-border-radius-2xl:    1.6rem; /*  16 */
+  --stds-glob-border-radius-3xl:    2rem;   /*  20 */
+  --stds-glob-border-radius-4xl:    3.2rem; /*  32 */
+  --stds-glob-border-radius-circle: 99.9rem; /* 999 */
 
   /* ---- Shadow ------------------------------------------- */
   --shadow-0:  none;
