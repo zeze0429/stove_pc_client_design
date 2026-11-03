@@ -742,7 +742,7 @@
 /* 만들기 — 공통 버튼 primary md, 폭만 90 고정 */
 .group-dialog__submit { width: 9rem; }
 
-/* ---- 스켈레톤 — 아직 불러오지 않은 게임 행 (보기 옵션 "패널 스켈레톤", 20개씩) ----
+/* ---- 스켈레톤 — 아직 불러오지 않은 게임 행 (보기 옵션 "패널 스켈레톤", 10개씩) ----
    값은 사내 Storybook Skeleton 구현 그대로 (사용자 11-03): 블록 inverse-elevation-7(.stds-skeleton-contents),
    막대 모서리 0. 행 크기 · 여백은 실제 행(.game-group__list)과 같고
    썸네일 자리는 실제 썸네일 모양(18 · 모서리 md), 이름 자리는 cap1 글자 높이 12 막대.

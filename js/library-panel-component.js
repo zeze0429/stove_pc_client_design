@@ -212,7 +212,7 @@ function TITLE_TPL(idExpr, nameExpr, countExpr, withAdd) {
 function ROW_TPL(listExpr, groupExpr) {
   var key = '(' + groupExpr + ') + \':\' + game.id';
   return '<template v-for="game in ' + listExpr + '" :key="game.id">' +
-    // 아직 불러오지 않은 행 — 스켈레톤 (보기 옵션 "패널 스켈레톤", 20개씩)
+    // 아직 불러오지 않은 행 — 스켈레톤 (보기 옵션 "패널 스켈레톤", 10개씩)
     '<li v-if="isSkeletonRow(' + key + ')" class="game-group__list game-group__list--skeleton" aria-hidden="true" data-name="skeleton/game_group/list">' +
       '<span class="game-group__skeleton game-group__skeleton--thumb"></span>' +
       '<span class="game-group__skeleton game-group__skeleton--name" :style="{ width: skeletonNameWidth(game) }"></span>' +
@@ -243,7 +243,7 @@ function ROW_TPL(listExpr, groupExpr) {
   '</template>';
 }
 
-var LIBRARY_PANEL_LOAD_STEP = 20; // 한 번에 불러오는 행 수 (실서비스 200, 시안은 100개라 20)
+var LIBRARY_PANEL_LOAD_STEP = 10; // 한 번에 불러오는 행 수 (실서비스 200, 시안은 한 화면에 스켈레톤이 보이게 10 — 사용자 11-03)
 var LIBRARY_PANEL_LOAD_MS = 2000; // 다음 묶음까지 걸리는 시간 (시안용 — 스켈레톤이 눈에 보이게 길게, 사용자 11-03)
 
 var LibraryPanel = {
@@ -376,7 +376,7 @@ var LibraryPanel = {
     skeletonNameWidth: function (game) {
       return Math.min(90, Math.max(40, game.name.length * 4)) + '%';
     },
-    // 20개씩 나눠 불러오기 — SGVN 로딩 개선(200개 단위) 시안을 우리 100개에 맞춰 20개 단위로 (사용자 11-03)
+    // 10개씩 나눠 불러오기 — SGVN 로딩 개선(200개 단위) 시안을 우리 100개에 맞춰 작은 단위로 (사용자 11-03)
     startSkeletonLoad: function () {
       clearInterval(this._skeletonTimer);
       var vm = this;
@@ -880,7 +880,7 @@ var LibraryPanel = {
     // 필터 레이어 바깥을 누르면 닫는다 (레이어 · 버튼은 click.stop)
     this._onDocClick = function () { this.filterOpen = false; }.bind(this);
     document.addEventListener('click', this._onDocClick);
-    // 보기 옵션 "패널 스켈레톤" — 켜져 있으면 들어올 때마다 처음부터 20개씩 불러온다
+    // 보기 옵션 "패널 스켈레톤" — 켜져 있으면 들어올 때마다 처음부터 10개씩 불러온다
     var vm = this;
     var ps = protoSettingsRead();
     if (ps.libraryPanelSkeleton) { this._skeletonAt = ps.libraryPanelSkeletonAt; this.startSkeletonLoad(); }
