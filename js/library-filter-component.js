@@ -95,6 +95,11 @@ var LibraryFilterLayer = {
     // 런처 영역 아래 20은 항상 비운다 — 아래 PR 배너는 런처 영역이 아니라 그 위가 기준.
     // 창 높이에 따라 레이어 높이가 줄고 안에서 스크롤 (사용자 11-03)
     fitHeight: function () {
+      // 버튼 폭이 소수라 레이어가 반 픽셀에 놓이면 테두리가 번지고 오른쪽이 살짝 튀어나온다 — 정수 픽셀로 당긴다
+      this.$el.style.translate = '';
+      var x = this.$el.getBoundingClientRect().left;
+      var frac = x - Math.round(x);
+      if (frac) this.$el.style.translate = -frac + 'px 0';
       var app = this.$el.closest('.app');
       var bottom = app ? app.getBoundingClientRect().bottom : window.innerHeight;
       var top = this.$el.getBoundingClientRect().top;
