@@ -15,11 +15,13 @@ var LIBRARY_FILTER_TYPES = [
   { key: 'demo', label: 'DEMO' },
   { key: 'utility', label: '유틸리티' },
 ];
-var LIBRARY_FILTER_GENRES = ['액션', 'RPG', '어드벤쳐', '퍼즐', '시뮬레이션', '스포츠', '슈팅', '공포', '리듬', '디펜스',
-  '전략', '레이싱', '캐쥬얼', '플랫포머', '비주얼 노벨', '기능성 게임', '기타'];
+// 장르 — 온스토브 스토어 전체 게임 필터의 장르 목록 18개와 같은 이름 (11-03 확인: 어드벤처 · 캐주얼 표기, 소프트웨어 추가).
+// 순서는 Figma 순서를 따르고 Figma에 없던 소프트웨어는 기타 앞에
+var LIBRARY_FILTER_GENRES = ['액션', 'RPG', '어드벤처', '퍼즐', '시뮬레이션', '스포츠', '슈팅', '공포', '리듬', '디펜스',
+  '전략', '레이싱', '캐주얼', '플랫포머', '비주얼 노벨', '기능성 게임', '소프트웨어', '기타'];
 // 정렬 옵션 — Figma엔 기본값(설정 순 · 최근 보유 순)만 있어 나머지는 임시. 누를 때마다 다음 옵션으로
 var LIBRARY_GROUP_SORTS = ['설정 순', '이름 순'];
-var LIBRARY_FILTER_BOTTOM_GAP = 20; // 프레임 아래 고정 여백 (사용자 11-03)
+var LIBRARY_FILTER_BOTTOM_GAP = 20; // 런처 영역(.app — PR 배너 제외) 아래 고정 여백 (사용자 11-03)
 var LIBRARY_GAME_SORTS = ['최근 보유 순', '최근 플레이 순', '이름 순'];
 
 function libraryFilterDefault() {
@@ -28,12 +30,10 @@ function libraryFilterDefault() {
 function libraryFilterActive(f) {
   return f.installedOnly || f.types.length > 0 || f.genres.length > 0;
 }
-// 카탈로그 장르 → 필터 장르 (표기 차이 · RPG 계열 묶기, 목록에 없으면 기타)
+// 카탈로그 장르 → 필터 장르 (RPG 계열 묶기 · 영문 표기, 목록에 없으면 기타)
 function libraryGenreKey(genre) {
   var g = (genre || '').trim();
   if (/RPG/i.test(g)) return 'RPG';
-  if (g === '어드벤처') return '어드벤쳐';
-  if (g === '캐주얼') return '캐쥬얼';
   if (/^racing$/i.test(g)) return '레이싱';
   return LIBRARY_FILTER_GENRES.indexOf(g) >= 0 ? g : '기타';
 }
@@ -92,10 +92,13 @@ var LibraryFilterLayer = {
     document.removeEventListener('keydown', this.onKeydown);
   },
   methods: {
-    // 프레임(창) 아래 20은 항상 비운다 — 창 높이에 따라 레이어 높이가 줄고 안에서 스크롤 (사용자 11-03)
+    // 런처 영역 아래 20은 항상 비운다 — 아래 PR 배너는 런처 영역이 아니라 그 위가 기준.
+    // 창 높이에 따라 레이어 높이가 줄고 안에서 스크롤 (사용자 11-03)
     fitHeight: function () {
+      var app = this.$el.closest('.app');
+      var bottom = app ? app.getBoundingClientRect().bottom : window.innerHeight;
       var top = this.$el.getBoundingClientRect().top;
-      this.maxHeight = Math.max(120, window.innerHeight - top - LIBRARY_FILTER_BOTTOM_GAP) + 'px';
+      this.maxHeight = Math.max(120, bottom - top - LIBRARY_FILTER_BOTTOM_GAP) + 'px';
     },
     update: function (patch) { this.$emit('update:modelValue', Object.assign({}, this.modelValue, patch)); },
     has: function (field, key) { return this.modelValue[field].indexOf(key) >= 0; },
