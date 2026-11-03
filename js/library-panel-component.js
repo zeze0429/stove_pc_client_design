@@ -244,7 +244,7 @@ function ROW_TPL(listExpr, groupExpr) {
 }
 
 var LIBRARY_PANEL_LOAD_STEP = 20; // 한 번에 불러오는 행 수 (실서비스 200, 시안은 100개라 20)
-var LIBRARY_PANEL_LOAD_MS = 800; // 다음 묶음까지 걸리는 시간 (시안용)
+var LIBRARY_PANEL_LOAD_MS = 2000; // 다음 묶음까지 걸리는 시간 (시안용 — 스켈레톤이 눈에 보이게 길게, 사용자 11-03)
 
 var LibraryPanel = {
   components: { 'group-name-input': LibraryGroupNameInput, 'create-group-dialog': LibraryCreateGroupDialog, 'library-filter-layer': LibraryFilterLayer },
@@ -384,7 +384,12 @@ var LibraryPanel = {
       this.loadedRows = LIBRARY_PANEL_LOAD_STEP;
       this._skeletonTimer = setInterval(function () {
         vm.loadedRows += LIBRARY_PANEL_LOAD_STEP;
-        if (vm.loadedRows >= total) { vm.loadedRows = Infinity; clearInterval(vm._skeletonTimer); }
+        if (vm.loadedRows >= total) {
+          vm.loadedRows = Infinity;
+          clearInterval(vm._skeletonTimer);
+          // 다 불러오면 보기 옵션 스위치도 끈다 — 끝났다는 걸 알 수 있게, 다시 켜면 처음부터 (사용자 11-03)
+          protoSettingsWrite({ libraryPanelSkeleton: false });
+        }
       }, LIBRARY_PANEL_LOAD_MS);
     },
     applySkeletonSetting: function (s) {
