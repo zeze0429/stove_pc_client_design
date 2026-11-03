@@ -244,7 +244,7 @@ function ROW_TPL(listExpr, groupExpr) {
 }
 
 var LIBRARY_PANEL_LOAD_STEP = 10; // 한 번에 불러오는 행 수 (실서비스 200, 시안은 한 화면에 스켈레톤이 보이게 10 — 사용자 11-03)
-var LIBRARY_PANEL_LOAD_MS = 2000; // 다음 묶음까지 걸리는 시간 (시안용 — 스켈레톤이 눈에 보이게 길게, 사용자 11-03)
+var LIBRARY_PANEL_LOAD_MS = 4000; // 다음 묶음까지 걸리는 시간 (데모용 — 스켈레톤을 충분히 보게 길게, 사용자 11-03)
 
 var LibraryPanel = {
   components: { 'group-name-input': LibraryGroupNameInput, 'create-group-dialog': LibraryCreateGroupDialog, 'library-filter-layer': LibraryFilterLayer },
