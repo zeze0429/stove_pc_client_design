@@ -484,7 +484,12 @@ var LibraryMain = {
     },
     // 게임 선택 버튼 — 대상 그룹 없이 선택 UI로 (패널 게임 추가 중이면 그것을 끝내고)
     startSelect: function () { this.store.addTargetId = null; this.store.selectMode = true; },
-    cancelAdd: function () { this.store.addTargetId = null; this.store.selectMode = false; },
+    // 게임 선택 취소 — 시작할 때 걸었던 앵커를 풀고 맨 위(라이브러리 타이틀)로 되돌린다 (사용자 11-03)
+    cancelAdd: function () {
+      this.store.addTargetId = null;
+      this.store.selectMode = false;
+      if (this._scrollBox) this._scrollBox.scrollTo({ top: 0, behavior: 'smooth' });
+    },
     // 그룹에 추가 — 패널 그룹에 게임이 들어가고, 선택 UI는 풀리고, 보유게임 영역 하단에 토스트 (⑦)
     addToGroup: function () {
       // 게임 선택으로 들어온 선택 UI — 대상 그룹이 없으니 그룹에 추가 팝업에서 고른다
