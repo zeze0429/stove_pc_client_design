@@ -11,7 +11,6 @@
 
 /* <button> 기본 UA 스타일(배경/테두리/패딩) 리셋 — 없으면 닫기 버튼이 흰 원으로 보임 */
 .notice__close,
-.notice__cta,
 .notice-demo-btn {
   -webkit-appearance: none;
   appearance: none;
@@ -179,19 +178,7 @@
 }
 .notice--rich__row .notice__body { align-self: center; }
 
-.notice__cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 4.4rem;
-  padding: var(--spacing-12) var(--spacing-20);
-  border: 1px solid var(--stds-glob-color-white-50);
-  border-radius: var(--stds-glob-border-radius-lg);
-  color: var(--stds-glob-color-white);
-  background: transparent;
-  transition: background 0.12s;
-}
-.notice__cta:hover { background: var(--stds-glob-color-white-8); }
+/* CTA(쿠폰 등록 등) — 공통 버튼 ghost md (css/button.css, 사용자 11-03), 카드 폭에 꽉 채움 */
 
 /* ---- 프로토타입 데모 컨트롤 (디자인 스펙 아님) --------------- */
 .notice-demo-btn {
