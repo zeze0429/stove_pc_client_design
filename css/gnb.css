@@ -642,7 +642,7 @@ body { margin: 0; }
   border: 1px solid var(--stds-sem-color-inverse-variant-1); /* Figma: inverse/variant-1 = #FFF 15% */
   border-radius: var(--stds-glob-border-radius-lg);
   background: var(--stds-sem-color-surface-layer);
-  box-shadow: 0 1.2rem 1.4rem var(--stds-glob-color-black-20);
+  box-shadow: var(--stds-glob-box-shadow-4); /* 우측패널 메뉴와 같은 shadow/4 (사용자 지정, 11-03) */
 }
 .gnb-context-menu__item {
   display: block;
