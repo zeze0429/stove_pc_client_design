@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="css/typography.css?v=12" />
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=8" />
   <link rel="stylesheet" href="css/button.css?v=2" />
+  <link rel="stylesheet" href="css/search-field.css?v=1" />
   <style>
     /* 미리보기 페이지 전용 배치 — 컴포넌트 스타일은 각 css 파일에 있다 */
     body {
@@ -40,12 +41,17 @@
 
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <script src="js/button-component.js?v=2"></script>
+  <script src="js/search-field-component.js?v=2"></script>
   <script>
     Vue.createApp({
-      components: { StdsButton: StdsButton },
+      components: { StdsButton: StdsButton, StdsSearchField: StdsSearchField },
       data: function () {
         return {
           theme: document.documentElement.getAttribute('data-theme'),
+          sfVariants: STDS_SEARCH_FIELD_VARIANTS,
+          sfSizes: STDS_SEARCH_FIELD_SIZES,
+          sfFilled: '스토브',
+          sfLive: '',
           variants: STDS_BUTTON_VARIANTS,
           sizes: STDS_BUTTON_SIZES,
           states: [
@@ -109,6 +115,21 @@
                 '<td><stds-button :size="z" radius="full" variant="white" has-arrow>버튼</stds-button></td>' +
                 '<td><stds-button :size="z" radius="full" variant="secondary" class="is-focus" icon="ic-v2-sample" aria-label="버튼"></stds-button></td>' +
               '</tr>' +
+            '</tbody></table>' +
+          '</section>' +
+
+          '<section class="cp-section">' +
+            '<h2 class="stds-title6 fw-bold">Search Field · Type × Size × State</h2>' +
+            '<p class="stds-text3">Figma STDS_StoveUI_v0.3.2 · Search Field/Input (982:7430) · enabled / focused / filled — 마지막 칸은 직접 입력해 보는 칸</p>' +
+            '<table class="cp-table stds-text4"><thead><tr><th></th><th></th><th>Enabled</th><th>Focused</th><th>Filled</th><th>Live</th></tr></thead><tbody>' +
+              '<template v-for="v in sfVariants" :key="v">' +
+                '<tr v-for="z in sfSizes" :key="v + z"><th>{{ v }}</th><th>{{ z }}</th>' +
+                  '<td><stds-search-field :variant="v" :size="z" placeholder="게임 또는 검색어 입력" style="width: 20rem"></stds-search-field></td>' +
+                  '<td><stds-search-field :variant="v" :size="z" class="is-focus" placeholder="게임 또는 검색어 입력" style="width: 20rem"></stds-search-field></td>' +
+                  '<td><stds-search-field :variant="v" :size="z" v-model="sfFilled" style="width: 20rem"></stds-search-field></td>' +
+                  '<td><stds-search-field :variant="v" :size="z" v-model="sfLive" placeholder="입력해 보세요" style="width: 20rem"></stds-search-field></td>' +
+                '</tr>' +
+              '</template>' +
             '</tbody></table>' +
           '</section>' +
         '</div>',

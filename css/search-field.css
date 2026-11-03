@@ -1,0 +1,93 @@
+/* =============================================================
+   STDS Search Field
+   -------------------------------------------------------------
+   구조·이름은 사내 Storybook(Components/Form/Search Field)을, 최종 값은
+   Figma STDS_StoveUI_v0.3.2 Search Field/Input(982:7430)을 따른다 (사용자 11-03).
+     <label class="stds-search-field stds-search-field-outline stds-search-field-sm">
+       <input class="stds-search-field__input" placeholder="…" />
+       <button class="stds-search-field__clear">…</button>      ← 글자가 있을 때만
+       <button class="stds-search-field__search">…</button>
+     </label>
+   종류: outline(Figma line) · fill / 사이즈: sm 32 · md 44 · lg 56
+   상태: 기본 · 포커스/입력 중(테두리 2px gray400) · 입력 완료(글자 + 지우기 버튼)
+   테두리는 inset box-shadow로 그려서 1px ↔ 2px로 바뀌어도 안쪽 여백이 움직이지 않는다.
+   ============================================================= */
+
+.stds-search-field {
+  --stds-search-field-bg: var(--stds-sem-color-neutral-variant-3);
+  --stds-search-field-line: var(--stds-sem-color-border);
+  --stds-search-field-line-w: 1px;
+
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  box-sizing: border-box;
+  min-width: 0;
+  border-radius: var(--stds-glob-border-radius-lg);
+  background: var(--stds-search-field-bg);
+  box-shadow: inset 0 0 0 var(--stds-search-field-line-w) var(--stds-search-field-line);
+  cursor: text;
+}
+
+/* fill — 테두리 없이 채움 (흰 배경 위에서 쓰는 종류) */
+.stds-search-field-fill {
+  --stds-search-field-bg: var(--stds-sem-color-neutral-variant-2);
+  --stds-search-field-line-w: 0px;
+}
+
+/* 포커스(입력 중 포함) — 두 종류 모두 2px gray400 (Figma가 글로벌 토큰 지정) */
+.stds-search-field:focus-within,
+.stds-search-field.is-focus {
+  --stds-search-field-line: var(--stds-glob-color-gray400);
+  --stds-search-field-line-w: 2px;
+}
+
+.stds-search-field__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  caret-color: var(--stds-sem-color-brand-primary);
+  font: inherit;
+  font-weight: 400;
+  text-overflow: ellipsis;
+}
+.stds-search-field__input::placeholder { color: var(--stds-sem-color-placeholder); }
+/* 브라우저 기본 검색 지우기 버튼은 숨기고 컴포넌트 버튼을 쓴다 */
+.stds-search-field__input::-webkit-search-cancel-button { display: none; }
+
+.stds-search-field__clear,
+.stds-search-field__search {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.stds-search-field__clear > i,
+.stds-search-field__search > i { display: block; width: 1em; height: 1em; line-height: 1; }
+/* 지우기 — 모든 사이즈 16, inverse-elevation-2 */
+.stds-search-field__clear { font-size: 1.6rem; color: var(--stds-sem-color-inverse-elevation-2); }
+.stds-search-field__search { color: var(--stds-sem-color-on-surface-elevation-2); }
+
+/* ---- Size ------------------------------------------------- */
+/* sm: 32 · 좌우 12 · btn3-R 12/18 · 검색 아이콘 16 */
+.stds-search-field-sm { height: 3.2rem; padding: 0 1.2rem; }
+.stds-search-field-sm .stds-search-field__input { font-size: 1.2rem; line-height: 1.8rem; letter-spacing: -0.02em; }
+.stds-search-field-sm .stds-search-field__search { font-size: 1.6rem; }
+
+/* md: 44 · 좌우 16 · btn2-R 14/20 · 검색 아이콘 20 */
+.stds-search-field-md { height: 4.4rem; padding: 0 1.6rem; }
+.stds-search-field-md .stds-search-field__input { font-size: 1.4rem; line-height: 2rem; letter-spacing: -0.03em; }
+.stds-search-field-md .stds-search-field__search { font-size: 2rem; }
+
+/* lg: 56 · 좌우 20 · btn1-R 16/24 · 검색 아이콘 20 */
+.stds-search-field-lg { height: 5.6rem; padding: 0 2rem; }
+.stds-search-field-lg .stds-search-field__input { font-size: 1.6rem; line-height: 2.4rem; letter-spacing: -0.03em; }
+.stds-search-field-lg .stds-search-field__search { font-size: 2rem; }
