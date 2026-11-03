@@ -346,6 +346,8 @@ var LibraryPanel = {
   },
   methods: {
     // 게임 추가 중인 그룹은 항상 펼쳐 둔다 (접기/펼치기 비활성)
+    // 필터 레이어 기준 — 버튼 그룹 (폭 240과 같은 왼쪽 끝)
+    actionsEl: function () { return this.$refs.actions; },
     isCollapsed: function (id) { return id !== this.addTargetId && !!this.collapsed[id]; },
     groupGames: function (group) {
       var byId = {};
@@ -857,7 +859,7 @@ var LibraryPanel = {
           '<li>그룹은 최대 ' + LIBRARY_GROUP_MAX + '개까지 만들 수 있어요.</li>' +
         '</ul>' +
       '</div>' +
-      '<div v-else class="library-panel__actions" data-name="btn/create group">' +
+      '<div v-else ref="actions" class="library-panel__actions" data-name="btn/create group">' +
         // 그룹 삭제 직후 — 버튼 그룹 위에 띄우는 토스트 (레이아웃은 그대로, 3초 뒤 사라진다)
         '<div v-if="deletedNotice" class="library-panel__notice stds-cap1 fw-medium" role="status" data-name="toast popup">그룹이 삭제되었습니다.</div>' +
         '<div v-if="addedNotice" class="library-panel__added" role="status" data-name="toast popup">' +
@@ -870,7 +872,7 @@ var LibraryPanel = {
         // 필터 — 버튼 그룹 아래에 레이어(폭 240 = 버튼 그룹 폭), 열려 있는 동안 버튼은 선택 테두리
         '<button class="library-panel__icon-btn" :class="{ \'is-selected\': filterOpen }" type="button" aria-label="필터" :aria-expanded="String(filterOpen)" data-name="btn/icon" @click.stop="filterOpen = !filterOpen"><i class="ic-v2-community-filter-line"></i></button>' +
         '<button class="library-panel__icon-btn" type="button" aria-label="검색" data-name="btn/icon"><i class="ic-v2-navigation-search-line"></i></button>' +
-        '<library-filter-layer v-if="filterOpen" v-model="filter" width="24rem" group-sort @close="filterOpen = false"></library-filter-layer>' +
+        '<library-filter-layer v-if="filterOpen" v-model="filter" width="24rem" group-sort :anchor="actionsEl" @close="filterOpen = false"></library-filter-layer>' +
       '</div>' +
 
       // 그룹 없음 — 고정 (스크롤 영역 밖). 보유게임이 없어도 그룹은 만들 수 있어 항상 이 안내를 둔다.

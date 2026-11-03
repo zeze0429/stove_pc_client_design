@@ -22,6 +22,7 @@ var LIBRARY_FILTER_GENRES = ['액션', 'RPG', '어드벤처', '퍼즐', '시뮬�
   '전략', '레이싱', '캐주얼', '플랫포머', '비주얼 노벨', '기능성 게임', '소프트웨어', '기타'];
 // 정렬 옵션 — Figma엔 기본값(설정 순 · 최근 보유 순)만 있어 나머지는 임시. 누를 때마다 다음 옵션으로
 var LIBRARY_GROUP_SORTS = ['설정 순', '이름 순'];
+var LIBRARY_FILTER_GAP = 8; // 버튼과 레이어 사이 (사용자 11-03)
 var LIBRARY_FILTER_BOTTOM_GAP = 20; // 런처 영역(.app — PR 배너 제외) 아래 고정 여백 (사용자 11-03)
 var LIBRARY_GAME_SORTS = ['최근 보유 순', '최근 플레이 순', '이름 순'];
 
@@ -70,21 +71,28 @@ var LibraryFilterLayer = {
     modelValue: { type: Object, required: true },
     width: { type: String, default: '26rem' },
     groupSort: { type: Boolean, default: false },
+    // 레이어를 붙일 요소(버튼 · 버튼 그룹)를 돌려주는 함수 — 그 왼쪽 아래 8에 뜬다
+    anchor: { type: Function, required: true },
     // 오른쪽 끝을 맞출 요소를 돌려주는 함수 — 있으면 폭 = 그 요소 오른쪽 끝 - 레이어 왼쪽 (width 대신)
     // 보유게임: 필터 버튼 + 여백 + 검색 필드 폭 (사용자 11-03)
     alignRight: { type: Function, default: null },
   },
   emits: ['update:modelValue', 'close'],
   data: function () {
-    return { types: LIBRARY_FILTER_TYPES, genres: LIBRARY_FILTER_GENRES, maxHeight: null, fitWidth: null };
+    return { types: LIBRARY_FILTER_TYPES, genres: LIBRARY_FILTER_GENRES, pos: null };
   },
   computed: {
+    layerStyle: function () {
+      var p = this.pos;
+      return p ? { left: p.left + 'px', top: p.top + 'px', width: p.width || this.width, maxHeight: p.maxHeight + 'px' }
+        : { visibility: 'hidden', width: this.width };
+    },
     groupSortLabel: function () { return LIBRARY_GROUP_SORTS[this.modelValue.groupSort]; },
     gameSortLabel: function () { return LIBRARY_GAME_SORTS[this.modelValue.gameSort]; },
   },
   mounted: function () {
-    this.fitHeight();
-    this.onResize = this.fitHeight.bind(this);
+    this.place();
+    this.onResize = this.place.bind(this);
     window.addEventListener('resize', this.onResize);
     window.addEventListener('scroll', this.onResize, true); // 보유게임 영역이 스크롤되면 레이어 위치가 바뀐다
     this.onKeydown = function (e) { if (e.key === 'Escape') this.$emit('close'); }.bind(this);
@@ -96,20 +104,25 @@ var LibraryFilterLayer = {
     document.removeEventListener('keydown', this.onKeydown);
   },
   methods: {
-    // 런처 영역 아래 20은 항상 비운다 — 아래 PR 배너는 런처 영역이 아니라 그 위가 기준.
+    // 레이어는 body로 띄워(teleport) 런처 · 패널의 overflow에 그림자(shadow/12)가 잘리지 않게 하고,
+    // 기준 요소 왼쪽 아래 8에 정수 픽셀로 놓는다 (버튼 폭이 소수면 테두리가 번지고 끝이 살짝 튀어나온다).
+    // 런처 영역(.app) 아래 20은 항상 비운다 — 아래 PR 배너는 런처 영역이 아니라 그 위가 기준.
     // 창 높이에 따라 레이어 높이가 줄고 안에서 스크롤 (사용자 11-03)
-    fitHeight: function () {
-      // 버튼 폭이 소수라 레이어가 반 픽셀에 놓이면 테두리가 번지고 오른쪽이 살짝 튀어나온다 — 정수 픽셀로 당긴다
-      this.$el.style.translate = '';
-      var x = this.$el.getBoundingClientRect().left;
-      var frac = x - Math.round(x);
-      if (frac) this.$el.style.translate = -frac + 'px 0';
+    place: function () {
+      var a = this.anchor && this.anchor();
+      if (!a) return;
+      var r = a.getBoundingClientRect();
+      var left = Math.round(r.left);
+      var top = Math.round(r.bottom) + LIBRARY_FILTER_GAP;
       var edge = this.alignRight && this.alignRight();
-      if (edge) this.fitWidth = Math.round(edge.getBoundingClientRect().right) - Math.round(x) + 'px';
-      var app = this.$el.closest('.app');
+      var app = a.closest('.app');
       var bottom = app ? app.getBoundingClientRect().bottom : window.innerHeight;
-      var top = this.$el.getBoundingClientRect().top;
-      this.maxHeight = Math.max(120, bottom - top - LIBRARY_FILTER_BOTTOM_GAP) + 'px';
+      this.pos = {
+        left: left,
+        top: top,
+        width: edge ? Math.round(edge.getBoundingClientRect().right) - left + 'px' : null,
+        maxHeight: Math.max(120, bottom - top - LIBRARY_FILTER_BOTTOM_GAP),
+      };
     },
     update: function (patch) { this.$emit('update:modelValue', Object.assign({}, this.modelValue, patch)); },
     has: function (field, key) { return this.modelValue[field].indexOf(key) >= 0; },
@@ -126,7 +139,7 @@ var LibraryFilterLayer = {
     reset: function () { this.$emit('update:modelValue', libraryFilterDefault()); },
   },
   template:
-    '<div class="library-filter" role="dialog" aria-label="필터" :style="{ width: fitWidth || width, maxHeight: maxHeight }" data-name="layer" @click.stop>' +
+    '<teleport to="body"><div class="library-filter" role="dialog" aria-label="필터" :style="layerStyle" data-name="layer" @click.stop>' +
       '<div class="library-filter__head" data-name="header">' +
         '<p class="library-filter__title">필터</p>' +
         '<button class="library-filter__reset" type="button" @click="reset"><i class="ic-v2-control-refresh-line" aria-hidden="true"></i>초기화</button>' +
@@ -158,5 +171,5 @@ var LibraryFilterLayer = {
           '</div>' +
         '</div>' +
       '</div>' +
-    '</div>',
+    '</div></teleport>',
 };

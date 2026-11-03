@@ -499,6 +499,7 @@ var LibraryMain = {
     // 게임 선택 버튼 — 대상 그룹 없이 선택 UI로 (패널 게임 추가 중이면 그것을 끝내고)
     // 필터 레이어 오른쪽 끝 = 검색 필드 오른쪽 끝
     searchEl: function () { return this.$refs.search && this.$refs.search.$el; },
+    filterBtnEl: function () { return this.$refs.filterBtn; },
     startSelect: function () { this.store.addTargetId = null; this.store.selectMode = true; },
     // 게임 선택 취소 — 시작할 때 걸었던 앵커를 풀고 맨 위(라이브러리 타이틀)로 되돌린다 (사용자 11-03)
     cancelAdd: function () {
@@ -592,10 +593,8 @@ var LibraryMain = {
               '<button type="button" role="tab" :aria-selected="view === \'list\'" :class="{ \'is-selected\': view === \'list\' }" aria-label="목록 보기" @click="view = \'list\'"><i class="ic-v2-community-view-list-fill"></i></button>' +
             '</div>' +
             // 필터 — 누르면 아래에 레이어(폭 = 필터 버튼 + 여백 + 검색 필드), 열려 있는 동안 버튼은 선택 테두리
-            '<div class="library-filter-anchor">' +
-              '<button class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" :class="{ \'is-selected\': filterOpen }" type="button" :aria-expanded="String(filterOpen)" @click.stop="filterOpen = !filterOpen"><i class="ic-v2-community-filter-line"></i>필터</button>' +
-              '<library-filter-layer v-if="filterOpen" v-model="filter" width="26rem" :align-right="searchEl" @close="filterOpen = false"></library-filter-layer>' +
-            '</div>' +
+            '<button ref="filterBtn" class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" :class="{ \'is-selected\': filterOpen }" type="button" :aria-expanded="String(filterOpen)" @click.stop="filterOpen = !filterOpen"><i class="ic-v2-community-filter-line"></i>필터</button>' +
+            '<library-filter-layer v-if="filterOpen" v-model="filter" width="26rem" :anchor="filterBtnEl" :align-right="searchEl" @close="filterOpen = false"></library-filter-layer>' +
             // 공통 서치필드 outline sm (js/search-field-component.js, 사용자 11-03) — 폭만 186
             '<stds-search-field ref="search" v-model="query" class="library-search" placeholder="게임 또는 검색어 입력"></stds-search-field>' +
           '</div>' +
