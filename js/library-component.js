@@ -535,7 +535,7 @@ var LibraryMain = {
                     // 게임: 최근 플레이 · 총 시간 / 광고: 같은 자리에 광고 문구
                     '<span v-if="g.ad" class="library-quick__meta"><span>{{ g.message }}</span></span>' +
                     '<span v-else class="library-quick__meta"><span>{{ g.lastPlayed }}</span><template v-if="g.total"><i aria-hidden="true"></i><span>{{ g.total }}</span></template></span>' +
-                    '<button class="stds-button stds-button-blue stds-button-sm is-icon-only" type="button" :aria-label="actionLabel(g.action)"><i :class="actionIcon(g.action)"></i></button>' +
+                    '<button class="stds-button stds-button-blue stds-button-sm is-icon-only library-action" type="button" :aria-label="actionLabel(g.action)"><i :class="actionIcon(g.action)"></i></button>' +
                   '</div>' +
                 '</div>' +
               '</div>' +
@@ -589,7 +589,7 @@ var LibraryMain = {
               '<span v-if="selecting" class="library-card__check" aria-hidden="true" data-name="Checkbox">' +
                 '<i v-if="isSelected(g) || addedIds[g.id]" class="ic-v2-control-check-bold-line"></i>' +
               '</span>' +
-              '<button v-else class="stds-button stds-button-blue stds-button-sm is-icon-only library-card__action" type="button" :aria-label="actionLabel(g.action)"><i :class="actionIcon(g.action)"></i></button>' +
+              '<button v-else class="stds-button stds-button-blue stds-button-sm is-icon-only library-action library-card__action" type="button" :aria-label="actionLabel(g.action)"><i :class="actionIcon(g.action)"></i></button>' +
               '<span v-if="g.badge" class="library-card__badge">{{ g.badge }}</span>' +
             '</div>' +
             '<div class="library-card__text">' +
