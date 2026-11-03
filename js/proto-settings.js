@@ -31,6 +31,8 @@ var PROTO_SETTINGS_DEFAULTS = {
   rightPanel: true,  // 클라이언트 레이아웃 — 우측패널 280 (다운로드 관리·스튜디오, 라이브러리는 항상)
   libraryQuick: true, // 라이브러리 설정 — 빠른 실행 영역 노출 (사용자 설정으로 숨길 수 있음)
   libraryQuickAd: true, // 빠른 실행 두 번째 자리 게임 광고 카드
+  libraryPanelSkeleton: false, // 우측패널 목록을 20개씩 나눠 불러오기 — 아직 안 온 행은 스켈레톤 (SGVN 로딩 개선 시안)
+  libraryPanelSkeletonAt: 0, // 켠 시각 — 켤 때마다 처음부터 다시 불러온다
   menuNew: false,   // 메뉴 강조 — 라운지 NEW 표시
   menuBadge: true,  // 메뉴 강조 — 라운지 "오늘의 1등" 뱃지 (기본 켜짐)
 };

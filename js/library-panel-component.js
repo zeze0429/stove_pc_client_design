@@ -211,7 +211,13 @@ function TITLE_TPL(idExpr, nameExpr, countExpr, withAdd) {
 // 같은 게임이 여러 그룹에 들어갈 수 있어 행은 "그룹 id:게임 id"(rowKey)로 구분한다 (툴팁 · 우클릭 포커스)
 function ROW_TPL(listExpr, groupExpr) {
   var key = '(' + groupExpr + ') + \':\' + game.id';
-  return '<li v-for="game in ' + listExpr + '" :key="game.id" class="game-group__list" ' +
+  return '<template v-for="game in ' + listExpr + '" :key="game.id">' +
+    // 아직 불러오지 않은 행 — 스켈레톤 (보기 옵션 "패널 스켈레톤", 20개씩)
+    '<li v-if="isSkeletonRow(' + key + ')" class="game-group__list game-group__list--skeleton" aria-hidden="true" data-name="skeleton/game_group/list">' +
+      '<span class="game-group__skeleton game-group__skeleton--thumb"></span>' +
+      '<span class="game-group__skeleton game-group__skeleton--name" :style="{ width: skeletonNameWidth(game) }"></span>' +
+    '</li>' +
+    '<li v-else class="game-group__list" ' +
       ':class="{ \'is-menu-focus\': gameMenu && gameMenu.rowKey === ' + key + ', \'is-selected\': selectedRows.indexOf(' + key + ') >= 0 }" ' +
       ':data-row-key="' + key + '" @click="onRowClick($event, ' + key + ')" ' +
       '@mouseenter="onRowEnter($event, game, ' + key + ')" @mouseleave="onRowLeave" ' +
@@ -233,8 +239,12 @@ function ROW_TPL(listExpr, groupExpr) {
       '<span class="game-group__badge-tooltip-tail" :style="{ marginLeft: badgeTip.tailLeft + \'px\' }"></span>' +
       '<span class="game-group__badge-tooltip-body stds-cap1 fw-medium">{{ badgeTip.text }}</span>' +
     '</div>' +
-  '</li>';
+  '</li>' +
+  '</template>';
 }
+
+var LIBRARY_PANEL_LOAD_STEP = 20; // 한 번에 불러오는 행 수 (실서비스 200, 시안은 100개라 20)
+var LIBRARY_PANEL_LOAD_MS = 800; // 다음 묶음까지 걸리는 시간 (시안용)
 
 var LibraryPanel = {
   components: { 'group-name-input': LibraryGroupNameInput, 'create-group-dialog': LibraryCreateGroupDialog, 'library-filter-layer': LibraryFilterLayer },
@@ -257,6 +267,8 @@ var LibraryPanel = {
       selectedRows: [], // 선택한 게임 행 (rowKey) — Ctrl/⌘ 클릭 추가 · 해제, Shift 클릭 범위 (Figma ⑫ "여러개 선택 가능(키보드 조작)")
       selectAnchor: null, // Shift 범위 선택 기준 행
       createDialog: null, // 그룹 만들기 팝업 { gameIds } — 게임 메뉴에서 열면 만든 그룹에 그 게임을 넣는다
+      // 패널 스켈레톤 (보기 옵션) — 화면 순서대로 앞에서부터 이만큼만 불러온 상태, 나머지 행은 스켈레톤
+      loadedRows: Infinity,
       filter: libraryFilterDefault(), // 필터 레이어 (js/library-filter-component.js) — 패널은 정렬에 그룹 · 게임 둘 다
       filterOpen: false,
       hoveredGameId: null, // 말줄임 툴팁을 띄운 행 (rowKey)
@@ -283,6 +295,16 @@ var LibraryPanel = {
       var inGroup = {};
       this.groups.forEach(function (g) { g.gameIds.forEach(function (id) { inGroup[id] = true; }); });
       return libraryFilterGames(this.owned.filter(function (g) { return !inGroup[g.id]; }), this.filter);
+    },
+    // 화면에 그리는 순서(그룹들 → 그룹 없는 게임)의 행 번호 — 스켈레톤을 앞에서부터 걷어낸다
+    rowOrder: function () {
+      var order = {};
+      var n = 0;
+      this.shownGroups.forEach(function (g) {
+        this.groupGames(g).forEach(function (game) { order[g.id + ':' + game.id] = n++; });
+      }, this);
+      this.ungrouped.forEach(function (game) { order['ungrouped:' + game.id] = n++; });
+      return order;
     },
     // 필터 정렬을 적용한 그룹 순서 (설정 순이면 그대로)
     shownGroups: function () { return librarySortGroups(this.groups, this.filter); },
@@ -346,6 +368,35 @@ var LibraryPanel = {
   },
   methods: {
     // 게임 추가 중인 그룹은 항상 펼쳐 둔다 (접기/펼치기 비활성)
+    isSkeletonRow: function (rowKey) {
+      var i = this.rowOrder[rowKey];
+      return i != null && i >= this.loadedRows;
+    },
+    // 이름 막대 길이 — 게임명 길이에 맞춰 들쭉날쭉하게 (행 이름 칸 안에서 40~90%)
+    skeletonNameWidth: function (game) {
+      return Math.min(90, Math.max(40, game.name.length * 4)) + '%';
+    },
+    // 20개씩 나눠 불러오기 — SGVN 로딩 개선(200개 단위) 시안을 우리 100개에 맞춰 20개 단위로 (사용자 11-03)
+    startSkeletonLoad: function () {
+      clearInterval(this._skeletonTimer);
+      var vm = this;
+      var total = Object.keys(this.rowOrder).length;
+      this.loadedRows = LIBRARY_PANEL_LOAD_STEP;
+      this._skeletonTimer = setInterval(function () {
+        vm.loadedRows += LIBRARY_PANEL_LOAD_STEP;
+        if (vm.loadedRows >= total) { vm.loadedRows = Infinity; clearInterval(vm._skeletonTimer); }
+      }, LIBRARY_PANEL_LOAD_MS);
+    },
+    applySkeletonSetting: function (s) {
+      if (s.libraryPanelSkeleton && s.libraryPanelSkeletonAt !== this._skeletonAt) {
+        this._skeletonAt = s.libraryPanelSkeletonAt;
+        this.startSkeletonLoad();
+      } else if (!s.libraryPanelSkeleton) {
+        this._skeletonAt = null;
+        clearInterval(this._skeletonTimer);
+        this.loadedRows = Infinity;
+      }
+    },
     // 필터 레이어 기준 — 버튼 그룹 (폭 240과 같은 왼쪽 끝)
     actionsEl: function () { return this.$refs.actions; },
     isCollapsed: function (id) { return id !== this.addTargetId && !!this.collapsed[id]; },
@@ -824,10 +875,16 @@ var LibraryPanel = {
     // 필터 레이어 바깥을 누르면 닫는다 (레이어 · 버튼은 click.stop)
     this._onDocClick = function () { this.filterOpen = false; }.bind(this);
     document.addEventListener('click', this._onDocClick);
+    // 보기 옵션 "패널 스켈레톤" — 켜져 있으면 들어올 때마다 처음부터 20개씩 불러온다
+    var vm = this;
+    var ps = protoSettingsRead();
+    if (ps.libraryPanelSkeleton) { this._skeletonAt = ps.libraryPanelSkeletonAt; this.startSkeletonLoad(); }
+    protoSettingsSubscribe(function (s) { vm.applySkeletonSetting(s); });
     this.updateThumb();
   },
   unmounted: function () {
     clearTimeout(this._noticeTimer);
+    clearInterval(this._skeletonTimer);
     document.removeEventListener('click', this._onDocClick);
     document.removeEventListener('mouseup', this._onRelease);
     document.removeEventListener('mousemove', this.onDocMouseMove);
