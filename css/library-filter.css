@@ -74,9 +74,11 @@
 .library-filter__body::-webkit-scrollbar { width: 0.4rem; }
 .library-filter__body::-webkit-scrollbar-thumb {
   border-radius: var(--stds-glob-border-radius-circle);
-  background-color: var(--stds-sem-color-inverse-elevation-2);
+  background-color: transparent;
 }
-.library-filter__body::-webkit-scrollbar-thumb:hover { background-color: var(--stds-sem-color-inverse-elevation-1); }
+/* 레이어에 마우스가 있을 때만 보인다 — 스크롤바 공통 규칙 (사용자 11-03) */
+.library-filter:hover .library-filter__body::-webkit-scrollbar-thumb { background-color: var(--stds-sem-color-inverse-elevation-2); }
+.library-filter:hover .library-filter__body::-webkit-scrollbar-thumb:hover { background-color: var(--stds-sem-color-inverse-elevation-1); }
 .library-filter__section { display: flex; flex-direction: column; gap: 0.4rem; }
 /* 섹션 라벨 — caption2-M 11/18 */
 .library-filter__label {

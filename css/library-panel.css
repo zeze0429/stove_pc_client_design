@@ -616,8 +616,10 @@
   overscroll-behavior: contain;
 }
 .game-menu__groups::-webkit-scrollbar { width: 0.4rem; }
-.game-menu__groups::-webkit-scrollbar-thumb { border-radius: var(--stds-glob-border-radius-circle); background-color: var(--stds-sem-color-inverse-elevation-2); }
-.game-menu__groups::-webkit-scrollbar-thumb:hover { background-color: var(--stds-sem-color-inverse-elevation-1); }
+.game-menu__groups::-webkit-scrollbar-thumb { border-radius: var(--stds-glob-border-radius-circle); background-color: transparent; }
+/* 메뉴에 마우스가 있을 때만 보인다 — 스크롤바 공통 규칙 (사용자 11-03) */
+.game-menu:hover .game-menu__groups::-webkit-scrollbar-thumb { background-color: var(--stds-sem-color-inverse-elevation-2); }
+.game-menu:hover .game-menu__groups::-webkit-scrollbar-thumb:hover { background-color: var(--stds-sem-color-inverse-elevation-1); }
 /* 그룹에서 제거 ⊗ — on-surface-elevation-4, hover · press 배경 + 툴팁 */
 .game-menu__remove { color: var(--stds-sem-color-on-surface-elevation-4); cursor: pointer; transition: background-color 0.12s; }
 .game-menu__remove:hover { background: var(--stds-sem-color-interaction-hover); }
