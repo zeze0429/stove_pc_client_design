@@ -283,7 +283,12 @@ var LibraryAddToGroupDialog = {
               '<button v-for="g in groups" :key="g.id" class="add-group-dialog__item" type="button" ' +
                 ':class="{ \'is-checked\': isChecked(g), \'is-full\': isFull(g) }" :disabled="isFull(g)" role="checkbox" :aria-checked="String(isChecked(g) || isFull(g))" ' +
                 '@click="toggle(g)" data-name="component/selection UI/dialog/list">' +
-                '<span class="add-group-dialog__check" aria-hidden="true" data-name="Checkbox"><i v-if="isChecked(g) || isFull(g)" class="ic-v2-control-check-bold-line"></i></span>' +
+                // 공통 체크박스 sm 상자 (css/checkbox.css) — 행 전체가 버튼이라 input 없이 상태 클래스로
+                '<span class="stds-checkbox stds-checkbox-sm add-group-dialog__check" aria-hidden="true" data-name="Checkbox">' +
+                  '<span class="stds-checkbox__box" :class="{ \'is-checked\': isChecked(g) || isFull(g), \'is-disabled\': isFull(g) }">' +
+                    '<i class="ic-v2-control-check-bold-line"></i>' +
+                  '</span>' +
+                '</span>' +
                 '<span class="add-group-dialog__name">{{ g.title }}</span>' +
                 '<span class="add-group-dialog__count" data-name="badge">{{ g.gameIds.length }}</span>' +
               '</button>' +

@@ -80,13 +80,18 @@
 .stds-checkbox-lg.is-align-top .stds-checkbox__box { margin-top: 0.1rem; }
 
 /* ---- State ------------------------------------------------ */
+/* 상자만 다른 컨트롤(행 전체가 버튼인 목록 등) 안에 그릴 때는 input 없이
+   .stds-checkbox__box에 .is-checked · .is-indeterminate · .is-disabled를 직접 붙인다 */
 /* 선택 · 일부 선택 — 브랜드 채움, 테두리 없음 */
-.stds-checkbox__input:is(:checked, :indeterminate) + .stds-checkbox__box {
+.stds-checkbox__input:is(:checked, :indeterminate) + .stds-checkbox__box,
+.stds-checkbox__box:is(.is-checked, .is-indeterminate) {
   --stds-checkbox-bg: var(--stds-sem-color-brand-primary);
   --stds-checkbox-line: transparent;
 }
 .stds-checkbox__input:checked:not(:indeterminate) + .stds-checkbox__box > .ic-v2-control-check-bold-line,
-.stds-checkbox__input:indeterminate + .stds-checkbox__box > .ic-v2-control-indeterminate-line { display: block; }
+.stds-checkbox__input:indeterminate + .stds-checkbox__box > .ic-v2-control-indeterminate-line,
+.stds-checkbox__box.is-checked:not(.is-indeterminate) > .ic-v2-control-check-bold-line,
+.stds-checkbox__box.is-indeterminate > .ic-v2-control-indeterminate-line { display: block; }
 
 /* 포커스(키보드) — 미선택은 테두리 gray400(Figma 글로벌), 선택은 가장자리 1px 브랜드 + 안쪽 1px 흰 링 */
 .stds-checkbox__input:focus-visible + .stds-checkbox__box,
@@ -98,11 +103,13 @@
 
 /* 비활성 */
 .stds-checkbox:has(.stds-checkbox__input:disabled) { cursor: default; }
-.stds-checkbox__input:disabled + .stds-checkbox__box { --stds-checkbox-bg: var(--stds-sem-color-disabled-variant-3); }
-.stds-checkbox__input:disabled:is(:checked, :indeterminate) + .stds-checkbox__box {
+.stds-checkbox__input:disabled + .stds-checkbox__box,
+.stds-checkbox__box.is-disabled { --stds-checkbox-bg: var(--stds-sem-color-disabled-variant-3); }
+/* 선택 · 일부 선택 비활성 — 아이콘 disabled-variant-4
+   (Figma는 일부 선택 비활성만 glob white였는데 선택 비활성과 맞춤, 사용자 11-03) */
+.stds-checkbox__input:disabled:is(:checked, :indeterminate) + .stds-checkbox__box,
+.stds-checkbox__box.is-disabled:is(.is-checked, .is-indeterminate) {
   --stds-checkbox-bg: var(--stds-sem-color-disabled-variant-2);
   --stds-checkbox-icon: var(--stds-sem-color-disabled-variant-4);
 }
-/* Figma: 일부 선택 비활성 아이콘만 glob white (선택 비활성은 disabled-variant-4) — Figma 값 그대로 */
-.stds-checkbox__input:disabled:indeterminate + .stds-checkbox__box { --stds-checkbox-icon: var(--stds-glob-color-white); }
 .stds-checkbox__input:disabled ~ .stds-checkbox__label { color: var(--stds-sem-color-disabled-variant-1); }

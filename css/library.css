@@ -807,18 +807,8 @@
   cursor: pointer;
 }
 .add-group-dialog__item:not(:disabled):hover { background: var(--stds-glob-color-gray820); }
-.add-group-dialog__check {
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  width: 1.6rem;
-  height: 1.6rem;
-  border: 1px solid var(--stds-sem-color-border);
-  border-radius: var(--stds-glob-border-radius-sm);
-  background: var(--stds-sem-color-neutral-variant-3);
-  color: var(--stds-glob-color-white);
-}
-.add-group-dialog__check i { font-size: 1.2rem; }
+/* 체크 — 공통 체크박스 sm 상자 (css/checkbox.css, 사용자 11-03) */
+.add-group-dialog__check { flex: 0 0 auto; cursor: inherit; }
 .add-group-dialog__name {
   flex: 0 1 auto;
   min-width: 0;
@@ -843,12 +833,10 @@
   letter-spacing: -0.024rem;
   text-align: center;
 }
-/* 체크 — brand-primary 체크박스, 이름 Bold white */
-.add-group-dialog__item.is-checked .add-group-dialog__check { border: 0; background: var(--stds-sem-color-brand-primary); }
+/* 체크 — 이름 Bold white */
 .add-group-dialog__item.is-checked .add-group-dialog__name { color: var(--stds-glob-color-white); font-weight: 700; }
 /* 이미 다 들어 있는 그룹 — 비활성(체크된 채) */
 .add-group-dialog__item.is-full { cursor: default; }
-.add-group-dialog__item.is-full .add-group-dialog__check { border: 0; background: var(--stds-sem-color-disabled-variant-2); }
 .add-group-dialog__item.is-full .add-group-dialog__name { color: var(--stds-sem-color-disabled-variant-1); font-weight: 700; }
 .add-group-dialog__item.is-full .add-group-dialog__count { background: var(--stds-sem-color-disabled-variant-2); color: var(--stds-sem-color-disabled-variant-4); }
 /* 그룹 없음 — 그림 120 + 문구 (목록 라벨 아래 56 띄움 · 가로 가운데) */
