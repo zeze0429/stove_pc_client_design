@@ -1,7 +1,8 @@
 /**
  * 라이브러리 필터 레이어 — 보유게임 도구 줄 · 우측패널이 같이 쓴다 (빌드 없이 CDN Vue로 동작)
  * -------------------------------------------------------------
- * Figma 2026_웹전환 layer (1727:32579). 폭만 다르다: 보유게임 260 · 우측패널 240 (사용자 11-03).
+ * Figma 2026_웹전환 layer (1727:32579). 폭만 다르다: 보유게임 = 필터 버튼 + 여백 + 검색 필드(align-right),
+ * 우측패널 240 = 버튼 그룹 폭 (사용자 11-03).
  * 정렬은 둘 다 있고, 보유게임은 "게임" 줄만 · 우측패널은 "그룹" · "게임" 둘 다 (group-sort).
  * 체크박스는 공통 체크박스 sm(js/checkbox-component.js). 스타일은 css/library-filter.css.
  *
@@ -69,10 +70,13 @@ var LibraryFilterLayer = {
     modelValue: { type: Object, required: true },
     width: { type: String, default: '26rem' },
     groupSort: { type: Boolean, default: false },
+    // 오른쪽 끝을 맞출 요소를 돌려주는 함수 — 있으면 폭 = 그 요소 오른쪽 끝 - 레이어 왼쪽 (width 대신)
+    // 보유게임: 필터 버튼 + 여백 + 검색 필드 폭 (사용자 11-03)
+    alignRight: { type: Function, default: null },
   },
   emits: ['update:modelValue', 'close'],
   data: function () {
-    return { types: LIBRARY_FILTER_TYPES, genres: LIBRARY_FILTER_GENRES, maxHeight: null };
+    return { types: LIBRARY_FILTER_TYPES, genres: LIBRARY_FILTER_GENRES, maxHeight: null, fitWidth: null };
   },
   computed: {
     groupSortLabel: function () { return LIBRARY_GROUP_SORTS[this.modelValue.groupSort]; },
@@ -100,6 +104,8 @@ var LibraryFilterLayer = {
       var x = this.$el.getBoundingClientRect().left;
       var frac = x - Math.round(x);
       if (frac) this.$el.style.translate = -frac + 'px 0';
+      var edge = this.alignRight && this.alignRight();
+      if (edge) this.fitWidth = Math.round(edge.getBoundingClientRect().right) - Math.round(x) + 'px';
       var app = this.$el.closest('.app');
       var bottom = app ? app.getBoundingClientRect().bottom : window.innerHeight;
       var top = this.$el.getBoundingClientRect().top;
@@ -120,7 +126,7 @@ var LibraryFilterLayer = {
     reset: function () { this.$emit('update:modelValue', libraryFilterDefault()); },
   },
   template:
-    '<div class="library-filter" role="dialog" aria-label="필터" :style="{ width: width, maxHeight: maxHeight }" data-name="layer" @click.stop>' +
+    '<div class="library-filter" role="dialog" aria-label="필터" :style="{ width: fitWidth || width, maxHeight: maxHeight }" data-name="layer" @click.stop>' +
       '<div class="library-filter__head" data-name="header">' +
         '<p class="library-filter__title">필터</p>' +
         '<button class="library-filter__reset" type="button" @click="reset"><i class="ic-v2-control-refresh-line" aria-hidden="true"></i>초기화</button>' +
