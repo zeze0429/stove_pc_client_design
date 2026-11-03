@@ -319,33 +319,8 @@
 }
 
 /* 검색 — 186 x 32 */
-.library-search {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  width: 18.6rem;
-  height: 3.2rem;
-  padding: 0 1.2rem;
-  border: 0.1rem solid var(--stds-sem-color-border);
-  border-radius: var(--stds-glob-border-radius-lg);
-  background: var(--stds-sem-color-neutral-variant-3);
-  cursor: text;
-}
-.library-search input {
-  flex: 1 1 auto;
-  min-width: 0;
-  padding: 0;
-  border: 0;
-  outline: none;
-  background: transparent;
-  color: var(--stds-sem-color-on-surface-elevation-1);
-  font: inherit;
-  font-size: 1.2rem;
-  line-height: 1.8rem;
-  letter-spacing: -0.024rem;
-}
-.library-search input::placeholder { color: var(--stds-sem-color-placeholder); }
-.library-search i { flex: 0 0 auto; font-size: 1.6rem; color: var(--stds-sem-color-on-surface-elevation-2); }
+/* 공통 서치필드 outline sm (css/search-field.css) — 폭만 186 */
+.library-search { width: 18.6rem; }
 
 /* 카드 그리드 — 5단, 세로 간격 28 / 가로 20 */
 .library-grid {

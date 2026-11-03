@@ -302,7 +302,7 @@ var LibraryAddToGroupDialog = {
 };
 
 var LibraryMain = {
-  components: { 'add-to-group-dialog': LibraryAddToGroupDialog },
+  components: { 'add-to-group-dialog': LibraryAddToGroupDialog, 'stds-search-field': StdsSearchField },
   data: function () {
     return {
       owned: LIBRARY_OWNED.map(libraryGame),
@@ -578,10 +578,8 @@ var LibraryMain = {
               '<button type="button" role="tab" :aria-selected="view === \'list\'" :class="{ \'is-selected\': view === \'list\' }" aria-label="목록 보기" @click="view = \'list\'"><i class="ic-v2-community-view-list-fill"></i></button>' +
             '</div>' +
             '<button class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" type="button"><i class="ic-v2-community-filter-line"></i>필터</button>' +
-            '<label class="library-search">' +
-              '<input type="text" v-model="query" placeholder="게임 또는 검색어 입력" />' +
-              '<i class="ic-v2-navigation-search-line" aria-hidden="true"></i>' +
-            '</label>' +
+            // 공통 서치필드 outline sm (js/search-field-component.js, 사용자 11-03) — 폭만 186
+            '<stds-search-field v-model="query" class="library-search" placeholder="게임 또는 검색어 입력"></stds-search-field>' +
           '</div>' +
         '</div>' +
         '</div>' +
