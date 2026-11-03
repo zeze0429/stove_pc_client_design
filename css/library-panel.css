@@ -41,26 +41,13 @@
   display: flex;
   gap: 0.8rem;
 }
-.library-panel__create {
-  flex: 1 1 0;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  height: 3.2rem;
-  padding: 0 1.2rem;
-  border-radius: var(--stds-glob-border-radius-lg);
-  background: var(--stds-sem-color-neutral-variant-1);
-  color: var(--stds-glob-color-white); /* Figma glob white — 테마 상관없이 */
-  cursor: pointer;
-  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+/* 그룹 만들기 — 공통 버튼 secondary sm (css/button.css), 패널에서는 남는 폭을 채운다 */
+.library-panel__create { flex: 1 1 0; min-width: 0; }
+/* 그룹 20개 — 비활성. 시스템 비활성 색 대신 Figma 최신 디자인 값으로 고정 (예외, 사용자 11-03) */
+.stds-button.library-panel__create:disabled {
+  --stds-button-bg: var(--stds-glob-color-gray880);
+  --stds-button-fg: var(--stds-glob-color-gray750);
 }
-.library-panel__create i { font-size: 1.6rem; }
-.library-panel__create:not(:disabled):hover { background: var(--stds-sem-color-neutral-variant-1-hover); }
-.library-panel__create:not(:disabled):active { background: var(--stds-sem-color-neutral-variant-1-pressed); }
-/* 그룹 20개 — 비활성 (Figma ④ 최대 20개, glob 토큰 그대로) */
-.library-panel__create:disabled { background: var(--stds-glob-color-gray880); color: var(--stds-glob-color-gray750); cursor: default; }
 .library-panel__icon-btn {
   flex: 0 0 auto;
   display: grid;
@@ -743,23 +730,5 @@
   letter-spacing: -0.024rem;
 }
 .group-dialog__error i { flex: 0 0 auto; margin-top: 0.1rem; font-size: 1.6rem; }
-/* 만들기 — 90 x 44, brand-primary / 비활성 disabled-variant-3 · disabled-variant-1 */
-.group-dialog__submit {
-  flex: 0 0 auto;
-  width: 9rem;
-  height: 4.4rem;
-  padding: 0;
-  border: 0;
-  border-radius: var(--stds-glob-border-radius-lg);
-  background: var(--stds-sem-color-brand-primary);
-  color: var(--stds-glob-color-white);
-  font-size: 1.4rem;
-  font-weight: 500;
-  line-height: 2rem;
-  letter-spacing: -0.042rem;
-  cursor: pointer;
-  transition: background-color 0.12s;
-}
-.group-dialog__submit:hover { background: var(--stds-sem-color-brand-primary-hover); }
-.group-dialog__submit:active { background: var(--stds-sem-color-brand-primary-pressed); }
-.group-dialog__submit:disabled { background: var(--stds-sem-color-disabled-variant-3); color: var(--stds-sem-color-disabled-variant-1); cursor: default; }
+/* 만들기 — 공통 버튼 primary md, 폭만 90 고정 */
+.group-dialog__submit { width: 9rem; }

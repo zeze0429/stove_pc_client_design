@@ -231,22 +231,8 @@
   pointer-events: none;
 }
 
-/* 실행 · 업데이트 · 설치 버튼 — 32, 모서리 8, 브랜드 블루 */
-.library-action {
-  display: grid;
-  flex: 0 0 auto;
-  place-items: center;
-  width: 3.2rem;
-  height: 3.2rem;
-  padding: 0;
-  border-radius: var(--stds-glob-border-radius-lg);
-  background: var(--stds-sem-color-brand-blue);
-  color: var(--stds-glob-color-white);
-  cursor: pointer;
-}
-.library-action i { display: block; font-size: 2rem; line-height: 1; }
-.library-action:hover { background: var(--stds-sem-color-brand-blue-hover); }
-.library-action:active { background: var(--stds-sem-color-brand-blue-pressed); }
+/* 실행 · 업데이트 · 설치 버튼 — 공통 버튼 blue sm 아이콘만 (css/button.css).
+   아이콘은 시스템대로 20 → 16 (사용자 11-03) */
 
 /* ---- 보유게임 — 빠른 실행 아래 32 -------------------------------- */
 .library-owned { margin-top: 3.2rem; }
@@ -267,27 +253,8 @@
   margin-top: 1.6rem;
 }
 .library-toolbar__right { display: flex; align-items: center; gap: 0.8rem; }
-/* 게임 선택 · 필터 — 스토어 메인 "신작 더보기"(css/store-rest.css)와 같은 색 (neutral-variant-3) */
-.library-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  height: 3.2rem;
-  padding: 0 1.2rem;
-  border-radius: var(--stds-glob-border-radius-lg);
-  background: var(--stds-sem-color-neutral-variant-3);
-  color: var(--stds-sem-color-on-surface-elevation-1);
-  font-size: 1.2rem;
-  font-weight: 500;
-  line-height: 1.8rem;
-  letter-spacing: -0.024rem;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.library-btn i { font-size: 1.6rem; }
-.library-btn:hover { background: var(--stds-sem-color-neutral-variant-3-hover); }
-.library-btn:active { background: var(--stds-sem-color-neutral-variant-3-pressed); }
+/* 게임 선택 · 게임 선택 취소 · 필터 — 공통 버튼 tertiary sm (css/button.css, 사용자 11-03).
+   예전 neutral-variant-3 + on-surface-elevation-1에서 시스템 값으로 */
 
 /* 카드 / 목록 보기 토글 — 바탕은 아직 시멘틱 토큰이 없어 레퍼런스대로 글로벌 토큰
    (다크 gray-940 / 라이트 gray-100) */
@@ -778,26 +745,7 @@
   cursor: pointer;
 }
 .add-group-dialog__clear i { font-size: 1.6rem; }
-/* 완료 — 이름을 쓰면 brand-primary (사용자 지정, 가이드의 neutral-variant-1 대신) / 비어 있거나 에러면 비활성 */
-.add-group-dialog__done {
-  flex: 0 0 auto;
-  height: 4.4rem;
-  padding: 0 2rem;
-  border: 0;
-  border-radius: var(--stds-glob-border-radius-lg);
-  background: var(--stds-sem-color-brand-primary);
-  color: var(--stds-glob-color-white);
-  font-size: 1.4rem;
-  font-weight: 500;
-  line-height: 2rem;
-  letter-spacing: -0.042rem;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background-color 0.12s;
-}
-.add-group-dialog__done:not(:disabled):hover { background: var(--stds-sem-color-brand-primary-hover); }
-.add-group-dialog__done:not(:disabled):active { background: var(--stds-sem-color-brand-primary-pressed); }
-.add-group-dialog__done:disabled { background: var(--stds-sem-color-disabled-variant-3); color: var(--stds-sem-color-disabled-variant-1); cursor: default; }
+/* 완료 — 공통 버튼 primary md (사용자 지정, 가이드의 neutral-variant-1 대신) / 비어 있거나 에러면 비활성 */
 .add-group-dialog__error {
   display: flex;
   align-items: flex-start;
@@ -903,25 +851,11 @@
   font-weight: 400; /* Text4-R 13/22 (typography.css .stds-text4, 사용자 지정) */
   text-align: center;
 }
-/* 확인 — 44 꽉 채움, 체크한 그룹이 있어야 활성(brand-primary) */
+/* 확인 — 공통 버튼 primary md, 하단에 꽉 채움. 체크한 그룹이 있어야 활성 */
 .add-group-dialog__confirm {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 1;
-  height: 4.4rem;
-  border: 0;
-  border-radius: var(--stds-glob-border-radius-lg);
-  background: var(--stds-sem-color-brand-primary);
-  color: var(--stds-glob-color-white);
-  font-size: 1.4rem;
-  font-weight: 500;
-  line-height: 2rem;
-  letter-spacing: -0.042rem;
-  cursor: pointer;
-  transition: background-color 0.12s;
 }
-.add-group-dialog__confirm:hover { background: var(--stds-sem-color-brand-primary-hover); }
-.add-group-dialog__confirm:active { background: var(--stds-sem-color-brand-primary-pressed); }
-.add-group-dialog__confirm:disabled { background: var(--stds-sem-color-disabled-variant-3); color: var(--stds-sem-color-disabled-variant-1); cursor: default; }

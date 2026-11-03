@@ -92,18 +92,5 @@
 /* 본문 속 링크 한 줄 — Figma가 토큰이 아닌 브랜드 오렌지를 직접 지정 */
 .notice-dialog__link { color: var(--stds-sem-color-brand-primary); text-decoration: underline; }
 
-.notice-dialog__close-btn {
-  width: 12.8rem;
-  max-width: 26.4rem;
-  /* 보더까지 포함해 44 — 패딩 12로 두면 보더 2px만큼 더 커진다 */
-  height: 4.4rem;
-  padding: 0 2rem;
-  border-radius: var(--stds-glob-border-radius-lg);
-  border: 1px solid var(--stds-sem-color-border);
-  background: var(--stds-sem-color-neutral-variant-3);
-  color: var(--stds-sem-color-on-surface-elevation-2);
-  text-align: center;
-  transition: background .15s;
-}
-.notice-dialog__close-btn:hover { background: var(--stds-sem-color-neutral-variant-3-hover); }
-.notice-dialog__close-btn:active { background: var(--stds-sem-color-neutral-variant-3-pressed); }
+/* 닫기 — 공통 버튼 outline md (css/button.css, 사용자 11-03), 폭만 128 */
+.notice-dialog__close-btn { width: 12.8rem; max-width: 26.4rem; }

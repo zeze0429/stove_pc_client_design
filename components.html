@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/foundations.css?v=10" />
   <link rel="stylesheet" href="css/typography.css?v=12" />
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=8" />
-  <link rel="stylesheet" href="css/button.css?v=1" />
+  <link rel="stylesheet" href="css/button.css?v=2" />
   <style>
     /* 미리보기 페이지 전용 배치 — 컴포넌트 스타일은 각 css 파일에 있다 */
     body {
@@ -39,7 +39,7 @@
   <div id="components-mount"></div>
 
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <script src="js/button-component.js?v=1"></script>
+  <script src="js/button-component.js?v=2"></script>
   <script>
     Vue.createApp({
       components: { StdsButton: StdsButton },
@@ -95,6 +95,19 @@
                 '<td><stds-button :size="z" icon="ic-v2-sample">버튼</stds-button></td>' +
                 '<td><stds-button :size="z" has-arrow>버튼</stds-button></td>' +
                 '<td><stds-button :size="z" icon="ic-v2-sample" aria-label="버튼"></stds-button></td>' +
+              '</tr>' +
+            '</tbody></table>' +
+          '</section>' +
+
+          '<section class="cp-section">' +
+            '<h2 class="stds-title6 fw-bold">Button · Radius=Full</h2>' +
+            '<p class="stds-text3">radius="full" (.stds-button-full) — 사이즈·여백·상태는 같고 모서리만 원형</p>' +
+            '<table class="cp-table stds-text4"><tbody>' +
+              '<tr v-for="z in sizes" :key="z"><th>{{ z }}</th>' +
+                '<td><stds-button :size="z" radius="full">버튼</stds-button></td>' +
+                '<td><stds-button :size="z" radius="full" variant="tertiary" icon="ic-v2-sample">버튼</stds-button></td>' +
+                '<td><stds-button :size="z" radius="full" variant="white" has-arrow>버튼</stds-button></td>' +
+                '<td><stds-button :size="z" radius="full" variant="secondary" class="is-focus" icon="ic-v2-sample" aria-label="버튼"></stds-button></td>' +
               '</tr>' +
             '</tbody></table>' +
           '</section>' +

@@ -140,7 +140,7 @@ var LibraryCreateGroupDialog = {
             '</label>' +
             '<p v-if="error" class="group-dialog__error" data-name="Input/Tag"><i class="ic-v2-state-warning-circle-fill" aria-hidden="true"></i>{{ error }}</p>' +
           '</div>' +
-          '<button class="group-dialog__submit" type="button" :disabled="!canSubmit" @click="submit" data-name="Button">만들기</button>' +
+          '<button class="stds-button stds-button-primary stds-button-md group-dialog__submit" type="button" :disabled="!canSubmit" @click="submit" data-name="Button">만들기</button>' +
         '</div>' +
       '</div>' +
     '</layer-dialog>',
@@ -854,7 +854,7 @@ var LibraryPanel = {
           '<p class="library-panel__added-title stds-cap1 fw-medium"><b>{{ addedNotice.count }}개 게임</b>을 다른 그룹에 추가했습니다.</p>' +
           '<span class="library-panel__added-group" data-name="group name"><i class="ic-v2-control-long-arrow-right-line" aria-hidden="true"></i><span>{{ addedNotice.title }}</span></span>' +
         '</div>' +
-        '<button class="library-panel__create stds-btn3 fw-medium" type="button" :disabled="!canCreate" @click="startCreate">' +
+        '<button class="stds-button stds-button-secondary stds-button-sm library-panel__create" type="button" :disabled="!canCreate" @click="startCreate">' +
           '<i class="ic-v2-control-add-line" aria-hidden="true"></i>그룹 만들기' +
         '</button>' +
         '<button class="library-panel__icon-btn" type="button" aria-label="필터" data-name="btn/icon"><i class="ic-v2-community-filter-line"></i></button>' +

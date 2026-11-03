@@ -5,6 +5,7 @@
  *
  *   <stds-button variant="outline" size="sm" icon="ic-v2-object-download-line">다운로드</stds-button>
  *   <stds-button has-arrow>더보기</stds-button>
+ *   <stds-button variant="white" size="sm" radius="full">설정</stds-button>   ← 알약형
  *   <stds-button icon="ic-v2-control-close-line" aria-label="닫기"></stds-button>   ← 텍스트 없으면 아이콘만
  *
  * 스타일은 css/button.css. 컴포넌트 없이 클래스만 붙여 써도 같은 모양이 나온다.
@@ -21,6 +22,8 @@ var StdsButton = {
     isDisabled: { type: Boolean, default: false },
     // 오른쪽 화살표 — Figma Icon=trailing은 화살표 전용
     hasArrow: { type: Boolean, default: false },
+    // 모서리 — Figma Radius=Default(라운드사각형) / Full(알약형)
+    radius: { type: String, default: 'default', validator: function (v) { return v === 'default' || v === 'full'; } },
   },
   emits: ['click'],
   computed: {
@@ -30,7 +33,7 @@ var StdsButton = {
         'stds-button',
         'stds-button-' + this.variant,
         'stds-button-' + this.size,
-        { 'is-icon-only': this.iconOnly, 'has-arrow': this.hasArrow && !this.iconOnly },
+        { 'stds-button-full': this.radius === 'full', 'is-icon-only': this.iconOnly, 'has-arrow': this.hasArrow && !this.iconOnly },
       ];
     },
   },

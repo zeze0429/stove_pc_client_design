@@ -66,7 +66,7 @@ var NoticeDialog = {
         '</div>' +
       '</div>' +
       '<template #footer>' +
-        '<button class="notice-dialog__close-btn stds-btn2 fw-medium" type="button" ' +
+        '<button class="stds-button stds-button-outline stds-button-md notice-dialog__close-btn" type="button" ' +
           '@click="$emit(\'close\')">닫기</button>' +
       '</template>' +
     '</layer-dialog>',

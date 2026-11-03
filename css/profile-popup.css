@@ -128,17 +128,7 @@
   text-overflow: ellipsis;
 }
 .profile-money__value { margin: 0; color: var(--stds-sem-color-on-surface-elevation-1); white-space: nowrap; }
-.profile-money__charge {
-  flex: 0 0 auto;
-  padding: 0.3rem 0.8rem;
-  border-radius: var(--stds-glob-border-radius-circle);
-  background: var(--stds-sem-color-neutral-variant-2);
-  color: var(--stds-sem-color-on-surface-elevation-2);
-  white-space: nowrap;
-  transition: background .15s;
-}
-.profile-money__charge:hover { background: var(--stds-sem-color-neutral-variant-2-hover); }
-.profile-money__charge:active { background: var(--stds-sem-color-neutral-variant-2-pressed); }
+/* 충전 — 공통 버튼 tertiary xs 알약형 (css/button.css) */
 
 .profile-security {
   flex: 0 0 auto;

@@ -134,7 +134,7 @@ var ProfilePopup = {
                   '<img :src="m.img" alt="" aria-hidden="true" />' +
                   '<span class="profile-money__label stds-title8 fw-bold">{{ m.label }}</span>' +
                 '</span>' +
-                '<button v-if="m.charge" class="profile-money__charge stds-cap1 fw-medium" type="button">충전</button>' +
+                '<button v-if="m.charge" class="stds-button stds-button-tertiary stds-button-xs stds-button-full profile-money__charge" type="button">충전</button>' +
               '</div>' +
               '<p class="profile-money__value stds-title8 fw-medium">{{ shown[m.id].toLocaleString() }}</p>' +
             '</div>' +

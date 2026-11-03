@@ -257,7 +257,7 @@ var LibraryAddToGroupDialog = {
         // 그룹 만들기 — 버튼(tab) / 누르면 입력칸 + 완료
         '<div v-if="!creating" class="add-group-dialog__create">' +
           // 우측패널의 그룹 만들기 버튼 그대로(.library-panel__create) — 폭만 hug
-          '<button class="library-panel__create add-group-dialog__tab stds-btn3 fw-medium" type="button" :disabled="!canCreate" @click="startCreate" data-name="btn/create group">' +
+          '<button class="stds-button stds-button-secondary stds-button-sm library-panel__create add-group-dialog__tab" type="button" :disabled="!canCreate" @click="startCreate" data-name="btn/create group">' +
             '<i class="ic-v2-control-add-line" aria-hidden="true"></i>그룹 만들기' +
           '</button>' +
         '</div>' +
@@ -270,7 +270,7 @@ var LibraryAddToGroupDialog = {
                 'placeholder="그룹 이름을 입력해주세요 (최대 ' + LIBRARY_ADD_GROUP_NAME_MAX + '자)" @input="onInput" @scroll="checkOverflow" @keyup="checkOverflow" @keydown="onKey" @focus="focused = true" @blur="focused = false" />' +
               '<button v-if="text" class="add-group-dialog__clear" type="button" aria-label="지우기" @mousedown.prevent @click="clear"><i class="ic-v2-control-close-circle-fill"></i></button>' +
             '</label>' +
-            '<button class="add-group-dialog__done" type="button" :disabled="!canSubmitName" @mousedown.prevent @click="submitName" data-name="Button">완료</button>' +
+            '<button class="stds-button stds-button-primary stds-button-md add-group-dialog__done" type="button" :disabled="!canSubmitName" @mousedown.prevent @click="submitName" data-name="Button">완료</button>' +
           '</div>' +
           '<p v-if="error" class="add-group-dialog__error" data-name="유효성문구"><i class="ic-v2-state-warning-circle-fill" aria-hidden="true"></i>{{ error }}</p>' +
         '</div>' +
@@ -296,7 +296,7 @@ var LibraryAddToGroupDialog = {
             '<p class="stds-text4">그룹을 만들어 게임을 추가해 보세요.</p>' +
           '</div>' +
         '</div>' +
-        '<button v-if="groups.length" class="add-group-dialog__confirm" type="button" :disabled="!canConfirm" @click="confirm" data-name="Button">확인</button>' +
+        '<button v-if="groups.length" class="stds-button stds-button-primary stds-button-md add-group-dialog__confirm" type="button" :disabled="!canConfirm" @click="confirm" data-name="Button">확인</button>' +
       '</div>' +
     '</layer-dialog>',
 };
@@ -535,7 +535,7 @@ var LibraryMain = {
                     // 게임: 최근 플레이 · 총 시간 / 광고: 같은 자리에 광고 문구
                     '<span v-if="g.ad" class="library-quick__meta"><span>{{ g.message }}</span></span>' +
                     '<span v-else class="library-quick__meta"><span>{{ g.lastPlayed }}</span><template v-if="g.total"><i aria-hidden="true"></i><span>{{ g.total }}</span></template></span>' +
-                    '<button class="library-action" type="button" :aria-label="actionLabel(g.action)"><i :class="actionIcon(g.action)"></i></button>' +
+                    '<button class="stds-button stds-button-blue stds-button-sm is-icon-only" type="button" :aria-label="actionLabel(g.action)"><i :class="actionIcon(g.action)"></i></button>' +
                   '</div>' +
                 '</div>' +
               '</div>' +
@@ -555,7 +555,7 @@ var LibraryMain = {
         '<div class="library-owned__divider"></div>' +
         // 선택 UI — 도구 줄 자리에 게임 추가 취소 + 안내 문구 (Figma ⑦ · 0825 게임 추가 취소)
         '<div v-if="selecting" class="library-toolbar library-toolbar--select" data-name="filter area">' +
-          '<button class="library-btn" type="button" @click="cancelAdd"><i class="ic-v2-control-long-arrow-left-line"></i>{{ addTarget ? \'게임 추가 취소\' : \'게임 선택 취소\' }}</button>' +
+          '<button class="stds-button stds-button-tertiary stds-button-sm" type="button" @click="cancelAdd"><i class="ic-v2-control-long-arrow-left-line"></i>{{ addTarget ? \'게임 추가 취소\' : \'게임 선택 취소\' }}</button>' +
           // 메시지 영역 (Figma 클라이언트_v3.1 67953:409405) — 게임 선택 전 / 선택 후
           '<p class="library-select-msg" role="status" data-name="안내 문구">' +
             '<img class="library-select-msg__icon" src="assets/library/img_info.png" alt="" />' +
@@ -564,13 +564,13 @@ var LibraryMain = {
           '</p>' +
         '</div>' +
         '<div v-else class="library-toolbar" data-name="filter area">' +
-          '<button class="library-btn" type="button" @click="startSelect"><i class="ic-v2-control-check-circle-line"></i>게임 선택</button>' +
+          '<button class="stds-button stds-button-tertiary stds-button-sm" type="button" @click="startSelect"><i class="ic-v2-control-check-circle-line"></i>게임 선택</button>' +
           '<div class="library-toolbar__right">' +
             '<div class="library-view-toggle" role="tablist" aria-label="보기 방식">' +
               '<button type="button" role="tab" :aria-selected="view === \'grid\'" :class="{ \'is-selected\': view === \'grid\' }" aria-label="카드 보기" @click="view = \'grid\'"><i class="ic-v2-community-view-card-fill"></i></button>' +
               '<button type="button" role="tab" :aria-selected="view === \'list\'" :class="{ \'is-selected\': view === \'list\' }" aria-label="목록 보기" @click="view = \'list\'"><i class="ic-v2-community-view-list-fill"></i></button>' +
             '</div>' +
-            '<button class="library-btn" type="button"><i class="ic-v2-community-filter-line"></i>필터</button>' +
+            '<button class="stds-button stds-button-tertiary stds-button-sm" type="button"><i class="ic-v2-community-filter-line"></i>필터</button>' +
             '<label class="library-search">' +
               '<input type="text" v-model="query" placeholder="게임 또는 검색어 입력" />' +
               '<i class="ic-v2-navigation-search-line" aria-hidden="true"></i>' +
@@ -589,7 +589,7 @@ var LibraryMain = {
               '<span v-if="selecting" class="library-card__check" aria-hidden="true" data-name="Checkbox">' +
                 '<i v-if="isSelected(g) || addedIds[g.id]" class="ic-v2-control-check-bold-line"></i>' +
               '</span>' +
-              '<button v-else class="library-action library-card__action" type="button" :aria-label="actionLabel(g.action)"><i :class="actionIcon(g.action)"></i></button>' +
+              '<button v-else class="stds-button stds-button-blue stds-button-sm is-icon-only library-card__action" type="button" :aria-label="actionLabel(g.action)"><i :class="actionIcon(g.action)"></i></button>' +
               '<span v-if="g.badge" class="library-card__badge">{{ g.badge }}</span>' +
             '</div>' +
             '<div class="library-card__text">' +
