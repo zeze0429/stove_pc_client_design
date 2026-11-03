@@ -110,6 +110,10 @@ var LibraryFilterLayer = {
     },
   },
   mounted: function () {
+    // 필터는 한 번에 하나만 — 다른 쪽(보유게임 ↔ 우측패널) 필터가 열리면 이쪽은 닫는다 (사용자 11-03)
+    this.onOtherOpen = function (e) { if (e.detail !== this) this.$emit('close'); }.bind(this);
+    document.dispatchEvent(new CustomEvent('library-filter-open', { detail: this }));
+    document.addEventListener('library-filter-open', this.onOtherOpen);
     this.place();
     this.onResize = this.place.bind(this);
     window.addEventListener('resize', this.onResize);
@@ -133,6 +137,7 @@ var LibraryFilterLayer = {
     window.removeEventListener('resize', this.onResize);
     window.removeEventListener('scroll', this.onResize, true);
     document.removeEventListener('keydown', this.onKeydown);
+    document.removeEventListener('library-filter-open', this.onOtherOpen);
     document.removeEventListener('wheel', this.onWheel, { capture: true });
     document.removeEventListener('touchmove', this.onWheel, { capture: true });
   },
