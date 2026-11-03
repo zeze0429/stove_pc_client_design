@@ -460,7 +460,7 @@
   border: 1px solid var(--stds-sem-color-inverse-variant-1);
   border-radius: var(--stds-glob-border-radius-lg);
   background: var(--stds-sem-color-surface-layer);
-  box-shadow: 0 0.4rem 1rem var(--stds-glob-color-black-10); /* Figma shadow/4 */
+  box-shadow: var(--stds-glob-box-shadow-4); /* Figma shadow/4 */
 }
 .library-panel-menu.is-measuring { visibility: hidden; }
 .library-panel-menu__item {
@@ -509,7 +509,7 @@
   border: 1px solid var(--stds-sem-color-inverse-variant-1);
   border-radius: var(--stds-glob-border-radius-lg);
   background: var(--stds-sem-color-surface-layer);
-  box-shadow: 0 0.4rem 1rem var(--stds-glob-color-black-10); /* Figma shadow/4 */
+  box-shadow: var(--stds-glob-box-shadow-4); /* Figma shadow/4 */
   backface-visibility: hidden;
 }
 /* 1뎁스 — 위아래 6(보더 포함), 폭은 내용만큼 176~240 (긴 항목은 줄바꿈) */

@@ -32,7 +32,7 @@
   padding: 0 3.2rem 0 0.8rem;
   border-radius: var(--stds-glob-border-radius-circle);
   background: var(--stds-sem-color-surface-elevation-1);
-  box-shadow: 0 0.2rem 0.4rem var(--stds-glob-color-black-6);
+  box-shadow: var(--stds-glob-box-shadow-2);
 }
 
 /* 탭 목록 — 선택 칩은 목록 뒤에 깔린 공유 인디케이터가 미끄러져 다닌다 */

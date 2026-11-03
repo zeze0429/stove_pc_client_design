@@ -367,7 +367,7 @@ ul { list-style: none; margin: 0; padding: 0; }
     radial-gradient(120% 140% at 100% 0%, var(--stds-sem-color-surface-highlight2) 0%, transparent 55%),
     var(--stds-sem-color-surface-elevation-1);
   border: 1px solid var(--stds-sem-color-border);
-  box-shadow: var(--shadow-4);
+  box-shadow: var(--stds-glob-box-shadow-4);
 }
 .hero__eyebrow { color: var(--stds-sem-color-brand-primary); margin: 0 0 var(--spacing-8); }
 .hero__title { color: var(--stds-sem-color-on-surface-elevation-1-pressed); margin: 0 0 var(--spacing-8); }
@@ -504,7 +504,7 @@ ul { list-style: none; margin: 0; padding: 0; }
   overflow: hidden;
   transition: transform .15s, box-shadow .15s;
 }
-.game-card:hover { transform: translateY(-0.4rem); box-shadow: var(--shadow-12); }
+.game-card:hover { transform: translateY(-0.4rem); box-shadow: var(--stds-glob-box-shadow-12); }
 .game-card__thumb {
   aspect-ratio: 16 / 10;
   display: grid; place-items: center;

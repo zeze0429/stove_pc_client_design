@@ -444,7 +444,7 @@
   padding: 2rem;
   border-radius: var(--stds-glob-border-radius-xl);
   background: var(--stds-sem-color-neutral-variant-3);
-  box-shadow: 0 0.4rem 1rem var(--stds-glob-color-black-10);
+  box-shadow: var(--stds-glob-box-shadow-4);
 }
 .lounge-boost-card__body { display: flex; flex-direction: column; gap: 1.6rem; }
 .lounge-boost-card__text {
