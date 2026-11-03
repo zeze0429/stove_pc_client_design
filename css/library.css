@@ -52,7 +52,7 @@
 .library-quick__arrow:not(:disabled):active { background: var(--stds-sem-color-interaction-pressed); }
 .library-quick__arrow:disabled { color: var(--stds-sem-color-inverse-elevation-2); cursor: default; }
 .library-quick__viewport {
-  margin-top: 1.6rem;
+  margin-top: 1.2rem; /* 타이틀 줄 아래 12 (사용자 변경 16 → 12, 11-03) */
   overflow: hidden;
 }
 .library-quick__track {
@@ -256,7 +256,7 @@
 .proto-library-quick-off .library-owned { margin-top: 0; }
 .library-owned__divider {
   height: 0.1rem;
-  margin-top: 0.8rem;
+  margin-top: 1.2rem; /* 타이틀 아래 12 (사용자 변경 8 → 12, 11-03) */
   background: var(--stds-sem-color-inverse-elevation-3);
 }
 .library-toolbar {
