@@ -372,13 +372,16 @@ var LibraryPanel = {
       var i = this.rowOrder[rowKey];
       return i != null && i >= this.loadedRows;
     },
-    // 이름 막대 길이 — 게임명 길이에 맞춰 들쭉날쭉하게 (행 이름 칸 안에서 40~90%)
+    // 이름 막대 길이 — 무작위 40~90% (사용자 11-03). 같은 행은 다시 그려도 길이가 그대로이게 기억해 둔다
     skeletonNameWidth: function (game) {
-      return Math.min(90, Math.max(40, game.name.length * 4)) + '%';
+      var map = this._skeletonWidths || (this._skeletonWidths = {});
+      if (!map[game.id]) map[game.id] = Math.round(40 + Math.random() * 50) + '%';
+      return map[game.id];
     },
     // 10개씩 나눠 불러오기 — SGVN 로딩 개선(200개 단위) 시안을 우리 100개에 맞춰 작은 단위로 (사용자 11-03)
     startSkeletonLoad: function () {
       clearInterval(this._skeletonTimer);
+      this._skeletonWidths = {}; // 다시 재생할 때마다 막대 길이도 새로
       var vm = this;
       var total = Object.keys(this.rowOrder).length;
       this.loadedRows = LIBRARY_PANEL_LOAD_STEP;

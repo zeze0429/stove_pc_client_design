@@ -747,23 +747,24 @@
    막대 모서리 0. 행 크기 · 여백은 실제 행(.game-group__list)과 같고
    썸네일 자리는 실제 썸네일 모양(18 · 모서리 md), 이름 자리는 cap1 글자 높이 12 막대.
    애니메이션은 웨이브(흐르는 빛) — Storybook 가이드의 웨이브 옵션, 사용자 요청 (11-03).
-   빛은 한 단계 밝은 inverse-elevation-4, 화면 기준(background-attachment: fixed)이라 모든 블록을 한 줄기로 지나간다 */
+   빛은 한 단계 밝은 inverse-elevation-4, 비스듬히(115deg) 기운 한 줄기. 화면 기준(background-attachment: fixed)이라
+   모든 블록을 같은 빛줄기가 지나간다 — 타일을 창 높이 전체(100%)로 넓게 깔아 기운 줄기가 위아래로 끊기지 않게 */
 .game-group__list--skeleton { cursor: default; pointer-events: none; }
 .game-group__skeleton {
   flex: 0 0 auto;
   background-color: var(--stds-sem-color-inverse-elevation-7);
-  background-image: linear-gradient(90deg, transparent 0, var(--stds-sem-color-inverse-elevation-4) 50%, transparent 100%);
+  background-image: linear-gradient(115deg, transparent 42%, var(--stds-sem-color-inverse-elevation-4) 50%, transparent 58%);
   background-repeat: no-repeat;
-  background-size: 16rem 100%;
+  background-size: 80rem 100%;
   background-attachment: fixed;
-  animation: library-skeleton-wave 1.6s linear infinite;
+  animation: library-skeleton-wave 2s linear infinite;
 }
 .game-group__skeleton--thumb { width: 1.8rem; height: 1.8rem; border-radius: var(--stds-glob-border-radius-md); }
 .game-group__skeleton--name { flex: 0 1 auto; height: 1.2rem; }
-/* 우측패널(창 오른쪽 280) 구간을 왼쪽 → 오른쪽으로 쓸고 지나간다 */
+/* 우측패널(창 오른쪽 280) 구간을 왼쪽 → 오른쪽으로 쓸고 지나간다 — 기운 줄기 끝까지 패널을 다 지나도록 넉넉히 */
 @keyframes library-skeleton-wave {
-  from { background-position: calc(100vw - 44rem) 0; }
-  to { background-position: 100vw 0; }
+  from { background-position: calc(100vw - 100rem) 0; }
+  to { background-position: calc(100vw + 2rem) 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .game-group__skeleton { animation: none; background-image: none; }
