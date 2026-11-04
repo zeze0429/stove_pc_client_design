@@ -522,6 +522,14 @@
   padding: calc(0.6rem - 1px) 0 calc(0.8rem - 1px);
   transform: rotateY(180deg);
 }
+/* 보기 옵션 "컨텍스트 메뉴 블러" (테스트) — 바탕을 surface-layer 반투명으로 비우고 뒤 화면을 흐린다 (macOS 메뉴 느낌).
+   그룹 메뉴 · 게임 메뉴 공통. 블러 · 투명도는 임시값 — 확정되면 토큰으로 */
+.library-panel-menu.is-blur,
+.game-menu.is-blur .game-menu__face {
+  background: color-mix(in srgb, var(--stds-sem-color-surface-layer) 72%, transparent);
+  -webkit-backdrop-filter: blur(2rem) saturate(1.8);
+  backdrop-filter: blur(2rem) saturate(1.8);
+}
 /* 안 보이는 면은 클릭을 받지 않는다 */
 .game-menu__flip:not(.is-flipped) .game-menu__face--back,
 .game-menu__flip.is-flipped .game-menu__face--front { pointer-events: none; }

@@ -267,6 +267,7 @@ var LibraryPanel = {
       selectedRows: [], // 선택한 게임 행 (rowKey) — Ctrl/⌘ 클릭 추가 · 해제, Shift 클릭 범위 (Figma ⑫ "여러개 선택 가능(키보드 조작)")
       selectAnchor: null, // Shift 범위 선택 기준 행
       createDialog: null, // 그룹 만들기 팝업 { gameIds } — 게임 메뉴에서 열면 만든 그룹에 그 게임을 넣는다
+      menuBlur: protoSettingsRead().contextMenuBlur, // 보기 옵션 "컨텍스트 메뉴 블러" — 메뉴 바탕을 반투명 + 배경 블러로 (테스트)
       // 패널 스켈레톤 (보기 옵션) — 화면 순서대로 앞에서부터 이만큼만 불러온 상태, 나머지 행은 스켈레톤
       loadedRows: Infinity,
       filter: libraryFilterDefault(), // 필터 레이어 (js/library-filter-component.js) — 패널은 정렬에 그룹 · 게임 둘 다
@@ -600,16 +601,24 @@ var LibraryPanel = {
     // 1 · 2뎁스 너비는 같다(1뎁스 기준, 0907). 위치는 열 때 한 번만 잡고 플립 중엔 다시 재지 않는다 (플립 가이드)
     openGameMenu: function (e, game, rowKey) {
       if (this.isStaticRow(e.currentTarget)) return;
+      this.showGameMenu(game, rowKey, e.clientX, e.clientY, false);
+    },
+    // 보유게임 카드 우클릭 — 같은 게임 메뉴를 카드 위(패널 밖)에서 연다 (library-component의 library-game-menu 이벤트)
+    onCardGameMenu: function (e) {
+      var d = e.detail;
+      var game = this.owned.find(function (g) { return g.id === d.gameId; });
+      if (game) this.showGameMenu(game, null, d.x, d.y, true);
+    },
+    // outside = 패널 밖에서 연 메뉴 — 패널 안으로 끌어오지 않고 창 안 8 여백 안에서만 맞춘다
+    showGameMenu: function (game, rowKey, x, y, outside) {
       this.closeMenu();
       this.btnTip = null;
       this.titleTip = null;
       this.menuTip = null;
       this.clearHover();
       if (!this.gameToggles[game.id]) this.gameToggles[game.id] = Object.assign({}, LIBRARY_GAME_TOGGLE_DEFAULT);
-      var x = e.clientX;
-      var y = e.clientY;
       // 선택한 행(2개 이상)을 우클릭하면 n개 메뉴, 선택 밖 행을 우클릭하면 선택을 풀고 그 게임 1개 메뉴
-      var multi = this.selectedRows.length > 1 && this.selectedRows.indexOf(rowKey) >= 0;
+      var multi = !!rowKey && this.selectedRows.length > 1 && this.selectedRows.indexOf(rowKey) >= 0;
       if (!multi) { this.selectedRows = []; this.selectAnchor = null; }
       this.gameMenu = {
         gameId: game.id, gameIds: multi ? this.selectedGameIds() : [game.id], multi: multi,
@@ -619,7 +628,7 @@ var LibraryPanel = {
         var el = this.$refs.gameMenuEl;
         if (!el || !this.gameMenu) return;
         var r = el.querySelector('.game-menu__face--front').getBoundingClientRect();
-        var left = this.clampToPanel(x, r.width);
+        var left = outside ? Math.max(8, Math.min(x, window.innerWidth - 8 - r.width)) : this.clampToPanel(x, r.width);
         var top = y + r.height > window.innerHeight - 8 ? y - r.height : y; // 아래가 모자라면 위로
         this.gameMenu.left = left;
         this.gameMenu.top = Math.max(8, top);
@@ -887,7 +896,8 @@ var LibraryPanel = {
     var vm = this;
     var ps = protoSettingsRead();
     if (ps.libraryPanelSkeleton) { this._skeletonAt = ps.libraryPanelSkeletonAt; this.startSkeletonLoad(); }
-    protoSettingsSubscribe(function (s) { vm.applySkeletonSetting(s); });
+    protoSettingsSubscribe(function (s) { vm.applySkeletonSetting(s); vm.menuBlur = s.contextMenuBlur; });
+    window.addEventListener('library-game-menu', this.onCardGameMenu);
     this.updateThumb();
   },
   unmounted: function () {
@@ -902,6 +912,7 @@ var LibraryPanel = {
     window.removeEventListener('resize', this.updateThumb);
     window.removeEventListener('resize', this.closeMenu);
     window.removeEventListener('resize', this.closeGameMenu);
+    window.removeEventListener('library-game-menu', this.onCardGameMenu);
   },
   template:
     '<div class="library-panel" data-name="layout/library/pannel">' +
@@ -1007,7 +1018,7 @@ var LibraryPanel = {
         '<span class="game-group__badge-tooltip-tail" :style="{ marginLeft: btnTip.tailLeft + \'px\' }"></span>' +
         '<span class="game-group__badge-tooltip-body stds-cap1 fw-medium">{{ btnTip.text }}</span>' +
       '</div>' +
-      '<div v-if="menu" ref="menuEl" class="library-panel-menu" :class="{ \'is-measuring\': menu.measuring }" ' +
+      '<div v-if="menu" ref="menuEl" class="library-panel-menu" :class="{ \'is-measuring\': menu.measuring, \'is-blur\': menuBlur }" ' +
         ':style="{ left: menu.left + \'px\', top: menu.top + \'px\' }" role="menu" data-name="컨텍스트메뉴" @contextmenu.prevent>' +
         '<template v-for="(item, i) in menuItems" :key="i">' +
           '<div v-if="item.divider" class="library-panel-menu__div" aria-hidden="true"></div>' +
@@ -1016,7 +1027,7 @@ var LibraryPanel = {
       '</div>' +
 
       // 게임 우클릭 메뉴 — 앞면(1뎁스) · 뒷면(2뎁스)을 rotateY로 뒤집는다 (Figma 컨텍스트메뉴 플립 애니메이션 가이드)
-      '<div v-if="gameMenu" ref="gameMenuEl" class="game-menu" :class="{ \'is-measuring\': gameMenu.measuring }" ' +
+      '<div v-if="gameMenu" ref="gameMenuEl" class="game-menu" :class="{ \'is-measuring\': gameMenu.measuring, \'is-blur\': menuBlur }" ' +
         ':style="{ left: gameMenu.left + \'px\', top: gameMenu.top + \'px\' }" @contextmenu.prevent data-name="컨텍스트메뉴">' +
         '<div class="game-menu__flip" :class="{ \'is-flipped\': gameMenu.depth === 2 }">' +
           // 앞면 — 1뎁스

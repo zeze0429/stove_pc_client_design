@@ -465,6 +465,11 @@ var LibraryMain = {
       if (i >= 0) this.selected.splice(i, 1);
       else this.selected.push(g.id);
     },
+    // 카드 우클릭 — 우측패널의 게임 메뉴를 그 자리에 연다 (메뉴 · 그룹 동작은 패널이 맡는다). 선택 UI 중에는 열지 않는다
+    openCardMenu: function (e, g) {
+      if (this.selecting) return;
+      window.dispatchEvent(new CustomEvent('library-game-menu', { detail: { gameId: g.id, x: e.clientX, y: e.clientY } }));
+    },
     // 그룹에 추가 팝업 확인 — 체크한 그룹마다 아직 없는 게임만 넣고, 선택 UI를 끝내고 토스트 (사용자 결정: 종료 + 토스트)
     confirmAddGroups: function (groupIds) {
       var self = this;
@@ -603,7 +608,7 @@ var LibraryMain = {
         '<ul class="library-grid">' +
           '<li v-for="g in filteredOwned" :key="g.id" class="library-card" ' +
             ':class="{ \'is-selectable\': selecting, \'is-selected\': selecting && isSelected(g), \'is-added\': selecting && addedIds[g.id] }" ' +
-            ':aria-checked="selecting ? String(isSelected(g)) : null" :role="selecting ? \'checkbox\' : null" @click="toggleSelect(g)">' +
+            ':aria-checked="selecting ? String(isSelected(g)) : null" :role="selecting ? \'checkbox\' : null" @click="toggleSelect(g)" @contextmenu.prevent="openCardMenu($event, g)">' +
             '<div class="library-card__thumb">' +
               '<span class="library-card__media"><img :src="g.thumb" alt="" loading="lazy" /></span>' +
               '<span class="library-card__border" aria-hidden="true"></span>' +
