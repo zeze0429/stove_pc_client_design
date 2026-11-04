@@ -193,7 +193,7 @@ var LibraryFilterLayer = {
     reset: function () { this.$emit('update:modelValue', libraryFilterDefault()); },
   },
   template:
-    '<teleport to="body"><div ref="layer" class="library-filter" :class="{ \'is-blur\': blur }" role="dialog" aria-label="필터" :style="layerStyle" data-name="layer" @click.stop="onLayerClick">' +
+    '<teleport to="body"><div ref="layer" class="library-filter" :class="{ \'is-blur\': blur }" :data-theme="blur ? \'dark\' : null" role="dialog" aria-label="필터" :style="layerStyle" data-name="layer" @click.stop="onLayerClick">' +
       '<div class="library-filter__head" data-name="header">' +
         '<p class="library-filter__title">필터</p>' +
         '<button class="library-filter__reset" type="button" @click="reset"><i class="ic-v2-control-refresh-line" aria-hidden="true"></i>초기화</button>' +

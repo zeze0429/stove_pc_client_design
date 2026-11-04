@@ -326,7 +326,9 @@
    ============================================================= */
 
 /* ---- DARK (기본값) ------------------------------------- */
-:root {
+/* [data-theme="dark"]를 단 요소는 라이트 모드에서도 그 안만 다크 값으로 다시 잡힌다 (예: 컨테이너 블러, 사용자 11-04) */
+:root,
+[data-theme="dark"] {
   --stds-sem-color-brand-primary: var(--stds-glob-color-orange500);
   --stds-sem-color-brand-primary-hover: var(--stds-glob-color-orange400);
   --stds-sem-color-brand-primary-pressed: var(--stds-glob-color-orange300);

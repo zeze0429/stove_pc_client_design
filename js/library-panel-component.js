@@ -1095,7 +1095,7 @@ var LibraryPanel = {
         '<span class="game-group__badge-tooltip-tail" :style="{ marginLeft: btnTip.tailLeft + \'px\' }"></span>' +
         '<span class="game-group__badge-tooltip-body stds-cap1 fw-medium">{{ btnTip.text }}</span>' +
       '</div>' +
-      '<div v-if="menu" ref="menuEl" class="library-panel-menu" :class="{ \'is-measuring\': menu.measuring, \'is-blur\': menuBlur }" ' +
+      '<div v-if="menu" ref="menuEl" class="library-panel-menu" :class="{ \'is-measuring\': menu.measuring, \'is-blur\': menuBlur }" :data-theme="menuBlur ? \'dark\' : null" ' +
         ':style="{ left: menu.left + \'px\', top: menu.top + \'px\' }" role="menu" data-context-menu data-name="컨텍스트메뉴" @contextmenu.prevent>' +
         '<template v-for="(item, i) in menuItems" :key="i">' +
           '<div v-if="item.divider" class="library-panel-menu__div" aria-hidden="true"></div>' +
@@ -1105,7 +1105,7 @@ var LibraryPanel = {
 
       // 게임 우클릭 메뉴 — 패널: 앞면(1뎁스) · 뒷면(2뎁스)을 rotateY로 뒤집는다 (Figma 컨텍스트메뉴 플립 애니메이션 가이드)
       // 콘텐츠 영역(cascade): 뒤집지 않고 2뎁스를 1뎁스 옆에 띄운다
-      '<div v-if="gameMenu" ref="gameMenuEl" class="game-menu" :class="{ \'is-measuring\': gameMenu.measuring, \'is-blur\': menuBlur }" ' +
+      '<div v-if="gameMenu" ref="gameMenuEl" class="game-menu" :class="{ \'is-measuring\': gameMenu.measuring, \'is-blur\': menuBlur }" :data-theme="menuBlur ? \'dark\' : null" ' +
         ':style="{ left: gameMenu.left + \'px\', top: gameMenu.top + \'px\' }" @contextmenu.prevent data-context-menu data-name="컨텍스트메뉴">' +
         '<div class="game-menu__flip" :class="{ \'is-flipped\': gameMenu.depth === 2 && !gameMenu.cascade }">' +
           // 앞면 — 1뎁스
