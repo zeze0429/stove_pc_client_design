@@ -644,6 +644,12 @@ body { margin: 0; }
   background: var(--stds-sem-color-surface-layer);
   box-shadow: var(--stds-glob-box-shadow-4); /* 우측패널 메뉴와 같은 shadow/4 (사용자 지정, 11-03) */
 }
+/* 보기 옵션 "컨테이너 블러" (테스트) — 라이브러리 메뉴와 같은 값, 라이트 모드에서도 다크 한 톤(data-theme="dark") */
+.gnb-context-menu.is-blur {
+  background: color-mix(in srgb, var(--stds-sem-color-surface-layer) 72%, transparent);
+  -webkit-backdrop-filter: blur(2rem) saturate(1.8);
+  backdrop-filter: blur(2rem) saturate(1.8);
+}
 .gnb-context-menu__item {
   display: block;
   width: 100%;

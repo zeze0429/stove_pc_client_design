@@ -54,3 +54,11 @@ input, textarea, [contenteditable="true"] { user-select: text; }
    메뉴 루트에 data-context-menu를 달면 메뉴만 호버 · 클릭을 받는다 */
 html[class*="ctx-open-"] body { pointer-events: none; }
 html[class*="ctx-open-"] [data-context-menu] { pointer-events: auto; }
+
+/* ---- 컨테이너 블러 (보기 옵션, 테스트) — 라이트 모드에서도 다크 한 톤(data-theme="dark")으로 뜨는데,
+   밝은 화면이 비쳐 바탕이 옅어지므로 글자를 한 단계씩 밝게 (사용자 11-04): elevation-2 → gray80, 3 → gray200, 4 → gray300 ---- */
+:root[data-theme="light"] .is-blur[data-theme="dark"] {
+  --stds-sem-color-on-surface-elevation-2: var(--stds-glob-color-gray80);
+  --stds-sem-color-on-surface-elevation-3: var(--stds-glob-color-gray200);
+  --stds-sem-color-on-surface-elevation-4: var(--stds-glob-color-gray300);
+}

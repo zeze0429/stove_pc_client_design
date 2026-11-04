@@ -1008,7 +1008,7 @@ var GnbComponent = {
         '<img class="gnb-top-btn__img gnb-top-btn__img--light" src="assets/top-btn/TOP_light.png" alt="" />' +
       '</button>' +
 
-      '<div v-if="contextMenu.visible" ref="contextMenuEl" class="gnb-context-menu" :style="{ left: contextMenu.x + \'px\', top: contextMenu.y + \'px\' }" data-context-menu data-name="component/GNB/context_menu">' +
+      '<div v-if="contextMenu.visible" ref="contextMenuEl" class="gnb-context-menu" :class="{ \'is-blur\': proto.containerBlur }" :data-theme="proto.containerBlur ? \'dark\' : null" :style="{ left: contextMenu.x + \'px\', top: contextMenu.y + \'px\' }" data-context-menu data-name="component/GNB/context_menu">' +
         '<button class="gnb-context-menu__item stds-cap1" type="button" @click="contextMenuAction">' +
           '{{ contextMenu.isFavorite ? \'즐겨찾기에서 제거\' : \'즐겨찾기 추가\' }}' +
         '</button>' +
