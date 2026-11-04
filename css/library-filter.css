@@ -183,3 +183,15 @@
   line-height: 2.2rem;
   letter-spacing: -0.025em;
 }
+
+/* 보기 옵션 "컨테이너 블러" (테스트) — 컨텍스트 메뉴와 같은 값: 제 바탕색 72% + 뒤 화면 블러 20 · 채도 1.8 */
+.library-filter.is-blur {
+  background: color-mix(in srgb, var(--stds-sem-color-surface-elevation-2) 72%, transparent);
+  -webkit-backdrop-filter: blur(2rem) saturate(1.8);
+  backdrop-filter: blur(2rem) saturate(1.8);
+}
+.library-filter.is-blur .library-filter__menu {
+  background: color-mix(in srgb, var(--stds-sem-color-surface-layer) 72%, transparent);
+  -webkit-backdrop-filter: blur(2rem) saturate(1.8);
+  backdrop-filter: blur(2rem) saturate(1.8);
+}

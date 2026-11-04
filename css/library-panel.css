@@ -522,8 +522,20 @@
   padding: calc(0.6rem - 1px) 0 calc(0.8rem - 1px);
   transform: rotateY(180deg);
 }
-/* 보기 옵션 "컨텍스트 메뉴 블러" (테스트) — 바탕을 surface-layer 반투명으로 비우고 뒤 화면을 흐린다 (macOS 메뉴 느낌).
-   그룹 메뉴 · 게임 메뉴 공통. 블러 · 투명도는 임시값 — 확정되면 토큰으로 */
+/* 콘텐츠 영역(카드)에서 연 메뉴의 2뎁스 — 플립 대신 1뎁스 옆 4에 띄운다 (위치는 JS, .game-menu 기준).
+   위 6 · 아래 8은 뒷면과 같고, 폭은 그룹명만큼(176~320) */
+.game-menu__sub {
+  position: absolute;
+  width: max-content;
+  min-width: 17.6rem;
+  max-width: 32rem;
+  padding: calc(0.6rem - 1px) 0 calc(0.8rem - 1px);
+}
+.game-menu__sub.is-measuring { visibility: hidden; }
+/* 2뎁스가 열려 있는 1뎁스 항목은 hover 배경 유지 */
+.game-menu__item.is-open { background: var(--stds-sem-color-interaction-hover); }
+/* 보기 옵션 "컨테이너 블러" (테스트) — 바탕을 surface-layer 반투명으로 비우고 뒤 화면을 흐린다 (macOS 메뉴 느낌).
+   그룹 메뉴 · 게임 메뉴 공통 (필터 레이어는 library-filter.css). 블러 · 투명도는 임시값 — 확정되면 토큰으로 */
 .library-panel-menu.is-blur,
 .game-menu.is-blur .game-menu__face {
   background: color-mix(in srgb, var(--stds-sem-color-surface-layer) 72%, transparent);

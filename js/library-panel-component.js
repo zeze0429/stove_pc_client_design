@@ -169,6 +169,38 @@ var LIBRARY_GAME_MENU_MULTI = [
   { label: '선택한 게임 숨기기' },
 ];
 
+// 2뎁스 내용 (그룹에 추가 · 그룹에서 제거) — 패널은 뒷면(플립)에, 콘텐츠 영역은 옆에 띄운 서브메뉴에 같은 내용을 넣는다
+var GAME_MENU_SUB_TPL =
+    '<template v-if="gameMenu.back === \'add\'">' +
+      // 그룹 있음 — 5개까지 보이고 그 이상은 스크롤. 이미 들어 있는 그룹은 비활성
+      '<div v-if="groups.length" class="game-menu__groups" @scroll="hideMenuTip">' +
+        '<button v-for="g in groups" :key="g.id" class="game-menu__item stds-btn3 fw-medium" type="button" ' +
+          ':disabled="gameInGroup(g)" @click="addMenuGameTo(g)" @mouseenter="showNameTip" @mouseleave="hideMenuTip" data-name="menu">' +
+          '<span class="game-menu__label game-menu__name">{{ g.title }}</span>' +
+        '</button>' +
+      '</div>' +
+      // 그룹 없음 (최초 생성)
+      '<div v-else class="game-menu__empty">' +
+        '<i class="ic-v2-content-folder-add-fill" aria-hidden="true"></i>' +
+        '<p class="stds-cap1 fw-medium">그룹으로<br />나만의 라이브러리를<br />만들어 보세요.</p>' +
+      '</div>' +
+      '<div class="game-menu__create-wrap" :class="{ \'is-empty\': !groups.length }">' +
+        '<button class="game-menu__create stds-btn3 fw-medium" type="button" :disabled="!canCreate" @click="openCreateFromMenu" data-name="Button">' +
+          '<i class="ic-v2-control-add-line" aria-hidden="true"></i>그룹 만들기' +
+        '</button>' +
+      '</div>' +
+    '</template>' +
+    '<div v-else class="game-menu__groups" @scroll="hideMenuTip">' +
+      '<div v-for="g in menuGameGroups" :key="g.id" class="game-menu__item game-menu__item--remove stds-btn3 fw-medium" ' +
+        '@mouseenter="showNameTip" @mouseleave="hideMenuTip" data-name="menu">' +
+        '<span class="game-menu__label game-menu__name">{{ g.title }}</span>' +
+        '<button class="game-menu__icon game-menu__remove" type="button" aria-label="이 그룹에서 제거" ' +
+          '@click="removeMenuGameFrom(g)" @mouseenter.stop="showRemoveTip" @mouseleave="hideMenuTip" data-name="component/game_group/title/btn_right">' +
+          '<i class="ic-v2-control-close-circle-fill"></i>' +
+        '</button>' +
+      '</div>' +
+    '</div>';
+
 // 그룹 타이틀 (component/game_group/title) — 화살표 · 이름 · 개수 · 우측 버튼(호버 시).
 // 사용자 그룹은 게임 추가 + 그룹 메뉴, 그룹 없는 게임은 그룹 메뉴만 (Figma ④)
 // 게임 추가 중인 그룹은 우측 버튼 대신 게임 추가 취소(X)가 항상 보이고, 접기/펼치기는 비활성 (3-3 · 0825)
@@ -267,7 +299,7 @@ var LibraryPanel = {
       selectedRows: [], // 선택한 게임 행 (rowKey) — Ctrl/⌘ 클릭 추가 · 해제, Shift 클릭 범위 (Figma ⑫ "여러개 선택 가능(키보드 조작)")
       selectAnchor: null, // Shift 범위 선택 기준 행
       createDialog: null, // 그룹 만들기 팝업 { gameIds } — 게임 메뉴에서 열면 만든 그룹에 그 게임을 넣는다
-      menuBlur: protoSettingsRead().contextMenuBlur, // 보기 옵션 "컨텍스트 메뉴 블러" — 메뉴 바탕을 반투명 + 배경 블러로 (테스트)
+      menuBlur: protoSettingsRead().containerBlur, // 보기 옵션 "컨테이너 블러" — 메뉴 바탕을 반투명 + 배경 블러로 (테스트)
       // 패널 스켈레톤 (보기 옵션) — 화면 순서대로 앞에서부터 이만큼만 불러온 상태, 나머지 행은 스켈레톤
       loadedRows: Infinity,
       filter: libraryFilterDefault(), // 필터 레이어 (js/library-filter-component.js) — 패널은 정렬에 그룹 · 게임 둘 다
@@ -601,16 +633,17 @@ var LibraryPanel = {
     // 1 · 2뎁스 너비는 같다(1뎁스 기준, 0907). 위치는 열 때 한 번만 잡고 플립 중엔 다시 재지 않는다 (플립 가이드)
     openGameMenu: function (e, game, rowKey) {
       if (this.isStaticRow(e.currentTarget)) return;
-      this.showGameMenu(game, rowKey, e.clientX, e.clientY, false);
+      this.showGameMenu(game, rowKey, e.clientX, e.clientY, null);
     },
-    // 보유게임 카드 우클릭 — 같은 게임 메뉴를 카드 위(패널 밖)에서 연다 (library-component의 library-game-menu 이벤트)
+    // 보유게임 · 빠른 실행 카드 우클릭 — 같은 게임 메뉴를 카드 자리에서 연다 (library-component의 library-game-menu 이벤트)
     onCardGameMenu: function (e) {
       var d = e.detail;
       var game = this.owned.find(function (g) { return g.id === d.gameId; });
-      if (game) this.showGameMenu(game, null, d.x, d.y, true);
+      if (game) this.showGameMenu(game, null, d.x, d.y, d.area);
     },
-    // outside = 패널 밖에서 연 메뉴 — 패널 안으로 끌어오지 않고 창 안 8 여백 안에서만 맞춘다
-    showGameMenu: function (game, rowKey, x, y, outside) {
+    // area = 콘텐츠 영역(.main) 사각형 — 있으면 1 · 2뎁스 모두 그 안쪽 40 여백 안에만 띄운다(패널 · 사이드바로 넘어가지 않음, 사용자 11-04).
+    // 없으면 패널 메뉴 — 패널 안 좌우 16 안으로
+    showGameMenu: function (game, rowKey, x, y, area) {
       this.closeMenu();
       this.btnTip = null;
       this.titleTip = null;
@@ -620,26 +653,67 @@ var LibraryPanel = {
       // 선택한 행(2개 이상)을 우클릭하면 n개 메뉴, 선택 밖 행을 우클릭하면 선택을 풀고 그 게임 1개 메뉴
       var multi = !!rowKey && this.selectedRows.length > 1 && this.selectedRows.indexOf(rowKey) >= 0;
       if (!multi) { this.selectedRows = []; this.selectAnchor = null; }
+      var box = area ? { left: area.left + 40, top: area.top + 40, right: area.right - 40, bottom: area.bottom - 40 } : null;
       this.gameMenu = {
         gameId: game.id, gameIds: multi ? this.selectedGameIds() : [game.id], multi: multi,
         rowKey: multi ? null : rowKey, left: x, top: y, depth: 1, back: 'add', measuring: true,
+        cascade: !!box, box: box, subLeft: 0, subTop: 0, subMeasuring: false, // cascade = 2뎁스를 옆에 띄움 (콘텐츠 영역)
       };
       this.$nextTick(function () {
         var el = this.$refs.gameMenuEl;
         if (!el || !this.gameMenu) return;
         var r = el.querySelector('.game-menu__face--front').getBoundingClientRect();
-        var left = outside ? Math.max(8, Math.min(x, window.innerWidth - 8 - r.width)) : this.clampToPanel(x, r.width);
-        var top = y + r.height > window.innerHeight - 8 ? y - r.height : y; // 아래가 모자라면 위로
-        this.gameMenu.left = left;
-        this.gameMenu.top = Math.max(8, top);
+        var minTop = box ? box.top : 8;
+        var maxBottom = box ? box.bottom : window.innerHeight - 8;
+        var left = box ? Math.max(box.left, Math.min(x, box.right - r.width)) : this.clampToPanel(x, r.width);
+        var top = y + r.height > maxBottom ? y - r.height : y; // 아래가 모자라면 위로
+        this.gameMenu.left = Math.round(left);
+        this.gameMenu.top = Math.round(Math.max(minTop, top));
         this.gameMenu.measuring = false;
       });
     },
-    closeGameMenu: function () { this.gameMenu = null; this.menuTip = null; },
-    onGameMenuItem: function (item) {
-      if (item.sub) { this.gameMenu.back = item.sub; this.gameMenu.depth = 2; this.menuTip = null; }
+    closeGameMenu: function () { clearTimeout(this._subTimer); this.gameMenu = null; this.menuTip = null; },
+    onGameMenuItem: function (item, e) {
+      if (item.sub && this.gameMenu.cascade) { clearTimeout(this._subTimer); this.openGameSub(e.currentTarget, item.sub); }
+      else if (item.sub) { this.gameMenu.back = item.sub; this.gameMenu.depth = 2; this.menuTip = null; }
       else if (item.toggle) { var t = this.gameToggles[this.gameMenu.gameId]; t[item.toggle] = !t[item.toggle]; }
       else this.closeGameMenu(); // 나머지 항목은 아직 동작 없음
+    },
+    // 콘텐츠 영역(카드)에서 연 메뉴 — 2뎁스는 플립 대신 1뎁스 옆에 4 띄워 뜬다 (사용자 11-04).
+    // 항목에 마우스를 올리면 열리고 다른 항목으로 옮기면 닫힌다 — 대각선으로 옮겨 갈 때 깜빡이지 않게 120ms 늦춘다
+    onGameItemEnter: function (e, item) {
+      if (!this.gameMenu || !this.gameMenu.cascade) return;
+      clearTimeout(this._subTimer);
+      var el = e.currentTarget;
+      this._subTimer = setTimeout(function () {
+        if (!this.gameMenu) return;
+        if (item.sub) this.openGameSub(el, item.sub);
+        else if (this.gameMenu.depth === 2) this.flipBack();
+      }.bind(this), 120);
+    },
+    cancelSubTimer: function () { clearTimeout(this._subTimer); },
+    // 위치: 1뎁스 오른쪽 + 4, 위는 그 항목과 맞춘다. 콘텐츠 영역 40 여백을 넘으면 왼쪽 + 4, 아래가 넘으면 그 안까지 올린다
+    openGameSub: function (itemEl, sub) {
+      if (this.gameMenu.depth === 2 && this.gameMenu.back === sub) return;
+      this.gameMenu.back = sub;
+      this.gameMenu.depth = 2;
+      this.gameMenu.subMeasuring = true;
+      this.menuTip = null;
+      this.$nextTick(function () {
+        var subEl = this.$refs.gameSubEl;
+        if (!subEl || !this.gameMenu) return;
+        var face = itemEl.closest('.game-menu__face').getBoundingClientRect();
+        var ir = itemEl.getBoundingClientRect();
+        var w = subEl.offsetWidth;
+        var h = subEl.offsetHeight;
+        var box = this.gameMenu.box;
+        var left = face.right + 4;
+        if (left + w > box.right) left = face.left - 4 - w; // 오른쪽 카드 — 1뎁스 왼쪽에 붙는다
+        var top = Math.max(box.top, Math.min(ir.top, box.bottom - h));
+        this.gameMenu.subLeft = Math.round(left - this.gameMenu.left);
+        this.gameMenu.subTop = Math.round(top - this.gameMenu.top);
+        this.gameMenu.subMeasuring = false;
+      });
     },
     // ── 게임 여러 개 선택 (Figma ⑫ · 3-5-3) — 클릭 = 그 행만, Ctrl/⌘ 클릭 = 추가 · 해제, Shift 클릭 = 같은 그룹 안 범위.
     // 게임 추가 중인 그룹의 행은 고를 수 없다
@@ -896,8 +970,10 @@ var LibraryPanel = {
     var vm = this;
     var ps = protoSettingsRead();
     if (ps.libraryPanelSkeleton) { this._skeletonAt = ps.libraryPanelSkeletonAt; this.startSkeletonLoad(); }
-    protoSettingsSubscribe(function (s) { vm.applySkeletonSetting(s); vm.menuBlur = s.contextMenuBlur; });
+    protoSettingsSubscribe(function (s) { vm.applySkeletonSetting(s); vm.menuBlur = s.containerBlur; });
     window.addEventListener('library-game-menu', this.onCardGameMenu);
+    // 메뉴(그룹 · 게임)가 떠 있는 동안 바닥 화면 잠금 — 공통 룰 (contextMenuLock, gnb-component.js)
+    this.$watch(function () { return !!(this.menu || this.gameMenu); }, function (v) { contextMenuLock('library', v); }, { flush: 'sync' });
     this.updateThumb();
   },
   unmounted: function () {
@@ -913,6 +989,7 @@ var LibraryPanel = {
     window.removeEventListener('resize', this.closeMenu);
     window.removeEventListener('resize', this.closeGameMenu);
     window.removeEventListener('library-game-menu', this.onCardGameMenu);
+    contextMenuLock('library', false);
   },
   template:
     '<div class="library-panel" data-name="layout/library/pannel">' +
@@ -1019,21 +1096,23 @@ var LibraryPanel = {
         '<span class="game-group__badge-tooltip-body stds-cap1 fw-medium">{{ btnTip.text }}</span>' +
       '</div>' +
       '<div v-if="menu" ref="menuEl" class="library-panel-menu" :class="{ \'is-measuring\': menu.measuring, \'is-blur\': menuBlur }" ' +
-        ':style="{ left: menu.left + \'px\', top: menu.top + \'px\' }" role="menu" data-name="컨텍스트메뉴" @contextmenu.prevent>' +
+        ':style="{ left: menu.left + \'px\', top: menu.top + \'px\' }" role="menu" data-context-menu data-name="컨텍스트메뉴" @contextmenu.prevent>' +
         '<template v-for="(item, i) in menuItems" :key="i">' +
           '<div v-if="item.divider" class="library-panel-menu__div" aria-hidden="true"></div>' +
           '<button v-else class="library-panel-menu__item stds-btn3 fw-medium" type="button" role="menuitem" @click="onMenuAction(item.action)">{{ item.label }}</button>' +
         '</template>' +
       '</div>' +
 
-      // 게임 우클릭 메뉴 — 앞면(1뎁스) · 뒷면(2뎁스)을 rotateY로 뒤집는다 (Figma 컨텍스트메뉴 플립 애니메이션 가이드)
+      // 게임 우클릭 메뉴 — 패널: 앞면(1뎁스) · 뒷면(2뎁스)을 rotateY로 뒤집는다 (Figma 컨텍스트메뉴 플립 애니메이션 가이드)
+      // 콘텐츠 영역(cascade): 뒤집지 않고 2뎁스를 1뎁스 옆에 띄운다
       '<div v-if="gameMenu" ref="gameMenuEl" class="game-menu" :class="{ \'is-measuring\': gameMenu.measuring, \'is-blur\': menuBlur }" ' +
-        ':style="{ left: gameMenu.left + \'px\', top: gameMenu.top + \'px\' }" @contextmenu.prevent data-name="컨텍스트메뉴">' +
-        '<div class="game-menu__flip" :class="{ \'is-flipped\': gameMenu.depth === 2 }">' +
+        ':style="{ left: gameMenu.left + \'px\', top: gameMenu.top + \'px\' }" @contextmenu.prevent data-context-menu data-name="컨텍스트메뉴">' +
+        '<div class="game-menu__flip" :class="{ \'is-flipped\': gameMenu.depth === 2 && !gameMenu.cascade }">' +
           // 앞면 — 1뎁스
-          '<div class="game-menu__face game-menu__face--front" role="menu" :aria-hidden="gameMenu.depth === 2">' +
+          '<div class="game-menu__face game-menu__face--front" role="menu" :aria-hidden="gameMenu.depth === 2 && !gameMenu.cascade">' +
             '<button v-for="item in gameMenuItems" :key="item.label" class="game-menu__item stds-btn3 fw-medium" ' +
-              ':class="{ \'has-sub\': item.sub, \'has-toggle\': item.toggle }" type="button" role="menuitem" @click="onGameMenuItem(item)" data-name="menu">' +
+              ':class="{ \'has-sub\': item.sub, \'has-toggle\': item.toggle, \'is-open\': gameMenu.cascade && gameMenu.depth === 2 && gameMenu.back === item.sub }" ' +
+              'type="button" role="menuitem" @click="onGameMenuItem(item, $event)" @mouseenter="onGameItemEnter($event, item)" data-name="menu">' +
               '<span class="game-menu__label">{{ item.label }}</span>' +
               '<span v-if="item.sub" class="game-menu__icon" aria-hidden="true"><i class="ic-v2-control-arrow-right-line"></i></span>' +
               '<span v-if="item.toggle" class="game-menu__toggle" :class="{ \'is-on\': gameToggles[gameMenu.gameId][item.toggle] }" ' +
@@ -1041,42 +1120,19 @@ var LibraryPanel = {
             '</button>' +
           '</div>' +
           // 뒷면 — 2뎁스 (그룹에 추가 · 그룹에서 제거)
-          '<div class="game-menu__face game-menu__face--back" role="menu" :aria-hidden="gameMenu.depth === 1">' +
+          '<div v-if="!gameMenu.cascade" class="game-menu__face game-menu__face--back" role="menu" :aria-hidden="gameMenu.depth === 1">' +
             '<button class="game-menu__head stds-btn3 fw-medium" type="button" @click="flipBack" data-name="menu">' +
               '<span class="game-menu__icon game-menu__back" aria-hidden="true"><i class="ic-v2-control-arrow-left-line"></i></span>' +
               '<span class="game-menu__label">{{ gameMenu.back === \'add\' ? (gameMenu.multi ? \'선택한 게임 그룹에 추가\' : \'그룹에 추가\') : \'그룹에서 제거\' }}</span>' +
             '</button>' +
             '<div class="game-menu__div" aria-hidden="true"></div>' +
-            '<template v-if="gameMenu.back === \'add\'">' +
-              // 그룹 있음 — 5개까지 보이고 그 이상은 스크롤. 이미 들어 있는 그룹은 비활성
-              '<div v-if="groups.length" class="game-menu__groups" @scroll="hideMenuTip">' +
-                '<button v-for="g in groups" :key="g.id" class="game-menu__item stds-btn3 fw-medium" type="button" ' +
-                  ':disabled="gameInGroup(g)" @click="addMenuGameTo(g)" @mouseenter="showNameTip" @mouseleave="hideMenuTip" data-name="menu">' +
-                  '<span class="game-menu__label game-menu__name">{{ g.title }}</span>' +
-                '</button>' +
-              '</div>' +
-              // 그룹 없음 (최초 생성)
-              '<div v-else class="game-menu__empty">' +
-                '<i class="ic-v2-content-folder-add-fill" aria-hidden="true"></i>' +
-                '<p class="stds-cap1 fw-medium">그룹으로<br />나만의 라이브러리를<br />만들어 보세요.</p>' +
-              '</div>' +
-              '<div class="game-menu__create-wrap" :class="{ \'is-empty\': !groups.length }">' +
-                '<button class="game-menu__create stds-btn3 fw-medium" type="button" :disabled="!canCreate" @click="openCreateFromMenu" data-name="Button">' +
-                  '<i class="ic-v2-control-add-line" aria-hidden="true"></i>그룹 만들기' +
-                '</button>' +
-              '</div>' +
-            '</template>' +
-            '<div v-else class="game-menu__groups" @scroll="hideMenuTip">' +
-              '<div v-for="g in menuGameGroups" :key="g.id" class="game-menu__item game-menu__item--remove stds-btn3 fw-medium" ' +
-                '@mouseenter="showNameTip" @mouseleave="hideMenuTip" data-name="menu">' +
-                '<span class="game-menu__label game-menu__name">{{ g.title }}</span>' +
-                '<button class="game-menu__icon game-menu__remove" type="button" aria-label="이 그룹에서 제거" ' +
-                  '@click="removeMenuGameFrom(g)" @mouseenter.stop="showRemoveTip" @mouseleave="hideMenuTip" data-name="component/game_group/title/btn_right">' +
-                  '<i class="ic-v2-control-close-circle-fill"></i>' +
-                '</button>' +
-              '</div>' +
-            '</div>' +
+            GAME_MENU_SUB_TPL +
           '</div>' +
+        '</div>' +
+        // 옆에 띄운 2뎁스 (cascade) — 머리(←)와 구분선 없이 내용만
+        '<div v-if="gameMenu.cascade && gameMenu.depth === 2" ref="gameSubEl" class="game-menu__face game-menu__sub" role="menu" ' +
+          ':class="{ \'is-measuring\': gameMenu.subMeasuring }" :style="{ left: gameMenu.subLeft + \'px\', top: gameMenu.subTop + \'px\' }" @mouseenter="cancelSubTimer">' +
+          GAME_MENU_SUB_TPL +
         '</div>' +
       '</div>' +
       '<div v-if="menuTip && menuTip.kind === \'name\'" class="game-group__list-tooltip game-menu__name-tip stds-cap2" ' +

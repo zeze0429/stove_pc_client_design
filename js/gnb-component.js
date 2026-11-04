@@ -176,6 +176,18 @@ var GNB_SPRING_DAMPING = 28;
 var GNB_SNAP_STIFFNESS = 600;
 var GNB_SNAP_DAMPING = 49;
 
+// 컨텍스트 메뉴 공통 — 떠 있는 동안 바닥 화면(게임 항목 등)은 호버 · 클릭 · 휠에 반응하지 않는다 (사용자 11-04 공통 룰).
+// 메뉴를 연 컴포넌트가 owner별로 html에 ctx-open-{owner}를 붙이면 foundations.css가 body 포인터를 끄고
+// [data-context-menu]만 다시 받는다. 바깥 mousedown은 document(html)로 와서 각 컴포넌트가 닫는다 —
+// 닫히는 즉시(sync) 풀어야 이어지는 우클릭이 그 자리 항목에 닿아 메뉴를 새로 연다
+function contextMenuLock(owner, on) {
+  document.documentElement.classList.toggle('ctx-open-' + owner, !!on);
+}
+// 잠긴 동안 바닥(html · body)에 떨어진 우클릭은 브라우저 기본 메뉴를 띄우지 않는다
+document.addEventListener('contextmenu', function (e) {
+  if (e.target === document.documentElement || e.target === document.body) e.preventDefault();
+});
+
 function createSpringBox(el) {
   var x = 0, y = 0, w = 0, h = 0;
   var vx = 0, vy = 0, vw = 0, vh = 0;
@@ -839,6 +851,12 @@ var GnbComponent = {
     document.addEventListener('mousemove', this.handleDocumentMouseMove);
     document.addEventListener('mouseleave', this.handleDocumentMouseLeave);
     document.addEventListener('click', this.closeContextMenu);
+    // 메뉴 밖 mousedown(우클릭 포함)이면 닫는다 — 잠금 중엔 바닥 클릭이 html로 온다
+    this._onCtxDown = function (e) {
+      if (this.contextMenu.visible && !(this.$refs.contextMenuEl && this.$refs.contextMenuEl.contains(e.target))) this.closeContextMenu();
+    }.bind(this);
+    document.addEventListener('mousedown', this._onCtxDown);
+    this.$watch(function () { return this.contextMenu.visible; }, function (v) { contextMenuLock('gnb', v); }, { flush: 'sync' });
     window.addEventListener('resize', this.updateThumb);
     this.updateThumb();
 
@@ -882,6 +900,8 @@ var GnbComponent = {
     document.removeEventListener('mousemove', this.handleDocumentMouseMove);
     document.removeEventListener('mouseleave', this.handleDocumentMouseLeave);
     document.removeEventListener('click', this.closeContextMenu);
+    document.removeEventListener('mousedown', this._onCtxDown);
+    contextMenuLock('gnb', false);
     window.removeEventListener('resize', this.updateThumb);
     if (this._onIndicatorResize) window.removeEventListener('resize', this._onIndicatorResize);
     clearTimeout(this._hoverLeaveTimer);
@@ -988,7 +1008,7 @@ var GnbComponent = {
         '<img class="gnb-top-btn__img gnb-top-btn__img--light" src="assets/top-btn/TOP_light.png" alt="" />' +
       '</button>' +
 
-      '<div v-if="contextMenu.visible" ref="contextMenuEl" class="gnb-context-menu" :style="{ left: contextMenu.x + \'px\', top: contextMenu.y + \'px\' }" data-name="component/GNB/context_menu">' +
+      '<div v-if="contextMenu.visible" ref="contextMenuEl" class="gnb-context-menu" :style="{ left: contextMenu.x + \'px\', top: contextMenu.y + \'px\' }" data-context-menu data-name="component/GNB/context_menu">' +
         '<button class="gnb-context-menu__item stds-cap1" type="button" @click="contextMenuAction">' +
           '{{ contextMenu.isFavorite ? \'즐겨찾기에서 제거\' : \'즐겨찾기 추가\' }}' +
         '</button>' +

@@ -48,3 +48,9 @@
    입력창 · 편집 영역만 예외로 선택 가능 ---- */
 body { user-select: none; }
 input, textarea, [contenteditable="true"] { user-select: text; }
+
+/* ---- 컨텍스트 메뉴가 떠 있는 동안 바닥 화면은 반응하지 않는다 (공통 룰, 사용자 11-04) ----
+   메뉴를 연 컴포넌트가 html에 ctx-open-{owner}를 붙인다(contextMenuLock, js/gnb-component.js).
+   메뉴 루트에 data-context-menu를 달면 메뉴만 호버 · 클릭을 받는다 */
+html[class*="ctx-open-"] body { pointer-events: none; }
+html[class*="ctx-open-"] [data-context-menu] { pointer-events: auto; }

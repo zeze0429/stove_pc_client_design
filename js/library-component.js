@@ -465,10 +465,15 @@ var LibraryMain = {
       if (i >= 0) this.selected.splice(i, 1);
       else this.selected.push(g.id);
     },
-    // 카드 우클릭 — 우측패널의 게임 메뉴를 그 자리에 연다 (메뉴 · 그룹 동작은 패널이 맡는다). 선택 UI 중에는 열지 않는다
+    // 카드 우클릭 — 우측패널의 게임 메뉴를 그 자리에 연다 (메뉴 · 그룹 동작은 패널이 맡는다). 선택 UI 중에는 열지 않는다.
+    // 메뉴는 콘텐츠 영역(.main) 안에만 뜬다 — 그 사각형을 같이 넘긴다
     openCardMenu: function (e, g) {
       if (this.selecting) return;
-      window.dispatchEvent(new CustomEvent('library-game-menu', { detail: { gameId: g.id, x: e.clientX, y: e.clientY } }));
+      var r = this._scrollBox.getBoundingClientRect();
+      var bar = document.querySelector('.utility-bar'); // 콘텐츠 위에 떠 있는 유틸리티 바 아래부터
+      var top = bar ? Math.max(r.top, bar.getBoundingClientRect().bottom) : r.top;
+      var area = { left: r.left, top: top, right: r.right, bottom: r.bottom };
+      window.dispatchEvent(new CustomEvent('library-game-menu', { detail: { gameId: g.id, x: e.clientX, y: e.clientY, area: area } }));
     },
     // 그룹에 추가 팝업 확인 — 체크한 그룹마다 아직 없는 게임만 넣고, 선택 UI를 끝내고 토스트 (사용자 결정: 종료 + 토스트)
     confirmAddGroups: function (groupIds) {
@@ -548,7 +553,7 @@ var LibraryMain = {
            // 페이지(4장)마다 680 고정 상자 — 카드들이 동시에 커지고 줄어도 합이 항상 680
            '<div v-for="(page, p) in quickPageList" :key="p" class="library-quick__page" :class="{ \'is-offpage\': p !== quickPage, \'is-full\': page.length === quickStep }">' +
             '<div v-for="g in page" :key="g.key" class="library-quick__card"' +
-              ' :class="{ \'is-active\': g.index === quickActive, \'library-quick__card--ad\': g.ad }" @mouseenter="hoverQuick(g.index)">' +
+              ' :class="{ \'is-active\': g.index === quickActive, \'library-quick__card--ad\': g.ad }" @mouseenter="hoverQuick(g.index)" @contextmenu.prevent="g.ad || openCardMenu($event, g)">' +
               '<img class="library-quick__thumb" :src="g.thumb" alt="" />' +
               // 펼친 카드 — 같은 이미지를 크게 깔고 흐리게 + 검정 60%
               '<div class="library-quick__expanded">' +
