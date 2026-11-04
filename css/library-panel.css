@@ -766,6 +766,12 @@
   from { background-position: calc(100vw - 100rem) 0; }
   to { background-position: calc(100vw + 2rem) 0; }
 }
+/* OS 애니메이션 효과 끔(Windows 설정)일 때 — 가로지르는 웨이브 대신 제자리에서 밝기만 천천히 오르내린다(펄스).
+   색 · 주기는 웨이브와 같게: 막대 inverse-elevation-7 ↔ 빛 inverse-elevation-4, 2s (SGVN 협의 B+C, 11-04) */
 @media (prefers-reduced-motion: reduce) {
-  .game-group__skeleton { animation: none; background-image: none; }
+  .game-group__skeleton { background-image: none; animation: library-skeleton-pulse 2s ease-in-out infinite; }
+}
+@keyframes library-skeleton-pulse {
+  0%, 100% { background-color: var(--stds-sem-color-inverse-elevation-7); }
+  50% { background-color: var(--stds-sem-color-inverse-elevation-4); }
 }
