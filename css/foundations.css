@@ -43,3 +43,8 @@
   --stds-glob-box-shadow-4:  0 0.4rem 1rem var(--stds-glob-color-black-10);   /* 0 4 10 black-10 */
   --stds-glob-box-shadow-12: 0 1.2rem 2.8rem var(--stds-glob-color-black-20); /* 0 12 28 black-20 */
 }
+
+/* ---- 텍스트 선택 막기 — 런처 안 어디서 드래그 · 더블클릭해도 글자가 파랗게 선택되지 않게 (사용자 11-04).
+   입력창 · 편집 영역만 예외로 선택 가능 ---- */
+body { user-select: none; }
+input, textarea, [contenteditable="true"] { user-select: text; }

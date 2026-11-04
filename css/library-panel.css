@@ -15,7 +15,6 @@
   flex-direction: column;
   height: 100%;
   padding: 0 2rem;
-  user-select: none; /* 그룹 타이틀 · 게임 이름을 드래그 · 더블클릭해도 텍스트가 파랗게 선택되지 않게 (입력창은 그대로 선택됨) */
 }
 
 /* ---- 1. 헤더 (title) — 위 34 · 아래 16, 아이콘 18 + 간격 8.
