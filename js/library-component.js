@@ -583,7 +583,8 @@ var LibraryMain = {
       '<section ref="owned" class="library-section library-owned" :class="{ \'is-selecting\': selecting, \'is-head-stuck\': selecting && headStuck }">' +
         // 선택 UI에서는 타이틀 · 구분선 · 도구 줄이 위에 고정되고 아래 카드만 스크롤된다 (사용자 요청)
         '<div ref="ownedHead" class="library-owned__head">' +
-        '<h2 class="library-section__title">보유게임<span>{{ filteredOwned.length }}</span></h2>' +
+        // 개수는 전체 보유게임 수 — 필터 · 검색으로 바뀌지 않는다 (사용자 11-04, 적용된 필터는 나중에 칩스로 보여줄 예정)
+        '<h2 class="library-section__title">보유게임<span>{{ owned.length }}</span></h2>' +
         '<div class="library-owned__divider"></div>' +
         // 선택 UI — 도구 줄 자리에 게임 추가 취소 + 안내 문구 (Figma ⑦ · 0825 게임 추가 취소)
         '<div v-if="selecting" class="library-toolbar library-toolbar--select" data-name="filter area">' +
