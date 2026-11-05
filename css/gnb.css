@@ -608,7 +608,7 @@ body { margin: 0; }
   border: 1px solid var(--stds-sem-color-border);
   border-radius: var(--stds-glob-border-radius-lg);
   background: linear-gradient(var(--stds-sem-color-interaction-pressed), var(--stds-sem-color-interaction-pressed)), var(--stds-sem-color-background-variant-2); /* 사이드바 배경 위에 pressed — 각 영역 배경색 + pressed (사용자 11-05) */
-  box-shadow: 0 0.4rem 0.4rem var(--stds-glob-color-black-30); /* 스케일에 없는 그림자 — 원본 32% → black-30 (사용자 11-03) */
+  box-shadow: 0 0.4rem 0.8rem var(--stds-glob-color-black-30); /* 드래그 프리뷰 공통 0 4 8 black-30 (사용자 11-05) — 사이드바 · 우측패널 */
   opacity: 0.9;
   pointer-events: none;
   cursor: grabbing;
