@@ -540,6 +540,21 @@
    그림자는 두 상태 모두 black-30 블러 6 — y 6 내려서 위쪽으로는 안 보이게 (사용자 요청, 11-03)
    페이드는 두 상태 모두 62.363% (Figma 48960:385042 · 385043) */
 :root { --library-floating-off-bg: var(--stds-glob-color-gray780); --library-floating-off-fg: var(--stds-glob-color-gray650); }
+/* 바닥 페이드 · 그림자 — 하단 플로팅과 완료 토스트가 같이 쓴다.
+   페이드는 시작 · 끝이 완만한 곡선(smoothstep)으로 — 직선 그라디언트는 시작 지점에 경계선이 보인다.
+   완전히 덮이는 지점은 Figma 그대로 62.363% */
+:root {
+  --library-floating-fade: linear-gradient(
+    to bottom,
+    transparent 0.0%,
+    color-mix(in srgb, var(--stds-sem-color-background-variant-1) 10.4%, transparent) 12.47%,
+    color-mix(in srgb, var(--stds-sem-color-background-variant-1) 35.2%, transparent) 24.95%,
+    color-mix(in srgb, var(--stds-sem-color-background-variant-1) 64.8%, transparent) 37.42%,
+    color-mix(in srgb, var(--stds-sem-color-background-variant-1) 89.6%, transparent) 49.89%,
+    var(--stds-sem-color-background-variant-1) 62.36%
+  );
+  --library-floating-shadow: 0 0.6rem 0.6rem var(--stds-glob-color-black-30);
+}
 :root[data-theme="light"] { --library-floating-off-bg: var(--stds-glob-color-gray200); --library-floating-off-fg: var(--stds-glob-color-gray400); }
 .library-floating {
   position: fixed;
@@ -551,17 +566,7 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  /* 페이드는 시작 · 끝이 완만한 곡선(smoothstep)으로 — 직선 그라디언트는 시작 지점에 경계선이 보인다.
-     완전히 덮이는 지점은 Figma 그대로 62.363% */
-  background: linear-gradient(
-    to bottom,
-    transparent 0.0%,
-    color-mix(in srgb, var(--stds-sem-color-background-variant-1) 10.4%, transparent) 12.47%,
-    color-mix(in srgb, var(--stds-sem-color-background-variant-1) 35.2%, transparent) 24.95%,
-    color-mix(in srgb, var(--stds-sem-color-background-variant-1) 64.8%, transparent) 37.42%,
-    color-mix(in srgb, var(--stds-sem-color-background-variant-1) 89.6%, transparent) 49.89%,
-    var(--stds-sem-color-background-variant-1) 62.36%
-  );
+  background: var(--library-floating-fade);
   pointer-events: none;
 }
 .library-floating__bar {
@@ -576,7 +581,7 @@
   padding: 0 2.4rem;
   border-radius: var(--stds-glob-border-radius-circle);
   background: var(--library-floating-off-bg);
-  box-shadow: 0 0.6rem 0.6rem var(--stds-glob-color-black-30);
+  box-shadow: var(--library-floating-shadow);
   pointer-events: auto;
   transition: background-color 0.2s ease;
 }
@@ -623,15 +628,20 @@
 .library-floating-enter-from .library-floating__bar,
 .library-floating-leave-to .library-floating__bar { transform: translateY(1.2rem); }
 
-/* 게임 추가 완료 토스트 (toast popup) — 콘텐츠 영역 가운데, 바닥에서 32 */
+/* 게임 추가 완료 토스트 (toast popup) — 콘텐츠 영역 가운데, 바닥에서 32.
+   바닥 페이드(높이 120)와 그림자는 하단 플로팅과 같은 값 (사용자 11-05) */
 .library-toast-wrap {
   position: fixed;
   z-index: 15;
   left: 24rem;
   right: var(--client-panel-w);
-  bottom: calc(var(--proto-pr-height) + 3.2rem);
+  bottom: var(--proto-pr-height);
+  height: 12rem;
+  padding-bottom: 3.2rem;
   display: flex;
   justify-content: center;
+  align-items: flex-end;
+  background: var(--library-floating-fade);
   pointer-events: none;
 }
 /* 2026_웹전환 11564:174282 — 색은 우측패널 완료 토스트(.library-panel__added)와 같다.
@@ -647,7 +657,7 @@
   border: 1px solid var(--stds-glob-color-white-40);
   border-radius: var(--stds-glob-border-radius-xl);
   background: var(--stds-glob-color-tint-blue100);
-  box-shadow: 0 1.2rem 2.4rem 1rem var(--stds-glob-color-black-80);
+  box-shadow: var(--library-floating-shadow);
 }
 .library-toast.is-error {
   --library-toast-ink: var(--stds-glob-color-tint-red900);
