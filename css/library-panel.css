@@ -44,10 +44,10 @@
 /* 그룹 만들기 — 공통 버튼 secondary sm (css/button.css), 패널에서는 남는 폭을 채운다 */
 .library-panel__create { flex: 1 1 0; min-width: 0; }
 /* 그룹 20개 — 비활성. 시스템 버튼 비활성 색 대신 Figma 최신 디자인 값 (2026_웹전환 12007:57385, 사용자 11-03)
-   비공식 시멘틱 disabled-variant-9(배경) · 10(글자 · 아이콘) — 다크 gray880 / gray750, 라이트 gray150 / gray300 (사용자 11-05) */
+   공용 전용 변수 --create-group-off-bg/fg (css/dashboard.css) — 비공식 토큰은 늘리지 않는다 (사용자 11-05) */
 .stds-button.library-panel__create:disabled {
-  --stds-button-bg: var(--stds-sem-color-disabled-variant-9);
-  --stds-button-fg: var(--stds-sem-color-disabled-variant-10);
+  --stds-button-bg: var(--create-group-off-bg);
+  --stds-button-fg: var(--create-group-off-fg);
 }
 .library-panel__icon-btn {
   flex: 0 0 auto;

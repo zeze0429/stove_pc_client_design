@@ -569,11 +569,10 @@
 
 /* 하단 플로팅 (component/selection UI/floating) — 콘텐츠 영역 바닥 120, 배경색으로 페이드. 72 높이 알약.
    비활성(고르기 전): 다크 gray780 · 글자/아이콘 gray650 (Figma 2115:32819) / 라이트 gray200 · gray400 (라이트 시안),
-   구분선 inverse-elevation-6. 두 테마 값을 함께 만족하는 시멘틱이 없어 테마별 글로벌로 지정
+   구분선 inverse-elevation-6. 두 테마 값을 함께 만족하는 시멘틱이 없어 공용 전용 변수 --floating-off-bg/fg (css/dashboard.css)
    활성(하나 이상): brand-primary · white · 구분선 black-8
    그림자는 두 상태 모두 black-30 블러 6 — y 6 내려서 위쪽으로는 안 보이게 (사용자 요청, 11-03)
    페이드는 두 상태 모두 62.363% (Figma 48960:385042 · 385043) */
-:root { --library-floating-off-bg: var(--stds-glob-color-gray780); --library-floating-off-fg: var(--stds-glob-color-gray650); }
 /* 바닥 페이드 · 그림자 — 하단 플로팅과 완료 토스트가 같이 쓴다.
    페이드는 시작 · 끝이 완만한 곡선(smoothstep)으로 — 직선 그라디언트는 시작 지점에 경계선이 보인다.
    완전히 덮이는 지점은 Figma 그대로 62.363% */
@@ -589,7 +588,6 @@
   );
   --library-floating-shadow: 0 0.6rem 0.6rem var(--stds-glob-color-black-30);
 }
-:root[data-theme="light"] { --library-floating-off-bg: var(--stds-glob-color-gray200); --library-floating-off-fg: var(--stds-glob-color-gray400); }
 .library-floating {
   position: fixed;
   z-index: 15;
@@ -614,7 +612,7 @@
   height: 7.2rem;
   padding: 0 2.4rem;
   border-radius: var(--stds-glob-border-radius-circle);
-  background: var(--library-floating-off-bg);
+  background: var(--floating-off-bg);
   box-shadow: var(--library-floating-shadow);
   pointer-events: auto;
   transition: background-color 0.2s ease;
@@ -641,7 +639,7 @@
   cursor: pointer;
   transition: color 0.2s ease;
 }
-.library-floating__btn:disabled { color: var(--library-floating-off-fg); cursor: default; }
+.library-floating__btn:disabled { color: var(--floating-off-fg); cursor: default; }
 .library-floating__icon { display: block; flex: 0 0 auto; width: 2.4rem; height: 2.4rem; }
 .library-floating__div { width: 1px; height: 4rem; background: var(--stds-sem-color-inverse-elevation-6); transition: background-color 0.2s ease; }
 .library-floating.is-active .library-floating__div { background: var(--stds-glob-color-black-8); }
