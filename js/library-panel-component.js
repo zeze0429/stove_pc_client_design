@@ -509,7 +509,7 @@ var LibraryPanel = {
       this.filterOpen = !this.filterOpen;
     },
     // 검색 버튼 — 입력칸을 열고 닫는다. 열 때 필터 레이어 · 필터 조건은 해제.
-    // 닫아도 확인한 검색어(칩)는 남는다 — 칩 X · 초기화로 지운다
+    // 닫을 때(검색 버튼 다시 · 취소 · Esc)는 검색 결과도 같이 지우고 그룹 목록으로 (사용자 11-05)
     toggleSearch: function () {
       if (this.searchOpen) { this.closeSearch(); return; }
       this.filterOpen = false;
@@ -518,7 +518,7 @@ var LibraryPanel = {
       this.searchText = this.searchQuery;
       this.$nextTick(function () { if (this.$refs.searchInput) this.$refs.searchInput.focus(); });
     },
-    closeSearch: function () { this.searchOpen = false; },
+    closeSearch: function () { this.clearSearch(); },
     onSearchInput: function (e) { this.searchText = e.target.value; },
     onSearchKey: function (e) {
       if (e.isComposing) return;
