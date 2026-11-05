@@ -514,8 +514,9 @@
 }
 .library-card.is-selected .library-card__border { border: 0.3rem solid var(--stds-sem-color-brand-primary); }
 .library-card.is-added { cursor: default; }
-/* 이미 그룹에 있음 (Figma 2026_웹전환 1545:51480) — 보더 disabled-variant-1, 체크는 STDS 비활성 선택 */
-.library-card.is-added .library-card__border { border: 0.3rem solid var(--stds-sem-color-disabled-variant-1); }
+/* 이미 그룹에 있음 (Figma 2026_웹전환 1545:51480) — 체크는 STDS 비활성 선택,
+   보더는 그 체크 배경(disabled-variant-2)과 같은 색 (사용자 11-05) */
+.library-card.is-added .library-card__border { border: 0.3rem solid var(--stds-sem-color-disabled-variant-2); }
 .library-card.is-added .library-card__genre,
 .library-card.is-added .library-card__name { color: var(--stds-sem-color-on-surface-elevation-4); }
 .library-card.is-added .library-card__thumb:hover .library-card__media img { transform: none; }
