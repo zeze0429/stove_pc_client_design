@@ -48,6 +48,8 @@
    입력창 · 편집 영역만 예외로 선택 가능 ---- */
 body { user-select: none; }
 input, textarea, [contenteditable="true"] { user-select: text; }
+/* 이미지 · 링크를 끌어도 반투명 복사본(드래그 고스트)이 따라오지 않게 (사용자 11-05) */
+img, a { -webkit-user-drag: none; }
 
 /* ---- 컨텍스트 메뉴가 떠 있는 동안 바닥 화면은 반응하지 않는다 (공통 룰, 사용자 11-04) ----
    메뉴를 연 컴포넌트가 html에 ctx-open-{owner}를 붙인다(contextMenuLock, js/gnb-component.js).
