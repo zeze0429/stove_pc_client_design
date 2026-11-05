@@ -653,7 +653,8 @@ var LibraryMain = {
         '<div v-if="resultsActive" class="library-result" data-name="필터검색결과">' +
           '<p class="library-result__title stds-btn2 fw-bold">검색 결과<span class="library-result__count" :class="{ \'is-zero\': !filteredOwned.length }">{{ filteredOwned.length }}</span><i class="library-result__dot" aria-hidden="true"></i></p>' +
           '<div class="library-result__chips" data-name="선택한 필터">' +
-            '<button class="library-chip library-chip--reset stds-btn3 fw-medium" type="button" @click="resetResults" data-name="Chips"><i class="ic-v2-control-refresh-line" aria-hidden="true"></i>초기화</button>' +
+            // 초기화 — 시스템 버튼 tertiary xs 알약형, 높이만 칩과 같은 28 (사용자 11-05)
+            '<button class="stds-button stds-button-tertiary stds-button-xs stds-button-full library-result__reset" type="button" @click="resetResults" data-name="Chips"><i class="ic-v2-control-refresh-line" aria-hidden="true"></i>초기화</button>' +
             '<button v-for="c in resultChips" :key="c.key" class="library-chip stds-btn3 fw-medium" type="button" :aria-label="c.label + \' 조건 지우기\'" @click="c.remove()" data-name="Chips">' +
               '<span class="library-chip__label">{{ c.label }}</span><i class="ic-v2-control-close-line" aria-hidden="true"></i>' +
             '</button>' +

@@ -348,6 +348,8 @@
   background: var(--stds-sem-color-on-surface-elevation-4);
 }
 .library-result__chips { flex: 1 1 0; min-width: 0; display: flex; flex-wrap: wrap; gap: 0.8rem; }
+/* 초기화 — 시스템 버튼(tertiary xs 알약형) 그대로, 높이만 칩과 같은 28 (사용자 11-05) */
+.library-result__reset.stds-button-xs { height: 2.8rem; }
 /* 결과 없음 — 우측패널과 같은 블록(경고 아이콘 36 · text4 가운데) */
 .library-no-result {
   display: flex;

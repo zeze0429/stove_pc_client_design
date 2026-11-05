@@ -76,12 +76,6 @@
 .library-chip:active { background: var(--stds-sem-color-inverse-elevation-2); }
 .library-chip__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .library-chip i { flex: 0 0 auto; color: var(--stds-sem-color-on-surface-elevation-3); font-size: 1.2rem; }
-/* 초기화 칩 (Figma 11564:174254 / 58 / 62) — 새로고침 아이콘 16 + 글자 on-surface-elevation-1.
-   enabled inverse-elevation-3 · hover white 15%(변수 없음 → 같은 값 inverse-elevation-2) · pressed white 20%(시멘틱 없음 → 글로벌) */
-.library-chip--reset { color: var(--stds-sem-color-on-surface-elevation-1); background: var(--stds-sem-color-inverse-elevation-3); }
-.library-chip--reset:hover { background: var(--stds-sem-color-inverse-elevation-2); }
-.library-chip--reset:active { background: var(--stds-glob-color-white-20); }
-.library-chip--reset i { color: inherit; font-size: 1.6rem; }
 
 .library-filter__body {
   flex: 1 1 auto;
