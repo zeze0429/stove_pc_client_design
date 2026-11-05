@@ -376,6 +376,8 @@
   --stds-sem-color-disabled-variant-6: var(--stds-glob-color-gray80);
   --stds-sem-color-disabled-variant-7: var(--stds-glob-color-white-20);
   --stds-sem-color-disabled-variant-8: var(--stds-glob-color-white-10);
+  --stds-sem-color-disabled-variant-9: var(--stds-glob-color-gray880); /* 비공식 시멘틱 — 사용자 정의(11-05). 그룹 만들기 비활성 배경 */
+  --stds-sem-color-disabled-variant-10: var(--stds-glob-color-gray750); /* 비공식 시멘틱 — 사용자 정의(11-05). 그룹 만들기 비활성 글자 · 아이콘 */
   --stds-sem-color-on-surface-elevation-1: var(--stds-glob-color-gray80);
   --stds-sem-color-on-surface-elevation-1-pressed: var(--stds-glob-color-white);
   --stds-sem-color-on-surface-elevation-2: var(--stds-glob-color-gray200);
@@ -451,6 +453,8 @@
   --stds-sem-color-disabled-variant-6: var(--stds-glob-color-gray80);
   --stds-sem-color-disabled-variant-7: var(--stds-glob-color-white-20);
   --stds-sem-color-disabled-variant-8: var(--stds-glob-color-black-8);
+  --stds-sem-color-disabled-variant-9: var(--stds-glob-color-gray150); /* 비공식 시멘틱 — 사용자 정의(11-05) */
+  --stds-sem-color-disabled-variant-10: var(--stds-glob-color-gray300); /* 비공식 시멘틱 — 사용자 정의(11-05) */
   --stds-sem-color-on-surface-elevation-1: var(--stds-glob-color-gray880);
   --stds-sem-color-on-surface-elevation-1-pressed: var(--stds-glob-color-black);
   --stds-sem-color-on-surface-elevation-2: var(--stds-glob-color-gray800);
