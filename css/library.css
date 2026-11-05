@@ -634,40 +634,43 @@
   justify-content: center;
   pointer-events: none;
 }
+/* 2026_웹전환 11564:174282 — 색은 우측패널 완료 토스트(.library-panel__added)와 같다.
+   배경 tint_blue_100 · 보더 white/40 · 안쪽 16 · 둥글기 12 · 아이콘~글 12, 문구 Title8-M, 그룹 칩 Caption2-M.
+   문구 네이비 #253661은 토큰이 없어 헥스 그대로(사용자 허용), 칩 배경은 문구 색 50%.
+   실패(is-error, 선택한 게임이 이미 포함): 문구 tint_red900, 배경 #fae9eb도 토큰이 없어 헥스 그대로 */
 .library-toast {
+  --library-toast-ink: #253661;
   display: flex;
   align-items: center;
   gap: 1.2rem;
-  padding: calc(1.2rem - 1px);
-  border: 1px solid var(--stds-glob-color-white-20);
-  border-radius: var(--stds-glob-border-radius-lg);
-  background: var(--stds-sem-color-neutral-variant-2);
+  padding: calc(1.6rem - 1px);
+  border: 1px solid var(--stds-glob-color-white-40);
+  border-radius: var(--stds-glob-border-radius-xl);
+  background: var(--stds-glob-color-tint-blue100);
   box-shadow: 0 1.2rem 2.4rem 1rem var(--stds-glob-color-black-80);
+}
+.library-toast.is-error {
+  --library-toast-ink: var(--stds-glob-color-tint-red900);
+  background: #fae9eb;
 }
 .library-toast__icon { display: block; width: 3.2rem; height: 3.2rem; }
 .library-toast__body { display: flex; flex-direction: column; align-items: flex-start; gap: 0.4rem; }
 .library-toast__text {
   margin: 0;
-  color: var(--stds-sem-color-on-surface-elevation-3);
-  font-size: 1.2rem;
+  color: var(--library-toast-ink);
   font-weight: 500;
-  line-height: 1.8rem;
-  letter-spacing: -0.024rem;
   white-space: nowrap;
 }
-.library-toast__text b { color: var(--stds-sem-color-on-surface-elevation-1); font-weight: 700; }
+.library-toast__text b { color: var(--stds-sem-color-brand-blue); font-weight: 700; }
 .library-toast__group {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  height: 2rem;
-  padding: 0 0.6rem 0 0.4rem;
+  padding: 0.2rem 0.8rem 0.2rem 0.5rem;
   border-radius: var(--stds-glob-border-radius-circle);
-  background: var(--stds-sem-color-inverse-elevation-5);
-  color: var(--stds-sem-color-on-surface-elevation-3);
-  font-size: 1rem;
+  background: color-mix(in srgb, var(--library-toast-ink) 50%, transparent);
+  color: var(--stds-glob-color-white);
   font-weight: 500;
-  letter-spacing: -0.02rem;
   white-space: nowrap;
 }
 .library-toast__group i { font-size: 1.2rem; }

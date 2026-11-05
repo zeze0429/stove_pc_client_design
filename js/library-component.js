@@ -185,7 +185,7 @@ var LIBRARY_ADD_GROUP_DUP_MSG = '이 이름은 이미 사용 중이에요. 다�
 /**
  * 그룹에 추가 팝업 (Figma 클라이언트_v3.1 67967:409417 "그룹추가 팝업") — 게임 선택으로 들어온 선택 UI에서 하단 "그룹에 추가".
  * 공용 레이어 셸(LayerDialog) · 너비 404. 위: 그룹 만들기(버튼 → 누르면 입력칸 + 완료), 아래: 나의 그룹 목록(체크박스, 여러 개).
- * 고른 게임이 전부 이미 들어 있는 그룹은 비활성(체크된 채). 새로 만든 그룹은 목록 맨 위에 체크된 채로 들어온다.
+ * 고른 게임이 전부 이미 들어 있는 그룹은 비활성(체크된 채). 새로 만든 그룹은 목록 맨 위에 체크 안 된 채로 들어온다.
  * 확인 = 체크한 그룹에 게임 추가 (부모가 그룹 데이터에 넣고 선택 UI를 끝낸다)
  */
 var LibraryAddToGroupDialog = {
@@ -230,8 +230,7 @@ var LibraryAddToGroupDialog = {
       var name = this.text.trim();
       if (this.groups.some(function (g) { return g.title === name; })) { this.error = LIBRARY_ADD_GROUP_DUP_MSG; return; }
       var id = 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-      this.groups.unshift({ id: id, title: name, gameIds: [] }); // 최신 생성 순 — 맨 위
-      this.checked.push(id);
+      this.groups.unshift({ id: id, title: name, gameIds: [] }); // 최신 생성 순 — 맨 위 (체크는 사용자가 직접)
       this.text = '';
       this.creating = false;
       this.$nextTick(this.checkListOverflow);
@@ -480,15 +479,21 @@ var LibraryMain = {
       var self = this;
       var games = this.selected.slice();
       var picked = this.store.groups.filter(function (g) { return groupIds.indexOf(g.id) >= 0; });
+      // 토스트 문구 (2026_웹전환 11564:174282) — 다 들어감 / 이미 포함된 게임 빼고 들어감 / 하나도 안 들어감(실패)
+      var added = [], skipped = false;
       picked.forEach(function (g) {
-        games.forEach(function (id) { if (g.gameIds.indexOf(id) < 0) g.gameIds.push(id); });
+        games.forEach(function (id) {
+          if (g.gameIds.indexOf(id) >= 0) { skipped = true; return; }
+          g.gameIds.push(id);
+          if (added.indexOf(id) < 0) added.push(id);
+        });
       });
       this.addGroupDialog = false;
       this.store.selectMode = false;
       // 취소와 같이 앵커를 풀고 맨 위(라이브러리 타이틀)로 (사용자 11-03)
       if (this._scrollBox) this._scrollBox.scrollTo({ top: 0, behavior: 'smooth' });
       var title = picked.length > 1 ? picked[0].title + ' 외 ' + (picked.length - 1) + '개 그룹' : (picked[0] && picked[0].title) || '';
-      this.addedToast = { count: games.length, title: title };
+      this.addedToast = { count: added.length, skipped: skipped, title: title };
       clearTimeout(this._toastTimer);
       this._toastTimer = setTimeout(function () { self.addedToast = null; }, LIBRARY_TOAST_MS);
     },
@@ -658,11 +663,12 @@ var LibraryMain = {
       // 게임 추가 완료 토스트 — 보유게임 영역 하단 가운데, 3초 뒤 사라진다
       '<transition name="library-toast">' +
         '<div v-if="addedToast" class="library-toast-wrap">' +
-          '<div class="library-toast" role="status" data-name="toast popup">' +
-            '<img class="library-toast__icon" src="assets/library/check_circle_color.svg" alt="" />' +
+          '<div class="library-toast" :class="{ \'is-error\': !addedToast.count }" role="status" data-name="toast popup">' +
+            '<img class="library-toast__icon" :src="addedToast.count ? \'assets/library/check_circle_color.svg\' : \'assets/library/close_circle_color.svg\'" alt="" />' +
             '<div class="library-toast__body">' +
-              '<p class="library-toast__text"><b>{{ addedToast.count }}개 게임</b>을 추가했습니다.</p>' +
-              '<span class="library-toast__group"><i class="ic-v2-control-long-arrow-right-line" aria-hidden="true"></i>{{ addedToast.title }}</span>' +
+              '<p v-if="!addedToast.count" class="library-toast__text stds-title8">선택한 게임이 이미 포함되어 있습니다.</p>' +
+              '<p v-else class="library-toast__text stds-title8"><template v-if="addedToast.skipped">이미 포함된 게임을 제외하고 </template><b>{{ addedToast.count }}개 게임</b>을 추가했습니다.</p>' +
+              '<span class="library-toast__group stds-cap2"><i class="ic-v2-control-long-arrow-right-line" aria-hidden="true"></i>{{ addedToast.title }}</span>' +
             '</div>' +
           '</div>' +
         '</div>' +
