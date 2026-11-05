@@ -24,8 +24,8 @@ var LayerDialog = {
     document.removeEventListener('keydown', this.onKeydown);
   },
   template:
-    // 딤을 직접 누른 경우(.self)에만 닫는다 — 다이얼로그 안쪽 클릭은 통과
-    '<div class="layer-dialog-dim" @click.self="$emit(\'close\')">' +
+    // 딤(팝업 바깥)을 눌러도 닫히지 않는다 — 닫기 버튼(또는 Esc)으로만 닫는다
+    '<div class="layer-dialog-dim">' +
       '<div class="layer-dialog" role="dialog" aria-modal="true" :aria-label="title" ' +
         ':style="{ width: width }" data-name="Dialog">' +
         '<div class="layer-dialog__header" data-name="Dialog/Header">' +
