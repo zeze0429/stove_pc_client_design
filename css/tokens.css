@@ -226,9 +226,11 @@
   --stds-glob-color-tint-blue200: #abd0eb;
   --stds-glob-color-tint-blue300: #8dbce5;
   --stds-glob-color-tint-blue400: #70a7de;
+  --stds-glob-color-tint-blue500: #5793d8; /* STDS 0.3.2 공식 — 빠져 있던 값 추가(11-05) */
   --stds-glob-color-tint-blue600: #4474b8;
   --stds-glob-color-tint-blue700: #355b9a;
   --stds-glob-color-tint-blue800: #2c477a;
+  --stds-glob-color-tint-blue900: #22355c; /* STDS 0.3.2 공식 — 빠져 있던 값 추가(11-05) */
   --stds-glob-color-tint-blue-a50: #e9f6fb;
   --stds-glob-color-tint-blue-a100: #b1dcf7;
   --stds-glob-color-tint-blue-a200: #7ec5f8;

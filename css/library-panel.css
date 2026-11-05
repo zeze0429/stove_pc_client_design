@@ -232,9 +232,9 @@
 .library-panel__notice b { color: var(--stds-glob-color-gray820); font-weight: 700; }
 /* 게임 그룹 추가 완료 토스트 — 삭제 안내와 같은 자리(버튼 그룹 위), 3초.
    Figma toast popup 완료 메세지 (10938:80229): 배경 tint_blue_100 · 보더 white/40 · 위아래 12 · 좌우 16, 줄 사이 4.
-   문구 색 #253661은 토큰이 없어 헥스 그대로(사용자 허용), 그룹명 칩 배경은 그 색 50% */
+   문구 색 tint_blue900(사용자 11-05 — 예전 헥스 #253661 대신), 그룹명 칩 배경은 그 색 50% */
 .library-panel__added {
-  --library-toast-navy: #253661;
+  --library-toast-navy: var(--stds-glob-color-tint-blue900);
   position: absolute;
   top: 0;
   left: 0;

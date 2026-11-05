@@ -678,10 +678,10 @@
 }
 /* 2026_웹전환 11564:174282 — 색은 우측패널 완료 토스트(.library-panel__added)와 같다.
    배경 tint_blue_100 · 보더 white/40 · 안쪽 16 · 둥글기 12 · 아이콘~글 12, 문구 Title8-M, 그룹 칩 Caption2-M.
-   문구 네이비 #253661은 토큰이 없어 헥스 그대로(사용자 허용), 칩 배경은 문구 색 50%.
+   문구 tint_blue900(사용자 11-05 — 예전 헥스 #253661 대신), 칩 배경은 문구 색 50%.
    실패(is-error, 선택한 게임이 이미 포함): 문구 tint_red900, 배경 tint_pink50 (사용자 11-05) */
 .library-toast {
-  --library-toast-ink: #253661;
+  --library-toast-ink: var(--stds-glob-color-tint-blue900);
   display: flex;
   align-items: center;
   gap: 1.2rem;
