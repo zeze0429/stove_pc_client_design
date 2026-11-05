@@ -107,6 +107,119 @@
 .library-panel__divider-wrap { flex: 0 0 auto; }
 /* 그룹이 하나라도 있으면 안내 박스가 빠지고 버튼 그룹 ~ 구분선 20 (Figma ④) */
 .library-panel__divider-wrap.has-gap { padding-top: 2rem; }
+/* 검색 입력칸 · 결과 영역 아래 구분선은 16 (Figma 10 검색 · 2-2-2) */
+.library-panel__divider-wrap.has-gap-sm { padding-top: 1.6rem; }
+
+/* ---- 2-3. 검색 입력칸 (Figma 10 검색 8228:227633 — input) ----
+   버튼 그룹 아래 20 · 입력 줄 32(밑줄 2 on-surface-elevation-1) · 8 · 취소 | 확인(btn3-M, 오른쪽 맞춤) */
+.library-panel__search {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.8rem;
+  padding-top: 2rem;
+}
+.library-panel__search-field {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  width: 100%;
+  height: 3.2rem;
+  box-shadow: inset 0 -2px 0 var(--stds-sem-color-on-surface-elevation-1);
+}
+.library-panel__search-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  caret-color: var(--stds-sem-color-brand-primary);
+  font: inherit;
+  font-weight: 400;
+}
+.library-panel__search-input::placeholder { color: var(--stds-sem-color-on-surface-elevation-4); }
+/* 지우기 — 16 원형 X (글자가 있을 때만) */
+.library-panel__search-clear {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--stds-sem-color-inverse-elevation-2);
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+.library-panel__search-btns { display: flex; align-items: center; gap: 1.2rem; }
+.library-panel__search-div { width: 1px; height: 1.4rem; background: var(--stds-sem-color-inverse-elevation-3); }
+/* 텍스트 버튼 (btn_text) — 취소 on-surface-elevation-3, 확인 brand-primary · 비활성 disabled-variant-1.
+   hover 투명도 60 · press 80 (Figma 0922 버튼 상태값 상세, 초기화와 같은 규칙) */
+.library-panel__text-btn {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--stds-sem-color-on-surface-elevation-3);
+  cursor: pointer;
+}
+.library-panel__text-btn--primary { color: var(--stds-sem-color-brand-primary); }
+.library-panel__text-btn:disabled { color: var(--stds-sem-color-disabled-variant-1); cursor: default; }
+.library-panel__text-btn:not(:disabled):hover { opacity: 0.6; }
+.library-panel__text-btn:not(:disabled):active { opacity: 0.8; }
+
+/* ---- 2-2-2. 필터 검색 결과 (Figma 0922 10938:80227) — 버튼 그룹 아래 20 (검색 입력칸이 있으면 구분선 아래 16) ----
+   헤더: "필터 검색 결과" cap1-M on-surface-elevation-4 + 개수 cap1-B brand-primary(0이면 disabled-variant-1) · 초기화.
+   칩: 28, 좌우 8, inverse-elevation-6 · hover 4 · press 2, 글자 brand-primary, X 12 on-surface-elevation-3, 칩 사이 8 */
+.library-panel__divider--result { flex: 0 0 auto; margin-top: 1.6rem; }
+.library-panel__result {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding-top: 2rem;
+}
+.library-panel__result.is-after-search { padding-top: 1.6rem; }
+.library-panel__result-head { display: flex; align-items: center; justify-content: space-between; }
+.library-panel__result-title { display: flex; gap: 0.4rem; margin: 0; color: var(--stds-sem-color-on-surface-elevation-4); }
+.library-panel__result-count { color: var(--stds-sem-color-brand-primary); font-weight: 700; }
+.library-panel__result-count.is-zero { color: var(--stds-sem-color-disabled-variant-1); }
+.library-panel__chips { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+.library-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: 100%;
+  height: 2.8rem;
+  padding: 0 0.8rem;
+  border: 0;
+  border-radius: var(--stds-glob-border-radius-circle);
+  background: var(--stds-sem-color-inverse-elevation-6);
+  color: var(--stds-sem-color-brand-primary);
+  cursor: pointer;
+}
+.library-chip:hover { background: var(--stds-sem-color-inverse-elevation-4); }
+.library-chip:active { background: var(--stds-sem-color-inverse-elevation-2); }
+.library-chip__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.library-chip i { flex: 0 0 auto; color: var(--stds-sem-color-on-surface-elevation-3); font-size: 1.2rem; }
+
+/* 검색어와 맞는 글자 — brand-primary (Figma 10 검색 결과 있음) */
+.library-panel__hit { color: var(--stds-sem-color-brand-primary); }
+
+/* 결과 없음 — 구분선 아래 16 · 경고 아이콘 36 on-surface-elevation-4 · 10 · text4 가운데 */
+.library-panel__no-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1.6rem;
+  text-align: center;
+}
+.library-panel__no-result i { font-size: 3.6rem; color: var(--stds-sem-color-on-surface-elevation-4); }
+.library-panel__no-result p { margin: 0; }
+.library-panel__no-result-title { color: var(--stds-sem-color-on-surface-elevation-3); }
+.library-panel__no-result-desc { color: var(--stds-sem-color-inverse-elevation-1); }
 
 /* 그룹 삭제 안내 — 버튼 그룹 위에 띄운다(z-index, 아래 콘텐츠는 밀리지 않음), 3초.
    Figma toast popup (10963:80308) — glob 토큰 그대로. 위아래 12 · 좌우 16(보더는 안쪽), 둥글기 8, Caption1-M */

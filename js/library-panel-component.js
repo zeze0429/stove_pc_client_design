@@ -256,7 +256,7 @@ function ROW_TPL(listExpr, groupExpr) {
       '@contextmenu.prevent="openGameMenu($event, game, ' + key + ')" ' +
       '@mousedown="$event.button === 0 && !isStaticRow($event.currentTarget) && setPressed(true)" data-name="component/game_group/list">' +
     '<span class="game-group__thumbnail" :style="{ backgroundImage: \'url(\' + game.thumb + \')\' }" data-name="component/thumnail/game"></span>' +
-    '<span class="game-group__list-name stds-cap1 fw-medium">{{ game.name }}</span>' +
+    '<span class="game-group__list-name stds-cap1 fw-medium"><span v-for="(p, i) in nameParts(game.name)" :key="i" :class="{ \'library-panel__hit\': p.hit }">{{ p.text }}</span></span>' +
     '<span v-if="game.badges && game.badges.length" class="game-group__badges">' +
       '<span v-for="b in game.badges" :key="b" class="badge-game-list" data-name="component/badge/game_list" ' +
         '@mouseenter="showBadgeTip($event, ' + key + ', b)" @mouseleave="hideBadgeTip">' +
@@ -304,6 +304,10 @@ var LibraryPanel = {
       loadedRows: Infinity,
       filter: libraryFilterDefault(), // 필터 레이어 (js/library-filter-component.js) — 패널은 정렬에 그룹 · 게임 둘 다
       filterOpen: false,
+      // 검색 (Figma 10 검색 8228:227633) — 검색 버튼을 누르면 버튼 그룹 아래 입력칸. 확인하면 검색어가 칩으로 (필터 결과와 같은 자리)
+      searchOpen: false,
+      searchText: '', // 입력 중인 글자
+      searchQuery: '', // 확인한 검색어 — 목록에 적용
       hoveredGameId: null, // 말줄임 툴팁을 띄운 행 (rowKey)
       tooltipLeft: 0,
       tooltipTop: 0,
@@ -327,7 +331,31 @@ var LibraryPanel = {
     ungrouped: function () {
       var inGroup = {};
       this.groups.forEach(function (g) { g.gameIds.forEach(function (id) { inGroup[id] = true; }); });
-      return libraryFilterGames(this.owned.filter(function (g) { return !inGroup[g.id]; }), this.filter);
+      return this.searchGames(libraryFilterGames(this.owned.filter(function (g) { return !inGroup[g.id]; }), this.filter));
+    },
+    // 필터나 검색어가 하나라도 걸려 있으면 결과 영역(개수 · 칩 · 초기화)을 보이고, 맞는 게임이 없는 그룹은 숨긴다
+    resultsActive: function () { return !!this.searchQuery || libraryFilterActive(this.filter); },
+    // 결과 칩 — 설치된 게임 · 종류 · 검색어 · 장르 순 (Figma 2-2-2 검색결과 있음_2). 누르면 그 조건만 뺀다
+    resultChips: function () {
+      var f = this.filter, vm = this, chips = [];
+      if (f.installedOnly) chips.push({ key: 'installed', label: '설치된 게임', remove: function () { vm.filter = Object.assign({}, f, { installedOnly: false }); } });
+      LIBRARY_FILTER_TYPES.forEach(function (t) {
+        if (f.types.indexOf(t.key) >= 0) chips.push({ key: 'type:' + t.key, label: t.label, remove: function () { vm.filter = Object.assign({}, f, { types: f.types.filter(function (k) { return k !== t.key; }) }); } });
+      });
+      if (this.searchQuery) chips.push({ key: 'query', label: this.searchQuery, remove: function () { vm.searchQuery = ''; vm.searchText = ''; } });
+      f.genres.forEach(function (g) {
+        chips.push({ key: 'genre:' + g, label: g, remove: function () { vm.filter = Object.assign({}, f, { genres: f.genres.filter(function (k) { return k !== g; }) }); } });
+      });
+      return chips;
+    },
+    // 결과 개수 = 화면에 남은 게임 행 수 (여러 그룹에 든 게임은 그 수만큼)
+    resultCount: function () {
+      return this.shownGroups.reduce(function (n, g) { return n + this.groupGames(g).length; }.bind(this), 0) + this.ungrouped.length;
+    },
+    // 검색 확인 — 글자가 있고, 이미 검색한 글자와 다를 때만 (Figma "확인은 비활성화상태 (이미 검색을 완료 했으므로)")
+    canSubmitSearch: function () {
+      var t = this.searchText.trim();
+      return !!t && t !== this.searchQuery;
     },
     // 화면에 그리는 순서(그룹들 → 그룹 없는 게임)의 행 번호 — 스켈레톤을 앞에서부터 걷어낸다
     rowOrder: function () {
@@ -340,7 +368,10 @@ var LibraryPanel = {
       return order;
     },
     // 필터 정렬을 적용한 그룹 순서 (설정 순이면 그대로)
-    shownGroups: function () { return librarySortGroups(this.groups, this.filter); },
+    shownGroups: function () {
+      var list = librarySortGroups(this.groups, this.filter);
+      return this.resultsActive ? list.filter(function (g) { return this.groupGames(g).length > 0; }, this) : list;
+    },
     tooltipStyle: function () {
       return { left: this.tooltipLeft + 'px', top: this.tooltipTop + 'px', width: this.tooltipWidth + 'px' };
     },
@@ -371,7 +402,9 @@ var LibraryPanel = {
     },
     // 구분선 · 그룹 목록 — 그룹이나 그룹 없는 게임이 하나라도 있을 때.
     // 그룹 만들기 입력 중에는 구분선부터 아래 목록 전부 숨긴다 (Figma ③ "그룹 목록 미노출")
-    showList: function () { return !this.creating && (this.groups.length > 0 || this.ungrouped.length > 0); },
+    showList: function () { return !this.creating && (this.resultsActive ? this.resultCount > 0 : (this.groups.length > 0 || this.ungrouped.length > 0)); },
+    // 구분선 — 목록이 있거나, 결과가 0이라 빈 결과 안내를 띄울 때
+    showDivider: function () { return !this.creating && (this.showList || this.resultsActive); },
     // 그룹 메뉴 항목 (Figma ④ 그룹 메뉴 = 우클릭 메뉴). 그룹 없는 게임은 일부만 (화면 보기 · 접기)
     menuItems: function () {
       if (!this.menu) return [];
@@ -398,6 +431,7 @@ var LibraryPanel = {
     creating: function () { this.$nextTick(this.updateThumb); },
     // 필터로 목록 길이가 바뀌어도 마찬가지
     filter: function () { this.$nextTick(this.updateThumb); },
+    searchQuery: function () { this.$nextTick(this.updateThumb); },
   },
   methods: {
     // 게임 추가 중인 그룹은 항상 펼쳐 둔다 (접기/펼치기 비활성)
@@ -444,7 +478,52 @@ var LibraryPanel = {
     groupGames: function (group) {
       var byId = {};
       this.owned.forEach(function (g) { byId[g.id] = g; });
-      return libraryFilterGames(group.gameIds.map(function (id) { return byId[id]; }).filter(Boolean), this.filter);
+      return this.searchGames(libraryFilterGames(group.gameIds.map(function (id) { return byId[id]; }).filter(Boolean), this.filter));
+    },
+    // ── 검색 (Figma 10 · 2-3) — 패널 안 게임 이름에서만 찾는다 ──
+    searchGames: function (list) {
+      var q = this.searchQuery.toLowerCase();
+      return q ? list.filter(function (g) { return g.name.toLowerCase().indexOf(q) >= 0; }) : list;
+    },
+    // 게임 이름을 검색어 앞 · 검색어 · 뒤로 나눈다 — 검색어 부분만 brand-primary
+    nameParts: function (name) {
+      var q = this.searchQuery;
+      var i = q ? name.toLowerCase().indexOf(q.toLowerCase()) : -1;
+      if (i < 0) return [{ text: name, hit: false }];
+      return [
+        { text: name.slice(0, i), hit: false },
+        { text: name.slice(i, i + q.length), hit: true },
+        { text: name.slice(i + q.length), hit: false },
+      ].filter(function (p) { return p.text; });
+    },
+    // 검색 버튼 — 입력칸을 열고 닫는다. 닫아도 확인한 검색어(칩)는 남는다 — 칩 X · 초기화로 지운다
+    toggleSearch: function () {
+      if (this.searchOpen) { this.closeSearch(); return; }
+      this.searchOpen = true;
+      this.searchText = this.searchQuery;
+      this.$nextTick(function () { if (this.$refs.searchInput) this.$refs.searchInput.focus(); });
+    },
+    closeSearch: function () { this.searchOpen = false; },
+    onSearchInput: function (e) { this.searchText = e.target.value; },
+    onSearchKey: function (e) {
+      if (e.isComposing) return;
+      if (e.key === 'Enter') { e.preventDefault(); this.submitSearch(); }
+      else if (e.key === 'Escape') this.closeSearch();
+    },
+    submitSearch: function () {
+      if (!this.canSubmitSearch) return;
+      this.searchQuery = this.searchText.trim();
+      if (this.$refs.scrollEl) this.$refs.scrollEl.scrollTop = 0;
+    },
+    clearSearchText: function () {
+      this.searchText = '';
+      this.$refs.searchInput.focus();
+    },
+    // 초기화 — 필터 조건과 검색어를 모두 지우고 원래 목록으로 (정렬은 그대로, 검색 입력칸은 열린 채)
+    resetResults: function () {
+      this.filter = Object.assign(libraryFilterDefault(), { groupSort: this.filter.groupSort, gameSort: this.filter.gameSort });
+      this.searchQuery = '';
+      this.searchText = '';
     },
     toggleGroup: function (id) {
       this.collapsed[id] = !this.collapsed[id];
@@ -1024,10 +1103,38 @@ var LibraryPanel = {
         '</button>' +
         // 필터 — 버튼 그룹 아래에 레이어(폭 240 = 버튼 그룹 폭), 열려 있는 동안 버튼은 선택 테두리
         '<button class="library-panel__icon-btn" :class="{ \'is-selected\': filterOpen }" type="button" aria-label="필터" :aria-expanded="String(filterOpen)" data-name="btn/icon" @click.stop="filterOpen = !filterOpen"><i class="ic-v2-community-filter-line"></i></button>' +
-        '<button class="library-panel__icon-btn" type="button" aria-label="검색" data-name="btn/icon"><i class="ic-v2-navigation-search-line"></i></button>' +
+        '<button class="library-panel__icon-btn" :class="{ \'is-selected\': searchOpen }" type="button" aria-label="검색" :aria-expanded="String(searchOpen)" data-name="btn/icon" @click="toggleSearch"><i class="ic-v2-navigation-search-line"></i></button>' +
         '<library-filter-layer v-if="filterOpen" v-model="filter" width="24rem" group-sort :anchor="actionsEl" @close="filterOpen = false"></library-filter-layer>' +
       '</div>' +
 
+      // 검색 입력칸 (Figma 10 검색 — input) — 버튼 그룹 아래 20, 밑줄 2 · 취소 | 확인
+      '<div v-if="searchOpen && !creating" class="library-panel__search" data-name="input">' +
+        '<label class="library-panel__search-field">' +
+          '<input ref="searchInput" class="library-panel__search-input stds-cap1" type="text" placeholder="게임명 입력" ' +
+            ':value="searchText" @input="onSearchInput" @keydown="onSearchKey" />' +
+          '<button v-if="searchText" class="library-panel__search-clear" type="button" aria-label="지우기" @mousedown.prevent @click="clearSearchText"><i class="ic-v2-control-close-circle-fill"></i></button>' +
+        '</label>' +
+        '<div class="library-panel__search-btns" data-name="btn">' +
+          '<button class="library-panel__text-btn stds-btn3 fw-medium" type="button" @click="closeSearch">취소</button>' +
+          '<span class="library-panel__search-div" aria-hidden="true"></span>' +
+          '<button class="library-panel__text-btn library-panel__text-btn--primary stds-btn3 fw-medium" type="button" :disabled="!canSubmitSearch" @click="submitSearch">확인</button>' +
+        '</div>' +
+      '</div>' +
+      // 필터 검색 결과 (Figma 2-2-2 · 0922) — 개수 · 초기화 · 조건 칩. 검색 입력칸이 열려 있으면 그 아래 구분선 다음에
+      '<template v-if="resultsActive && !creating">' +
+        '<div v-if="searchOpen" class="library-panel__divider library-panel__divider--result" data-name="element/div"></div>' +
+        '<div class="library-panel__result" :class="{ \'is-after-search\': searchOpen }" data-name="필터 검색 결과">' +
+          '<div class="library-panel__result-head">' +
+            '<p class="library-panel__result-title stds-cap1 fw-medium">필터 검색 결과<b class="library-panel__result-count" :class="{ \'is-zero\': !resultCount }">{{ resultCount }}</b></p>' +
+            '<button class="library-filter__reset" type="button" @click="resetResults" data-name="btn_text"><i class="ic-v2-control-refresh-line" aria-hidden="true"></i>초기화</button>' +
+          '</div>' +
+          '<div class="library-panel__chips">' +
+            '<button v-for="c in resultChips" :key="c.key" class="library-chip stds-btn3 fw-medium" type="button" :aria-label="c.label + \' 조건 지우기\'" @click="c.remove()" data-name="Chips">' +
+              '<span class="library-chip__label">{{ c.label }}</span><i class="ic-v2-control-close-line" aria-hidden="true"></i>' +
+            '</button>' +
+          '</div>' +
+        '</div>' +
+      '</template>' +
       // 그룹 없음 — 고정 (스크롤 영역 밖). 보유게임이 없어도 그룹은 만들 수 있어 항상 이 안내를 둔다.
       // 그룹 만들기 입력 중에는 사라진다 (2-1 "버튼 하단 안내메세지 사라짐")
       '<div v-if="!groups.length && !creating" class="library-panel__empty" data-name="component/game_group/그룹없음">' +
@@ -1036,9 +1143,10 @@ var LibraryPanel = {
           '<p class="stds-cap1 fw-medium">그룹으로 나만의 라이브러리를<br />만들어 보세요.</p>' +
         '</div>' +
       '</div>' +
-      // 구분선 — 스크롤 영역의 윗변. 그룹이 있으면 버튼 그룹과 20 띄운다 (안내 박스가 없어서)
-      '<div v-if="showList" class="library-panel__divider-wrap" ' +
-        ':class="{ \'has-gap\': groups.length && !creating }">' +
+      // 구분선 — 스크롤 영역의 윗변. 그룹이 있으면 버튼 그룹과 20 띄운다 (안내 박스가 없어서).
+      // 검색 입력칸 · 결과 영역 아래에서는 16
+      '<div v-if="showDivider" class="library-panel__divider-wrap" ' +
+        ':class="{ \'has-gap\': groups.length && !creating && !searchOpen && !resultsActive, \'has-gap-sm\': (searchOpen || resultsActive) && groups.length }">' +
         '<div class="library-panel__divider" data-name="element/div"></div>' +
       '</div>' +
 
@@ -1047,6 +1155,14 @@ var LibraryPanel = {
         '<div ref="scrollEl" class="library-panel__scroll" @scroll="onScroll">' +
           '<div ref="hoverIndicator" class="gnb-hover-indicator" aria-hidden="true"></div>' +
 
+          // 결과 없음 (Figma 2-2-2 검색결과 없음 · 0907 문구 "결과가 없습니다.")
+          '<div v-if="resultsActive && !showList && !creating" class="library-panel__no-result" data-name="component/game_group/list_group">' +
+            '<i class="ic-v2-state-warning-circle-fill" aria-hidden="true"></i>' +
+            '<div class="stds-text4">' +
+              '<p class="library-panel__no-result-title fw-medium">결과가 없습니다.</p>' +
+              '<p class="library-panel__no-result-desc">검색어의 단어 수를 줄이거나<br />필터 조건을 변경하세요.</p>' +
+            '</div>' +
+          '</div>' +
           '<div v-if="showList" class="library-panel__list" data-name="게임그룹">' +
             // 사용자가 만든 그룹
             '<section v-for="group in shownGroups" :key="group.id" class="game-group library-group" :data-group-id="group.id" ' +
