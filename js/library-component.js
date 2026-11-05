@@ -623,9 +623,9 @@ var LibraryMain = {
             '<div class="library-card__thumb">' +
               '<span class="library-card__media"><img :src="g.thumb" alt="" loading="lazy" /></span>' +
               '<span class="library-card__border" aria-hidden="true"></span>' +
-              // 선택 UI 체크 — 기본(빈 원) · 선택(brand-primary + 체크) · 이미 그룹에 있음(회색 + 체크)
-              '<span v-if="selecting" class="library-card__check" aria-hidden="true" data-name="Checkbox">' +
-                '<i v-if="isSelected(g) || addedIds[g.id]" class="ic-v2-control-check-bold-line"></i>' +
+              // 선택 UI 체크 — STDS 체크박스 상자(css/checkbox.css) 그대로, 모양만 원. 미선택 · 선택 · 이미 그룹에 있음(비활성 선택)
+              '<span v-if="selecting" class="stds-checkbox__box library-card__check" :class="{ \'is-checked\': isSelected(g) || addedIds[g.id], \'is-disabled\': addedIds[g.id] }" aria-hidden="true" data-name="Checkbox">' +
+                '<i class="ic-v2-control-check-bold-line"></i>' +
               '</span>' +
               '<button v-else class="stds-button stds-button-blue stds-button-sm is-icon-only library-action library-card__action" type="button" :aria-label="actionLabel(g.action)"><i :class="actionIcon(g.action)"></i></button>' +
               '<span v-if="g.badge" class="library-card__badge">{{ g.badge }}</span>' +
