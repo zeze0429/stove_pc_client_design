@@ -567,7 +567,8 @@
 }
 
 /* 커서를 따라다니는 프리뷰 (Figma component/game_group/list · title status=change position) —
-   배경 glob gray940 + interaction-pressed, 보더 border(안쪽 1), 둥글기 8, 그림자 0 4 8 32%(→ black-30, 사이드바와 같은 결정), 전체 90% */
+   배경 background-variant-2 + interaction-pressed(사이드바 타겟 컴포넌트와 같은 값 — 시안의 glob gray940 대신, 사용자 11-05),
+   보더 border(안쪽 1), 둥글기 8, 그림자 0 4 8 32%(→ black-30, 사이드바와 같은 결정), 전체 90% */
 .library-drag {
   position: fixed;
   z-index: 35;
@@ -581,7 +582,7 @@
   height: 2.8rem;
   border: 1px solid var(--stds-sem-color-border);
   border-radius: var(--stds-glob-border-radius-lg);
-  background: linear-gradient(var(--stds-sem-color-interaction-pressed), var(--stds-sem-color-interaction-pressed)), var(--stds-glob-color-gray940);
+  background: linear-gradient(var(--stds-sem-color-interaction-pressed), var(--stds-sem-color-interaction-pressed)), var(--stds-sem-color-background-variant-2);
   box-shadow: 0 0.4rem 0.8rem var(--stds-glob-color-black-30);
 }
 .library-drag__layer { position: absolute; left: 0; right: 0; }
