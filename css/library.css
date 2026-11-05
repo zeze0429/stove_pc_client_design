@@ -339,13 +339,13 @@
 }
 .library-result__count { color: var(--stds-sem-color-brand-primary); }
 .library-result__count.is-zero { color: var(--stds-sem-color-disabled-variant-1); }
-/* 점 — Figma 변수 on-surface/white(not in system)/secondary = 흰색 50% (시멘틱 없음 → 글로벌) */
+/* 구분점 — on-surface/elevation/elevation-4 (사용자 11-05) */
 .library-result__dot {
   width: 0.2rem;
   height: 0.2rem;
   margin-left: 0.4rem;
   border-radius: 50%;
-  background: var(--stds-glob-color-white-50);
+  background: var(--stds-sem-color-on-surface-elevation-4);
 }
 .library-result__chips { flex: 1 1 0; min-width: 0; display: flex; flex-wrap: wrap; gap: 0.8rem; }
 /* 결과 없음 — 우측패널과 같은 블록(경고 아이콘 36 · text4 가운데) */
