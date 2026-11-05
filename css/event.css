@@ -309,7 +309,7 @@
   border-radius: var(--stds-glob-border-radius-lg);
   object-fit: cover;
 }
-/* 상태 칩 — 배경 #E8F0FF는 웹이 테마와 상관없이 고정으로 쓰는 값 */
+/* 상태 칩 — 배경 navy50(#e8f0ff, 웹이 테마와 상관없이 고정으로 쓰는 값). 타팀 웹 화면 */
 .event-card__status {
   flex: 0 0 auto;
   align-self: center;
@@ -318,7 +318,7 @@
   margin-left: auto;
   padding: 0.4rem 0.8rem;
   border-radius: var(--stds-glob-border-radius-lg);
-  background: #e8f0ff;
+  background: var(--stds-glob-color-navy50);
   color: var(--stds-sem-color-brand-blue);
   font-size: 1.1rem;
   font-weight: 500;
