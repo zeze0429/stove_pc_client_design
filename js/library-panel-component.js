@@ -209,6 +209,7 @@ function TITLE_TPL(idExpr, nameExpr, countExpr, withAdd) {
   return '<div class="game-group__title library-group__title" ' +
       ':class="{ \'is-hover\': hoveredTitleId === ' + idExpr + ', \'is-menu-open\': menu && menu.groupId === ' + idExpr + ' }" ' +
       '@mouseenter="onTitleEnter($event, ' + idExpr + ')" @mouseleave="onTitleLeave" ' +
+      (withAdd ? '@mousedown="onTitleMouseDown($event, ' + idExpr + ')" ' : '') +
       '@click="openGroupPage(' + idExpr + ')" @contextmenu.prevent="' + isTarget + ' || openMenu($event, ' + idExpr + ', false)" data-name="component/game_group/title">' +
     '<button class="game-group__btn-left-arrow" type="button" aria-label="펼치기/접기" :disabled="' + isTarget + '" @click.stop="toggleGroup(' + idExpr + ')" data-name="component/game_group/title/btn_left_arrow">' +
       '<i class="ic-v2-control-select-arrow-down-fill"></i>' +
@@ -254,7 +255,7 @@ function ROW_TPL(listExpr, groupExpr) {
       ':data-row-key="' + key + '" @click="onRowClick($event, ' + key + ')" ' +
       '@mouseenter="onRowEnter($event, game, ' + key + ')" @mouseleave="onRowLeave" ' +
       '@contextmenu.prevent="openGameMenu($event, game, ' + key + ')" ' +
-      '@mousedown="$event.button === 0 && !isStaticRow($event.currentTarget) && setPressed(true)" data-name="component/game_group/list">' +
+      '@mousedown="onRowMouseDown($event, game, ' + key + ')" data-name="component/game_group/list">' +
     '<span class="game-group__thumbnail" :style="{ backgroundImage: \'url(\' + game.thumb + \')\' }" data-name="component/thumnail/game"></span>' +
     '<span class="game-group__list-name stds-cap1 fw-medium"><span v-for="(p, i) in nameParts(game.name)" :key="i" :class="{ \'library-panel__hit\': p.hit }">{{ p.text }}</span></span>' +
     '<span v-if="game.badges && game.badges.length" class="game-group__badges">' +
@@ -274,6 +275,9 @@ function ROW_TPL(listExpr, groupExpr) {
   '</li>' +
   '</template>';
 }
+
+var LIBRARY_DRAG_HOLD_MS = 450; // 롱프레스 — 사이드바 즐겨찾기 순서 변경과 같은 시간
+var LIBRARY_DRAG_LAYER_GAP = 5; // 여러 게임을 끌 때 뒤에 겹쳐 보이는 레이어 간격 (Figma gap -23 → 5씩 아래, 최대 3장)
 
 var LIBRARY_PANEL_LOAD_STEP = 10; // 한 번에 불러오는 행 수 (실서비스 200, 시안은 한 화면에 스켈레톤이 보이게 10 — 사용자 11-03)
 var LIBRARY_PANEL_LOAD_MS = 4000; // 다음 묶음까지 걸리는 시간 (데모용 — 스켈레톤을 충분히 보게 길게, 사용자 11-03)
@@ -299,6 +303,9 @@ var LibraryPanel = {
       selectedRows: [], // 선택한 게임 행 (rowKey) — Ctrl/⌘ 클릭 추가 · 해제, Shift 클릭 범위 (Figma ⑫ "여러개 선택 가능(키보드 조작)")
       selectAnchor: null, // Shift 범위 선택 기준 행
       createDialog: null, // 그룹 만들기 팝업 { gameIds } — 게임 메뉴에서 열면 만든 그룹에 그 게임을 넣는다
+      // 롱프레스 드래그 (Figma ⑫ · 3-4) — kind 'games' = 게임을 다른 그룹에 복제, 'group' = 그룹 순서 변경.
+      // { kind, x, y, width, height, grabX, grabY, … } 플로팅 프리뷰는 화면 고정 좌표
+      drag: null,
       menuBlur: protoSettingsRead().containerBlur, // 보기 옵션 "컨테이너 블러" — 메뉴 바탕을 반투명 + 배경 블러로 (테스트)
       // 패널 스켈레톤 (보기 옵션) — 화면 순서대로 앞에서부터 이만큼만 불러온 상태, 나머지 행은 스켈레톤
       loadedRows: Infinity,
@@ -705,7 +712,8 @@ var LibraryPanel = {
       this.hoveredGameId = null;
       this.badgeTip = null;
     },
-    anyMenuOpen: function () { return !!(this.menu || this.gameMenu); },
+    // 메뉴가 떠 있거나 드래그 중 — 호버 인디케이터 · 툴팁을 띄우지 않는다
+    anyMenuOpen: function () { return !!(this.menu || this.gameMenu || this.drag); },
     // 컨텍스트메뉴는 패널 밖으로 나가지 않는다 — 패널 안 좌우 16 여백 안에서만 (그룹 메뉴 · 게임 메뉴 공통)
     clampToPanel: function (left, width) {
       var r = this.$el.getBoundingClientRect();
@@ -813,7 +821,7 @@ var LibraryPanel = {
     // 게임 추가 중인 그룹의 행은 고를 수 없다
     onRowClick: function (e, rowKey) {
       var li = e.currentTarget;
-      if (this.isStaticRow(li)) return;
+      if (this.isStaticRow(li) || this._justDragged) return;
       if (e.metaKey || e.ctrlKey) {
         var i = this.selectedRows.indexOf(rowKey);
         if (i >= 0) this.selectedRows.splice(i, 1);
@@ -848,6 +856,192 @@ var LibraryPanel = {
       var seen = {};
       return this.selectedRows.map(function (k) { return k.slice(k.indexOf(':') + 1); })
         .filter(function (id) { return seen[id] ? false : (seen[id] = true); });
+    },
+
+    // ── 롱프레스 드래그 (Figma ⑫ · 3-4) — 사이드바 즐겨찾기 순서 변경(gnb-component.js)과 같은 규칙:
+    // 꾹 눌러야(450ms) 시작, 그 전에 6 넘게 움직이거나 떼면 취소. 프리뷰는 패널 좌우 16 안 · 스크롤 영역 안(TOP 위)으로,
+    // 스크롤 영역 위아래 끝에 머무르면 자동 스크롤
+    canDrag: function () { return !this.addTargetId && !this.creating && !this.renamingId && !this.createDialog; },
+    armLongPress: function (e, begin) {
+      var self = this;
+      var sx = e.clientX, sy = e.clientY;
+      this.cancelLongPress();
+      function onUp() { self.cancelLongPress(); }
+      function onMove(ev) { if (Math.abs(ev.clientX - sx) > 6 || Math.abs(ev.clientY - sy) > 6) self.cancelLongPress(); }
+      document.addEventListener('mouseup', onUp);
+      document.addEventListener('mousemove', onMove);
+      this._pressCleanup = function () {
+        document.removeEventListener('mouseup', onUp);
+        document.removeEventListener('mousemove', onMove);
+      };
+      this._pressTimer = setTimeout(function () { self.cancelLongPress(); begin(sx, sy); }, LIBRARY_DRAG_HOLD_MS);
+    },
+    cancelLongPress: function () {
+      clearTimeout(this._pressTimer);
+      if (this._pressCleanup) { this._pressCleanup(); this._pressCleanup = null; }
+    },
+    onRowMouseDown: function (e, game, rowKey) {
+      var li = e.currentTarget;
+      if (e.button !== 0 || this.isStaticRow(li)) return;
+      this.setPressed(true);
+      if (e.metaKey || e.ctrlKey || e.shiftKey || !this.canDrag()) return;
+      this.armLongPress(e, function (sx, sy) { this.beginGameDrag(li, game, rowKey, sx, sy); }.bind(this));
+    },
+    // 그룹 순서 변경은 정렬이 "설정 순"이고 필터 · 검색 결과를 보고 있지 않을 때만 (다른 정렬이면 순서를 바꿔도 보이지 않는다)
+    onTitleMouseDown: function (e, id) {
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.target.closest('button')) return;
+      if (!this.canDrag() || this.filter.groupSort !== 'custom' || this.resultsActive) return;
+      var title = e.currentTarget;
+      this.armLongPress(e, function (sx, sy) { this.beginGroupDrag(title, id, sx, sy); }.bind(this));
+    },
+    // 게임 복제 — 누른 행이 선택(2개 이상)에 들어 있으면 선택한 게임 전부, 아니면 그 게임만(그 행을 선택 상태로)
+    beginGameDrag: function (li, game, rowKey, sx, sy) {
+      var multi = this.selectedRows.length > 1 && this.selectedRows.indexOf(rowKey) >= 0;
+      if (!multi) { this.selectedRows = [rowKey]; this.selectAnchor = rowKey; }
+      var ids = multi ? this.selectedGameIds() : [game.id];
+      var r = li.getBoundingClientRect();
+      // 진행 중 메시지가 같은 자리를 쓰니 삭제 · 완료 토스트는 치운다
+      this.deletedNotice = false;
+      this.addedNotice = null;
+      clearTimeout(this._noticeTimer);
+      this.startDrag({
+        kind: 'games', game: game, gameIds: ids, layers: Math.min(ids.length, 3), targetId: null,
+        width: r.width, height: r.height, x: r.left, y: r.top, grabX: sx - r.left, grabY: sy - r.top,
+      }, sx, sy);
+    },
+    // 그룹 순서 변경 — 펼쳐져 있던 그룹도 전부 접고, 끝나면 원래 접힘 상태로 (Figma ⑫ 순서 변경 안내)
+    beginGroupDrag: function (title, id, sx, sy) {
+      var group = this.groups.find(function (g) { return g.id === id; });
+      if (!group) return;
+      var r = title.getBoundingClientRect();
+      this._collapsedBefore = Object.assign({}, this.collapsed);
+      this.setAllCollapsed(true);
+      this.startDrag({
+        kind: 'group', groupId: id, title: group.title, fromIndex: this.groups.indexOf(group), targetIndex: this.groups.indexOf(group),
+        width: r.width, height: r.height, x: r.left, y: r.top, grabX: sx - r.left, grabY: sy - r.top,
+        lineTop: 0, lineLeft: 0, lineWidth: 0, lineVisible: false,
+      }, sx, sy);
+      // 접히면서 목록이 줄어드니 잡은 타이틀이 커서 아래에 그대로 있게 스크롤을 맞춘다
+      this.$nextTick(function () {
+        var t = this.$el.querySelector('[data-group-id="' + id + '"] .library-group__title');
+        if (t && this.drag) {
+          this.$refs.scrollEl.scrollTop += t.getBoundingClientRect().top - r.top;
+          this.onDragMove(this.drag.lastX, this.drag.lastY);
+        }
+      });
+    },
+    startDrag: function (state, sx, sy) {
+      var self = this;
+      // 드래그 컴포넌트가 떠 있는 동안 기존 행의 호버 · 툴팁 · 메뉴는 전부 치운다 (사이드바 beginFavoriteDrag와 같다)
+      this.setPressed(false);
+      this.clearHover();
+      this.hoveredTitleId = null;
+      this.titleTip = null;
+      this.btnTip = null;
+      this.closeMenu();
+      this.closeGameMenu();
+      state.lastX = sx;
+      state.lastY = sy;
+      this.drag = state;
+      this._dragMove = function (ev) { self.onDragMove(ev.clientX, ev.clientY); };
+      this._dragUp = function () { self.endDrag(true); };
+      document.addEventListener('mousemove', this._dragMove);
+      document.addEventListener('mouseup', this._dragUp);
+      (function tick() {
+        if (!self.drag) return;
+        self.dragAutoScroll();
+        self._dragRaf = requestAnimationFrame(tick);
+      })();
+      this.onDragMove(sx, sy);
+    },
+    // 스크롤 영역 위 · 아래(TOP 버튼 윗변) 64 안에 있으면 자동 스크롤 — 속도는 사이드바와 같다
+    dragAutoScroll: function () {
+      var box = this.$refs.scrollEl;
+      var r = box.getBoundingClientRect();
+      var bottom = this.$el.querySelector('.library-panel__top').getBoundingClientRect().top;
+      var y = this.drag.lastY;
+      var edge = 64, dir = 0, dist = 0;
+      if (y < r.top + edge) { dir = -1; dist = r.top + edge - y; }
+      else if (y > bottom - edge) { dir = 1; dist = y - (bottom - edge); }
+      if (!dir) return;
+      var prev = box.scrollTop;
+      box.scrollTop += dir * Math.min(7, 1.5 + dist * 0.1);
+      var delta = box.scrollTop - prev;
+      if (delta) this.onDragMove(this.drag.lastX, this.drag.lastY, delta);
+    },
+    // scrollDelta — 자동 스크롤 중엔 커서 대신 스크롤한 만큼만 프리뷰를 옮긴다 (사이드바와 같은 이유: 표시선과 같은 속도)
+    onDragMove: function (cx, cy, scrollDelta) {
+      var d = this.drag;
+      if (!d) return;
+      d.lastX = cx;
+      d.lastY = cy;
+      var panel = this.$el.getBoundingClientRect();
+      var body = this.$refs.scrollEl.getBoundingClientRect();
+      var bottom = Math.min(body.bottom, this.$el.querySelector('.library-panel__top').getBoundingClientRect().top);
+      var h = d.height + (d.kind === 'games' ? (d.layers - 1) * LIBRARY_DRAG_LAYER_GAP : 0);
+      var x = cx - d.grabX;
+      var y = typeof scrollDelta === 'number' ? d.y + scrollDelta : cy - d.grabY;
+      d.x = Math.max(panel.left + 16, Math.min(x, panel.right - 16 - d.width));
+      d.y = Math.max(body.top, Math.min(y, bottom - h));
+      var refY = d.y + d.height / 2; // 맨 앞 행(타이틀)의 세로 중심
+      var sections = Array.prototype.slice.call(this.$el.querySelectorAll('.library-group[data-group-id]'));
+      if (d.kind === 'games') {
+        // 놓을 그룹 — 커서가 패널 안에 있고 프리뷰가 그 그룹 위에 있을 때. 끄는 게임이 전부 이미 들어 있는 그룹(원래 그룹 포함)은 대상 아님
+        var inside = cx >= panel.left && cx <= panel.right && cy >= body.top && cy <= body.bottom;
+        var hit = inside && sections.find(function (s) { var r = s.getBoundingClientRect(); return refY >= r.top && refY <= r.bottom; });
+        var group = hit && this.groups.find(function (g) { return g.id === hit.dataset.groupId; });
+        d.targetId = group && d.gameIds.some(function (id) { return group.gameIds.indexOf(id) < 0; }) ? group.id : null;
+        return;
+      }
+      // 그룹 순서 — 프리뷰 중심이 어느 그룹의 중간선을 지났는지. 그룹 없는 게임은 항상 맨 아래라 그 아래로는 못 간다
+      var raw = sections.length;
+      for (var i = 0; i < sections.length; i++) {
+        var sr = sections[i].getBoundingClientRect();
+        if (refY < sr.top + sr.height / 2) { raw = i; break; }
+      }
+      d.targetIndex = raw > d.fromIndex ? raw - 1 : raw;
+      // 표시선 2 — 그룹 사이(16)의 가운데, 좌우는 패널 안 16 (Figma 248 = 패널 280 - 32)
+      var lineTop = raw < sections.length
+        ? sections[raw].getBoundingClientRect().top - 9
+        : sections[sections.length - 1].getBoundingClientRect().bottom + 7;
+      d.lineTop = lineTop;
+      d.lineLeft = panel.left + 16;
+      d.lineWidth = panel.width - 32;
+      d.lineVisible = lineTop >= body.top && lineTop <= bottom;
+    },
+    // commit = 마우스를 뗌 (Esc는 취소)
+    endDrag: function (commit) {
+      var d = this.drag;
+      if (!d) return;
+      var self = this;
+      document.removeEventListener('mousemove', this._dragMove);
+      document.removeEventListener('mouseup', this._dragUp);
+      cancelAnimationFrame(this._dragRaf);
+      this.drag = null;
+      if (d.kind === 'games') {
+        var group = commit && d.targetId && this.groups.find(function (g) { return g.id === d.targetId; });
+        if (group) {
+          var added = 0;
+          d.gameIds.forEach(function (id) { if (group.gameIds.indexOf(id) < 0) { group.gameIds.push(id); added++; } });
+          this.showAddedNotice(added, group.title);
+          this.clearSelection();
+        }
+      } else {
+        if (commit && d.targetIndex !== d.fromIndex) {
+          var list = this.groups.slice();
+          list.splice(d.targetIndex, 0, list.splice(d.fromIndex, 1)[0]);
+          this.groups = list;
+        }
+        this.collapsed = this._collapsedBefore || {};
+        this.$nextTick(function () {
+          var el = this.$el.querySelector('[data-group-id="' + d.groupId + '"]');
+          if (el) el.scrollIntoView({ block: 'nearest' });
+        });
+      }
+      this.$nextTick(this.updateThumb);
+      // 마우스를 뗀 자리에서 바로 이어지는 click 한 번은 무시 (행 선택 · 그룹 화면 이동이 같이 일어나지 않게)
+      this._justDragged = true;
+      setTimeout(function () { self._justDragged = false; }, 0);
     },
     // 2뎁스 상단 메뉴명(← 포함)을 누르면 1뎁스로 다시 뒤집힌다
     flipBack: function () { this.gameMenu.depth = 1; this.menuTip = null; },
@@ -921,6 +1115,7 @@ var LibraryPanel = {
       this.closeMenu();
     },
     onDocKeyDown: function (e) {
+      if (e.key === 'Escape' && this.drag) { this.endDrag(false); return; }
       if (e.key === 'Escape' && this.menu) this.closeMenu();
       if (e.key === 'Escape' && this.gameMenu) this.closeGameMenu();
       else if (e.key === 'Escape' && this.selectedRows.length && !this.createDialog) this.clearSelection();
@@ -1072,6 +1267,8 @@ var LibraryPanel = {
   },
   unmounted: function () {
     clearTimeout(this._noticeTimer);
+    this.cancelLongPress();
+    this.endDrag(false);
     clearInterval(this._skeletonTimer);
     document.removeEventListener('click', this._onDocClick);
     document.removeEventListener('mouseup', this._onRelease);
@@ -1109,6 +1306,10 @@ var LibraryPanel = {
       '<div v-else ref="actions" class="library-panel__actions" data-name="btn/create group">' +
         // 그룹 삭제 직후 — 버튼 그룹 위에 띄우는 토스트 (레이아웃은 그대로, 3초 뒤 사라진다)
         '<div v-if="deletedNotice" class="library-panel__notice stds-cap1 fw-medium" role="status" data-name="toast popup">그룹이 삭제되었습니다.</div>' +
+        // 게임을 끄는 동안 — 진행 중 메시지, 놓을 때까지 계속 (Figma 0922 toast popup status=ing)
+        '<div v-if="drag && drag.kind === \'games\'" class="library-panel__notice stds-cap1 fw-medium" role="status" data-name="toast popup">' +
+          '<p><b>{{ drag.gameIds.length }}개 게임</b>을 다른 그룹에 추가합니다.</p>' +
+        '</div>' +
         '<div v-if="addedNotice" class="library-panel__added" role="status" data-name="toast popup">' +
           '<p class="library-panel__added-title stds-cap1 fw-medium"><b>{{ addedNotice.count }}개 게임</b>을 다른 그룹에 추가했습니다.</p>' +
           '<span class="library-panel__added-group" data-name="group name"><i class="ic-v2-control-long-arrow-right-line" aria-hidden="true"></i><span>{{ addedNotice.title }}</span></span>' +
@@ -1182,7 +1383,10 @@ var LibraryPanel = {
           '<div v-if="showList" class="library-panel__list" data-name="게임그룹">' +
             // 사용자가 만든 그룹
             '<section v-for="group in shownGroups" :key="group.id" class="game-group library-group" :data-group-id="group.id" ' +
-              ':class="{ \'is-collapsed\': isCollapsed(group.id), \'is-empty\': !owned.length, \'is-renaming\': renamingId === group.id, \'is-add-target\': addTargetId === group.id }" data-name="component/game_group">' +
+              ':class="{ \'is-collapsed\': isCollapsed(group.id), \'is-empty\': !owned.length, \'is-renaming\': renamingId === group.id, \'is-add-target\': addTargetId === group.id, ' +
+                '\'is-drop-target\': drag && drag.targetId === group.id, \'is-reorder-ghost\': drag && drag.kind === \'group\' && drag.groupId === group.id }" data-name="component/game_group">' +
+              // 순서 변경 중 원래 자리 — 점선 2/2 (Figma 2904:34341)
+              '<svg v-if="drag && drag.kind === \'group\' && drag.groupId === group.id" class="library-group__ghost" aria-hidden="true"><rect x="0.5" y="0.5" rx="7.5" ry="7.5"></rect></svg>' +
               // 이름 변경 중 — 타이틀(화살표 포함)만 입력칸으로 바뀐다. 아래 게임 추가 · 게임 목록은 그대로 (Figma ⑬)
               '<group-name-input v-if="renamingId === group.id" :initial="group.title" confirm-label="확인" ' +
                 ':validate="validateRename" @submit="renameGroup" @cancel="renamingId = null"></group-name-input>' +
@@ -1273,6 +1477,23 @@ var LibraryPanel = {
         ':class="{ \'is-measuring\': menuTip.measuring }" :style="{ left: menuTip.left + \'px\', top: menuTip.top + \'px\' }" data-name="Tooltip/iconbtn">' +
         '<span class="game-group__badge-tooltip-tail" :style="{ marginLeft: menuTip.tailLeft + \'px\' }"></span>' +
         '<span class="game-group__badge-tooltip-body stds-cap1 fw-medium">{{ menuTip.text }}</span>' +
+      '</div>' +
+      // 드래그 — 그룹 순서 표시선(사이드바와 같은 컴포넌트) · 커서를 따라다니는 프리뷰 (Figma status=change position)
+      '<div v-if="drag && drag.lineVisible" class="game-group__drop-line" ' +
+        ':style="{ top: drag.lineTop + \'px\', left: drag.lineLeft + \'px\', width: drag.lineWidth + \'px\' }" aria-hidden="true"></div>' +
+      '<div v-if="drag" class="library-drag" :class="{ \'library-drag--group\': drag.kind === \'group\' }" ' +
+        ':style="{ left: drag.x + \'px\', top: drag.y + \'px\', width: drag.width + \'px\' }" aria-hidden="true" data-name="component/game_group/list">' +
+        // 2개 · 3개 이상 — 뒤에 레이어가 5씩 아래로 겹친다 (최대 3장, 개수는 뱃지로)
+        '<span v-for="n in (drag.layers || 1) - 1" :key="n" class="library-drag__layer" :style="{ top: n * ' + LIBRARY_DRAG_LAYER_GAP + ' + \'px\', zIndex: -n }"></span>' +
+        '<div class="library-drag__row" :class="{ \'has-count\': drag.kind === \'games\' && drag.gameIds.length > 1 }">' +
+          '<i class="ic-v2-navigation-menu-line library-drag__handle"></i>' +
+          '<template v-if="drag.kind === \'games\'">' +
+            '<span class="game-group__thumbnail" :style="{ backgroundImage: \'url(\' + drag.game.thumb + \')\' }"></span>' +
+            '<span class="library-drag__name stds-cap1 fw-medium">{{ drag.game.name }}</span>' +
+            '<span v-if="drag.gameIds.length > 1" class="library-drag__count" data-name="component/badge/menu_title">{{ drag.gameIds.length }}</span>' +
+          '</template>' +
+          '<span v-else class="library-drag__title stds-title8 fw-medium">{{ drag.title }}</span>' +
+        '</div>' +
       '</div>' +
       '<create-group-dialog v-if="createDialog" :validate="validateNew" @submit="createFromDialog" @close="createDialog = null"></create-group-dialog>' +
     '</div>',
