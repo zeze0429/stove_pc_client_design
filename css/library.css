@@ -259,21 +259,21 @@
    글자·아이콘은 tertiary 기본(elevation-2)보다 진한 on-surface-elevation-1.
    라이트만 Figma(gray200)보다 한 단계 옅게: 기본 gray150 · 호버 gray200 · 프레스 gray300 (사용자 11-03) */
 :root {
-  --library-tool-bg: var(--stds-glob-color-gray800);
-  --library-tool-bg-hover: var(--stds-glob-color-gray750);
-  --library-tool-bg-pressed: var(--stds-glob-color-gray700);
+  --library-tool-background: var(--stds-glob-color-gray800);
+  --library-tool-background-hover: var(--stds-glob-color-gray750);
+  --library-tool-background-pressed: var(--stds-glob-color-gray700);
 }
 :root[data-theme="light"] {
-  --library-tool-bg: var(--stds-glob-color-gray150);
-  --library-tool-bg-hover: var(--stds-glob-color-gray200);
-  --library-tool-bg-pressed: var(--stds-glob-color-gray300);
+  --library-tool-background: var(--stds-glob-color-gray150);
+  --library-tool-background-hover: var(--stds-glob-color-gray200);
+  --library-tool-background-pressed: var(--stds-glob-color-gray300);
 }
 .stds-button-tertiary.library-tool-btn {
-  --stds-button-bg: var(--library-tool-bg);
-  --stds-button-fg: var(--stds-sem-color-on-surface-elevation-1);
+  --stds-button-background: var(--library-tool-background);
+  --stds-button-text-color: var(--stds-sem-color-on-surface-elevation-1);
 }
-.stds-button-tertiary.library-tool-btn:is(:hover, .is-hover):enabled   { --stds-button-bg: var(--library-tool-bg-hover); }
-.stds-button-tertiary.library-tool-btn:is(:active, .is-pressed):enabled { --stds-button-bg: var(--library-tool-bg-pressed); }
+.stds-button-tertiary.library-tool-btn:is(:hover, .is-hover):enabled   { --stds-button-background: var(--library-tool-background-hover); }
+.stds-button-tertiary.library-tool-btn:is(:active, .is-pressed):enabled { --stds-button-background: var(--library-tool-background-pressed); }
 /* 필터 레이어가 열린 동안 — 우측패널 아이콘 버튼 selected와 같게 2px on-surface-elevation-2 (Figma 12007:57385) */
 .stds-button.library-tool-btn.is-selected { box-shadow: inset 0 0 0 2px var(--stds-sem-color-on-surface-elevation-2); }
 
@@ -281,8 +281,8 @@
    바탕 다크 gray940 · 라이트 gray100 + 이너쉐도우 0 1 1 black-10 (선택 칸 위에도 덮인다)
    선택 칸 다크 gray860 · 라이트 gray20 + 드롭쉐도우 0 1 1 black-20, 아이콘 on-surface-elevation-3
    선택 안 된 아이콘 inverse-elevation-2 (white/black 15%). 시멘틱 토큰이 없는 자리는 Figma대로 글로벌 */
-:root { --library-toggle-bg: var(--stds-glob-color-gray940); --library-toggle-on-bg: var(--stds-glob-color-gray860); }
-:root[data-theme="light"] { --library-toggle-bg: var(--stds-glob-color-gray100); --library-toggle-on-bg: var(--stds-glob-color-gray20); }
+:root { --library-toggle-background: var(--stds-glob-color-gray940); --library-toggle-on-background: var(--stds-glob-color-gray860); }
+:root[data-theme="light"] { --library-toggle-background: var(--stds-glob-color-gray100); --library-toggle-on-background: var(--stds-glob-color-gray20); }
 .library-view-toggle {
   position: relative;
   display: flex;
@@ -291,7 +291,7 @@
   height: 3.2rem;
   padding: 0.2rem;
   border-radius: var(--stds-glob-border-radius-lg);
-  background: var(--library-toggle-bg);
+  background: var(--library-toggle-background);
 }
 .library-view-toggle::after {
   content: '';
@@ -315,7 +315,7 @@
 /* 버튼 28 안에 아이콘 16 (레퍼런스 실측) */
 .library-view-toggle button i { display: block; font-size: 1.6rem; line-height: 1; }
 .library-view-toggle button.is-selected {
-  background: var(--library-toggle-on-bg);
+  background: var(--library-toggle-on-background);
   color: var(--stds-sem-color-on-surface-elevation-3);
   box-shadow: 0 0.1rem 0.1rem var(--stds-glob-color-black-20);
 }
@@ -548,7 +548,7 @@
   font-size: 2rem;
 }
 .library-card__check:not(.is-checked) {
-  background: color-mix(in srgb, var(--stds-checkbox-bg) 80%, transparent);
+  background: color-mix(in srgb, var(--stds-checkbox-background) 80%, transparent);
 }
 /* 선택 / 이미 그룹에 있음 — 이미지 위 검정 40%, 보더 3 */
 .library-card.is-selected .library-card__media::after,
@@ -569,7 +569,7 @@
 
 /* 하단 플로팅 (component/selection UI/floating) — 콘텐츠 영역 바닥 120, 배경색으로 페이드. 72 높이 알약.
    비활성(고르기 전): 다크 gray780 · 글자/아이콘 gray650 (Figma 2115:32819) / 라이트 gray200 · gray400 (라이트 시안),
-   구분선 inverse-elevation-6. 두 테마 값을 함께 만족하는 시멘틱이 없어 공용 전용 변수 --floating-off-bg/fg (css/dashboard.css)
+   구분선 inverse-elevation-6. 두 테마 값을 함께 만족하는 시멘틱이 없어 공용 전용 변수 --floating-off-background / -text-color (css/dashboard.css)
    활성(하나 이상): brand-primary · white · 구분선 black-8
    그림자는 두 상태 모두 black-30 블러 6 — y 6 내려서 위쪽으로는 안 보이게 (사용자 요청, 11-03)
    페이드는 두 상태 모두 62.363% (Figma 48960:385042 · 385043) */
@@ -612,7 +612,7 @@
   height: 7.2rem;
   padding: 0 2.4rem;
   border-radius: var(--stds-glob-border-radius-circle);
-  background: var(--floating-off-bg);
+  background: var(--floating-off-background);
   box-shadow: var(--library-floating-shadow);
   pointer-events: auto;
   transition: background-color 0.2s ease;
@@ -639,7 +639,7 @@
   cursor: pointer;
   transition: color 0.2s ease;
 }
-.library-floating__btn:disabled { color: var(--floating-off-fg); cursor: default; }
+.library-floating__btn:disabled { color: var(--floating-off-text-color); cursor: default; }
 .library-floating__icon { display: block; flex: 0 0 auto; width: 2.4rem; height: 2.4rem; }
 .library-floating__div { width: 1px; height: 4rem; background: var(--stds-sem-color-inverse-elevation-6); transition: background-color 0.2s ease; }
 .library-floating.is-active .library-floating__div { background: var(--stds-glob-color-black-8); }

@@ -183,11 +183,11 @@ ul { list-style: none; margin: 0; padding: 0; }
 /* ---- 공용 전용 변수 — 시멘틱 토큰이 없어 테마별 글로벌을 짝지은 값 (토큰 아님, 여러 페이지 공용).
    비공식 토큰은 늘리지 않고 여기 모아 둔다 (사용자 11-05). 개발 전달 문서: "비공식 토큰 정리" 2번 */
 /* 그룹 만들기 버튼 비활성 (btn/create group, 그룹 20개) — Figma 2026_웹전환 12007:57385 */
-:root { --create-group-off-bg: var(--stds-glob-color-gray880); --create-group-off-fg: var(--stds-glob-color-gray750); }
-:root[data-theme="light"] { --create-group-off-bg: var(--stds-glob-color-gray150); --create-group-off-fg: var(--stds-glob-color-gray300); }
+:root { --create-group-off-background: var(--stds-glob-color-gray880); --create-group-off-text-color: var(--stds-glob-color-gray750); }
+:root[data-theme="light"] { --create-group-off-background: var(--stds-glob-color-gray150); --create-group-off-text-color: var(--stds-glob-color-gray300); }
 /* 선택 UI 하단 플로팅 비활성 (component/selection UI/floating) — Figma 2115:32819 + 라이트 시안 */
-:root { --floating-off-bg: var(--stds-glob-color-gray780); --floating-off-fg: var(--stds-glob-color-gray650); }
-:root[data-theme="light"] { --floating-off-bg: var(--stds-glob-color-gray200); --floating-off-fg: var(--stds-glob-color-gray400); }
+:root { --floating-off-background: var(--stds-glob-color-gray780); --floating-off-text-color: var(--stds-glob-color-gray650); }
+:root[data-theme="light"] { --floating-off-background: var(--stds-glob-color-gray200); --floating-off-text-color: var(--stds-glob-color-gray400); }
 
 /* 콘텐츠 — 스크롤 컨테이너는 그대로 .main (유틸리티 바 블러·오버레이 스크롤바가 구독) */
 .app--client > .main {
