@@ -29,7 +29,7 @@
   z-index: 50;
   display: flex;
   flex-direction: column; /* JS에서 appendChild로 넣으므로 마지막에 추가된(최신) 알림이 자연히 맨 아래로 */
-  gap: var(--spacing-4);
+  gap: var(--stds-glob-spacing-4);
   width: 36rem;
   max-height: calc(100vh - 48px - 4.0rem);
   overflow: visible;
@@ -41,10 +41,10 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: var(--spacing-12);
+  gap: var(--stds-glob-spacing-12);
   width: 100%;
   height: 10.4rem;
-  padding: var(--spacing-16) var(--spacing-40) var(--spacing-16) var(--spacing-20);
+  padding: var(--stds-glob-spacing-16) var(--stds-glob-spacing-40) var(--stds-glob-spacing-16) var(--stds-glob-spacing-20);
   background: var(--stds-sem-color-surface-elevation-1);
   border-radius: var(--stds-glob-border-radius-2xl);
   box-shadow: var(--stds-glob-box-shadow-12);
@@ -63,7 +63,7 @@
 }
 @keyframes notice-out {
   from { opacity: 1; height: 10.4rem; margin-bottom: 0; }
-  to   { opacity: 0; height: 0; margin-bottom: calc(-1 * var(--spacing-4)); }
+  to   { opacity: 0; height: 0; margin-bottom: calc(-1 * var(--stds-glob-spacing-4)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -86,7 +86,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
+  gap: var(--stds-glob-spacing-4);
 }
 
 .notice__title {
@@ -116,11 +116,11 @@
 
 .notice__close {
   position: absolute;
-  top: var(--spacing-8);
-  right: var(--spacing-8);
+  top: var(--stds-glob-spacing-8);
+  right: var(--stds-glob-spacing-8);
   width: 3.2rem;
   height: 3.2rem;
-  border-radius: var(--stds-glob-border-radius-circle);
+  border-radius: var(--stds-glob-border-radius-full);
   display: grid;
   place-items: center;
   color: var(--stds-sem-color-on-surface-elevation-2);
@@ -156,8 +156,8 @@
   max-width: none;
 }
 .notice--rich__banner .notice__close {
-  top: var(--spacing-8);
-  right: var(--spacing-8);
+  top: var(--stds-glob-spacing-8);
+  right: var(--stds-glob-spacing-8);
   background: var(--stds-glob-color-black-30);
   color: var(--stds-glob-color-white);
 }
@@ -166,14 +166,14 @@
 .notice--rich__content {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-16);
-  padding: var(--spacing-16) var(--spacing-20) var(--spacing-20);
+  gap: var(--stds-glob-spacing-16);
+  padding: var(--stds-glob-spacing-16) var(--stds-glob-spacing-20) var(--stds-glob-spacing-20);
 }
 
 .notice--rich__row {
   display: flex;
   align-items: center;
-  gap: var(--spacing-12);
+  gap: var(--stds-glob-spacing-12);
   height: 7.6rem;
 }
 .notice--rich__row .notice__body { align-self: center; }
@@ -183,16 +183,16 @@
 /* ---- 프로토타입 데모 컨트롤 (디자인 스펙 아님) --------------- */
 .notice-demo-btn {
   position: fixed;
-  left: var(--spacing-24);
-  bottom: calc(48px + var(--spacing-24));
+  left: var(--stds-glob-spacing-24);
+  bottom: calc(48px + var(--stds-glob-spacing-24));
   z-index: 60;
   display: flex;
   align-items: center;
-  gap: var(--spacing-8);
+  gap: var(--stds-glob-spacing-8);
   height: 4rem;
-  padding: 0 var(--spacing-20) 0 var(--spacing-16);
+  padding: 0 var(--stds-glob-spacing-20) 0 var(--stds-glob-spacing-16);
   border: 0;
-  border-radius: var(--stds-glob-border-radius-circle);
+  border-radius: var(--stds-glob-border-radius-full);
   background: var(--stds-sem-color-brand-primary);
   color: var(--stds-glob-color-white);
   box-shadow: var(--stds-glob-box-shadow-4);

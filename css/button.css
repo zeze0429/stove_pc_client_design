@@ -102,7 +102,7 @@
 .stds-button.is-icon-only { padding: 0; }
 
 /* Radius=Full — 알약형 옵션 */
-.stds-button.stds-button-full { border-radius: var(--stds-glob-border-radius-circle); }
+.stds-button.stds-button-full { border-radius: var(--stds-glob-border-radius-full); }
 
 /* ---- Variant ---------------------------------------------- */
 /* 채움형: 상태별로 배경만 바뀌고, 포커스는 흰 안쪽 링 */

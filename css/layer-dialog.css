@@ -103,7 +103,7 @@
    자리에서 시작하고 끝나야 한다 — 트랙 마진으로 위아래 패딩만큼 줄인다. */
 .layer-dialog__body::-webkit-scrollbar-track { margin: 0.8rem 0 3.2rem; }
 .layer-dialog__body::-webkit-scrollbar-thumb {
-  border-radius: var(--stds-glob-border-radius-circle);
+  border-radius: var(--stds-glob-border-radius-full);
   background-color: transparent;
 }
 /* 팝업에 마우스가 있을 때만 보인다 — 스크롤바 공통 규칙 (사용자 11-03) */

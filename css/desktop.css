@@ -155,7 +155,7 @@ html, body {
   place-items: center;
   padding: 0;
   border: 0;
-  border-radius: var(--stds-glob-border-radius-circle);
+  border-radius: var(--stds-glob-border-radius-full);
   background: transparent;
   color: #1f1f1f;
   cursor: pointer;
@@ -212,7 +212,7 @@ html, body {
   height: 24px;
   padding: 0;
   border: 0;
-  border-radius: var(--stds-glob-border-radius-circle);
+  border-radius: var(--stds-glob-border-radius-full);
   background: rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: background 0.2s;
@@ -224,7 +224,7 @@ html, body {
   left: 2px;
   width: 20px;
   height: 20px;
-  border-radius: var(--stds-glob-border-radius-circle);
+  border-radius: var(--stds-glob-border-radius-full);
   background: #fff;
   box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.04), 0 3px 8px rgba(0, 0, 0, 0.15), 0 3px 1px rgba(0, 0, 0, 0.06);
   transition: transform 0.2s;
@@ -240,7 +240,7 @@ html, body {
   place-items: center;
   padding: 0;
   border: 0;
-  border-radius: var(--stds-glob-border-radius-circle);
+  border-radius: var(--stds-glob-border-radius-full);
   background: rgba(0, 0, 0, 0.2);
   color: #1f1f1f;
   cursor: pointer;

@@ -4,9 +4,9 @@
    구조·이름은 사내 Storybook(Components/Control/Checkbox)을, 최종 값은
    Figma STDS_StoveUI_v0.3.2 Checkbox(1040:9786) · Checkbox Variants(1142:18510)를 따른다 (사용자 11-03).
      <label class="stds-checkbox stds-checkbox-md">
-       <input class="stds-checkbox__input" type="checkbox" />   ← 화면에선 숨기고 상태만 들고 있다
-       <span class="stds-checkbox__box"><i class="ic-v2-control-check-bold-line"></i><i class="ic-v2-control-indeterminate-line"></i></span>
-       <span class="stds-checkbox__label">텍스트</span>            ← 선택
+       <input class="stds-checkbox-input" type="checkbox" />   ← 화면에선 숨기고 상태만 들고 있다
+       <span class="stds-checkbox-box"><i class="ic-v2-control-check-bold-line"></i><i class="ic-v2-control-indeterminate-line"></i></span>
+       <span class="stds-checkbox-label">텍스트</span>            ← 선택
      </label>
    사이즈: sm 16 · md 20(기본) · lg 24 (Figma h16 · h20 · h24)
    상태: 선택 / 미선택 / 일부 선택(indeterminate) × 기본 · 포커스 · 비활성, 정렬 middle · top
@@ -23,7 +23,7 @@
 .stds-checkbox.is-align-top { align-items: flex-start; }
 
 /* 실제 input은 접근성·키보드용으로만 두고 화면에서 숨긴다 */
-.stds-checkbox__input {
+.stds-checkbox-input {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -35,7 +35,7 @@
   border: 0;
 }
 
-.stds-checkbox__box {
+.stds-checkbox-box {
   --stds-checkbox-background: var(--stds-sem-color-neutral-variant-3);
   --stds-checkbox-line: var(--stds-sem-color-border);
   --stds-checkbox-icon: var(--stds-glob-color-white);
@@ -50,7 +50,7 @@
   box-shadow: inset 0 0 0 1px var(--stds-checkbox-line);
   color: var(--stds-checkbox-icon);
 }
-.stds-checkbox__box > i {
+.stds-checkbox-box > i {
   display: none;
   grid-area: 1 / 1;
   width: 1em;
@@ -58,7 +58,7 @@
   line-height: 1;
 }
 
-.stds-checkbox__label {
+.stds-checkbox-label {
   min-width: 0;
   color: var(--stds-sem-color-on-surface-elevation-2);
   font-weight: 400;
@@ -66,50 +66,50 @@
 
 /* ---- Size ------------------------------------------------- */
 /* sm: 16 · 아이콘 12 · 라벨 text3-R 14/24 */
-.stds-checkbox-sm .stds-checkbox__box { width: 1.6rem; height: 1.6rem; font-size: 1.2rem; }
+.stds-checkbox-sm .stds-checkbox-box { width: 1.6rem; height: 1.6rem; font-size: 1.2rem; }
 /* md: 20 · 아이콘 16 · 라벨 text3-R 14/24 */
-.stds-checkbox-md .stds-checkbox__box { width: 2rem; height: 2rem; font-size: 1.6rem; }
+.stds-checkbox-md .stds-checkbox-box { width: 2rem; height: 2rem; font-size: 1.6rem; }
 /* lg: 24 · 아이콘 20 · 라벨 text1-R 16/26 */
-.stds-checkbox-lg .stds-checkbox__box { width: 2.4rem; height: 2.4rem; font-size: 2rem; }
-.stds-checkbox-sm .stds-checkbox__label,
-.stds-checkbox-md .stds-checkbox__label { font-size: 1.4rem; line-height: 2.4rem; letter-spacing: -0.03em; }
-.stds-checkbox-lg .stds-checkbox__label { font-size: 1.6rem; line-height: 2.6rem; letter-spacing: -0.03em; }
+.stds-checkbox-lg .stds-checkbox-box { width: 2.4rem; height: 2.4rem; font-size: 2rem; }
+.stds-checkbox-sm .stds-checkbox-label,
+.stds-checkbox-md .stds-checkbox-label { font-size: 1.4rem; line-height: 2.4rem; letter-spacing: -0.03em; }
+.stds-checkbox-lg .stds-checkbox-label { font-size: 1.6rem; line-height: 2.6rem; letter-spacing: -0.03em; }
 /* top 정렬 — 상자를 라벨 첫 줄 가운데에 (Figma Align=top) */
-.stds-checkbox-sm.is-align-top .stds-checkbox__box { margin-top: 0.4rem; }
-.stds-checkbox-md.is-align-top .stds-checkbox__box { margin-top: 0.2rem; }
-.stds-checkbox-lg.is-align-top .stds-checkbox__box { margin-top: 0.1rem; }
+.stds-checkbox-sm.is-align-top .stds-checkbox-box { margin-top: 0.4rem; }
+.stds-checkbox-md.is-align-top .stds-checkbox-box { margin-top: 0.2rem; }
+.stds-checkbox-lg.is-align-top .stds-checkbox-box { margin-top: 0.1rem; }
 
 /* ---- State ------------------------------------------------ */
 /* 상자만 다른 컨트롤(행 전체가 버튼인 목록 등) 안에 그릴 때는 input 없이
-   .stds-checkbox__box에 .is-checked · .is-indeterminate · .is-disabled를 직접 붙인다 */
+   .stds-checkbox-box에 .is-checked · .is-indeterminate · .is-disabled를 직접 붙인다 */
 /* 선택 · 일부 선택 — 브랜드 채움, 테두리 없음 */
-.stds-checkbox__input:is(:checked, :indeterminate) + .stds-checkbox__box,
-.stds-checkbox__box:is(.is-checked, .is-indeterminate) {
+.stds-checkbox-input:is(:checked, :indeterminate) + .stds-checkbox-box,
+.stds-checkbox-box:is(.is-checked, .is-indeterminate) {
   --stds-checkbox-background: var(--stds-sem-color-brand-primary);
   --stds-checkbox-line: transparent;
 }
-.stds-checkbox__input:checked:not(:indeterminate) + .stds-checkbox__box > .ic-v2-control-check-bold-line,
-.stds-checkbox__input:indeterminate + .stds-checkbox__box > .ic-v2-control-indeterminate-line,
-.stds-checkbox__box.is-checked:not(.is-indeterminate) > .ic-v2-control-check-bold-line,
-.stds-checkbox__box.is-indeterminate > .ic-v2-control-indeterminate-line { display: block; }
+.stds-checkbox-input:checked:not(:indeterminate) + .stds-checkbox-box > .ic-v2-control-check-bold-line,
+.stds-checkbox-input:indeterminate + .stds-checkbox-box > .ic-v2-control-indeterminate-line,
+.stds-checkbox-box.is-checked:not(.is-indeterminate) > .ic-v2-control-check-bold-line,
+.stds-checkbox-box.is-indeterminate > .ic-v2-control-indeterminate-line { display: block; }
 
 /* 포커스(키보드) — 미선택은 테두리 gray400(Figma 글로벌), 선택은 가장자리 1px 브랜드 + 안쪽 1px 흰 링 */
-.stds-checkbox__input:focus-visible + .stds-checkbox__box,
-.stds-checkbox.is-focus .stds-checkbox__box { --stds-checkbox-line: var(--stds-glob-color-gray400); }
-.stds-checkbox__input:is(:checked, :indeterminate):focus-visible + .stds-checkbox__box,
-.stds-checkbox.is-focus .stds-checkbox__input:is(:checked, :indeterminate) + .stds-checkbox__box {
+.stds-checkbox-input:focus-visible + .stds-checkbox-box,
+.stds-checkbox.is-focus .stds-checkbox-box { --stds-checkbox-line: var(--stds-glob-color-gray400); }
+.stds-checkbox-input:is(:checked, :indeterminate):focus-visible + .stds-checkbox-box,
+.stds-checkbox.is-focus .stds-checkbox-input:is(:checked, :indeterminate) + .stds-checkbox-box {
   box-shadow: inset 0 0 0 1px var(--stds-sem-color-brand-primary), inset 0 0 0 2px var(--stds-glob-color-white);
 }
 
 /* 비활성 */
-.stds-checkbox:has(.stds-checkbox__input:disabled) { cursor: default; }
-.stds-checkbox__input:disabled + .stds-checkbox__box,
-.stds-checkbox__box.is-disabled { --stds-checkbox-background: var(--stds-sem-color-disabled-variant-3); }
+.stds-checkbox:has(.stds-checkbox-input:disabled) { cursor: default; }
+.stds-checkbox-input:disabled + .stds-checkbox-box,
+.stds-checkbox-box.is-disabled { --stds-checkbox-background: var(--stds-sem-color-disabled-variant-3); }
 /* 선택 · 일부 선택 비활성 — 아이콘 disabled-variant-4
    (Figma는 일부 선택 비활성만 glob white였는데 선택 비활성과 맞춤, 사용자 11-03) */
-.stds-checkbox__input:disabled:is(:checked, :indeterminate) + .stds-checkbox__box,
-.stds-checkbox__box.is-disabled:is(.is-checked, .is-indeterminate) {
+.stds-checkbox-input:disabled:is(:checked, :indeterminate) + .stds-checkbox-box,
+.stds-checkbox-box.is-disabled:is(.is-checked, .is-indeterminate) {
   --stds-checkbox-background: var(--stds-sem-color-disabled-variant-2);
   --stds-checkbox-icon: var(--stds-sem-color-disabled-variant-4);
 }
-.stds-checkbox__input:disabled ~ .stds-checkbox__label { color: var(--stds-sem-color-disabled-variant-1); }
+.stds-checkbox-input:disabled ~ .stds-checkbox-label { color: var(--stds-sem-color-disabled-variant-1); }

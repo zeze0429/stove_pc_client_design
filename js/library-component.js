@@ -284,7 +284,7 @@ var LibraryAddToGroupDialog = {
                 '@click="toggle(g)" data-name="component/selection UI/dialog/list">' +
                 // 공통 체크박스 sm 상자 (css/checkbox.css) — 행 전체가 버튼이라 input 없이 상태 클래스로
                 '<span class="stds-checkbox stds-checkbox-sm add-group-dialog__check" aria-hidden="true" data-name="Checkbox">' +
-                  '<span class="stds-checkbox__box" :class="{ \'is-checked\': isChecked(g) || isFull(g), \'is-disabled\': isFull(g) }">' +
+                  '<span class="stds-checkbox-box" :class="{ \'is-checked\': isChecked(g) || isFull(g), \'is-disabled\': isFull(g) }">' +
                     '<i class="ic-v2-control-check-bold-line"></i>' +
                   '</span>' +
                 '</span>' +
@@ -680,7 +680,7 @@ var LibraryMain = {
               '<span class="library-card__media"><img :src="g.thumb" alt="" loading="lazy" /></span>' +
               '<span class="library-card__border" aria-hidden="true"></span>' +
               // 선택 UI 체크 — STDS 체크박스 상자(css/checkbox.css) 그대로, 모양만 원. 미선택 · 선택 · 이미 그룹에 있음(비활성 선택)
-              '<span v-if="selecting" class="stds-checkbox__box library-card__check" :class="{ \'is-checked\': isSelected(g) || addedIds[g.id], \'is-disabled\': addedIds[g.id] }" aria-hidden="true" data-name="Checkbox">' +
+              '<span v-if="selecting" class="stds-checkbox-box library-card__check" :class="{ \'is-checked\': isSelected(g) || addedIds[g.id], \'is-disabled\': addedIds[g.id] }" aria-hidden="true" data-name="Checkbox">' +
                 '<i class="ic-v2-control-check-bold-line"></i>' +
               '</span>' +
               '<button v-else class="stds-button stds-button-blue stds-button-sm is-icon-only library-action library-card__action" type="button" :aria-label="actionLabel(g.action)"><i :class="actionIcon(g.action)"></i></button>' +

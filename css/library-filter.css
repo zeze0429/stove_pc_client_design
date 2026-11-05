@@ -67,7 +67,7 @@
   height: 2.8rem;
   padding: 0 0.8rem;
   border: 0;
-  border-radius: var(--stds-glob-border-radius-circle);
+  border-radius: var(--stds-glob-border-radius-full);
   background: var(--stds-sem-color-inverse-elevation-6);
   color: var(--stds-sem-color-brand-primary);
   cursor: pointer;
@@ -93,7 +93,7 @@
 .library-filter__body > * { flex: 0 0 auto; }
 .library-filter__body::-webkit-scrollbar { width: 0.4rem; }
 .library-filter__body::-webkit-scrollbar-thumb {
-  border-radius: var(--stds-glob-border-radius-circle);
+  border-radius: var(--stds-glob-border-radius-full);
   background-color: transparent;
 }
 /* 레이어에 마우스가 있을 때만 보인다 — 스크롤바 공통 규칙 (사용자 11-03) */
@@ -197,7 +197,7 @@
 
 /* 체크박스 — 공통 sm 상자, 라벨만 이 레이어 스펙 text4-R 13/22 (Figma) · 한 줄 22 */
 .library-filter .stds-checkbox { display: flex; }
-.library-filter .stds-checkbox__label {
+.library-filter .stds-checkbox-label {
   flex: 1 1 auto;
   font-size: 1.3rem;
   line-height: 2.2rem;

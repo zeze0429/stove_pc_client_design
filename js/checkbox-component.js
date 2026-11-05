@@ -39,11 +39,11 @@ var StdsCheckbox = {
   },
   template:
     '<label :class="[\'stds-checkbox\', \'stds-checkbox-\' + size, { \'is-align-top\': align === \'top\' }]">' +
-      '<input ref="input" class="stds-checkbox__input" type="checkbox" :id="id" :name="name" :value="value" ' +
+      '<input ref="input" class="stds-checkbox-input" type="checkbox" :id="id" :name="name" :value="value" ' +
         ':checked="modelValue" :disabled="isDisabled" @change="onChange" />' +
-      '<span class="stds-checkbox__box" aria-hidden="true">' +
+      '<span class="stds-checkbox-box" aria-hidden="true">' +
         '<i class="ic-v2-control-check-bold-line"></i><i class="ic-v2-control-indeterminate-line"></i>' +
       '</span>' +
-      '<span v-if="$slots.default" class="stds-checkbox__label"><slot></slot></span>' +
+      '<span v-if="$slots.default" class="stds-checkbox-label"><slot></slot></span>' +
     '</label>',
 };

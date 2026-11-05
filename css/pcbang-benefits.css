@@ -146,7 +146,7 @@
   top: 0;
   width: 0.4rem;
   height: 0.4rem;
-  border-radius: var(--stds-glob-border-radius-circle);
+  border-radius: var(--stds-glob-border-radius-full);
   background: var(--stds-sem-color-brand-primary);
 }
 

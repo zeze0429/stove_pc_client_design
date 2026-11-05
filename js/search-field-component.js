@@ -33,12 +33,12 @@ var StdsSearchField = {
   },
   template:
     '<label :class="[\'stds-search-field\', \'stds-search-field-\' + variant, \'stds-search-field-\' + size]">' +
-      '<input ref="input" class="stds-search-field__input" type="search" :value="modelValue" :placeholder="placeholder" ' +
+      '<input ref="input" class="stds-search-field-input" type="search" :value="modelValue" :placeholder="placeholder" ' +
         ':maxlength="maxlength" spellcheck="false" autocomplete="off" @input="onInput" @keydown.enter="search" />' +
-      '<button v-if="modelValue" class="stds-search-field__clear" type="button" aria-label="지우기" @mousedown.prevent @click="clear">' +
+      '<button v-if="modelValue" class="stds-search-field-clear-button" type="button" aria-label="지우기" @mousedown.prevent @click="clear">' +
         '<i class="ic-v2-control-close-circle-fill" aria-hidden="true"></i>' +
       '</button>' +
-      '<button class="stds-search-field__search" type="button" aria-label="검색" @click="search">' +
+      '<button class="stds-search-field-search-button" type="button" aria-label="검색" @click="search">' +
         '<i class="ic-v2-navigation-search-line" aria-hidden="true"></i>' +
       '</button>' +
     '</label>',

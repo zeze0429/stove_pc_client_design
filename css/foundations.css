@@ -5,24 +5,24 @@
    ============================================================= */
 
 :root {
-  /* ---- Spacing (rem = px/10) ---------------------------- */
-  --spacing-0:   0;
-  --spacing-2:   0.2rem;
-  --spacing-4:   0.4rem;
-  --spacing-8:   0.8rem;
-  --spacing-12:  1.2rem;
-  --spacing-16:  1.6rem;
-  --spacing-20:  2.0rem;
-  --spacing-24:  2.4rem;
-  --spacing-28:  2.8rem;
-  --spacing-32:  3.2rem;
-  --spacing-36:  3.6rem;
-  --spacing-40:  4.0rem;
-  --spacing-48:  4.8rem;
-  --spacing-56:  5.6rem;
-  --spacing-64:  6.4rem;
-  --spacing-80:  8.0rem;
-  --spacing-200: 20rem;
+  /* ---- Spacing (rem = px/10) — 온스토브 웹과 같은 이름 --stds-glob-spacing-* (예전 --spacing-*, 11-05) */
+  --stds-glob-spacing-0:   0;
+  --stds-glob-spacing-2:   0.2rem;
+  --stds-glob-spacing-4:   0.4rem;
+  --stds-glob-spacing-8:   0.8rem;
+  --stds-glob-spacing-12:  1.2rem;
+  --stds-glob-spacing-16:  1.6rem;
+  --stds-glob-spacing-20:  2.0rem;
+  --stds-glob-spacing-24:  2.4rem;
+  --stds-glob-spacing-28:  2.8rem;
+  --stds-glob-spacing-32:  3.2rem;
+  --stds-glob-spacing-36:  3.6rem;
+  --stds-glob-spacing-40:  4.0rem;
+  --stds-glob-spacing-48:  4.8rem;
+  --stds-glob-spacing-56:  5.6rem;
+  --stds-glob-spacing-64:  6.4rem;
+  --stds-glob-spacing-80:  8.0rem;
+  --stds-glob-spacing-200: 20rem;
 
   /* ---- Radius — Foundation > Object style > Radius (Figma 변수 stds.glob.border-radius.*, 최신 9단계 — 11-03 사용자)
      예전 --radius-none/sm/md/lg/full(9999px)에서 교체. 스케일에 없는 값(6 · 24 등)은 쓰는 자리에 원본값 + 주석 */
@@ -34,13 +34,19 @@
   --stds-glob-border-radius-2xl:    1.6rem; /*  16 */
   --stds-glob-border-radius-3xl:    2rem;   /*  20 */
   --stds-glob-border-radius-4xl:    3.2rem; /*  32 */
-  --stds-glob-border-radius-circle: 99.9rem; /* 999 */
+  --stds-glob-border-radius-full:   99.9rem; /* 999 — 온스토브 웹 이름(-full)에 맞춤, 예전 -circle (11-05) */
+
+  /* ---- Border width — 온스토브 웹 STDS와 같은 이름 · 값 (11-05 추가) */
+  --stds-glob-border-width-0: 0;
+  --stds-glob-border-width-1: 1px;
+  --stds-glob-border-width-2: 0.2rem;
 
   /* ---- Shadow — Foundation > Object style > Shadow (Figma 변수 stds.glob.box-shadow.*, 이름 = 높이)
      예전 --shadow-0/2/4/12에서 교체. 스케일에 없는 그림자는 쓰는 자리에 원본값 */
   --stds-glob-box-shadow-0:  none;
   --stds-glob-box-shadow-2:  0 0.2rem 0.4rem var(--stds-glob-color-black-6);  /* 0 2 4 black-6 */
   --stds-glob-box-shadow-4:  0 0.4rem 1rem var(--stds-glob-color-black-10);   /* 0 4 10 black-10 */
+  --stds-glob-box-shadow-8:  0 0.8rem 2.4rem var(--stds-glob-color-black-15); /* 0 8 24 black-15 — 온스토브 웹 STDS에 있던 단계 (11-05 추가) */
   --stds-glob-box-shadow-12: 0 1.2rem 2.8rem var(--stds-glob-color-black-20); /* 0 12 28 black-20 */
 }
 

@@ -60,7 +60,7 @@
   gap: 0.2rem;
   min-width: 1.6rem;
   padding: 0;
-  border-radius: var(--stds-glob-border-radius-circle);
+  border-radius: var(--stds-glob-border-radius-full);
   color: var(--stds-glob-color-white-60);
   transition: opacity .15s;
 }
