@@ -137,7 +137,8 @@
   background: transparent;
   color: var(--stds-sem-color-on-surface-elevation-2);
   caret-color: var(--stds-sem-color-brand-primary);
-  font: inherit;
+  /* 크기 · 줄 높이는 stds-cap1(12/18, Figma Caption1-R) — font 단축 속성을 쓰면 그 값이 덮인다 */
+  font-family: inherit;
   font-weight: 400;
 }
 .library-panel__search-input::placeholder { color: var(--stds-sem-color-on-surface-elevation-4); }
