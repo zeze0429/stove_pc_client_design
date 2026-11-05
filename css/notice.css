@@ -161,7 +161,7 @@
   background: var(--stds-glob-color-black-30);
   color: var(--stds-glob-color-white);
 }
-.notice--rich__banner .notice__close:hover { background: rgba(0, 0, 0, 0.45); }
+.notice--rich__banner .notice__close:hover { background: var(--stds-glob-color-black-40); } /* 사용자 11-05 — 예전 임의값 45% 대신 */
 
 .notice--rich__content {
   display: flex;
