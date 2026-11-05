@@ -71,26 +71,80 @@
 .utility-notice__close:active { opacity: 0.7; }
 
 /* ---- 상세 팝업 본문 -----------------------------------------
-   이 시안은 제목이 헤더에 바로 붙고(위 여백 0) 본문 상자가 버튼 줄에
-   그대로 닿는다(아래 여백 0) — 공용 셸의 본문 여백(위 0.8 / 아래 3.2)을
-   음수 마진으로 걷어내 그 둘을 맞춘다. */
+   Figma: 제목 y 68(헤더 아래 8) · 상자 y 108(제목 아래 16) · 상자가 버튼 줄에
+   그대로 닿는다. 셸 본문은 스크롤하지 않고(body-scroll=false) 상자 안 글만
+   스크롤된다 — 제목과 상자 테두리 · 모서리는 제자리. 팝업은 최소 320 /
+   최대 520이라 글이 짧으면 상자가 남는 높이를 채우고, 길면 상자 안에서
+   스크롤된다. */
 .notice-dialog {
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
-  margin-top: -0.8rem;
-  margin-bottom: -3.2rem;
 }
-.notice-dialog__title { margin: 0; color: var(--stds-sem-color-on-surface-elevation-1); }
+.notice-dialog__title {
+  flex: 0 0 auto;
+  margin: 0.8rem 3.2rem 0;
+  color: var(--stds-sem-color-on-surface-elevation-1);
+  overflow-wrap: anywhere; /* 긴 제목은 줄바꿈 — 높이는 상자가 내준다 */
+}
+.notice-dialog__content {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.6rem;
+}
+/* 상자 배경은 따로 고정된 층 — 글이 스크롤돼도 가장자리 · 모서리는 안 움직인다 */
 .notice-dialog__box {
-  padding: 1.6rem 2rem;
+  position: absolute;
+  inset: 0 3.2rem;
   border-radius: var(--stds-glob-border-radius-xl);
   background: var(--stds-sem-color-surface-elevation-2);
+}
+/* 스크롤 영역은 팝업 폭 전체 — 썸이 상자 밖, 팝업 오른쪽 끝에서 8 떨어진
+   자리에 온다(셸 본문과 같은 위치 · 같은 4px 썸). 오른쪽 패딩 4rem =
+   상자 여백 3.2 + 상자 패딩 2 − 셸 여백 0.8 − 썸 0.4. */
+.notice-dialog__scroll {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: scroll;
+  margin-right: 0.8rem;
+}
+.notice-dialog__text {
+  padding: 1.6rem 4rem 1.6rem 5.2rem;
   color: var(--stds-sem-color-on-surface-elevation-2);
 }
-.notice-dialog__box p { margin: 0; }
-/* 본문 속 링크 한 줄 — Figma가 토큰이 아닌 브랜드 오렌지를 직접 지정 */
+.notice-dialog__text p { margin: 0; }
+/* 본문 속 링크 — 브랜드 컬러 + 밑줄, hover · pressed · visited 변화 없음 */
 .notice-dialog__link { color: var(--stds-sem-color-brand-primary); text-decoration: underline; }
 
-/* 닫기 — 공통 버튼 outline md (css/button.css, 사용자 11-03), 폭만 128 */
-.notice-dialog__close-btn { width: 12.8rem; max-width: 26.4rem; }
+.notice-dialog__scroll::-webkit-scrollbar { width: 0.4rem; }
+.notice-dialog__scroll::-webkit-scrollbar-thumb {
+  border-radius: var(--stds-glob-border-radius-full);
+  background-color: transparent;
+}
+/* 팝업에 마우스가 있을 때만 보인다 — 스크롤바 공통 규칙 */
+.layer-dialog:hover .notice-dialog__scroll::-webkit-scrollbar-thumb { background-color: var(--stds-sem-color-inverse-elevation-2); }
+.layer-dialog:hover .notice-dialog__scroll::-webkit-scrollbar-thumb:hover { background-color: var(--stds-sem-color-inverse-elevation-1); }
+
+/* 바닥 페이드 — 아래에 글이 더 있을 때만. 스크롤되지 않고 상자 바닥에 붙어 있다 */
+.notice-dialog__fade {
+  position: absolute;
+  left: 3.2rem;
+  right: 3.2rem;
+  bottom: 0;
+  height: 6.4rem;
+  border-radius: 0 0 var(--stds-glob-border-radius-xl) var(--stds-glob-border-radius-xl);
+  background: linear-gradient(to bottom, transparent, var(--stds-sem-color-surface-elevation-2) 73.4%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .15s;
+}
+.notice-dialog__fade.is-visible { opacity: 1; }
+
+/* 닫기 — 공통 버튼 outline md (css/button.css). 최소 128, 다국어로 글이 길면
+   말줄임 없이 버튼이 늘어난다 */
+.notice-dialog__close-btn { min-width: 12.8rem; white-space: nowrap; }

@@ -55,14 +55,40 @@ var NoticeDialog = {
   components: { LayerDialog: LayerDialog },
   props: { notice: { type: Object, required: true } },
   emits: ['close'],
+  data: function () {
+    return { hasMoreBelow: false };
+  },
+  mounted: function () {
+    this.updateFade();
+    // 상자 높이(창 크기)나 글 길이가 바뀌면 페이드를 다시 판단
+    this.resizeObserver = new ResizeObserver(this.updateFade);
+    this.resizeObserver.observe(this.$refs.scroll);
+    this.resizeObserver.observe(this.$refs.text);
+  },
+  beforeUnmount: function () {
+    this.resizeObserver.disconnect();
+  },
+  methods: {
+    // 아래에 글이 더 남아 있을 때만 바닥 페이드를 깐다 (반올림 오차 1px 허용)
+    updateFade: function () {
+      var el = this.$refs.scroll;
+      this.hasMoreBelow = el.scrollHeight - el.scrollTop - el.clientHeight > 1;
+    },
+  },
   template:
-    '<layer-dialog title="공지" width="56rem" @close="$emit(\'close\')" ' +
-      'data-name="layout/utility_bar/notice/dialog">' +
+    '<layer-dialog title="공지" width="56rem" min-height="32rem" :body-scroll="false" ' +
+      '@close="$emit(\'close\')" data-name="layout/utility_bar/notice/dialog">' +
       '<div class="notice-dialog">' +
-        '<p class="notice-dialog__title stds-title7 fw-medium">{{ notice.title }}</p>' +
-        '<div class="notice-dialog__box stds-text3 fw-regular" data-name="contents">' +
-          '<p v-for="(line, i) in notice.body" :key="i" ' +
-            ':class="{ \'notice-dialog__link\': line.link }">{{ line.text }}</p>' +
+        '<p class="notice-dialog__title stds-title7 fw-bold">{{ notice.title }}</p>' +
+        '<div class="notice-dialog__content" data-name="contents">' +
+          '<div class="notice-dialog__box" aria-hidden="true"></div>' +
+          '<div class="notice-dialog__scroll" ref="scroll" @scroll="updateFade">' +
+            '<div class="notice-dialog__text stds-text3 fw-regular" ref="text">' +
+              '<p v-for="(line, i) in notice.body" :key="i" ' +
+                ':class="{ \'notice-dialog__link\': line.link }">{{ line.text }}</p>' +
+            '</div>' +
+          '</div>' +
+          '<div class="notice-dialog__fade" :class="{ \'is-visible\': hasMoreBelow }" aria-hidden="true"></div>' +
         '</div>' +
       '</div>' +
       '<template #footer>' +

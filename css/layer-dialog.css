@@ -47,13 +47,14 @@
   color: var(--stds-sem-color-on-surface-elevation-1);
 }
 /* 닫기는 배경이 깔리는 게 아니라 아이콘 자체가 흐려진다 —
-   Figma 가이드: hover = 기본값의 50%, press = 70%. */
+   Figma 가이드: hover = 기본값의 50%, press = 70%.
+   색은 Dialog/Header 아이콘 벡터가 쓰는 elevation-2 (제목은 elevation-1). */
 .layer-dialog__close {
   flex: 0 0 auto;
   display: grid;
   place-items: center;
   padding: 0;
-  color: var(--stds-sem-color-on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-2);
   transition: opacity .15s;
 }
 .layer-dialog__close i { font-size: 2.4rem; }
@@ -80,6 +81,15 @@
   flex-direction: column;
   gap: 1.6rem;
   padding: 0.8rem 2rem 3.2rem 3.2rem;
+}
+
+/* bodyScroll=false — 셸 본문은 자리만 잡고, 스크롤은 안쪽 콘텐츠가 직접 맡는다
+   (공지: 제목은 고정, 상자 안 글만 스크롤). 여백도 안쪽이 정한다. */
+.layer-dialog__body--static {
+  overflow: hidden;
+  margin-right: 0;
+  padding: 0;
+  gap: 0;
 }
 
 /* 버튼이 붙는 팝업용 — 본문이 스크롤돼도 이 줄은 바닥에 그대로 남는다. */
