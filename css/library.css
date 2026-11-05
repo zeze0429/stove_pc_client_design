@@ -352,19 +352,24 @@
 .library-result__reset.stds-button-xs { height: 2.8rem; }
 /* 아이콘은 우측패널 초기화와 같은 12 (사용자 11-05) */
 .library-result__reset.stds-button-xs > i { font-size: 1.2rem; }
-/* 결과 없음 — 우측패널과 같은 블록(경고 아이콘 36 · text4 가운데) */
+/* 결과 없음 안내 박스 (Figma 클라이언트_v3.1 48960:383019, 컴포넌트 empty / variant=basic) — 결과 줄 아래 16.
+   surface-variant-1 · 모서리 border-radius.xl · 위 32 좌우 32 아래 48 · 일러스트 160 + 12 + 문구(Title6-M elevation-1 / 4 / Text3-R elevation-3) */
 .library-no-result {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  margin-top: 4rem;
+  gap: 1.2rem;
+  margin-top: 1.6rem;
+  padding: 3.2rem 3.2rem 4.8rem;
+  border-radius: var(--stds-glob-border-radius-xl);
+  background: var(--stds-sem-color-surface-variant-1);
   text-align: center;
 }
-.library-no-result i { font-size: 3.6rem; color: var(--stds-sem-color-on-surface-elevation-4); }
+.library-no-result__img { display: block; width: 16rem; height: 16rem; }
+.library-no-result__text { display: flex; flex-direction: column; gap: 0.4rem; }
 .library-no-result p { margin: 0; }
-.library-no-result__title { color: var(--stds-sem-color-on-surface-elevation-3); }
-.library-no-result__desc { color: var(--stds-sem-color-inverse-elevation-1); }
+.library-no-result__title { color: var(--stds-sem-color-on-surface-elevation-1); }
+.library-no-result__desc { color: var(--stds-sem-color-on-surface-elevation-3); }
 
 .library-grid {
   display: grid;

@@ -313,7 +313,7 @@ var LibraryMain = {
       quickPage: 0,
       quickActive: 0, // 넓게 펼쳐진 카드 — 마우스를 올린 카드, 없으면 지금 페이지 첫 카드
       view: 'grid',
-      query: '', // 검색 필드에 친 글자 — 엔터 · 검색 버튼을 누르면 queries로 옮기고 비운다
+      query: '', // 검색 필드에 친 글자 — 엔터 · 검색 버튼을 누르면 queries에 올린다(글자는 남김)
       queries: [], // 확인한 검색어 칩 (여러 개면 모두 맞는 게임만)
       filter: libraryFilterDefault(), // 필터 레이어 (js/library-filter-component.js) — 보유게임은 정렬에 게임 줄만
       filterOpen: false,
@@ -424,7 +424,11 @@ var LibraryMain = {
         chips.push({ key: 'genre:' + g, label: g, remove: function () { vm.filter = Object.assign({}, f, { genres: f.genres.filter(function (k) { return k !== g; }) }); } });
       });
       this.queries.forEach(function (q) {
-        chips.push({ key: 'query:' + q, label: q, remove: function () { vm.queries = vm.queries.filter(function (k) { return k !== q; }); } });
+        // 칩을 지우면 입력칸에 같은 글자가 남아 있을 때 그것도 비운다
+        chips.push({ key: 'query:' + q, label: q, remove: function () {
+          vm.queries = vm.queries.filter(function (k) { return k !== q; });
+          if (vm.query.trim() === q) vm.query = '';
+        } });
       });
       return chips;
     },
@@ -535,18 +539,18 @@ var LibraryMain = {
     searchEl: function () { return this.$refs.search && this.$refs.search.$el; },
     filterBtnEl: function () { return this.$refs.filterBtn; },
     startSelect: function () { this.store.addTargetId = null; this.store.selectMode = true; },
-    // 검색 확인 — 칩으로 올리고 입력칸은 비운다 (같은 검색어는 한 번만)
+    // 검색 확인 — 칩으로 올리고 입력칸 글자는 그대로 둔다 (Figma 48960:382994, 사용자 11-05). 같은 검색어는 한 번만
     submitQuery: function (value, e) {
       if (e && e.isComposing) return; // 한글 조합 중 엔터는 무시 — 맥 크롬은 조합 끝 엔터가 한 번 더 온다
       var q = this.query.trim();
       if (!q) return;
       if (this.queries.indexOf(q) < 0) this.queries.push(q);
-      this.query = '';
     },
-    // 초기화 칩 — 필터 조건(정렬은 그대로)과 검색어를 모두 지운다
+    // 초기화 칩 — 필터 조건(정렬은 그대로)과 검색어 · 입력칸 글자를 모두 지운다
     resetResults: function () {
       this.filter = Object.assign(libraryFilterDefault(), { groupSort: this.filter.groupSort, gameSort: this.filter.gameSort });
       this.queries = [];
+      this.query = '';
     },
     // 게임 선택 취소 — 시작할 때 걸었던 앵커를 풀고 맨 위(라이브러리 타이틀)로 되돌린다 (사용자 11-03)
     cancelAdd: function () {
@@ -660,11 +664,12 @@ var LibraryMain = {
             '</button>' +
           '</div>' +
         '</div>' +
-        '<div v-if="resultsActive && !filteredOwned.length" class="library-no-result" data-name="결과 없음">' +
-          '<i class="ic-v2-state-warning-circle-fill" aria-hidden="true"></i>' +
-          '<div class="stds-text4">' +
-            '<p class="library-no-result__title fw-medium">결과가 없습니다.</p>' +
-            '<p class="library-no-result__desc">검색어의 단어 수를 줄이거나<br />필터 조건을 변경하세요.</p>' +
+        // 결과 없음 안내 박스 (Figma 클라이언트_v3.1 48960:383019 empty / basic)
+        '<div v-if="resultsActive && !filteredOwned.length" class="library-no-result" data-name="empty">' +
+          '<img class="library-no-result__img" src="assets/library/empty_basic.svg" alt="" />' +
+          '<div class="library-no-result__text">' +
+            '<p class="library-no-result__title stds-title6 fw-medium">검색 결과가 없습니다.</p>' +
+            '<p class="library-no-result__desc stds-text3">검색어의 단어 수를 줄이거나 필터 조건을 변경하세요.</p>' +
           '</div>' +
         '</div>' +
         '<ul class="library-grid">' +
