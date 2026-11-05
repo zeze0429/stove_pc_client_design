@@ -498,9 +498,22 @@ var LibraryPanel = {
         { text: name.slice(i + q.length), hit: false },
       ].filter(function (p) { return p.text; });
     },
-    // 검색 버튼 — 입력칸을 열고 닫는다. 닫아도 확인한 검색어(칩)는 남는다 — 칩 X · 초기화로 지운다
+    // 검색과 필터는 섞이지 않는다 (사용자 11-05) — 한쪽을 열면 다른 쪽 조건은 풀린다
+    clearSearch: function () { this.searchOpen = false; this.searchQuery = ''; this.searchText = ''; },
+    clearFilterConditions: function () {
+      this.filter = Object.assign(libraryFilterDefault(), { groupSort: this.filter.groupSort, gameSort: this.filter.gameSort });
+    },
+    // 필터 버튼 — 레이어를 열 때 검색(입력칸 · 검색어 칩)은 해제
+    toggleFilter: function () {
+      if (!this.filterOpen) this.clearSearch();
+      this.filterOpen = !this.filterOpen;
+    },
+    // 검색 버튼 — 입력칸을 열고 닫는다. 열 때 필터 레이어 · 필터 조건은 해제.
+    // 닫아도 확인한 검색어(칩)는 남는다 — 칩 X · 초기화로 지운다
     toggleSearch: function () {
       if (this.searchOpen) { this.closeSearch(); return; }
+      this.filterOpen = false;
+      this.clearFilterConditions();
       this.searchOpen = true;
       this.searchText = this.searchQuery;
       this.$nextTick(function () { if (this.$refs.searchInput) this.$refs.searchInput.focus(); });
@@ -523,7 +536,7 @@ var LibraryPanel = {
     },
     // 초기화 — 필터 조건과 검색어를 모두 지우고 원래 목록으로 (정렬은 그대로, 검색 입력칸은 열린 채)
     resetResults: function () {
-      this.filter = Object.assign(libraryFilterDefault(), { groupSort: this.filter.groupSort, gameSort: this.filter.gameSort });
+      this.clearFilterConditions();
       this.searchQuery = '';
       this.searchText = '';
     },
@@ -1104,7 +1117,7 @@ var LibraryPanel = {
           '<i class="ic-v2-control-add-line" aria-hidden="true"></i>그룹 만들기' +
         '</button>' +
         // 필터 — 버튼 그룹 아래에 레이어(폭 240 = 버튼 그룹 폭), 열려 있는 동안 버튼은 선택 테두리
-        '<button class="library-panel__icon-btn" :class="{ \'is-selected\': filterOpen }" type="button" aria-label="필터" :aria-expanded="String(filterOpen)" data-name="btn/icon" @click.stop="filterOpen = !filterOpen"><i class="ic-v2-community-filter-line"></i></button>' +
+        '<button class="library-panel__icon-btn" :class="{ \'is-selected\': filterOpen }" type="button" aria-label="필터" :aria-expanded="String(filterOpen)" data-name="btn/icon" @click.stop="toggleFilter"><i class="ic-v2-community-filter-line"></i></button>' +
         '<button class="library-panel__icon-btn" :class="{ \'is-selected\': searchOpen }" type="button" aria-label="검색" :aria-expanded="String(searchOpen)" data-name="btn/icon" @click="toggleSearch"><i class="ic-v2-navigation-search-line"></i></button>' +
         '<library-filter-layer v-if="filterOpen" v-model="filter" width="24rem" group-sort :anchor="actionsEl" @close="filterOpen = false"></library-filter-layer>' +
       '</div>' +
