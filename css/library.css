@@ -325,6 +325,43 @@
 .library-search { width: 18.6rem; }
 
 /* 카드 그리드 — 5단, 세로 간격 28 / 가로 20 */
+/* 필터 · 검색 결과 (Figma 2026_웹전환 11564:174213) — 도구 줄 아래 16, 카드 목록은 그 아래 16.
+   "검색 결과 N" Button2-B(on-surface-elevation-2 · 개수 brand-primary) + 점 2 + 칩들(간격 8, 줄바꿈) */
+.library-result { display: flex; align-items: flex-start; gap: 0.8rem; margin-top: 1.6rem; }
+.library-result__title {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 2.8rem;
+  margin: 0;
+  color: var(--stds-sem-color-on-surface-elevation-2);
+}
+.library-result__count { color: var(--stds-sem-color-brand-primary); }
+.library-result__count.is-zero { color: var(--stds-sem-color-disabled-variant-1); }
+/* 점 — Figma 변수 on-surface/white(not in system)/secondary = 흰색 50% (시멘틱 없음 → 글로벌) */
+.library-result__dot {
+  width: 0.2rem;
+  height: 0.2rem;
+  margin-left: 0.4rem;
+  border-radius: 50%;
+  background: var(--stds-glob-color-white-50);
+}
+.library-result__chips { flex: 1 1 0; min-width: 0; display: flex; flex-wrap: wrap; gap: 0.8rem; }
+/* 결과 없음 — 우측패널과 같은 블록(경고 아이콘 36 · text4 가운데) */
+.library-no-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 4rem;
+  text-align: center;
+}
+.library-no-result i { font-size: 3.6rem; color: var(--stds-sem-color-on-surface-elevation-4); }
+.library-no-result p { margin: 0; }
+.library-no-result__title { color: var(--stds-sem-color-on-surface-elevation-3); }
+.library-no-result__desc { color: var(--stds-sem-color-inverse-elevation-1); }
+
 .library-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));

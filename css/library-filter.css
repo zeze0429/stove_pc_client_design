@@ -57,6 +57,32 @@
 .library-filter__reset:hover { opacity: 0.6; }
 .library-filter__reset:active { opacity: 0.8; }
 
+/* 필터 · 검색 결과 칩 — 우측패널 · 보유게임 영역 공용. 상태값 Figma 2026_웹전환 11564:174251~3
+   (enabled inverse-elevation-6 · hover -4 · pressed -2, 글자 brand-primary, X 12 on-surface-elevation-3) */
+.library-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: 100%;
+  height: 2.8rem;
+  padding: 0 0.8rem;
+  border: 0;
+  border-radius: var(--stds-glob-border-radius-circle);
+  background: var(--stds-sem-color-inverse-elevation-6);
+  color: var(--stds-sem-color-brand-primary);
+  cursor: pointer;
+}
+.library-chip:hover { background: var(--stds-sem-color-inverse-elevation-4); }
+.library-chip:active { background: var(--stds-sem-color-inverse-elevation-2); }
+.library-chip__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.library-chip i { flex: 0 0 auto; color: var(--stds-sem-color-on-surface-elevation-3); font-size: 1.2rem; }
+/* 초기화 칩 (Figma 11564:174254 / 58 / 62) — 새로고침 아이콘 16 + 글자 on-surface-elevation-1.
+   enabled inverse-elevation-3 · hover white 15%(변수 없음 → 같은 값 inverse-elevation-2) · pressed white 20%(시멘틱 없음 → 글로벌) */
+.library-chip--reset { color: var(--stds-sem-color-on-surface-elevation-1); background: var(--stds-sem-color-inverse-elevation-3); }
+.library-chip--reset:hover { background: var(--stds-sem-color-inverse-elevation-2); }
+.library-chip--reset:active { background: var(--stds-glob-color-white-20); }
+.library-chip--reset i { color: inherit; font-size: 1.6rem; }
+
 .library-filter__body {
   flex: 1 1 auto;
   min-height: 0;

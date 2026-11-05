@@ -313,7 +313,8 @@ var LibraryMain = {
       quickPage: 0,
       quickActive: 0, // 넓게 펼쳐진 카드 — 마우스를 올린 카드, 없으면 지금 페이지 첫 카드
       view: 'grid',
-      query: '',
+      query: '', // 검색 필드에 친 글자 — 엔터 · 검색 버튼을 누르면 queries로 옮기고 비운다
+      queries: [], // 확인한 검색어 칩 (여러 개면 모두 맞는 게임만)
       filter: libraryFilterDefault(), // 필터 레이어 (js/library-filter-component.js) — 보유게임은 정렬에 게임 줄만
       filterOpen: false,
       quickAd: protoSettingsRead().libraryQuickAd, // 하단 메뉴패널 > 빠른 실행 > 광고
@@ -402,12 +403,30 @@ var LibraryMain = {
     },
     // 선택 UI에서는 검색 칸이 사라지니 검색어 없이 보유게임 전체
     filteredOwned: function () {
-      var q = this.query.trim().toLowerCase();
+      var qs = this.queries.map(function (q) { return q.toLowerCase(); });
       var list = libraryFilterGames(this.owned, this.filter);
-      if (!q || this.selecting) return list;
+      if (!qs.length || this.selecting) return list;
       return list.filter(function (g) {
-        return g.name.toLowerCase().indexOf(q) >= 0 || g.genre.toLowerCase().indexOf(q) >= 0;
+        var name = g.name.toLowerCase(), genre = g.genre.toLowerCase();
+        return qs.every(function (q) { return name.indexOf(q) >= 0 || genre.indexOf(q) >= 0; });
       });
+    },
+    // 필터 · 검색 결과 줄 (Figma 11564:174213) — 조건이 하나라도 있으면. 선택 UI 동안은 숨긴다
+    resultsActive: function () { return !this.selecting && (this.queries.length > 0 || libraryFilterActive(this.filter)); },
+    // 칩 순서 — 설치된 게임 · 상품 타입 · 장르 · 검색어 (Figma 0831 메모 + 시안 순서). 누르면 그 조건만 뺀다
+    resultChips: function () {
+      var f = this.filter, vm = this, chips = [];
+      if (f.installedOnly) chips.push({ key: 'installed', label: '설치된 게임', remove: function () { vm.filter = Object.assign({}, f, { installedOnly: false }); } });
+      LIBRARY_FILTER_TYPES.forEach(function (t) {
+        if (f.types.indexOf(t.key) >= 0) chips.push({ key: 'type:' + t.key, label: t.label, remove: function () { vm.filter = Object.assign({}, f, { types: f.types.filter(function (k) { return k !== t.key; }) }); } });
+      });
+      f.genres.forEach(function (g) {
+        chips.push({ key: 'genre:' + g, label: g, remove: function () { vm.filter = Object.assign({}, f, { genres: f.genres.filter(function (k) { return k !== g; }) }); } });
+      });
+      this.queries.forEach(function (q) {
+        chips.push({ key: 'query:' + q, label: q, remove: function () { vm.queries = vm.queries.filter(function (k) { return k !== q; }); } });
+      });
+      return chips;
     },
   },
   methods: {
@@ -516,6 +535,19 @@ var LibraryMain = {
     searchEl: function () { return this.$refs.search && this.$refs.search.$el; },
     filterBtnEl: function () { return this.$refs.filterBtn; },
     startSelect: function () { this.store.addTargetId = null; this.store.selectMode = true; },
+    // 검색 확인 — 칩으로 올리고 입력칸은 비운다 (같은 검색어는 한 번만)
+    submitQuery: function (value, e) {
+      if (e && e.isComposing) return; // 한글 조합 중 엔터는 무시 — 맥 크롬은 조합 끝 엔터가 한 번 더 온다
+      var q = this.query.trim();
+      if (!q) return;
+      if (this.queries.indexOf(q) < 0) this.queries.push(q);
+      this.query = '';
+    },
+    // 초기화 칩 — 필터 조건(정렬은 그대로)과 검색어를 모두 지운다
+    resetResults: function () {
+      this.filter = Object.assign(libraryFilterDefault(), { groupSort: this.filter.groupSort, gameSort: this.filter.gameSort });
+      this.queries = [];
+    },
     // 게임 선택 취소 — 시작할 때 걸었던 앵커를 풀고 맨 위(라이브러리 타이틀)로 되돌린다 (사용자 11-03)
     cancelAdd: function () {
       this.store.addTargetId = null;
@@ -612,9 +644,27 @@ var LibraryMain = {
             '<button ref="filterBtn" class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" :class="{ \'is-selected\': filterOpen }" type="button" :aria-expanded="String(filterOpen)" @click.stop="filterOpen = !filterOpen"><i class="ic-v2-community-filter-line"></i>필터</button>' +
             '<library-filter-layer v-if="filterOpen" v-model="filter" width="26rem" :anchor="filterBtnEl" :align-right="searchEl" @close="filterOpen = false"></library-filter-layer>' +
             // 공통 서치필드 outline sm (js/search-field-component.js, 사용자 11-03) — 폭만 186
-            '<stds-search-field ref="search" v-model="query" class="library-search" placeholder="게임 또는 검색어 입력"></stds-search-field>' +
+            // 엔터 · 검색 버튼으로 확인하면 검색어 칩이 생기고 입력칸은 비워진다
+            '<stds-search-field ref="search" v-model="query" class="library-search" placeholder="게임 또는 검색어 입력" @search="submitQuery"></stds-search-field>' +
           '</div>' +
         '</div>' +
+        '</div>' +
+        // 필터 · 검색 결과 — 개수 · 초기화 칩 · 조건 칩 (Figma 2026_웹전환 11564:174213, 칩은 우측패널과 같은 컴포넌트)
+        '<div v-if="resultsActive" class="library-result" data-name="필터검색결과">' +
+          '<p class="library-result__title stds-btn2 fw-bold">검색 결과<span class="library-result__count" :class="{ \'is-zero\': !filteredOwned.length }">{{ filteredOwned.length }}</span><i class="library-result__dot" aria-hidden="true"></i></p>' +
+          '<div class="library-result__chips" data-name="선택한 필터">' +
+            '<button class="library-chip library-chip--reset stds-btn3 fw-medium" type="button" @click="resetResults" data-name="Chips"><i class="ic-v2-control-refresh-line" aria-hidden="true"></i>초기화</button>' +
+            '<button v-for="c in resultChips" :key="c.key" class="library-chip stds-btn3 fw-medium" type="button" :aria-label="c.label + \' 조건 지우기\'" @click="c.remove()" data-name="Chips">' +
+              '<span class="library-chip__label">{{ c.label }}</span><i class="ic-v2-control-close-line" aria-hidden="true"></i>' +
+            '</button>' +
+          '</div>' +
+        '</div>' +
+        '<div v-if="resultsActive && !filteredOwned.length" class="library-no-result" data-name="결과 없음">' +
+          '<i class="ic-v2-state-warning-circle-fill" aria-hidden="true"></i>' +
+          '<div class="stds-text4">' +
+            '<p class="library-no-result__title fw-medium">결과가 없습니다.</p>' +
+            '<p class="library-no-result__desc">검색어의 단어 수를 줄이거나<br />필터 조건을 변경하세요.</p>' +
+          '</div>' +
         '</div>' +
         '<ul class="library-grid">' +
           '<li v-for="g in filteredOwned" :key="g.id" class="library-card" ' +

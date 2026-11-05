@@ -190,23 +190,7 @@
 .library-panel__result-count { color: var(--stds-sem-color-brand-primary); font-weight: 700; }
 .library-panel__result-count.is-zero { color: var(--stds-sem-color-disabled-variant-1); }
 .library-panel__chips { display: flex; flex-wrap: wrap; gap: 0.8rem; }
-.library-chip {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  max-width: 100%;
-  height: 2.8rem;
-  padding: 0 0.8rem;
-  border: 0;
-  border-radius: var(--stds-glob-border-radius-circle);
-  background: var(--stds-sem-color-inverse-elevation-6);
-  color: var(--stds-sem-color-brand-primary);
-  cursor: pointer;
-}
-.library-chip:hover { background: var(--stds-sem-color-inverse-elevation-4); }
-.library-chip:active { background: var(--stds-sem-color-inverse-elevation-2); }
-.library-chip__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.library-chip i { flex: 0 0 auto; color: var(--stds-sem-color-on-surface-elevation-3); font-size: 1.2rem; }
+/* 칩(.library-chip)은 보유게임 영역과 같이 쓴다 — css/library-filter.css */
 
 /* 검색어와 맞는 글자 — brand-primary (Figma 10 검색 결과 있음) */
 .library-panel__hit { color: var(--stds-sem-color-brand-primary); }
