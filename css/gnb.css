@@ -8,13 +8,6 @@
 body { margin: 0; }
 .stage ul { list-style: none; margin: 0; padding: 0; }
 
-/* ---- 지역 변수 (STDS 공식 토큰 아직 없음) ------------------
-   여기 값만 바꾸면 이 파일 전체에 일괄 반영됨. 토큰이 생기면
-   var(--실제토큰명)으로 값만 교체하면 됨 (사용하는 쪽은 안 건드림). */
-:root {
-  --game-group-list-text: #888;
-}
-
 /* ---- 페이지 캔버스 (컴포넌트 미리보기용) ----------------- */
 .stage {
   min-height: 100vh;
@@ -706,7 +699,7 @@ body { margin: 0; }
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--game-group-list-text);
+  color: var(--stds-sem-color-neutral-variant-5); /* 게임 목록 글자 — 비공식 시멘틱(다크 gray450 #888 · 라이트 gray500, 사용자 11-05) */
 }
 .game-group__badges {
   /* 이름 텍스트와 4px 간격 — 기본 아이템 gap이 6px이라 2px만 당겨서 4px로 맞춤 */

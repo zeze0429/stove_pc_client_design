@@ -255,13 +255,13 @@
 }
 .library-toolbar__right { display: flex; align-items: center; gap: 0.8rem; }
 /* 게임 선택 · 게임 선택 취소 · 필터 — 공통 버튼 tertiary sm (css/button.css, 사용자 11-03).
-   예외 (Figma 2026_웹전환 12009:64658): 배경 다크 #333 · 라이트 #ccc = neutral-variant-5,
+   예외 (Figma 2026_웹전환 12009:64658): 배경 다크 #333 · 라이트 #ccc — 시멘틱이 아닌 커스텀 값(사용자 11-05)이라 글로벌로,
    글자·아이콘은 tertiary 기본(elevation-2)보다 진한 on-surface-elevation-1.
    라이트만 Figma(gray200)보다 한 단계 옅게: 기본 gray150 · 호버 gray200 · 프레스 gray300 (사용자 11-03) */
 :root {
-  --library-tool-bg: var(--stds-sem-color-neutral-variant-5);
-  --library-tool-bg-hover: var(--stds-sem-color-neutral-variant-5-hover);
-  --library-tool-bg-pressed: var(--stds-sem-color-neutral-variant-5-pressed);
+  --library-tool-bg: var(--stds-glob-color-gray800);
+  --library-tool-bg-hover: var(--stds-glob-color-gray750);
+  --library-tool-bg-pressed: var(--stds-glob-color-gray700);
 }
 :root[data-theme="light"] {
   --library-tool-bg: var(--stds-glob-color-gray150);

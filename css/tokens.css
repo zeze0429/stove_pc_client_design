@@ -55,6 +55,7 @@
   --stds-glob-color-gray200: #ccc;
   --stds-glob-color-gray300: #b2b2b2;
   --stds-glob-color-gray400: #999;
+  --stds-glob-color-gray450: #888; /* 비공식 글로벌 — 사용자 정의(11-05), STDS 0.3.2에 없음 */
   --stds-glob-color-gray500: #7f7f7f;
   --stds-glob-color-gray600: #666;
   --stds-glob-color-gray650: #595959;
@@ -393,9 +394,7 @@
   --stds-sem-color-neutral-variant-3-hover: var(--stds-glob-color-gray800);
   --stds-sem-color-neutral-variant-3-pressed: var(--stds-glob-color-gray750);
   --stds-sem-color-neutral-variant-4: var(--stds-glob-color-gray700); /* 공식 gray650 — 기존 값 유지(사용자 결정 2026-11-02) */
-  --stds-sem-color-neutral-variant-5: var(--stds-glob-color-gray800); /* Figma 레퍼런스 사이트 값 (사용자 11-03) */
-  --stds-sem-color-neutral-variant-5-hover: var(--stds-glob-color-gray750);
-  --stds-sem-color-neutral-variant-5-pressed: var(--stds-glob-color-gray700);
+  --stds-sem-color-neutral-variant-5: var(--stds-glob-color-gray450); /* 비공식 시멘틱 — 사용자 정의(11-05), STDS 0.3.2에 없음. 게임 목록 글자 */
   --stds-sem-color-border: var(--stds-glob-color-gray650);
   --stds-sem-color-placeholder: var(--stds-glob-color-gray600);
   --stds-sem-color-error: var(--stds-glob-color-system-red);
@@ -470,9 +469,7 @@
   --stds-sem-color-neutral-variant-3-hover: var(--stds-glob-color-gray20);
   --stds-sem-color-neutral-variant-3-pressed: var(--stds-glob-color-gray40);
   --stds-sem-color-neutral-variant-4: var(--stds-glob-color-gray150);
-  --stds-sem-color-neutral-variant-5: var(--stds-glob-color-gray200);
-  --stds-sem-color-neutral-variant-5-hover: var(--stds-glob-color-gray300);
-  --stds-sem-color-neutral-variant-5-pressed: var(--stds-glob-color-gray400);
+  --stds-sem-color-neutral-variant-5: var(--stds-glob-color-gray500); /* 비공식 시멘틱 — 사용자 정의(11-05) */
   --stds-sem-color-border: var(--stds-glob-color-gray150);
   --stds-sem-color-placeholder: var(--stds-glob-color-gray300);
   --stds-sem-color-error: var(--stds-glob-color-system-red);
