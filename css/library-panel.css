@@ -183,7 +183,8 @@
   gap: 0.8rem;
   padding-top: 2rem;
 }
-.library-panel__result.is-after-search { padding-top: 1.6rem; }
+/* 검색 입력칸 아래 구분선 다음 — Figma는 구분선 윗변에서 16 (1px 선 포함) */
+.library-panel__result.is-after-search { padding-top: calc(1.6rem - 1px); }
 .library-panel__result-head { display: flex; align-items: center; justify-content: space-between; }
 .library-panel__result-title { display: flex; gap: 0.4rem; margin: 0; color: var(--stds-sem-color-on-surface-elevation-4); }
 .library-panel__result-count { color: var(--stds-sem-color-brand-primary); font-weight: 700; }
@@ -210,12 +211,14 @@
 /* 검색어와 맞는 글자 — brand-primary (Figma 10 검색 결과 있음) */
 .library-panel__hit { color: var(--stds-sem-color-brand-primary); }
 
-/* 결과 없음 — 구분선 아래 16 · 경고 아이콘 36 on-surface-elevation-4 · 10 · text4 가운데 */
+/* 결과 없음 (Figma 10 검색 결과 없음 1416:30304) — 구분선 아래 24에 블록, 블록 위 여백 16 → 구분선 ~ 아이콘 40.
+   경고 아이콘 36 on-surface-elevation-4 · 10 · text4 가운데 */
 .library-panel__no-result {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  margin-top: 2.4rem;
   padding-top: 1.6rem;
   text-align: center;
 }
