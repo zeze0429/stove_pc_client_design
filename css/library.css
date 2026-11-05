@@ -430,7 +430,7 @@
   height: 2.2rem;
   padding: 0 0.6rem;
   border-radius: var(--stds-glob-border-radius-circle);
-  background: linear-gradient(to left, var(--stds-glob-color-blue700), #6a1ec7);
+  background: linear-gradient(to left, var(--stds-glob-color-blue700), var(--stds-glob-color-tint-purple-a700)); /* 타팀 관리 컴포넌트 — 온스토브 스토어 bg-gradient-to-l from-[#3363D9] to-[#6A1EC7]와 같은 값 */
   color: var(--stds-glob-color-white);
   font-family: Inter, stds-font-kr, sans-serif;
   font-size: 1.1rem;
