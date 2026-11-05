@@ -404,6 +404,8 @@ var LibraryPanel = {
     // 그룹 만들기 입력 중에는 구분선부터 아래 목록 전부 숨긴다 (Figma ③ "그룹 목록 미노출")
     showList: function () { return !this.creating && (this.resultsActive ? this.resultCount > 0 : (this.groups.length > 0 || this.ungrouped.length > 0)); },
     // 구분선 — 목록이 있거나, 결과가 0이라 빈 결과 안내를 띄울 때
+    // 그룹 없음 안내 박스 — 그룹이 없을 때. 그룹 만들기 입력 중 · 필터/검색 결과를 볼 때는 숨긴다
+    showEmptyHint: function () { return !this.groups.length && !this.creating && !this.resultsActive; },
     showDivider: function () { return !this.creating && (this.showList || this.resultsActive); },
     // 그룹 메뉴 항목 (Figma ④ 그룹 메뉴 = 우클릭 메뉴). 그룹 없는 게임은 일부만 (화면 보기 · 접기)
     menuItems: function () {
@@ -1137,7 +1139,8 @@ var LibraryPanel = {
       '</template>' +
       // 그룹 없음 — 고정 (스크롤 영역 밖). 보유게임이 없어도 그룹은 만들 수 있어 항상 이 안내를 둔다.
       // 그룹 만들기 입력 중에는 사라진다 (2-1 "버튼 하단 안내메세지 사라짐")
-      '<div v-if="!groups.length && !creating" class="library-panel__empty" data-name="component/game_group/그룹없음">' +
+      // 필터 · 검색 결과를 보고 있을 때도 숨긴다 (사용자 11-05)
+      '<div v-if="showEmptyHint" class="library-panel__empty" data-name="component/game_group/그룹없음">' +
         '<div class="library-panel__empty-box">' +
           '<i class="ic-v2-content-folder-add-fill" aria-hidden="true"></i>' +
           '<p class="stds-cap1 fw-medium">그룹으로 나만의 라이브러리를<br />만들어 보세요.</p>' +
@@ -1146,7 +1149,7 @@ var LibraryPanel = {
       // 구분선 — 스크롤 영역의 윗변. 그룹이 있으면 버튼 그룹과 20 띄운다 (안내 박스가 없어서).
       // 검색 입력칸 · 결과 영역 아래에서는 16
       '<div v-if="showDivider" class="library-panel__divider-wrap" ' +
-        ':class="{ \'has-gap\': groups.length && !creating && !searchOpen && !resultsActive, \'has-gap-sm\': (searchOpen || resultsActive) && groups.length }">' +
+        ':class="{ \'has-gap\': groups.length && !creating && !searchOpen && !resultsActive, \'has-gap-sm\': (searchOpen || resultsActive) && !showEmptyHint }">' +
         '<div class="library-panel__divider" data-name="element/div"></div>' +
       '</div>' +
 
