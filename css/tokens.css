@@ -93,6 +93,10 @@
   --stds-glob-color-navy700: #40526e;
   --stds-glob-color-navy800: #314058;
   --stds-glob-color-navy900: #1e2c40;
+  /* ---- pcbang (비공식 글로벌 — 사용자 정의 11-05, 클라이언트 PC방 무료 플레이용. 다크 기준) ---- */
+  --stds-glob-color-pcbang300: #98ffc7;
+  --stds-glob-color-pcbang400: #66ffac;
+  --stds-glob-color-pcbang500: #1fff86;
 
   /* ---- blue ---- */
   --stds-glob-color-blue50: #e2eaff;
@@ -339,6 +343,9 @@
   --stds-sem-color-brand-blue: var(--stds-glob-color-blue500);
   --stds-sem-color-brand-blue-hover: var(--stds-glob-color-blue400);
   --stds-sem-color-brand-blue-pressed: var(--stds-glob-color-blue300);
+  --stds-sem-color-brand-pcbang: var(--stds-glob-color-pcbang500); /* 비공식 시멘틱 — 사용자 정의(11-05), PC방 무료 플레이 */
+  --stds-sem-color-brand-pcbang-hover: var(--stds-glob-color-pcbang400); /* 비공식 */
+  --stds-sem-color-brand-pcbang-pressed: var(--stds-glob-color-pcbang300); /* 비공식 */
   --stds-sem-color-background-variant-1: var(--stds-glob-color-gray900);
   --stds-sem-color-background-variant-2: var(--stds-glob-color-gray880);
   --stds-sem-color-background-variant-3: var(--stds-glob-color-gray940); /* STDS 공식 아님 — 사용자 정의(11-05), 우측패널 배경 */
@@ -414,6 +421,10 @@
   --stds-sem-color-brand-blue: var(--stds-glob-color-blue500);
   --stds-sem-color-brand-blue-hover: var(--stds-glob-color-blue600);
   --stds-sem-color-brand-blue-pressed: var(--stds-glob-color-blue700);
+  /* 비공식 — 라이트 값 미정(클라이언트가 다크 기반, 사용자 11-05). 당분간 다크와 같은 값 */
+  --stds-sem-color-brand-pcbang: var(--stds-glob-color-pcbang500);
+  --stds-sem-color-brand-pcbang-hover: var(--stds-glob-color-pcbang400);
+  --stds-sem-color-brand-pcbang-pressed: var(--stds-glob-color-pcbang300);
   --stds-sem-color-background-variant-1: var(--stds-glob-color-gray60);
   --stds-sem-color-background-variant-2: var(--stds-glob-color-white);
   --stds-sem-color-background-variant-3: var(--stds-glob-color-gray100); /* STDS 공식 아님 — 사용자 정의(11-05), 우측패널 배경 */

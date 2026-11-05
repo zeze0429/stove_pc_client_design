@@ -12,8 +12,8 @@
   text-align: center;
   color: var(--stds-sem-color-on-surface-elevation-1);
 }
-/* PC방 이름만 포인트 컬러 — Figma가 토큰이 아닌 고정 색(#1fff86)을 지정 */
-.pcbang-store { color: #1fff86; }
+/* PC방 이름만 포인트 컬러 — 비공식 시멘틱 brand-pcbang (#1fff86, 사용자 11-05) */
+.pcbang-store { color: var(--stds-sem-color-brand-pcbang); }
 
 .pcbang-list {
   flex: 0 0 auto;

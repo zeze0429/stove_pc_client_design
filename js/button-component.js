@@ -10,7 +10,7 @@
  *
  * 스타일은 css/button.css. 컴포넌트 없이 클래스만 붙여 써도 같은 모양이 나온다.
  */
-var STDS_BUTTON_VARIANTS = ['primary', 'secondary', 'tertiary', 'outline', 'white', 'ghost', 'blue', 'grayscale'];
+var STDS_BUTTON_VARIANTS = ['primary', 'secondary', 'tertiary', 'outline', 'white', 'ghost', 'blue', 'pcbang', 'grayscale'];
 var STDS_BUTTON_SIZES = ['xs', 'sm', 'md', 'lg'];
 
 var StdsButton = {

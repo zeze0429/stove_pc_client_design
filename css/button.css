@@ -130,6 +130,16 @@
 .stds-button-blue:is(:hover, .is-hover):enabled   { --stds-button-bg: var(--stds-sem-color-brand-blue-hover); }
 .stds-button-blue:is(:active, .is-pressed):enabled { --stds-button-bg: var(--stds-sem-color-brand-blue-pressed); }
 
+/* PC방 무료 플레이 — 클라이언트 전용 종류 (Figma 클라이언트_v3.1 68030:409064). 글자 · 아이콘 gray940(Figma 글로벌).
+   토큰은 비공식 brand-pcbang (다크 기준, 라이트 미정) */
+.stds-button-pcbang {
+  --stds-button-bg: var(--stds-sem-color-brand-pcbang);
+  --stds-button-fg: var(--stds-glob-color-gray940);
+  --stds-button-ring: var(--stds-glob-color-white);
+}
+.stds-button-pcbang:is(:hover, .is-hover):enabled   { --stds-button-bg: var(--stds-sem-color-brand-pcbang-hover); }
+.stds-button-pcbang:is(:active, .is-pressed):enabled { --stds-button-bg: var(--stds-sem-color-brand-pcbang-pressed); }
+
 /* Grayscale — Storybook엔 없고 Figma에만 있는 종류 */
 .stds-button-grayscale {
   --stds-button-bg: var(--stds-sem-color-on-surface-elevation-1);
@@ -139,7 +149,7 @@
 .stds-button-grayscale:is(:hover, .is-hover):enabled   { --stds-button-bg: var(--stds-sem-color-on-surface-elevation-2); }
 .stds-button-grayscale:is(:active, .is-pressed):enabled { --stds-button-bg: var(--stds-sem-color-on-surface-elevation-3); }
 
-.stds-button:is(.stds-button-primary, .stds-button-secondary, .stds-button-blue, .stds-button-grayscale):is(:focus-visible, .is-focus):enabled {
+.stds-button:is(.stds-button-primary, .stds-button-secondary, .stds-button-blue, .stds-button-pcbang, .stds-button-grayscale):is(:focus-visible, .is-focus):enabled {
   box-shadow: inset 0 0 0 0.2rem var(--stds-button-bg), inset 0 0 0 0.3rem var(--stds-button-ring);
 }
 
