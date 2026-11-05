@@ -353,7 +353,7 @@
 /* 아이콘은 우측패널 초기화와 같은 12 (사용자 11-05) */
 .library-result__reset.stds-button-xs > i { font-size: 1.2rem; }
 /* 결과 없음 안내 박스 (Figma 클라이언트_v3.1 48960:383019, 컴포넌트 empty / variant=basic) — 결과 줄 아래 16.
-   surface-variant-1 · 모서리 20(v3.1의 xl = 지금 시스템 3xl, 사용자 11-05) · 위 32 좌우 32 아래 48 · 일러스트 160 + 12 + 문구(Title6-M elevation-1 / 4 / Text3-R elevation-3) */
+   surface-variant-1 · 모서리 20(v3.1의 xl = 지금 시스템 3xl, 사용자 11-05) · 위 32 좌우 32 아래 48 · 일러스트 160 + 12 + 문구(Title7-M elevation-2 / 4 / Text3-R elevation-4, 시안 갱신 11-05) */
 .library-no-result {
   display: flex;
   flex-direction: column;
@@ -368,8 +368,8 @@
 .library-no-result__img { display: block; width: 16rem; height: 16rem; }
 .library-no-result__text { display: flex; flex-direction: column; gap: 0.4rem; }
 .library-no-result p { margin: 0; }
-.library-no-result__title { color: var(--stds-sem-color-on-surface-elevation-1); }
-.library-no-result__desc { color: var(--stds-sem-color-on-surface-elevation-3); }
+.library-no-result__title { color: var(--stds-sem-color-on-surface-elevation-2); }
+.library-no-result__desc { color: var(--stds-sem-color-on-surface-elevation-4); }
 
 .library-grid {
   display: grid;

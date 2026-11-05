@@ -668,7 +668,7 @@ var LibraryMain = {
         '<div v-if="resultsActive && !filteredOwned.length" class="library-no-result" data-name="empty">' +
           '<img class="library-no-result__img" src="assets/library/empty_basic.svg" alt="" />' +
           '<div class="library-no-result__text">' +
-            '<p class="library-no-result__title stds-title6 fw-medium">검색 결과가 없습니다.</p>' +
+            '<p class="library-no-result__title stds-title7 fw-medium">검색 결과가 없습니다.</p>' +
             '<p class="library-no-result__desc stds-text3">검색어의 단어 수를 줄이거나 필터 조건을 변경하세요.</p>' +
           '</div>' +
         '</div>' +
