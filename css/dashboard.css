@@ -179,10 +179,6 @@ ul { list-style: none; margin: 0; padding: 0; }
    - 패널은 y 0부터 바닥까지. 유틸리티 바가 그 위를 덮고, 바 색은 그대로.
    - 공지사항 띠가 뜨면 웹 페이지와 같이 콘텐츠·패널이 띠 높이만큼 밀린다. */
 :root { --client-panel-w: 28rem; }
-/* 패널 색 — 아직 시멘틱 토큰 미지정(디자인시스템 등록 예정). Figma 협의대로
-   글로벌 토큰 선적용: 다크 gray940 / 라이트 gray100. 토큰이 나오면 이 두 줄만 교체 */
-:root { --client-panel-bg: var(--stds-glob-color-gray940); }
-:root[data-theme="light"] { --client-panel-bg: var(--stds-glob-color-gray100); }
 
 /* 콘텐츠 — 스크롤 컨테이너는 그대로 .main (유틸리티 바 블러·오버레이 스크롤바가 구독) */
 .app--client > .main {
@@ -207,7 +203,7 @@ ul { list-style: none; margin: 0; padding: 0; }
   overscroll-behavior: none;
   scrollbar-width: none;
   padding-top: calc(4.8rem + var(--client-notice-push));
-  background: var(--client-panel-bg);
+  background: var(--stds-sem-color-background-variant-3); /* 패널 색 — 사용자 정의 시멘틱(STDS 공식 아님): 다크 gray940 / 라이트 gray100 */
 }
 .client-panel::-webkit-scrollbar { display: none; }
 /* 콘텐츠 오버레이 스크롤바는 패널 왼쪽 끝 안쪽에 */

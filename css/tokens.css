@@ -338,6 +338,7 @@
   --stds-sem-color-brand-blue-pressed: var(--stds-glob-color-blue300);
   --stds-sem-color-background-variant-1: var(--stds-glob-color-gray900);
   --stds-sem-color-background-variant-2: var(--stds-glob-color-gray880);
+  --stds-sem-color-background-variant-3: var(--stds-glob-color-gray940); /* STDS 공식 아님 — 사용자 정의(11-05), 우측패널 배경 */
   --stds-sem-color-surface-layer: var(--stds-glob-color-gray780);
   --stds-sem-color-surface-elevation-1: var(--stds-glob-color-gray840);
   --stds-sem-color-surface-elevation-2: var(--stds-glob-color-gray820);
@@ -414,6 +415,7 @@
   --stds-sem-color-brand-blue-pressed: var(--stds-glob-color-blue700);
   --stds-sem-color-background-variant-1: var(--stds-glob-color-gray60);
   --stds-sem-color-background-variant-2: var(--stds-glob-color-white);
+  --stds-sem-color-background-variant-3: var(--stds-glob-color-gray100); /* STDS 공식 아님 — 사용자 정의(11-05), 우측패널 배경 */
   --stds-sem-color-surface-layer: var(--stds-glob-color-white);
   --stds-sem-color-surface-elevation-1: var(--stds-glob-color-white);
   --stds-sem-color-surface-elevation-2: var(--stds-glob-color-gray20);

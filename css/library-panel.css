@@ -310,7 +310,7 @@
   justify-content: center;
   height: 8rem;
   padding: 0 0 1.8rem;
-  background: linear-gradient(0deg, var(--client-panel-bg) 68.125%, transparent 97.727%);
+  background: linear-gradient(0deg, var(--stds-sem-color-background-variant-3) 68.125%, transparent 97.727%);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s;
@@ -568,7 +568,7 @@
 
 /* 커서를 따라다니는 프리뷰 (Figma component/game_group/list · title status=change position) —
    배경 = 놓인 영역의 배경색 위에 interaction-pressed (사용자 11-05 규칙: 사이드바 background-variant-2 · 우측패널 패널 배경
-   --client-panel-bg = 다크 gray940 / 라이트 gray100, dashboard.css),
+   background-variant-3 = 다크 gray940 / 라이트 gray100, 사용자 정의 시멘틱),
    보더 border(안쪽 1), 둥글기 8, 그림자 0 4 8 black-30(드래그 프리뷰 공통, 사용자 11-05), 전체 90% */
 .library-drag {
   position: fixed;
@@ -583,7 +583,7 @@
   height: 2.8rem;
   border: 1px solid var(--stds-sem-color-border);
   border-radius: var(--stds-glob-border-radius-lg);
-  background: linear-gradient(var(--stds-sem-color-interaction-pressed), var(--stds-sem-color-interaction-pressed)), var(--client-panel-bg);
+  background: linear-gradient(var(--stds-sem-color-interaction-pressed), var(--stds-sem-color-interaction-pressed)), var(--stds-sem-color-background-variant-3);
   box-shadow: 0 0.4rem 0.8rem var(--stds-glob-color-black-30);
 }
 .library-drag__layer { position: absolute; left: 0; right: 0; }
