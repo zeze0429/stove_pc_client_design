@@ -268,8 +268,8 @@ function ROW_TPL(listExpr, groupExpr) {
       'class="game-group__list-tooltip stds-cap2" :style="tooltipStyle">{{ game.name }}</div>' +
     '<div v-if="badgeTip && badgeTip.gameId === ' + key + '" class="game-group__badge-tooltip" ' +
       ':class="{ \'is-measuring\': badgeTip.measuring }" ' +
-      ':style="{ left: badgeTip.left + \'px\', top: badgeTip.top + \'px\' }" data-name="Tooltip/iconbtn">' +
-      '<span class="game-group__badge-tooltip-tail" :style="{ marginLeft: badgeTip.tailLeft + \'px\' }"></span>' +
+      ':style="iconTipStyle(badgeTip)" data-name="Tooltip/iconbtn">' +
+      '<span class="game-group__badge-tooltip-tail" :style="iconTipTailStyle(badgeTip)"></span>' +
       '<span class="game-group__badge-tooltip-body stds-cap1 fw-medium">{{ badgeTip.text }}</span>' +
     '</div>' +
   '</li>' +
@@ -640,18 +640,12 @@ var LibraryPanel = {
       var row = btn.closest('.library-group__title');
       var r = btn.getBoundingClientRect();
       this.titleTip = null; // 버튼 툴팁과 이름 툴팁이 겹치지 않게
-      this.btnTip = { text: text, left: 0, top: r.bottom + 2, tailLeft: 0, measuring: true };
+      this.btnTip = { text: text, left: 0, right: null, top: r.bottom + 2, tailLeft: 0, tailRight: null, measuring: true };
       // 버튼 중앙 기준, 타이틀 행 밖으로 나가면 행 끝에 붙인다 — 꼬리는 그래도 버튼 중앙 (뱃지 툴팁과 같은 규칙)
       this.$nextTick(function () {
         var tip = this.$refs.btnTipEl;
         if (!tip || !this.btnTip || this.btnTip.text !== text) return;
-        var rr = row.getBoundingClientRect();
-        var center = r.left + r.width / 2;
-        var w = tip.offsetWidth;
-        var left = Math.min(Math.max(center - w / 2, rr.left), rr.right - w);
-        this.btnTip.left = left;
-        this.btnTip.tailLeft = center - left - 3;
-        this.btnTip.measuring = false;
+        iconTipPlace(this.btnTip, tip, r, row.getBoundingClientRect());
       });
     },
     hideBtnTip: function () { this.btnTip = null; },
@@ -1103,17 +1097,11 @@ var LibraryPanel = {
       var btn = e.currentTarget;
       var face = btn.closest('.game-menu__face');
       var r = btn.getBoundingClientRect();
-      this.menuTip = { kind: 'remove', text: '이 그룹에서 제거', left: 0, top: r.bottom + 2, tailLeft: 0, measuring: true };
+      this.menuTip = { kind: 'remove', text: '이 그룹에서 제거', left: 0, right: null, top: r.bottom + 2, tailLeft: 0, tailRight: null, measuring: true };
       this.$nextTick(function () {
         var tip = this.$refs.menuTipEl;
         if (!tip || !this.menuTip || this.menuTip.kind !== 'remove') return;
-        var fr = face.getBoundingClientRect();
-        var center = r.left + r.width / 2;
-        var w = tip.offsetWidth;
-        var left = Math.min(Math.max(center - w / 2, fr.left), fr.right - w);
-        this.menuTip.left = left;
-        this.menuTip.tailLeft = center - left - 3;
-        this.menuTip.measuring = false;
+        iconTipPlace(this.menuTip, tip, r, face.getBoundingClientRect());
       });
     },
     hideMenuTip: function () { this.menuTip = null; },
@@ -1201,24 +1189,21 @@ var LibraryPanel = {
         gameId: rowKey,
         text: GNB_BADGE_TOOLTIP[badge],
         left: 0,
+        right: null,
         top: li.getBoundingClientRect().bottom - 4,
         tailLeft: 0,
+        tailRight: null,
         measuring: true,
       };
       this.$nextTick(function () {
         var tip = li.querySelector('.game-group__badge-tooltip');
         if (!tip || !self.badgeTip || self.badgeTip.gameId !== rowKey) return;
-        var lr = li.getBoundingClientRect();
-        var br = badgeEl.getBoundingClientRect();
-        var center = br.left + br.width / 2 - lr.left;
-        var w = tip.offsetWidth;
-        var left = Math.min(Math.max(center - w / 2, 0), li.offsetWidth - w);
-        self.badgeTip.left = lr.left + left;
-        self.badgeTip.tailLeft = center - left - 3;
-        self.badgeTip.measuring = false;
+        iconTipPlace(self.badgeTip, tip, badgeEl.getBoundingClientRect(), li.getBoundingClientRect());
       });
     },
     hideBadgeTip: function () { this.badgeTip = null; },
+    iconTipStyle: iconTipStyle,
+    iconTipTailStyle: iconTipTailStyle,
 
     // ── 스크롤 · 스크롤바 · TOP (Figma ③ 스크롤 영역 정의) ──
     // TOP은 목록이 패널(스크롤 영역) 높이만큼 내려갔을 때 노출, 누르면 그룹 목록 맨 위로
@@ -1440,8 +1425,8 @@ var LibraryPanel = {
       '<div v-if="titleTip" class="game-group__list-tooltip stds-cap2" ' +
         ':style="{ left: titleTip.left + \'px\', top: titleTip.top + \'px\', width: titleTip.width + \'px\' }">{{ titleTipText }}</div>' +
       '<div v-if="btnTip" ref="btnTipEl" class="library-panel__btn-tip" :class="{ \'is-measuring\': btnTip.measuring }" ' +
-        ':style="{ left: btnTip.left + \'px\', top: btnTip.top + \'px\' }" data-name="Tooltip/iconbtn">' +
-        '<span class="game-group__badge-tooltip-tail" :style="{ marginLeft: btnTip.tailLeft + \'px\' }"></span>' +
+        ':style="iconTipStyle(btnTip)" data-name="Tooltip/iconbtn">' +
+        '<span class="game-group__badge-tooltip-tail" :style="iconTipTailStyle(btnTip)"></span>' +
         '<span class="game-group__badge-tooltip-body stds-cap1 fw-medium">{{ btnTip.text }}</span>' +
       '</div>' +
       '<div v-if="menu" ref="menuEl" class="library-panel-menu" :class="{ \'is-measuring\': menu.measuring, \'is-blur\': menuBlur }" :data-theme="menuBlur ? \'dark\' : null" ' +
@@ -1487,8 +1472,8 @@ var LibraryPanel = {
       '<div v-if="menuTip && menuTip.kind === \'name\'" class="game-group__list-tooltip game-menu__name-tip stds-cap2" ' +
         ':style="{ left: menuTip.left + \'px\', top: menuTip.top + \'px\', width: menuTip.width + \'px\' }">{{ menuTip.text }}</div>' +
       '<div v-if="menuTip && menuTip.kind === \'remove\'" ref="menuTipEl" class="library-panel__btn-tip game-menu__remove-tip" ' +
-        ':class="{ \'is-measuring\': menuTip.measuring }" :style="{ left: menuTip.left + \'px\', top: menuTip.top + \'px\' }" data-name="Tooltip/iconbtn">' +
-        '<span class="game-group__badge-tooltip-tail" :style="{ marginLeft: menuTip.tailLeft + \'px\' }"></span>' +
+        ':class="{ \'is-measuring\': menuTip.measuring }" :style="iconTipStyle(menuTip)" data-name="Tooltip/iconbtn">' +
+        '<span class="game-group__badge-tooltip-tail" :style="iconTipTailStyle(menuTip)"></span>' +
         '<span class="game-group__badge-tooltip-body stds-cap1 fw-medium">{{ menuTip.text }}</span>' +
       '</div>' +
       // 드래그 — 그룹 순서 표시선(사이드바와 같은 컴포넌트) · 커서를 따라다니는 프리뷰 (Figma status=change position)

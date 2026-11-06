@@ -140,6 +140,47 @@ var GNB_BADGE_TOOLTIP = {
   multiplay: 'PC방에서 플레이하면 무료!',
 };
 
+// 아이콘 툴팁(Tooltip/iconbtn, 규칙 11636:530562) 가로 위치 — 사이드바 · 우측패널 공용.
+// 기준(뱃지 · 버튼) 중앙에 맞추되 노출 가능 영역(bound, 보통 행) 밖으로 나가면 영역 끝에 붙이고
+// 꼬리만 기준 중앙을 가리킨다. 오른쪽 끝에 붙을 땐 left가 아니라 right로 고정해서, 잰 뒤에
+// 폭이 바뀌어도 오른쪽 끝이 행 끝을 벗어나지 않게 한다. 그려진 뒤 실제 위치를 한 번 더 재서
+// 어긋난 만큼 보정한다. tip은 반응형 상태 { left, right, tailLeft, tailRight, measuring }.
+function iconTipPlace(tip, el, anchorRect, bound) {
+  var center = anchorRect.left + anchorRect.width / 2;
+  var w = el.offsetWidth;
+  var left = Math.max(center - w / 2, bound.left);
+  if (left + w > bound.right) {
+    tip.left = null;
+    tip.right = document.documentElement.clientWidth - bound.right;
+    tip.tailLeft = null;
+    tip.tailRight = bound.right - center - 3; // 꼬리 폭 6의 절반
+  } else {
+    tip.left = left;
+    tip.right = null;
+    tip.tailLeft = center - left - 3;
+    tip.tailRight = null;
+  }
+  tip.measuring = false;
+  requestAnimationFrame(function () {
+    if (!el.isConnected) return;
+    var r = el.getBoundingClientRect();
+    var dx = tip.right != null ? r.right - bound.right : r.left - tip.left;
+    if (Math.abs(dx) < 0.5) return;
+    if (tip.right != null) tip.right += dx;
+    else tip.left -= dx;
+  });
+}
+function iconTipStyle(tip) {
+  return tip.right != null
+    ? { right: tip.right + 'px', top: tip.top + 'px' }
+    : { left: tip.left + 'px', top: tip.top + 'px' };
+}
+function iconTipTailStyle(tip) {
+  return tip.tailRight != null
+    ? { alignSelf: 'flex-end', marginRight: tip.tailRight + 'px' }
+    : { marginLeft: tip.tailLeft + 'px' };
+}
+
 // id로 게임 하나 찾기 — 스토브게임/즐겨찾기 그룹을 가리지 않고 전체에서 검색
 // (게임 상세 페이지가 자기 id로 어떤 게임인지 알아내는 데 씀).
 function gnbFindGameById(id) {
@@ -434,7 +475,7 @@ var GnbComponent = {
       this.badgeTip = null;
       this.handleHoverLeave();
     },
-    // 뱃지 툴팁은 뱃지 중앙에 맞추되 행 밖으로 나가면 행 끝에 붙인다.
+    // 뱃지 툴팁은 뱃지 중앙에 맞추되 행 밖으로 나가면 행 끝에 붙인다 (iconTipPlace).
     // 폭은 문구 길이(다국어 포함)에 따라 달라서, 일단 숨긴 채 그려 실제 폭을
     // 잰 다음 자리를 정한다.
     showBadgeTip: function (e, game, badge) {
@@ -446,23 +487,20 @@ var GnbComponent = {
         gameId: game.id,
         text: GNB_BADGE_TOOLTIP[badge],
         left: 0,
+        right: null,
         top: li.getBoundingClientRect().bottom - 4, // 꼬리 4px가 행 안쪽, 몸통은 행 바닥부터 (화면 기준)
         tailLeft: 0,
+        tailRight: null,
         measuring: true,
       };
       this.$nextTick(function () {
         var tip = li.querySelector('.game-group__badge-tooltip');
         if (!tip || !self.badgeTip || self.badgeTip.gameId !== game.id) return;
-        var liRect = li.getBoundingClientRect();
-        var badgeRect = badgeEl.getBoundingClientRect();
-        var center = badgeRect.left + badgeRect.width / 2 - liRect.left;
-        var w = tip.offsetWidth;
-        var left = Math.min(Math.max(center - w / 2, 0), li.offsetWidth - w);
-        self.badgeTip.left = liRect.left + left;
-        self.badgeTip.tailLeft = center - left - 3; // 꼬리 폭 6의 절반
-        self.badgeTip.measuring = false;
+        iconTipPlace(self.badgeTip, tip, badgeEl.getBoundingClientRect(), li.getBoundingClientRect());
       });
     },
+    iconTipStyle: iconTipStyle,
+    iconTipTailStyle: iconTipTailStyle,
     hideBadgeTip: function () {
       this.badgeTip = null;
     },
@@ -988,8 +1026,8 @@ var GnbComponent = {
                 'class="game-group__list-tooltip stds-cap2" :style="tooltipStyle" data-name="menu">{{ game.name }}</div>' +
               '<div v-if="badgeTip && badgeTip.gameId === game.id" class="game-group__badge-tooltip" ' +
                 ':class="{ \'is-measuring\': badgeTip.measuring }" ' +
-                ':style="{ left: badgeTip.left + \'px\', top: badgeTip.top + \'px\' }" data-name="Tooltip/iconbtn">' +
-                '<span class="game-group__badge-tooltip-tail" :style="{ marginLeft: badgeTip.tailLeft + \'px\' }"></span>' +
+                ':style="iconTipStyle(badgeTip)" data-name="Tooltip/iconbtn">' +
+                '<span class="game-group__badge-tooltip-tail" :style="iconTipTailStyle(badgeTip)"></span>' +
                 '<span class="game-group__badge-tooltip-body stds-cap1 fw-medium">{{ badgeTip.text }}</span>' +
               '</div>' +
             '</li>' +
