@@ -207,7 +207,7 @@ var GAME_MENU_SUB_TPL =
 function TITLE_TPL(idExpr, nameExpr, countExpr, withAdd) {
   var isTarget = 'addTargetId === ' + idExpr;
   return '<div class="game-group__title library-group__title" ' +
-      ':class="{ \'is-hover\': hoveredTitleId === ' + idExpr + ', \'is-menu-open\': menu && menu.groupId === ' + idExpr + ' }" ' +
+      ':class="{ \'is-hover\': hoveredTitleId === ' + idExpr + ', \'is-menu-open\': menu && menu.groupId === ' + idExpr + ', \'is-selected\': viewGroupId === ' + idExpr + ' }" ' +
       '@mouseenter="onTitleEnter($event, ' + idExpr + ')" @mouseleave="onTitleLeave" ' +
       (withAdd ? '@mousedown="onTitleMouseDown($event, ' + idExpr + ')" ' : '') +
       '@click="openGroupPage(' + idExpr + ')" @contextmenu.prevent="' + isTarget + ' || openMenu($event, ' + idExpr + ', false)" data-name="component/game_group/title">' +
@@ -334,6 +334,7 @@ var LibraryPanel = {
       set: function (v) { this.store.groups = v; },
     },
     addTargetId: function () { return this.store.addTargetId; },
+    viewGroupId: function () { return this.store.viewGroupId; },
     // 그룹에 들어간 게임을 뺀 나머지 — 보유게임 순서 그대로
     ungrouped: function () {
       var inGroup = {};
@@ -602,6 +603,7 @@ var LibraryPanel = {
     deleteGroup: function (id) {
       var self = this;
       if (id === this.addTargetId) this.cancelAdd();
+      if (id === this.store.viewGroupId) this.store.viewGroupId = null; // 보고 있던 그룹이면 보유게임 전체로
       this.groups = this.groups.filter(function (g) { return g.id !== id; });
       delete this.collapsed[id];
       this.addedNotice = null;
@@ -652,8 +654,15 @@ var LibraryPanel = {
       });
     },
     hideBtnTip: function () { this.btnTip = null; },
-    // 그룹 타이틀 클릭 = 그룹 화면으로 이동 (다음 단계)
-    openGroupPage: function () {},
+    // 그룹 타이틀 클릭 = 그룹 화면으로 이동 (Figma ⑧ 1260:25286) — 보유게임 영역이 그 그룹 게임만 보여주고,
+    // 패널의 그 그룹 타이틀은 선택 상태(우측 버튼 항상 노출). 그룹 없는 게임도 같다(그룹 메뉴에 그룹 화면 보기가 있음).
+    // 게임 추가(선택 UI) 중 · 이름 변경 중 · 드래그 직후 클릭은 무시
+    openGroupPage: function (id) {
+      if (this.addTargetId || this.renamingId === id || this._justDragged) return;
+      this.closeMenu();
+      this.store.selectMode = false; // 게임 선택 중이었으면 끝내고 그룹 화면으로
+      this.store.viewGroupId = id;
+    },
 
     // ── 게임 추가 (Figma ⑦ · 3-3) — 그 그룹이 선택 상태가 되고 보유게임 영역이 선택 UI로 바뀐다.
     // 다른 그룹에서 게임 추가를 누르면 대상만 바뀐다 (고른 게임은 비워진다)
@@ -661,6 +670,7 @@ var LibraryPanel = {
       this.closeMenu();
       this.btnTip = null;
       this.store.selectMode = false; // 게임 선택으로 들어온 선택 UI 중이면 그 그룹 추가로 바꾼다
+      this.store.viewGroupId = null; // 게임 추가는 보유게임 전체에서 고른다 — 그룹 화면은 닫는다
       this.store.addTargetId = id;
       this.collapsed[id] = false;
     },
@@ -728,7 +738,7 @@ var LibraryPanel = {
       else if (action === 'expandAll') this.setAllCollapsed(false);
       else if (action === 'collapseAll') this.setAllCollapsed(true);
       else if (action === 'add') this.startAdd(id);
-      // 'view'(그룹 화면)는 다음 단계
+      else if (action === 'view') this.openGroupPage(id);
     },
 
     // ── 게임 우클릭 메뉴 (Figma 3-5-2) — 1뎁스에서 그룹에 추가 · 그룹에서 제거를 누르면 카드처럼 뒤집혀 2뎁스로.

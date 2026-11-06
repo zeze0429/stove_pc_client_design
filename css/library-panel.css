@@ -471,6 +471,20 @@
 /* 그룹 메뉴가 열려 있는 동안 (selected) */
 .library-group__btn.is-selected { background: var(--stds-sem-color-interaction-selected); color: var(--stds-sem-color-on-surface-elevation-2); }
 
+/* 그룹 화면으로 보고 있는 그룹 (game_group/title status=selected, usage=library — Figma ⑧ · 11766:72448)
+   글로벌 gray200 배경에 이름 Title8-B · 화살표 · 우측 버튼 모두 글로벌 gray840, 우측 버튼은 항상 노출.
+   호버 · 프레스에도 배경은 그대로 (사이드바에는 없는 상태) */
+.library-group__title.is-selected,
+.library-group__title.is-selected.is-hover,
+.library-group__title.is-selected.is-menu-open,
+.library-group__title.is-selected:active:not(:has(button:active)) { background: var(--stds-glob-color-gray200); }
+.library-group__title.is-selected .game-group__name { color: var(--stds-glob-color-gray840); font-weight: 700; }
+.library-group__title.is-selected .game-group__btn-left-arrow,
+.library-group__title.is-selected .library-group__btn,
+.library-group__title.is-selected .library-group__btn:hover,
+.library-group__title.is-selected .library-group__btn:active { color: var(--stds-glob-color-gray840); }
+.library-group__title.is-selected .library-group__btns { display: flex; }
+
 /* 게임 없는 그룹의 게임 추가 버튼 (component/game_group/btn_게임 추가) — 56 높이, 보더 inverse-elevation-3,
    아이콘 · 글자 on-surface-elevation-4 (Figma) */
 .library-group__add-box {

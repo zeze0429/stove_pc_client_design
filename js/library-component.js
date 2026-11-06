@@ -155,7 +155,8 @@ function libraryPlayedLabel(min) {
 //   groups: 나의 게임 그룹 [{ id, title, gameIds }] (새 그룹이 맨 위)
 //   addTargetId: 게임 추가 중인 그룹 — 있으면 보유게임 영역이 선택 UI로 바뀐다 (Figma 1131:5779 ⑦ · 3-3)
 //   selectMode: 보유게임 "게임 선택" 버튼으로 들어간 선택 UI (대상 그룹 없음, Figma 클라이언트_v3.1 67959:409416)
-var LIBRARY_STORE = Vue.reactive({ groups: [], addTargetId: null, selectMode: false });
+//   viewGroupId: 그룹 화면으로 보고 있는 그룹 — 보유게임 영역이 그 그룹 게임만 보여준다 (Figma 1131:5779 ⑧ 1260:25286)
+var LIBRARY_STORE = Vue.reactive({ groups: [], addTargetId: null, selectMode: false, viewGroupId: null });
 var LIBRARY_TOAST_MS = 3000;
 
 // 썸네일 아래 뱃지 — 합본팩(collection 표시한 것)은 Collection, 카탈로그 type이 dlc · demo면 DLC · DEMO (모양은 같은 Badge/Game type)
@@ -348,6 +349,11 @@ var LibraryMain = {
     // 선택 UI 진입 경로 두 가지 — 패널 게임 추가(대상 그룹) · 게임 선택 버튼(대상 없음)
     'store.addTargetId': function (id, prev) { this.onSelectEnter(id, prev); },
     'store.selectMode': function (on, prev) { this.onSelectEnter(on, prev); },
+    // 그룹 화면을 열고 닫거나 다른 그룹으로 바꾸면 맨 위(라이브러리 타이틀)부터
+    'store.viewGroupId': function () {
+      this.selected = [];
+      if (this._scrollBox) this._scrollBox.scrollTo({ top: 0 });
+    },
     'selected.length': function () { this.$nextTick(this.snapFloating); },
     // 광고를 켜고 끄면 카드 수가 바뀐다 — 없어진 페이지에 머물지 않게
     quickPages: function (n) {
@@ -395,6 +401,28 @@ var LibraryMain = {
       return id ? this.store.groups.find(function (g) { return g.id === id; }) || null : null;
     },
     selecting: function () { return !!this.addTarget || this.store.selectMode; },
+    // 그룹 화면 (⑧) — 패널에서 그룹명을 누르면. 게임 추가(선택 UI) 중에는 보유게임 전체가 필요해서 열리지 않는다
+    // "그룹 없는 게임"도 그룹 메뉴에 그룹 화면 보기가 있어 같은 모양으로 연다 (어느 그룹에도 없는 보유게임)
+    viewGroup: function () {
+      var id = this.store.viewGroupId;
+      if (!id || this.addTarget) return null;
+      if (id === 'ungrouped') {
+        var inGroup = {};
+        this.store.groups.forEach(function (g) { g.gameIds.forEach(function (gid) { inGroup[gid] = true; }); });
+        return {
+          id: 'ungrouped', title: '그룹 없는 게임',
+          gameIds: this.owned.filter(function (g) { return !inGroup[g.id]; }).map(function (g) { return g.id; }),
+        };
+      }
+      return this.store.groups.find(function (g) { return g.id === id; }) || null;
+    },
+    // 보유게임 영역의 바탕 목록 — 그룹 화면이면 그 그룹 게임(그룹에 넣은 순서), 아니면 보유게임 전체
+    baseOwned: function () {
+      if (!this.viewGroup) return this.owned;
+      var byId = {};
+      this.owned.forEach(function (g) { byId[g.id] = g; });
+      return this.viewGroup.gameIds.map(function (id) { return byId[id]; }).filter(Boolean);
+    },
     // 이미 그 그룹에 들어 있는 게임 — 선택 UI에서 비활성(회색 체크)으로 보인다
     addedIds: function () {
       var map = {};
@@ -404,7 +432,7 @@ var LibraryMain = {
     // 선택 UI에서는 검색 칸이 사라지니 검색어 없이 보유게임 전체
     filteredOwned: function () {
       var qs = this.queries.map(function (q) { return q.toLowerCase(); });
-      var list = libraryFilterGames(this.owned, this.filter);
+      var list = libraryFilterGames(this.baseOwned, this.filter);
       if (!qs.length || this.selecting) return list;
       return list.filter(function (g) {
         var name = g.name.toLowerCase(), genre = g.genre.toLowerCase();
@@ -539,6 +567,8 @@ var LibraryMain = {
     searchEl: function () { return this.$refs.search && this.$refs.search.$el; },
     filterBtnEl: function () { return this.$refs.filterBtn; },
     startSelect: function () { this.store.addTargetId = null; this.store.selectMode = true; },
+    // 그룹 화면 닫기(X) — 보유게임 전체로 돌아가고 패널은 아무 그룹도 선택되지 않은 상태 (⑧)
+    closeGroupView: function () { this.store.viewGroupId = null; },
     // 검색 확인 — 칩으로 올리고 입력칸 글자는 그대로 둔다 (Figma 48960:382994, 사용자 11-05). 같은 검색어는 한 번만
     submitQuery: function (value, e) {
       if (e && e.isComposing) return; // 한글 조합 중 엔터는 무시 — 맥 크롬은 조합 끝 엔터가 한 번 더 온다
@@ -580,8 +610,8 @@ var LibraryMain = {
     '<div class="library">' +
 
 
-      // ---- 빠른 실행 ----
-      '<section class="library-section library-quick">' +
+      // ---- 빠른 실행 — 그룹 화면에서는 없다 (Figma ⑧ 시안) ----
+      '<section v-if="!viewGroup" class="library-section library-quick">' +
         '<div class="library-section__head">' +
           '<h2 class="library-section__title">빠른 실행<span>{{ quick.length }}</span></h2>' +
           '<div class="library-quick__nav">' +
@@ -625,7 +655,16 @@ var LibraryMain = {
         // 선택 UI에서는 타이틀 · 구분선 · 도구 줄이 위에 고정되고 아래 카드만 스크롤된다 (사용자 요청)
         '<div ref="ownedHead" class="library-owned__head">' +
         // 개수는 전체 보유게임 수 — 필터 · 검색으로 바뀌지 않는다 (사용자 11-04, 적용된 필터는 나중에 칩스로 보여줄 예정)
-        '<h2 class="library-section__title">보유게임<span>{{ owned.length }}</span></h2>' +
+        // 그룹 화면 (⑧ component/title/group) — 보유게임(흐리게) | 그룹명 개수 · 닫기(X)
+        '<h2 v-if="viewGroup" class="library-section__title library-section__title--group" data-name="component/title/group">' +
+          '<span class="library-crumb__owned">보유게임<span>{{ owned.length }}</span></span>' +
+          '<i class="library-crumb__div" aria-hidden="true"></i>' +
+          '<span class="library-crumb__group">{{ viewGroup.title }}<span>{{ viewGroup.gameIds.length }}</span></span>' +
+          '<button class="library-crumb__close" type="button" aria-label="그룹 화면 닫기" @click="closeGroupView">' +
+            '<i class="ic-v2-control-close-circle-fill"></i>' +
+          '</button>' +
+        '</h2>' +
+        '<h2 v-else class="library-section__title">보유게임<span>{{ owned.length }}</span></h2>' +
         '<div class="library-owned__divider"></div>' +
         // 선택 UI — 도구 줄 자리에 게임 추가 취소 + 안내 문구 (Figma ⑦ · 0825 게임 추가 취소)
         '<div v-if="selecting" class="library-toolbar library-toolbar--select" data-name="filter area">' +

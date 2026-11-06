@@ -16,9 +16,10 @@
   justify-content: space-between;
   height: 2.4rem;
 }
+/* 타이틀 컴포넌트 (Figma NEW 클라이언트-Library 0.3.2 component/tilte 5219:3337) — 제목 · 개수 간격 2 */
 .library-section__title {
   display: flex;
-  gap: 0.4rem;
+  gap: 0.2rem;
   margin: 0;
   color: var(--stds-sem-color-on-surface-elevation-1);
   /* 14/20 — stds-title8, 우측패널 "나의 게임 그룹"과 같은 크기 (사용자 변경, 11-03) */
@@ -241,6 +242,40 @@
 /* 보기 옵션 "라이브러리 설정 > 빠른 실행" 꺼짐 — 영역을 빼고 보유게임이 타이틀 바로 아래(20)로 */
 .proto-library-quick-off .library-quick { display: none; }
 .proto-library-quick-off .library-owned { margin-top: 0; }
+/* 그룹 화면(⑧)도 빠른 실행이 없다 — 보유게임이 타이틀 바로 아래(20) */
+.library-owned:first-child { margin-top: 0; }
+
+/* ---- 그룹 화면 타이틀 (Figma ⑧ 1263:303751 배치 + 0.3.2 component/tilte 5219:3337 상태) ----
+   보유게임(status=inacitve: 제목 · 개수 disabled-variant-2) | 그룹명(activated + clear btn) · 닫기.
+   보유게임 ↔ 구분선 ↔ 그룹 간격 8, 구분선 1x14 inverse-elevation-2 (⑧). 선택 UI(usage=selection)면
+   그룹 쪽만 brand-primary, 비활성 보유게임은 그대로 */
+.library-section__title--group { align-items: center; gap: 0.8rem; }
+.library-crumb__owned,
+.library-crumb__group { display: flex; gap: 0.2rem; white-space: nowrap; }
+.library-section__title .library-crumb__owned,
+.library-section__title .library-crumb__owned span,
+.library-owned.is-selecting .library-section__title .library-crumb__owned,
+.library-owned.is-selecting .library-section__title .library-crumb__owned span { color: var(--stds-sem-color-disabled-variant-2); }
+.library-section__title .library-crumb__group { color: var(--stds-sem-color-on-surface-elevation-1); }
+.library-section__title .library-crumb__group span { color: var(--stds-sem-color-on-surface-elevation-4); }
+.library-owned.is-selecting .library-section__title .library-crumb__group,
+.library-owned.is-selecting .library-section__title .library-crumb__group span { color: var(--stds-sem-color-brand-primary); }
+.library-crumb__div { flex: 0 0 auto; width: 1px; height: 1.4rem; background: var(--stds-sem-color-inverse-elevation-2); }
+/* clear btn — 그룹명 뒤 4, 아이콘 16 inverse-elevation-2. 상태값은 클리어 버튼 가이드: hover 투명도 60 · press 80 (2026_웹전환 1727:32429~33) */
+.library-crumb__group + .library-crumb__close { margin-left: -0.4rem; } /* 타이틀 간격 8 → 4 */
+.library-crumb__close {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  color: var(--stds-sem-color-inverse-elevation-2);
+  transition: opacity .15s;
+}
+.library-crumb__close i { font-size: 1.6rem; }
+.library-crumb__close:hover { opacity: 0.6; }
+.library-crumb__close:active { opacity: 0.8; }
 .library-owned__divider {
   height: 0.1rem;
   margin-top: 1.2rem; /* 타이틀 아래 12 (사용자 변경 8 → 12, 11-03) */
