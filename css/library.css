@@ -256,6 +256,17 @@
 .library-section__title .library-crumb__owned span,
 .library-owned.is-selecting .library-section__title .library-crumb__owned,
 .library-owned.is-selecting .library-section__title .library-crumb__owned span { color: var(--stds-sem-color-disabled-variant-2); }
+/* 보유게임은 링크 — hover · press에 link line(아래 1px on-surface-elevation-4, component/tilte link line=on) */
+.library-crumb__owned {
+  padding: 0;
+  border-bottom: 1px solid transparent;
+  margin-bottom: -1px; /* 밑줄 1px만큼 — 글자 줄이 그룹명과 같은 높이에 오게 */
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+.library-crumb__owned:hover,
+.library-crumb__owned:active { border-bottom-color: var(--stds-sem-color-on-surface-elevation-4); }
 .library-section__title .library-crumb__group { color: var(--stds-sem-color-on-surface-elevation-1); }
 .library-section__title .library-crumb__group span { color: var(--stds-sem-color-on-surface-elevation-4); }
 .library-owned.is-selecting .library-section__title .library-crumb__group,

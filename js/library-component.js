@@ -657,7 +657,8 @@ var LibraryMain = {
         // 개수는 전체 보유게임 수 — 필터 · 검색으로 바뀌지 않는다 (사용자 11-04, 적용된 필터는 나중에 칩스로 보여줄 예정)
         // 그룹 화면 (⑧ component/title/group) — 보유게임(흐리게) | 그룹명 개수 · 닫기(X)
         '<h2 v-if="viewGroup" class="library-section__title library-section__title--group" data-name="component/title/group">' +
-          '<span class="library-crumb__owned">보유게임<span>{{ owned.length }}</span></span>' +
+          // 보유게임 — 눌러도 보유게임 전체로 돌아간다 (X와 같음). 마우스를 올리면 link line(밑줄)
+          '<button class="library-crumb__owned" type="button" @click="closeGroupView">보유게임<span>{{ owned.length }}</span></button>' +
           '<i class="library-crumb__div" aria-hidden="true"></i>' +
           '<span class="library-crumb__group">{{ viewGroup.title }}<span>{{ viewGroup.gameIds.length }}</span></span>' +
           '<button class="library-crumb__close" type="button" aria-label="그룹 화면 닫기" @click="closeGroupView">' +
