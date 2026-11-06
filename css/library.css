@@ -237,7 +237,9 @@
 .stds-button.library-action > i { font-size: 2rem; }
 
 /* ---- 보유게임 — 빠른 실행 아래 32 -------------------------------- */
-.library-owned { margin-top: 3.2rem; }
+/* 빠른 실행 아래 36 — 선택 UI · 그룹 화면에서 보유게임 타이틀을 y82로 올렸을 때 빠른 실행 카드
+   끝이 y46, 유틸리티 바(48) 뒤로 들어가 아래로 삐져나오지 않는다 (32면 2px 보임, 사용자 11-06) */
+.library-owned { margin-top: 3.6rem; }
 
 /* 보기 옵션 "라이브러리 설정 > 빠른 실행" 꺼짐 — 영역을 빼고 보유게임이 타이틀 바로 아래(20)로 */
 .proto-library-quick-off .library-quick { display: none; }
