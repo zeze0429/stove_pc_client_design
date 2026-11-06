@@ -353,7 +353,8 @@ var LibraryMain = {
     'store.selectMode': function (on, prev) { this.onSelectEnter(on, prev); },
     // 그룹 화면을 열고 닫거나 다른 그룹으로 바꾸면 맨 위(라이브러리 타이틀)부터
     'store.viewGroupId': function () { this.onViewChange(); },
-    'store.viewOwned': function () { this.onViewChange(); },
+    // 타이틀의 보유게임 ↔ 그룹명 전환은 목록만 바꾸고 스크롤은 그대로 (사용자 11-06)
+    'store.viewOwned': function () { this.selected = []; },
     'selected.length': function () { this.$nextTick(this.snapFloating); },
     // 광고를 켜고 끄면 카드 수가 바뀐다 — 없어진 페이지에 머물지 않게
     quickPages: function (n) {
@@ -583,8 +584,8 @@ var LibraryMain = {
       this.store.viewGroupId = null;
       this.store.viewOwned = false;
     },
-    // 보던 목록이 바뀌면 고른 게임은 비운다. 그룹 화면을 열거나 보유게임 ↔ 그룹명을 바꾸면 선택 UI처럼
-    // 보유게임 타이틀을 위로 올리고, X로 닫으면 맨 위(라이브러리 타이틀)로 (게임 선택 취소와 같음)
+    // 그룹 화면을 열거나 다른 그룹으로 바꾸면 고른 게임은 비우고 선택 UI처럼 보유게임 타이틀을 위로 올린다.
+    // X로 닫으면 맨 위(라이브러리 타이틀)로 (게임 선택 취소와 같음)
     onViewChange: function () {
       this.selected = [];
       this.updateOwnedMinHeight();
