@@ -483,6 +483,13 @@
 .library-group__title.is-selected .library-group__btn,
 .library-group__title.is-selected .library-group__btn:hover,
 .library-group__title.is-selected .library-group__btn:active { color: var(--stds-glob-color-gray840); }
+/* 안의 버튼(화살표 · 게임 추가 · 그룹 메뉴) 상태값 — 아이콘은 gray840 그대로, 배경만 글로벌 black 4% / 10%
+   (Figma 포커싱 그룹명 버튼 가이드 3101:338331). 그룹 메뉴가 열려 있는 동안은 press와 같게 둔다 */
+.library-group__title.is-selected .game-group__btn-left-arrow:hover,
+.library-group__title.is-selected .library-group__btn:hover { background: var(--stds-glob-color-black-4); }
+.library-group__title.is-selected .game-group__btn-left-arrow:active,
+.library-group__title.is-selected .library-group__btn:active,
+.library-group__title.is-selected .library-group__btn.is-selected { background: var(--stds-glob-color-black-10); }
 .library-group__title.is-selected .library-group__btns { display: flex; }
 
 /* 게임 없는 그룹의 게임 추가 버튼 (component/game_group/btn_게임 추가) — 56 높이, 보더 inverse-elevation-3,
