@@ -108,10 +108,12 @@
   position: absolute;
   inset: 0 0 1.2rem;
   border-radius: 0.2rem;
-  background: var(--stds-sem-color-inverse-elevation-2);
+  background: transparent;
 }
-.notification-popup__scrollbar-thumb:hover::before,
-.notification-popup__scrollbar-thumb:active::before { background: var(--stds-sem-color-inverse-elevation-1); }
+/* 팝업에 마우스가 있을 때만 보인다 — 스크롤바 공통 규칙 */
+.notification-popup:hover .notification-popup__scrollbar-thumb::before { background: var(--stds-sem-color-inverse-elevation-2); }
+.notification-popup:hover .notification-popup__scrollbar-thumb:hover::before,
+.notification-popup:hover .notification-popup__scrollbar-thumb:active::before { background: var(--stds-sem-color-inverse-elevation-1); }
 
 /* ---- Notification List Item -------------------------------- */
 .notification-item {
