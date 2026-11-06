@@ -246,34 +246,36 @@
 .library-owned:first-child { margin-top: 0; }
 
 /* ---- 그룹 화면 타이틀 (Figma ⑧ 1263:303751 배치 + 0.3.2 component/tilte 5219:3337 상태) ----
-   보유게임(status=inacitve: 제목 · 개수 disabled-variant-2) | 그룹명(activated + clear btn) · 닫기.
-   보유게임 ↔ 구분선 ↔ 그룹 간격 8, 구분선 1x14 inverse-elevation-2 (⑧). 선택 UI(usage=selection)면
-   그룹 쪽만 brand-primary, 비활성 보유게임은 그대로 */
+   보유게임 | 그룹명 · 닫기. 둘은 탭처럼 하나만 활성 — activated(제목 elevation-1 · 개수 elevation-4),
+   나머지는 inacitve(제목 · 개수 disabled-variant-2)이고 누를 수 있는 링크라 hover · press에
+   link line(아래 1px on-surface-elevation-4). 선택 UI(usage=selection)면 활성 쪽만 brand-primary.
+   간격 8, 구분선 1x14 inverse-elevation-2 (⑧) */
 .library-section__title--group { align-items: center; gap: 0.8rem; }
-.library-crumb__owned,
-.library-crumb__group { display: flex; gap: 0.2rem; white-space: nowrap; }
-.library-section__title .library-crumb__owned,
-.library-section__title .library-crumb__owned span,
-.library-owned.is-selecting .library-section__title .library-crumb__owned,
-.library-owned.is-selecting .library-section__title .library-crumb__owned span { color: var(--stds-sem-color-disabled-variant-2); }
-/* 보유게임은 링크 — hover · press에 link line(아래 1px on-surface-elevation-4, component/tilte link line=on) */
-.library-crumb__owned {
+.library-crumb {
+  display: flex;
+  gap: 0.2rem;
   padding: 0;
   border-bottom: 1px solid transparent;
-  margin-bottom: -1px; /* 밑줄 1px만큼 — 글자 줄이 그룹명과 같은 높이에 오게 */
+  margin-bottom: -1px; /* 밑줄 1px만큼 — 글자 줄이 옆 타이틀과 같은 높이에 오게 */
+  white-space: nowrap;
   font: inherit;
   letter-spacing: inherit;
   cursor: pointer;
 }
-.library-crumb__owned:hover,
-.library-crumb__owned:active { border-bottom-color: var(--stds-sem-color-on-surface-elevation-4); }
-.library-section__title .library-crumb__group { color: var(--stds-sem-color-on-surface-elevation-1); }
-.library-section__title .library-crumb__group span { color: var(--stds-sem-color-on-surface-elevation-4); }
-.library-owned.is-selecting .library-section__title .library-crumb__group,
-.library-owned.is-selecting .library-section__title .library-crumb__group span { color: var(--stds-sem-color-brand-primary); }
+.library-section__title .library-crumb,
+.library-section__title .library-crumb span,
+.library-owned.is-selecting .library-section__title .library-crumb,
+.library-owned.is-selecting .library-section__title .library-crumb span { color: var(--stds-sem-color-disabled-variant-2); }
+.library-crumb:not(.is-active):hover,
+.library-crumb:not(.is-active):active { border-bottom-color: var(--stds-sem-color-on-surface-elevation-4); }
+.library-crumb.is-active { cursor: default; }
+.library-section__title .library-crumb.is-active { color: var(--stds-sem-color-on-surface-elevation-1); }
+.library-section__title .library-crumb.is-active span { color: var(--stds-sem-color-on-surface-elevation-4); }
+.library-owned.is-selecting .library-section__title .library-crumb.is-active,
+.library-owned.is-selecting .library-section__title .library-crumb.is-active span { color: var(--stds-sem-color-brand-primary); }
 .library-crumb__div { flex: 0 0 auto; width: 1px; height: 1.4rem; background: var(--stds-sem-color-inverse-elevation-2); }
 /* clear btn — 그룹명 뒤 4, 아이콘 16 inverse-elevation-2. 상태값은 클리어 버튼 가이드: hover 투명도 60 · press 80 (2026_웹전환 1727:32429~33) */
-.library-crumb__group + .library-crumb__close { margin-left: -0.4rem; } /* 타이틀 간격 8 → 4 */
+.library-crumb + .library-crumb__close { margin-left: -0.4rem; } /* 타이틀 간격 8 → 4 */
 .library-crumb__close {
   flex: 0 0 auto;
   display: grid;

@@ -334,7 +334,8 @@ var LibraryPanel = {
       set: function (v) { this.store.groups = v; },
     },
     addTargetId: function () { return this.store.addTargetId; },
-    viewGroupId: function () { return this.store.viewGroupId; },
+    // 선택 상태로 보일 그룹 — 그룹 화면 타이틀에서 "보유게임"을 눌러 전체를 보는 동안은 선택 없음
+    viewGroupId: function () { return this.store.viewOwned ? null : this.store.viewGroupId; },
     // 그룹에 들어간 게임을 뺀 나머지 — 보유게임 순서 그대로
     ungrouped: function () {
       var inGroup = {};
@@ -603,7 +604,7 @@ var LibraryPanel = {
     deleteGroup: function (id) {
       var self = this;
       if (id === this.addTargetId) this.cancelAdd();
-      if (id === this.store.viewGroupId) this.store.viewGroupId = null; // 보고 있던 그룹이면 보유게임 전체로
+      if (id === this.store.viewGroupId) { this.store.viewGroupId = null; this.store.viewOwned = false; } // 보고 있던 그룹이면 보유게임 전체로
       this.groups = this.groups.filter(function (g) { return g.id !== id; });
       delete this.collapsed[id];
       this.addedNotice = null;
@@ -662,6 +663,7 @@ var LibraryPanel = {
       this.closeMenu();
       this.store.selectMode = false; // 게임 선택 중이었으면 끝내고 그룹 화면으로
       this.store.viewGroupId = id;
+      this.store.viewOwned = false;
     },
 
     // ── 게임 추가 (Figma ⑦ · 3-3) — 그 그룹이 선택 상태가 되고 보유게임 영역이 선택 UI로 바뀐다.
@@ -671,6 +673,7 @@ var LibraryPanel = {
       this.btnTip = null;
       this.store.selectMode = false; // 게임 선택으로 들어온 선택 UI 중이면 그 그룹 추가로 바꾼다
       this.store.viewGroupId = null; // 게임 추가는 보유게임 전체에서 고른다 — 그룹 화면은 닫는다
+      this.store.viewOwned = false;
       this.store.addTargetId = id;
       this.collapsed[id] = false;
     },
