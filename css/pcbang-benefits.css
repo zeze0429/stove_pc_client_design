@@ -6,20 +6,32 @@
       레이어라 테마와 무관하게 흰색 알파로 고정돼야 하기 때문.
    ============================================================= */
 
+/* 셸 본문은 스크롤하지 않고(body-scroll=false) 카드 목록만 스크롤된다 —
+   헤더와 환영 문구는 제자리 (개발 PcbangBenefitPopup). 팝업은 최대 520. */
+.pcbang-dialog {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.8rem; /* 헤더 아래 8 */
+}
 .pcbang-welcome {
   flex: 0 0 auto;
   margin: 0;
+  padding: 0 3.2rem 1.6rem;
   text-align: center;
   color: var(--stds-sem-color-on-surface-elevation-1);
 }
-/* PC방 이름만 포인트 컬러 — 비공식 시멘틱 brand-pcbang (#1fff86, 사용자 11-05) */
+/* PC방 이름만 포인트 컬러 — 비공식 시멘틱 brand-pcbang (#1fff86, 사용자 11-05).
+   개발 코드는 같은 값을 헥스로 직접 씀 */
 .pcbang-store { color: var(--stds-sem-color-brand-pcbang); }
 
+/* 오른쪽 패딩 2rem = 여백 3.2 − 0.8 − 0.4 (.layer-dialog-scroll 참고) */
 .pcbang-list {
-  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
+  padding: 0 2rem 3.2rem 3.2rem;
 }
 
 /* ---- component/list/pcbang-benefits ------------------------ */
@@ -78,7 +90,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  border: 1px solid var(--stds-glob-color-white-4); /* 팝업은 테마 상관없이 글로벌 고정 */
+  border: 1px solid var(--stds-sem-color-inverse-variant-3); /* 개발 코드 기준 시멘틱 (다크 = white-4) */
   border-radius: inherit;
   pointer-events: none;
 }
@@ -110,7 +122,10 @@
 /* ---- component/btn/pcbang-benefits -------------------------
    버튼은 개수(최대 4개)와 상관없이 같은 간격으로 가로를 똑같이 나눠 갖고,
    라벨이 길면 양쪽 여백(1.6rem)을 유지한 채 버튼 안에서 줄바꿈된다
-   — 그만큼 버튼이 세로로 늘어난다(Figma 다국어 케이스). */
+   — 그만큼 버튼이 세로로 늘어난다(1줄 40, 줄마다 +18). 라벨은 말줄임 없이
+   관리자 문구를 다 보여준다. 줄바꿈된 라벨은 왼쪽 정렬 + 가장 긴 줄 폭으로
+   줄여서(JS shrinkWrap) 아이콘 · 라벨이 버튼 가운데에 오고 NEW 점이 라벨
+   바로 2px 옆에 붙는다 (개발 PcbangBenefitButton). */
 .pcbang-card__btns {
   display: flex;
   align-items: stretch;
@@ -124,26 +139,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.2rem;
+  gap: 0.4rem;
   padding: 1rem 1.6rem;
   border-radius: var(--stds-glob-border-radius-lg);
   background: var(--stds-glob-color-white-10);
   color: var(--stds-glob-color-white);
-  overflow: hidden;
   transition: background .15s;
 }
 .pcbang-btn:hover { background: var(--stds-glob-color-white-15); }
 .pcbang-btn:active { background: var(--stds-glob-color-white-20); }
-.pcbang-btn__label { display: flex; align-items: center; justify-content: center; gap: 0.4rem; min-width: 0; text-align: center; }
-.pcbang-btn__label i { flex: 0 0 auto; font-size: 1.6rem; }
-/* 업데이트 있을 때 라벨 오른쪽 어깨에 붙는 도트 — 박스는 글줄 높이(1.8rem)만큼
-   잡고 점은 그 맨 위에 둬서 첫 줄 어깨에 걸리게 한다(Figma 4x18 프레임). */
-.pcbang-btn__new { flex: 0 0 auto; position: relative; width: 0.4rem; height: 1.8rem; }
-.pcbang-btn__new::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
+.pcbang-btn > i { flex: 0 0 auto; font-size: 1.6rem; }
+/* 라벨 + NEW 점 — 점은 라벨 덩어리 맨 위(첫 줄 어깨), 라벨에서 2px */
+.pcbang-btn__label { display: flex; align-items: flex-start; gap: 0.2rem; min-width: 0; }
+.pcbang-btn__text { min-width: 0; overflow-wrap: break-word; text-align: left; }
+.pcbang-btn__new {
+  flex: 0 0 auto;
   width: 0.4rem;
   height: 0.4rem;
   border-radius: var(--stds-glob-border-radius-full);

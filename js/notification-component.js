@@ -81,34 +81,20 @@ var NotificationPopup = {
     markAllRead: function () {
       this.items.forEach(function (it) { it.unread = false; });
     },
-    // 한글은 글자 단위로 끊어 한 줄을 꽉 채우되(컨테이너의 break-all),
-    // 영문 단어는 중간에서 잘리면 안 되므로 라틴 덩어리만 따로 떼어
-    // keep-all을 걸 수 있게 조각으로 나눈다.
-    messageParts: function (text) {
-      var parts = [];
-      var re = /[A-Za-z0-9][A-Za-z0-9'’._-]*/g;
-      var last = 0;
-      var m;
-      while ((m = re.exec(text)) !== null) {
-        if (m.index > last) parts.push({ t: text.slice(last, m.index), keep: false });
-        parts.push({ t: m[0], keep: true });
-        last = m.index + m[0].length;
-      }
-      if (last < text.length) parts.push({ t: text.slice(last), keep: false });
-      return parts;
-    },
+    // 썸 길이·위치 — 개발 useOverlayScrollbar와 같은 계산.
+    // 길이 = 트랙 × 보이는 높이 / 전체 높이, 최소 15(보이는 막대 3 + 아래 빈칸 12).
+    // 반올림 오차 1px은 넘침으로 보지 않는다.
     updateThumb: function () {
       var list = this.$refs.list;
       var track = this.$refs.track;
       if (!list || !track) return;
-      var content = list.scrollHeight;
-      var visible = list.clientHeight;
-      this.hasScroll = content > visible;
+      var maxScroll = list.scrollHeight - list.clientHeight;
+      this.hasScroll = maxScroll > 1;
       if (!this.hasScroll) return;
       var trackHeight = track.clientHeight;
-      var h = Math.max((visible / content) * trackHeight, 24);
-      this.thumbHeight = h;
-      this.thumbTop = (trackHeight - h) * (list.scrollTop / (content - visible));
+      var length = Math.min(Math.max(Math.round(trackHeight * list.clientHeight / list.scrollHeight), 15), trackHeight);
+      this.thumbHeight = length;
+      this.thumbTop = Math.round(Math.min(Math.max(list.scrollTop / maxScroll, 0), 1) * (trackHeight - length));
     },
   },
   template:
@@ -120,11 +106,11 @@ var NotificationPopup = {
           '<span v-if="unreadCount" class="notification-popup__count stds-title7 fw-bold">{{ unreadLabel }}</span>' +
         '</p>' +
         '<div class="notification-popup__actions" data-name="Text Button">' +
-          '<button class="notification-popup__action stds-text3 fw-bold" type="button" ' +
+          '<button class="notification-popup__action stds-btn2 fw-bold" type="button" ' +
             ':disabled="!unreadCount" @click="markAllRead">' +
             '모두 읽음<i class="ic-v2-control-check-circle-line"></i>' +
           '</button>' +
-          '<button class="notification-popup__action stds-text3 fw-bold" type="button">' +
+          '<button class="notification-popup__action stds-btn2 fw-bold" type="button">' +
             '전체 보기<i class="ic-v2-control-long-arrow-right-line"></i>' +
           '</button>' +
         '</div>' +
@@ -142,16 +128,14 @@ var NotificationPopup = {
           '<img v-else class="notification-item__avatar" :src="avatar" alt="" @load="updateThumb" />' +
           '<span class="notification-item__text">' +
             '<span class="notification-item__message stds-text4 fw-regular">' +
-              '<b v-if="item.bold">{{ item.bold }}</b>' +
-              '<span v-for="(part, i) in messageParts(item.text)" :key="i" ' +
-                ':class="{ \'notification-item__keep\': part.keep }">{{ part.t }}</span>' +
+              '<b v-if="item.bold">{{ item.bold }}</b>{{ item.text }}' +
             '</span>' +
             '<span class="notification-item__time stds-cap1 fw-regular">{{ item.time }}</span>' +
           '</span>' +
         '</button>' +
       '</div>' +
 
-      '<p v-else class="notification-popup__empty stds-cap1 fw-regular">알림 메시지가 없습니다.</p>' +
+      '<p v-else class="notification-popup__empty stds-text3 fw-regular">알림 메시지가 없습니다.</p>' +
 
       '<div ref="track" class="notification-popup__scrollbar" aria-hidden="true" data-name="Scroll Bar">' +
         '<div v-show="hasScroll" class="notification-popup__scrollbar-thumb" :style="thumbStyle"></div>' +

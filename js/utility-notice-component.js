@@ -82,7 +82,7 @@ var NoticeDialog = {
         '<p class="notice-dialog__title stds-title7 fw-bold">{{ notice.title }}</p>' +
         '<div class="notice-dialog__content" data-name="contents">' +
           '<div class="notice-dialog__box" aria-hidden="true"></div>' +
-          '<div class="notice-dialog__scroll" ref="scroll" @scroll="updateFade">' +
+          '<div class="layer-dialog-scroll" ref="scroll" @scroll="updateFade">' +
             '<div class="notice-dialog__text stds-text3 fw-regular" ref="text">' +
               '<p v-for="(line, i) in notice.body" :key="i" ' +
                 ':class="{ \'notice-dialog__link\': line.link }">{{ line.text }}</p>' +

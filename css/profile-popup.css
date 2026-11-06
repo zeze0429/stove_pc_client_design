@@ -14,8 +14,8 @@
   flex-direction: column;
   align-items: center;
   gap: 2.4rem;
-  width: 60rem;
-  padding: 3.2rem 2.4rem; /* 안쪽 콘텐츠 폭 55.2rem */
+  width: 61.6rem;
+  padding: 3.2rem; /* 안쪽 콘텐츠 폭 55.2rem (개발 UserProfilePopup p-32) */
   border-radius: var(--stds-glob-border-radius-3xl);
   background: var(--stds-sem-color-surface-elevation-1);
   box-shadow: var(--stds-glob-box-shadow-12); /* Figma shadow/12 */
@@ -52,7 +52,7 @@
   flex: 0 0 auto;
   width: 1px;
   height: 1.6rem;
-  background: var(--stds-glob-color-white-6); /* Figma가 글로벌 white/6 지정 */
+  background: var(--stds-sem-color-inverse-elevation-5); /* 개발 코드 기준 (Figma는 글로벌 white/6) */
 }
 
 /* 아이콘+글자만 있는 텍스트 버튼(btn_text) — 색을 바꾸는 게 아니라 아이콘·글자가
@@ -71,26 +71,12 @@
 .profile-popup__link:hover { opacity: 0.5; }
 .profile-popup__link:active { opacity: 0.7; }
 
-/* 설정 — 유일하게 채워진 버튼이라 Figma도 글로벌 흰색/gray880을 지정 */
-.profile-popup__setting {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  padding: 0.7rem 1.2rem;
-  border-radius: var(--stds-glob-border-radius-full);
-  background: var(--stds-glob-color-white);
-  color: var(--stds-glob-color-gray880);
-  white-space: nowrap;
-  transition: background .15s;
-}
-.profile-popup__setting i { font-size: 1.6rem; }
-.profile-popup__setting:hover { background: var(--stds-glob-color-white-80); }
-.profile-popup__setting:active { background: var(--stds-glob-color-white-70); }
+/* 설정 — 공통 버튼 white sm 알약형 (css/button.css, 개발 SButton variant=white size=sm) */
+.profile-popup__setting { flex: 0 0 auto; white-space: nowrap; }
 
 /* ---- 위계1: 재화 + 보안 안내 -------------------------------- */
-.profile-popup__contents { display: flex; flex-direction: column; gap: 3.2rem; width: 100%; }
+/* 위계1 ↔ 위계2 24 — 개발 코드 기준 (Figma는 32) */
+.profile-popup__contents { display: flex; flex-direction: column; gap: 2.4rem; width: 100%; }
 .profile-popup__row1 { display: flex; align-items: flex-start; gap: 1.2rem; }
 
 .profile-money {
@@ -193,9 +179,6 @@
 }
 .profile-menu-item i { font-size: 2.8rem; }
 .profile-menu-item span { text-align: center; }
-/* 박스는 상태값 없이 그대로 두고 아이콘·글자만 바뀐다 — 흐린 회색에서
-   밝은 색 + 볼드로 (Figma component/list/user_menu 상태값). */
+/* 박스는 상태값 없이 그대로 두고 아이콘·글자 색만 밝아진다 (개발 UserMenuItem — 굵기는 그대로) */
 .profile-menu-item:hover,
 .profile-menu-item:active { color: var(--stds-sem-color-on-surface-elevation-1); }
-.profile-menu-item:hover span,
-.profile-menu-item:active span { font-weight: 700; }

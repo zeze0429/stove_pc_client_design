@@ -16,7 +16,7 @@
   display: flex;
   flex-direction: column;
   width: 40rem;
-  max-height: 48.5rem;
+  height: 48.5rem; /* 고정 — 알림이 적거나 없어도 그대로 (개발 AlarmPopup 400 × 485) */
   border-radius: var(--stds-glob-border-radius-3xl); /* Figma radius/3xl 20px */
   background: var(--stds-sem-color-surface-elevation-1);
   box-shadow: var(--stds-glob-box-shadow-12); /* 프로필 팝업과 같은 shadow/12 (사용자 지정, 11-03) */
@@ -49,12 +49,14 @@
 }
 .notification-popup__count { flex: 0 0 auto; color: var(--stds-sem-color-brand-primary); }
 
-/* 상단 텍스트 버튼 — 배경 없이 글자색만 단계적으로 흐려진다 */
+/* 상단 텍스트 버튼(Alarm/TextButton) — 배경 없이 글자색만 단계적으로 흐려진다.
+   글자는 btn2 bold, 높이 20 (개발 AlarmTextButton) */
 .notification-popup__actions { flex: 0 0 auto; display: flex; align-items: center; gap: 1.2rem; }
 .notification-popup__action {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  height: 2rem;
   padding: 0;
   white-space: nowrap;
   color: var(--stds-sem-color-on-surface-elevation-1);
@@ -70,40 +72,46 @@
    스크롤바는 숨기고 아래 .notification-popup__scrollbar를 오버레이로
    띄운다(네이티브는 반드시 콘텐츠 폭을 깎아먹어 겹칠 수 없음).
    GNB(.gnb-scrollbar)와 같은 방식. */
-/* 하단 여백 2rem은 팝업 모서리 radius와 같은 값 — 끝까지 내렸을 때 마지막
-   항목이 둥근 모서리에 물리지 않게 그만큼 비운다. 패딩이 스크롤 콘텐츠
-   안에 있어서, 스크롤 중인 항목은 그대로 팝업 가장자리까지 내려간다. */
+/* 하단 여백 1.6rem은 스크롤 콘텐츠 안쪽 — 스크롤 중인 항목은 그대로 팝업
+   가장자리까지 내려간다 (개발 AlarmList pb-16). */
 .notification-popup__list {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding-bottom: 2rem;
+  padding-bottom: 1.6rem;
   scrollbar-width: none; /* Firefox */
 }
 .notification-popup__list::-webkit-scrollbar { display: none; }
 
 /* 트랙은 스크롤되는 목록이 아니라 팝업의 자식 — 목록 안에 두면 스크롤할 때
-   스크롤바까지 같이 밀려 올라간다. 위는 목록이 시작하는 자리(헤더 높이)에
-   그대로 맞추고, 오른쪽은 Figma대로 팝업 끝에서 8px. */
+   스크롤바까지 같이 밀려 올라간다. 목록 영역 전체 높이(헤더 아래 ~ 팝업 바닥),
+   오른쪽은 팝업 끝에서 8px (개발 CommonOverlayScroll = 런처 전역 스크롤바 모양). */
 .notification-popup__scrollbar {
   position: absolute;
   top: 6.6rem;
-  bottom: 2rem; /* 목록 하단 여백과 동일 — 스크롤바도 모서리에 물리지 않게 */
+  bottom: 0;
   right: 0.8rem;
   width: 0.4rem;
   pointer-events: none;
   z-index: 1;
 }
+/* 썸 길이 안에서 아래 1.2rem은 비어 있다 — 전역 스크롤바 썸의 투명 아래 보더와 같은 자리.
+   그래서 끝까지 내리면 막대가 팝업 바닥 12px 위에서 멈춘다. */
 .notification-popup__scrollbar-thumb {
   position: absolute;
   left: 0;
   width: 100%;
-  border-radius: var(--stds-glob-border-radius-full);
-  background: var(--stds-sem-color-inverse-elevation-2);
   pointer-events: auto;
 }
-.notification-popup__scrollbar-thumb:hover,
-.notification-popup__scrollbar-thumb:active { background: var(--stds-sem-color-inverse-elevation-1); }
+.notification-popup__scrollbar-thumb::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 1.2rem;
+  border-radius: 0.2rem;
+  background: var(--stds-sem-color-inverse-elevation-2);
+}
+.notification-popup__scrollbar-thumb:hover::before,
+.notification-popup__scrollbar-thumb:active::before { background: var(--stds-sem-color-inverse-elevation-1); }
 
 /* ---- Notification List Item -------------------------------- */
 .notification-item {
@@ -142,12 +150,12 @@
 .notification-item__avatar--icon i { font-size: 2.4rem; }
 
 .notification-item__text { min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 0.2rem; }
-/* 메시지는 최대 3줄까지 보이고 넘치면 말줄임.
-   줄바꿈은 단어(공백) 단위가 아니라 글자 단위 — 한 줄을 최대한 채우고 남는
-   부분만 다음 줄로 내린다(GNB 게임명 툴팁과 동일한 규칙). */
+/* 메시지는 최대 3줄까지 보이고 넘치면 말줄임. 굵은 앞부분과 본문이 한 문단으로
+   같이 줄바꿈된다. 줄바꿈은 브라우저 기본(한글은 글자 단위, 영어는 단어 단위)에
+   너무 긴 단어만 끊는다 (개발 AlarmListItem break-words). */
 .notification-item__message {
   margin: 0;
-  word-break: break-all;
+  overflow-wrap: break-word;
   color: var(--stds-sem-color-on-surface-elevation-1);
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -155,15 +163,16 @@
   overflow: hidden;
 }
 .notification-item__message b { font-weight: 700; }
-/* 영문 단어는 중간에서 끊지 않는다 — 위 break-all을 이 덩어리에서만 해제 */
-.notification-item__keep { word-break: keep-all; }
 .notification-item__time { margin: 0; color: var(--stds-sem-color-on-surface-elevation-4); }
 
-/* ---- 알림 없음 ---------------------------------------------- */
+/* ---- 알림 없음 (개발 AlarmEmpty: text3 · elevation-3 · 좌우 48 · 가운데) ---- */
 .notification-popup__empty {
   flex: 1 1 auto;
   display: grid;
   place-items: center;
   margin: 0;
-  color: var(--stds-sem-color-on-surface-elevation-4);
+  padding: 0 4.8rem;
+  text-align: center;
+  overflow-wrap: break-word;
+  color: var(--stds-sem-color-on-surface-elevation-3);
 }

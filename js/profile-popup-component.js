@@ -118,7 +118,8 @@ var ProfilePopup = {
             '</div>' +
           '</div>' +
         '</div>' +
-        '<button class="profile-popup__setting stds-cap1 fw-medium" type="button" data-name="Button">' +
+        '<button class="stds-button stds-button-white stds-button-sm stds-button-full fw-medium profile-popup__setting" ' +
+          'type="button" data-name="Button">' +
           '<i class="ic-v2-navigation-setting-fill"></i>설정' +
         '</button>' +
       '</div>' +

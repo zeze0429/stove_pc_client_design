@@ -58,17 +58,56 @@ var PcbangBenefitsDialog = {
   data: function () {
     return { storeName: PCBANG_STORE_NAME, benefits: PCBANG_BENEFITS };
   },
+  mounted: function () {
+    this.shrinkWrapLabels();
+    // 웹폰트가 늦게 들어오면 줄 폭이 달라진다
+    if (document.fonts) document.fonts.ready.then(this.shrinkWrapLabels);
+    // 버튼 폭이 바뀌면(창 크기) 다시 잰다 — 라벨 자신이 아니라 버튼을 본다
+    this.resizeObserver = new ResizeObserver(this.shrinkWrapLabels);
+    this.$refs.list.querySelectorAll('.pcbang-btn').forEach(function (btn) {
+      this.resizeObserver.observe(btn);
+    }, this);
+  },
+  beforeUnmount: function () {
+    this.resizeObserver.disconnect();
+  },
+  methods: {
+    // 줄바꿈된 라벨을 가장 긴 줄 폭으로 줄인다 (개발 useShrinkWrapText와 같은 방식).
+    // CSS는 줄바꿈된 글 상자를 주어진 폭만큼 넓게 두기 때문에, 그대로면 NEW 점이
+    // 빈 공간 끝으로 밀리고 아이콘 · 라벨이 가운데에서 벗어난다.
+    shrinkWrapLabels: function () {
+      if (!this.$refs.list) return;
+      this.$refs.list.querySelectorAll('.pcbang-btn__text').forEach(function (el) {
+        el.style.width = '';
+        var range = document.createRange();
+        range.selectNodeContents(el);
+        var rects = Array.prototype.filter.call(range.getClientRects(), function (r) { return r.width > 0; });
+        // 위치가 줄 높이 절반 넘게 내려가야 새 줄로 센다
+        var lines = 0;
+        var lastTop = -Infinity;
+        rects.slice().sort(function (a, b) { return a.top - b.top; }).forEach(function (r) {
+          if (r.top - lastTop > r.height / 2) { lines += 1; lastTop = r.top; }
+        });
+        if (lines < 2) return;
+        var left = Math.min.apply(null, rects.map(function (r) { return r.left; }));
+        var right = Math.max.apply(null, rects.map(function (r) { return r.right; }));
+        el.style.width = Math.ceil(right - left) + 'px';
+      });
+    },
+  },
   template:
-    // 딤·헤더·닫기·스크롤은 공용 셸(js/layer-dialog-component.js)이 담당하고
-    // 여기서는 본문만 정의한다.
-    '<layer-dialog title="PC방 혜택" @close="$emit(\'close\')" ' +
+    // 딤·헤더·닫기는 공용 셸(js/layer-dialog-component.js)이 담당하고
+    // 여기서는 본문만 정의한다. 환영 문구는 고정, 카드 목록만 스크롤.
+    '<layer-dialog title="PC방 혜택" :body-scroll="false" @close="$emit(\'close\')" ' +
       'data-name="layout/utility_bar/dialog/pcbang-benefits">' +
+      '<div class="pcbang-dialog">' +
 
       '<p class="pcbang-welcome stds-title7 fw-medium">' +
         '<span class="pcbang-store fw-bold">{{ storeName }}</span>에 오신 것을 환영합니다' +
       '</p>' +
 
-      '<div class="pcbang-list" data-name="list">' +
+      '<div class="layer-dialog-scroll">' +
+      '<div class="pcbang-list" ref="list" data-name="list">' +
         '<div v-for="item in benefits" :key="item.id" class="pcbang-card" ' +
           'data-name="component/list/pcbang-benefits">' +
           '<img v-if="item.bg" class="pcbang-card__bg" :src="item.bg" alt="" aria-hidden="true" />' +
@@ -88,10 +127,11 @@ var PcbangBenefitsDialog = {
           '<div class="pcbang-card__btns" data-name="btn group">' +
             '<button v-for="(btn, i) in item.buttons" :key="i" class="pcbang-btn" type="button" ' +
               'data-name="component/btn/pcbang-benefits">' +
-              '<span class="pcbang-btn__label stds-cap1 fw-medium">' +
-                '<i :class="btn.icon"></i>{{ btn.label }}' +
+              '<i :class="btn.icon"></i>' +
+              '<span class="pcbang-btn__label">' +
+                '<span class="pcbang-btn__text stds-btn3 fw-medium">{{ btn.label }}</span>' +
+                '<span v-if="btn.isNew" class="pcbang-btn__new"></span>' +
               '</span>' +
-              '<span v-if="btn.isNew" class="pcbang-btn__new"></span>' +
             '</button>' +
           '</div>' +
         '</div>' +
@@ -101,6 +141,8 @@ var PcbangBenefitsDialog = {
           '<p class="stds-cap1 fw-medium">PC방 혜택 정보가 없습니다.</p>' +
         '</div>' +
       '</div>' +
+      '</div>' +
 
+      '</div>' +
     '</layer-dialog>',
 };
