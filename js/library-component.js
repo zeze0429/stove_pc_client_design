@@ -326,12 +326,13 @@ var LibraryMain = {
       addedToast: null, // 그룹에 추가한 직후 토스트 { count, title } (3초)
       addGroupDialog: false, // 게임 선택 모드의 그룹에 추가 팝업
       headStuck: false, // 선택 UI 고정 헤더가 위에 붙어 있음 — 유틸리티 바 뒤까지 배경을 덮는다
+      ownedMinHeight: 0, // 그룹 화면에서 보유게임 영역 최소 높이(px) — 타이틀을 고정 헤더 자리까지 올릴 수 있게
     };
   },
   mounted: function () {
     var vm = this;
     protoSettingsSubscribe(function (s) { vm.quickAd = s.libraryQuickAd; });
-    this._onResize = function () { vm.snapFloating(); vm.checkHeadStuck(); };
+    this._onResize = function () { vm.snapFloating(); vm.checkHeadStuck(); vm.updateOwnedMinHeight(); };
     window.addEventListener('resize', this._onResize);
     this._scrollBox = this.$refs.owned && this.$refs.owned.closest('.main');
     this._onScroll = this.checkHeadStuck.bind(this);
@@ -494,17 +495,28 @@ var LibraryMain = {
       this.$nextTick(this.checkHeadStuck);
       if (on && !prev) {
         this.addedToast = null;
-        this.$nextTick(function () {
-          var el = this.$refs.owned;
-          var box = el && el.closest('.main');
-          if (!box) return;
-          var top = el.getBoundingClientRect().top - box.getBoundingClientRect().top;
-          var head = this.$refs.ownedHead;
-          var pad = (parseFloat(getComputedStyle(box).paddingTop) || 0) +
-            (head ? parseFloat(getComputedStyle(head).top) || 0 : 0);
-          box.scrollTo({ top: box.scrollTop + top - pad, behavior: 'smooth' });
-        });
+        this.$nextTick(this.scrollToOwned);
       }
+    },
+    // 보유게임 타이틀을 고정 헤더 자리(y82 — 사이드바 "스토어" · 우측패널 타이틀과 같은 줄)로 올린다.
+    // 선택 UI 시작 · 그룹 화면 열기 · 보유게임 ↔ 그룹 전환 공통. 빠른 실행은 위에 남아 있어 스크롤하면 보인다
+    scrollToOwned: function () {
+      var el = this.$refs.owned;
+      var box = el && el.closest('.main');
+      if (!box) return;
+      var top = el.getBoundingClientRect().top - box.getBoundingClientRect().top;
+      box.scrollTo({ top: box.scrollTop + top - this.ownedAnchorPad(box), behavior: 'smooth' });
+    },
+    // 스크롤 영역 위 패딩(유틸리티 바) + 고정 헤더 위 여백 3.4rem
+    ownedAnchorPad: function (box) {
+      var rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 10;
+      return (parseFloat(getComputedStyle(box).paddingTop) || 0) + 3.4 * rem;
+    },
+    // 그룹 화면은 게임이 적어도 타이틀이 그 자리까지 올라가야 한다 — 보유게임 영역을 화면 높이만큼은 잡아 둔다
+    updateOwnedMinHeight: function () {
+      var box = this._scrollBox;
+      if (!box || !this.viewGroup) { this.ownedMinHeight = 0; return; }
+      this.ownedMinHeight = box.clientHeight - this.ownedAnchorPad(box) - (parseFloat(getComputedStyle(box).paddingBottom) || 0);
     },
     // ── 선택 UI (게임 추가) — 카드 아무 곳이나 누르면 선택/해제, 이미 그룹에 있는 게임은 못 고른다 ──
     isSelected: function (g) { return this.selected.indexOf(g.id) >= 0; },
@@ -571,10 +583,13 @@ var LibraryMain = {
       this.store.viewGroupId = null;
       this.store.viewOwned = false;
     },
-    // 보던 목록이 바뀌면(그룹 화면 열기 · 닫기 · 보유게임 ↔ 그룹명 전환) 고른 게임은 비우고 맨 위부터
+    // 보던 목록이 바뀌면 고른 게임은 비운다. 그룹 화면을 열거나 보유게임 ↔ 그룹명을 바꾸면 선택 UI처럼
+    // 보유게임 타이틀을 위로 올리고, X로 닫으면 맨 위(라이브러리 타이틀)로 (게임 선택 취소와 같음)
     onViewChange: function () {
       this.selected = [];
-      if (this._scrollBox) this._scrollBox.scrollTo({ top: 0 });
+      this.updateOwnedMinHeight();
+      if (this.viewGroup) this.$nextTick(this.scrollToOwned);
+      else if (this._scrollBox) this._scrollBox.scrollTo({ top: 0, behavior: 'smooth' });
     },
     // 검색 확인 — 칩으로 올리고 입력칸 글자는 그대로 둔다 (Figma 48960:382994, 사용자 11-05). 같은 검색어는 한 번만
     submitQuery: function (value, e) {
@@ -617,8 +632,8 @@ var LibraryMain = {
     '<div class="library">' +
 
 
-      // ---- 빠른 실행 — 그룹 화면에서는 없다 (Figma ⑧ 시안) ----
-      '<section v-if="!viewGroup" class="library-section library-quick">' +
+      // ---- 빠른 실행 ----
+      '<section class="library-section library-quick">' +
         '<div class="library-section__head">' +
           '<h2 class="library-section__title">빠른 실행<span>{{ quick.length }}</span></h2>' +
           '<div class="library-quick__nav">' +
@@ -658,7 +673,8 @@ var LibraryMain = {
       '</section>' +
 
       // ---- 보유게임 ----
-      '<section ref="owned" class="library-section library-owned" :class="{ \'is-selecting\': selecting, \'is-head-stuck\': selecting && headStuck }">' +
+      '<section ref="owned" class="library-section library-owned" :class="{ \'is-selecting\': selecting, \'is-head-stuck\': selecting && headStuck }" ' +
+        ':style="ownedMinHeight ? { minHeight: ownedMinHeight + \'px\' } : null">' +
         // 선택 UI에서는 타이틀 · 구분선 · 도구 줄이 위에 고정되고 아래 카드만 스크롤된다 (사용자 요청)
         '<div ref="ownedHead" class="library-owned__head">' +
         // 개수는 전체 보유게임 수 — 필터 · 검색으로 바뀌지 않는다 (사용자 11-04, 적용된 필터는 나중에 칩스로 보여줄 예정)

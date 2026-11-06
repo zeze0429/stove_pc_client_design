@@ -242,8 +242,6 @@
 /* 보기 옵션 "라이브러리 설정 > 빠른 실행" 꺼짐 — 영역을 빼고 보유게임이 타이틀 바로 아래(20)로 */
 .proto-library-quick-off .library-quick { display: none; }
 .proto-library-quick-off .library-owned { margin-top: 0; }
-/* 그룹 화면(⑧)도 빠른 실행이 없다 — 보유게임이 타이틀 바로 아래(20) */
-.library-owned:first-child { margin-top: 0; }
 
 /* ---- 그룹 화면 타이틀 (Figma ⑧ 1263:303751 배치 + 0.3.2 component/tilte 5219:3337 상태) ----
    보유게임 | 그룹명 · 닫기. 둘은 탭처럼 하나만 활성 — activated(제목 elevation-1 · 개수 elevation-4),
