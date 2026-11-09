@@ -756,12 +756,21 @@ var LibraryPanel = {
     // 보유게임 · 빠른 실행 카드 우클릭 — 같은 게임 메뉴를 카드 자리에서 연다 (library-component의 library-game-menu 이벤트)
     onCardGameMenu: function (e) {
       var d = e.detail;
+      if (d.source === 'floating') {
+        // 더보기를 다시 누르면 닫힌다
+        if (this.gameMenu && this.gameMenu.source === 'floating') { this.closeGameMenu(); return; }
+        var first = this.owned.find(function (g) { return g.id === d.gameIds[0]; });
+        if (first) this.showGameMenu(first, null, 0, 0, d.area, { gameIds: d.gameIds, anchor: d.anchor });
+        return;
+      }
       var game = this.owned.find(function (g) { return g.id === d.gameId; });
       if (game) this.showGameMenu(game, null, d.x, d.y, d.area);
     },
     // area = 콘텐츠 영역(.main) 사각형 — 있으면 1 · 2뎁스 모두 그 안쪽 40 여백 안에만 띄운다(패널 · 사이드바로 넘어가지 않음, 사용자 11-04).
     // 없으면 패널 메뉴 — 패널 안 좌우 16 안으로
-    showGameMenu: function (game, rowKey, x, y, area) {
+    // floating = 하단 플로팅 더보기 { gameIds, anchor: { right, top } } — 콘텐츠 선택 UI에서 고른 게임 n개 메뉴를
+    // 더보기 버튼 위 4에, 오른쪽 끝을 더보기 오른쪽 끝에 맞춰 연다 (Figma 클라이언트_v3.1 68059:330432)
+    showGameMenu: function (game, rowKey, x, y, area, floating) {
       this.closeMenu();
       this.btnTip = null;
       this.titleTip = null;
@@ -769,22 +778,25 @@ var LibraryPanel = {
       this.clearHover();
       if (!this.gameToggles[game.id]) this.gameToggles[game.id] = Object.assign({}, LIBRARY_GAME_TOGGLE_DEFAULT);
       // 선택한 행(2개 이상)을 우클릭하면 n개 메뉴, 선택 밖 행을 우클릭하면 선택을 풀고 그 게임 1개 메뉴
-      var multi = !!rowKey && this.selectedRows.length > 1 && this.selectedRows.indexOf(rowKey) >= 0;
-      if (!multi) { this.selectedRows = []; this.selectAnchor = null; }
+      var multi = !!floating || (!!rowKey && this.selectedRows.length > 1 && this.selectedRows.indexOf(rowKey) >= 0);
+      if (!multi || floating) { this.selectedRows = []; this.selectAnchor = null; }
       var box = area ? { left: area.left + 40, top: area.top + 40, right: area.right - 40, bottom: area.bottom - 40 } : null;
       this.gameMenu = {
-        gameId: game.id, gameIds: multi ? this.selectedGameIds() : [game.id], multi: multi,
+        gameId: game.id, gameIds: floating ? floating.gameIds.slice() : multi ? this.selectedGameIds() : [game.id], multi: multi,
+        source: floating ? 'floating' : null,
         rowKey: multi ? null : rowKey, left: x, top: y, depth: 1, back: 'add', measuring: true,
         cascade: !!box, box: box, subLeft: 0, subTop: 0, subMeasuring: false, // cascade = 2뎁스를 옆에 띄움 (콘텐츠 영역)
       };
+      this.store.moreOpen = !!floating;
       this.$nextTick(function () {
         var el = this.$refs.gameMenuEl;
         if (!el || !this.gameMenu) return;
         var r = el.querySelector('.game-menu__face--front').getBoundingClientRect();
         var minTop = box ? box.top : 8;
         var maxBottom = box ? box.bottom : window.innerHeight - 8;
+        if (floating) { x = floating.anchor.right - r.width; y = floating.anchor.top - 4 - r.height; }
         var left = box ? Math.max(box.left, Math.min(x, box.right - r.width)) : this.clampToPanel(x, r.width);
-        var top = y + r.height > maxBottom ? y - r.height : y; // 아래가 모자라면 위로
+        var top = floating ? y : y + r.height > maxBottom ? y - r.height : y; // 아래가 모자라면 위로
         this.gameMenu.left = Math.round(left);
         this.gameMenu.top = Math.round(Math.max(minTop, top));
         this.gameMenu.measuring = false;
@@ -797,11 +809,13 @@ var LibraryPanel = {
       if (m.multi) {
         m.gameIds.slice().reverse().forEach(gnbAddFavorite); // 선택 순서대로 위에서부터
         this.clearSelection();
+        if (m.source === 'floating') this.store.floatingAction = { kind: 'done', at: Date.now() };
       } else if (gnbIsFavorite(m.gameId)) gnbRemoveFavorite(m.gameId);
       else gnbAddFavorite(m.gameId);
       this.closeGameMenu();
     },
-    closeGameMenu: function () { clearTimeout(this._subTimer); this.gameMenu = null; this.menuTip = null; },
+    closeGameMenu: function () {
+      this.store.moreOpen = false; clearTimeout(this._subTimer); this.gameMenu = null; this.menuTip = null; },
     onGameMenuItem: function (item, e) {
       if (item.sub && this.gameMenu.cascade) { clearTimeout(this._subTimer); this.openGameSub(e.currentTarget, item.sub); }
       else if (item.sub) { this.gameMenu.back = item.sub; this.gameMenu.depth = 2; this.menuTip = null; }
@@ -1079,6 +1093,12 @@ var LibraryPanel = {
     },
     addMenuGameTo: function (group) {
       if (this.gameInGroup(group)) return;
+      // 더보기 메뉴 — 콘텐츠가 그룹에 추가 팝업 확인과 같이 처리(선택 UI 종료 + 보유게임 하단 토스트)
+      if (this.gameMenu.source === 'floating') {
+        this.store.floatingAction = { kind: 'add', groupIds: [group.id], at: Date.now() };
+        this.closeGameMenu();
+        return;
+      }
       var added = 0;
       this.gameMenu.gameIds.forEach(function (id) { if (group.gameIds.indexOf(id) < 0) { group.gameIds.push(id); added++; } });
       this.showAddedNotice(added, group.title);
@@ -1099,11 +1119,19 @@ var LibraryPanel = {
       if (!this.canCreate) return;
       var ids = this.gameMenu.gameIds.slice();
       if (this.gameMenu.multi) this.clearSelection();
+      var source = this.gameMenu.source;
       this.closeGameMenu();
-      this.createDialog = { gameIds: ids };
+      this.createDialog = { gameIds: ids, source: source };
     },
     createFromDialog: function (name) {
       var ids = this.createDialog.gameIds;
+      if (this.createDialog.source === 'floating') {
+        // 더보기 메뉴에서 만든 그룹 — 빈 그룹을 만들고 넣기 · 토스트 · 선택 UI 종료는 콘텐츠가
+        this.createGroup(name, []);
+        this.createDialog = null;
+        this.store.floatingAction = { kind: 'add', groupIds: [this.groups[0].id], at: Date.now() };
+        return;
+      }
       this.createGroup(name, ids);
       this.createDialog = null;
       if (ids.length) this.showAddedNotice(ids.length, name);
@@ -1156,7 +1184,8 @@ var LibraryPanel = {
     },
     onDocMouseDown: function (e) {
       var inGameMenu = this.$refs.gameMenuEl && this.$refs.gameMenuEl.contains(e.target);
-      if (this.gameMenu && !inGameMenu) this.closeGameMenu();
+      var onMore = e.target.closest && e.target.closest('[data-floating-more]'); // 더보기는 click에서 열고 닫는다
+      if (this.gameMenu && !inGameMenu && !(onMore && this.gameMenu.source === 'floating')) this.closeGameMenu();
       // 게임 행 · 메뉴 · 팝업 밖을 누르면 선택이 풀린다
       if (this.selectedRows.length && !inGameMenu && e.button === 0 && !(e.target.closest && e.target.closest('.game-group__list, .layer-dialog-dim'))) this.clearSelection();
       if (!this.menu) return;

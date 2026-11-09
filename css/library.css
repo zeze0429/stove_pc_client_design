@@ -687,6 +687,12 @@
   cursor: pointer;
   transition: color 0.2s ease;
 }
+/* 버튼 상태값 (Figma 클라이언트_v3.1 68059:330432 실행 버튼 상태값) — hover black-10, pressed · selected black-20 (둥글기 8).
+   selected = 더보기 메뉴가 열려 있는 동안 */
+.library-floating__btn:not(:disabled) { transition: color 0.2s ease, background-color 0.12s; }
+.library-floating__btn:not(:disabled):hover { background: var(--stds-glob-color-black-10); }
+.library-floating__btn:not(:disabled):active,
+.library-floating__btn.is-selected:not(:disabled) { background: var(--stds-glob-color-black-20); }
 .library-floating__btn:disabled { color: var(--floating-off-text-color); cursor: default; }
 .library-floating__icon { display: block; flex: 0 0 auto; width: 2.4rem; height: 2.4rem; }
 .library-floating__div { width: 1px; height: 4rem; background: var(--stds-sem-color-inverse-elevation-6); transition: background-color 0.2s ease; }

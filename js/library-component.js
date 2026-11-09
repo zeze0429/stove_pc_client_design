@@ -158,7 +158,9 @@ function libraryPlayedLabel(min) {
 //   viewGroupId: 그룹 화면으로 연 그룹 — 타이틀에 "보유게임 | 그룹명 · X"가 붙는다 (Figma 1131:5779 ⑧ 1260:25286)
 //   viewOwned: 그룹 화면 타이틀에서 "보유게임"을 눌러 전체를 보는 중 — 그룹명은 비활성으로 남고, X를 눌러야 없어진다
 // removedToast: 패널 컨텍스트메뉴 '그룹에서 제거' 직후 보유게임 하단 토스트 요청 { count, title, at }
-var LIBRARY_STORE = Vue.reactive({ groups: [], addTargetId: null, selectMode: false, viewGroupId: null, viewOwned: false, removedToast: null });
+var LIBRARY_STORE = Vue.reactive({ groups: [], addTargetId: null, selectMode: false, viewGroupId: null, viewOwned: false, removedToast: null, floatingAction: null, moreOpen: false });
+// moreOpen: 더보기 메뉴가 열려 있는 동안 — 더보기 버튼 selected
+// floatingAction: 하단 플로팅 더보기 메뉴(패널이 띄움)에서 고른 동작 { kind: 'add' (groupIds) | 'done', at } — 콘텐츠가 받아 선택 UI를 끝낸다
 var LIBRARY_TOAST_MS = 3000;
 
 // 썸네일 아래 뱃지 — 합본팩(collection 표시한 것)은 Collection, 카탈로그 type이 dlc · demo면 DLC · DEMO (모양은 같은 Badge/Game type)
@@ -355,6 +357,13 @@ var LibraryMain = {
     // 그룹 화면을 열고 닫거나 다른 그룹으로 바꾸면 맨 위(라이브러리 타이틀)부터
     'store.viewGroupId': function () { this.onViewChange(); },
     // 패널에서 그룹에서 제거 — 추가 완료 토스트와 같은 자리 · 모양, 문구만 제거 (사용자 11-09, Figma 11564:174292)
+    // 더보기 메뉴 동작 — 그룹에 추가(2뎁스 그룹 · 그룹 만들기)는 그룹에 추가 팝업 확인과 같이(종료 + 하단 토스트),
+    // 즐겨찾기 추가는 선택 UI만 끝낸다
+    'store.floatingAction': function (a) {
+      if (!a) return;
+      if (a.kind === 'add') { this.confirmAddGroups(a.groupIds); this.store.addTargetId = null; }
+      else this.cancelAdd();
+    },
     'store.removedToast': function (t) {
       if (!t) return;
       var self = this;
@@ -545,6 +554,20 @@ var LibraryMain = {
       var top = bar ? Math.max(r.top, bar.getBoundingClientRect().bottom) : r.top;
       var area = { left: r.left, top: top, right: r.right, bottom: r.bottom };
       window.dispatchEvent(new CustomEvent('library-game-menu', { detail: { gameId: g.id, x: e.clientX, y: e.clientY, area: area } }));
+    },
+    // 하단 플로팅 더보기 (Figma 클라이언트_v3.1 48960:386175 "더보기 상세" — 케이스는 게임 메뉴 가이드) —
+    // 여러 개 선택 메뉴(3-5-3)를 더보기 위에 연다. 메뉴 · 그룹 동작은 패널이 맡고, 결과는 store.floatingAction으로 받는다
+    openMoreMenu: function (e) {
+      if (!this.selected.length) return;
+      var btn = e.currentTarget.getBoundingClientRect();
+      var r = this._scrollBox.getBoundingClientRect();
+      var ub = document.querySelector('.utility-bar');
+      var top = ub ? Math.max(r.top, ub.getBoundingClientRect().bottom) : r.top;
+      window.dispatchEvent(new CustomEvent('library-game-menu', { detail: {
+        gameIds: this.selected.slice(), source: 'floating',
+        anchor: { right: btn.right, top: btn.top },
+        area: { left: r.left, top: top, right: r.right, bottom: r.bottom },
+      } }));
     },
     // 그룹에 추가 팝업 확인 — 체크한 그룹마다 아직 없는 게임만 넣고, 선택 UI를 끝내고 토스트 (사용자 결정: 종료 + 토스트)
     confirmAddGroups: function (groupIds) {
@@ -785,7 +808,7 @@ var LibraryMain = {
               '<button class="library-floating__btn" type="button" :disabled="!selected.length" @click="addToGroup" data-name="component/selection UI/btn">' + LIBRARY_FLOATING_ICON.folderAdd + '그룹에 추가</button>' +
             '</div>' +
             '<span class="library-floating__div" aria-hidden="true"></span>' +
-            '<button class="library-floating__btn" type="button" :disabled="!selected.length" data-name="component/selection UI/btn">' + LIBRARY_FLOATING_ICON.more + '더보기</button>' +
+            '<button class="library-floating__btn" type="button" :disabled="!selected.length" :class="{ \'is-selected\': store.moreOpen && selected.length }" data-floating-more @click="openMoreMenu" data-name="component/selection UI/btn">' + LIBRARY_FLOATING_ICON.more + '더보기</button>' +
           '</div>' +
         '</div>' +
       '</transition>' +
