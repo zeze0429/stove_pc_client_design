@@ -173,11 +173,15 @@ var LIBRARY_GAME_MENU_MULTI = [
 var GAME_MENU_SUB_TPL =
     '<template v-if="gameMenu.back === \'add\'">' +
       // 그룹 있음 — 5개까지 보이고 그 이상은 스크롤. 이미 들어 있는 그룹은 비활성
-      '<div v-if="groups.length" class="game-menu__groups" @scroll="hideMenuTip">' +
+      // 목록 + 오버레이 스크롤바 — 넘칠 때(5개 초과)만, 목록 영역에 마우스가 있을 때만 (Figma 12151:66110, 사용자 11-09)
+      '<div v-if="groups.length" class="game-menu__scroll" @mouseenter="onMenuScrollEnter">' +
+      '<div class="game-menu__groups" @scroll="onMenuGroupsScroll">' +
         '<button v-for="g in groups" :key="g.id" class="game-menu__item stds-btn3 fw-medium" type="button" ' +
           ':disabled="gameInGroup(g)" @click="addMenuGameTo(g)" @mouseenter="showNameTip" @mouseleave="hideMenuTip" data-name="menu">' +
           '<span class="game-menu__label game-menu__name">{{ g.title }}</span>' +
         '</button>' +
+      '</div>' +
+      '<span class="game-menu__thumb" aria-hidden="true" @mousedown.prevent.stop="onMenuThumbDown"></span>' +
       '</div>' +
       // 그룹 없음 (최초 생성)
       '<div v-else class="game-menu__empty">' +
@@ -190,7 +194,8 @@ var GAME_MENU_SUB_TPL =
         '</button>' +
       '</div>' +
     '</template>' +
-    '<div v-else class="game-menu__groups" @scroll="hideMenuTip">' +
+    '<div v-else class="game-menu__scroll" @mouseenter="onMenuScrollEnter">' +
+    '<div class="game-menu__groups" @scroll="onMenuGroupsScroll">' +
       '<div v-for="g in menuGameGroups" :key="g.id" class="game-menu__item game-menu__item--remove stds-btn3 fw-medium" role="button" tabindex="0" ' +
         '@click="removeMenuGameFrom(g)" @keydown.enter="removeMenuGameFrom(g)" @mouseenter="showNameTip" @mouseleave="hideMenuTip" data-name="menu">' +
         '<span class="game-menu__label game-menu__name">{{ g.title }}</span>' +
@@ -199,6 +204,8 @@ var GAME_MENU_SUB_TPL =
           '<i class="ic-v2-control-close-circle-fill"></i>' +
         '</button>' +
       '</div>' +
+    '</div>' +
+    '<span class="game-menu__thumb" aria-hidden="true" @mousedown.prevent.stop="onMenuThumbDown"></span>' +
     '</div>';
 
 // 그룹 타이틀 (component/game_group/title) — 화살표 · 이름 · 개수 · 우측 버튼(호버 시).
@@ -1106,6 +1113,31 @@ var LibraryPanel = {
       });
     },
     hideMenuTip: function () { this.menuTip = null; },
+    // 2뎁스 목록 오버레이 스크롤바 — 네이티브는 숨기고 썸만 행 위에 띄운다(행 폭 · 우측 14 그대로)
+    menuThumbSync: function (box) {
+      var thumb = box && box.parentElement.querySelector('.game-menu__thumb');
+      if (!thumb) return;
+      var content = box.scrollHeight, visible = box.clientHeight;
+      if (content <= visible + 1) { thumb.style.display = 'none'; return; }
+      thumb.style.display = 'block';
+      var h = Math.max(visible * visible / content, 24);
+      thumb.style.height = h + 'px';
+      thumb.style.transform = 'translateY(' + ((visible - h) * box.scrollTop / (content - visible)) + 'px)';
+    },
+    onMenuScrollEnter: function (e) { this.menuThumbSync(e.currentTarget.querySelector('.game-menu__groups')); },
+    onMenuGroupsScroll: function (e) { this.hideMenuTip(); this.menuThumbSync(e.currentTarget); },
+    // 썸을 끌어서 스크롤 — 끄는 동안은 영역을 벗어나도 보인다
+    onMenuThumbDown: function (e) {
+      var wrap = e.currentTarget.parentElement;
+      var box = wrap.querySelector('.game-menu__groups');
+      var startY = e.clientY, startTop = box.scrollTop;
+      var ratio = (box.scrollHeight - box.clientHeight) / Math.max(box.clientHeight - e.currentTarget.offsetHeight, 1);
+      wrap.classList.add('is-dragging');
+      function move(ev) { box.scrollTop = startTop + (ev.clientY - startY) * ratio; }
+      function up() { wrap.classList.remove('is-dragging'); document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); }
+      document.addEventListener('mousemove', move);
+      document.addEventListener('mouseup', up);
+    },
     onDocMouseDown: function (e) {
       var inGameMenu = this.$refs.gameMenuEl && this.$refs.gameMenuEl.contains(e.target);
       if (this.gameMenu && !inGameMenu) this.closeGameMenu();

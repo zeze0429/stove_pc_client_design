@@ -777,7 +777,7 @@
   cursor: pointer;
 }
 .game-menu__item.has-sub { gap: 0.4rem; padding-right: calc(0.6rem - 1px); }
-.game-menu__item--remove { padding-right: calc(0.6rem - 1px); } /* 행 전체를 눌러도 제거 (사용자 11-09) */
+.game-menu__item--remove { gap: 0.8rem; padding-right: calc(1.4rem - 1px); } /* 우 14 · 간격 8 (Figma 12151:66110). 행 전체를 눌러도 제거 (사용자 11-09) */
 .game-menu__item:hover { background: var(--stds-sem-color-interaction-hover); }
 .game-menu__item:active:not(:has(.game-menu__remove:active)) { background: var(--stds-sem-color-interaction-pressed); color: var(--stds-sem-color-on-surface-elevation-2); }
 .game-menu__item:disabled { color: var(--stds-sem-color-disabled-variant-1); background: transparent; cursor: default; }
@@ -846,20 +846,43 @@
   background: var(--stds-sem-color-inverse-elevation-7);
 }
 /* 그룹 목록 — 5개(160)까지, 넘으면 스크롤 */
+.game-menu__scroll { position: relative; }
 .game-menu__groups {
   max-height: 16rem;
   overflow-y: auto;
   overscroll-behavior: contain;
+  scrollbar-width: none;
 }
-.game-menu__groups::-webkit-scrollbar { width: 0.4rem; }
-.game-menu__groups::-webkit-scrollbar-thumb { border-radius: var(--stds-glob-border-radius-full); background-color: transparent; }
-/* 메뉴에 마우스가 있을 때만 보인다 — 스크롤바 공통 규칙 (사용자 11-03) */
-.game-menu:hover .game-menu__groups::-webkit-scrollbar-thumb { background-color: var(--stds-sem-color-inverse-elevation-2); }
-.game-menu:hover .game-menu__groups::-webkit-scrollbar-thumb:hover { background-color: var(--stds-sem-color-inverse-elevation-1); }
-/* 그룹에서 제거 ⊗ — on-surface-elevation-4, hover · press 배경 + 툴팁 */
-.game-menu__remove { color: var(--stds-sem-color-on-surface-elevation-4); cursor: pointer; transition: background-color 0.12s; }
-.game-menu__remove:hover { background: var(--stds-sem-color-interaction-hover); }
-.game-menu__remove:active { background: var(--stds-sem-color-interaction-pressed); }
+.game-menu__groups::-webkit-scrollbar { display: none; }
+/* 오버레이 썸 — 폭 4, 메뉴 우측 끝에서 6(보더 포함), 목록 영역 높이가 트랙 (Figma 12151:66110 element/scroll).
+   항목이 넘칠 때만(JS가 display), 목록 영역에 마우스가 있을 때만 보인다 (사용자 11-09). 색은 스크롤바 공통 규칙 */
+.game-menu__thumb {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: calc(0.6rem - 1px);
+  width: 0.4rem;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-sem-color-inverse-elevation-2);
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.game-menu__scroll:hover .game-menu__thumb,
+.game-menu__scroll.is-dragging .game-menu__thumb { opacity: 1; }
+.game-menu__thumb:hover,
+.game-menu__scroll.is-dragging .game-menu__thumb { background: var(--stds-sem-color-inverse-elevation-1); }
+/* 그룹에서 제거 ⊗ — 14 그대로(18 버튼 틀 없음), 평소 neutral-variant-4.
+   버튼 hover = 아이콘 on-surface-elevation-2 + 14 둥글기 4 배경 interaction-hover + 툴팁 (Figma 12151:66110 btn_right) */
+.game-menu__item--remove .game-menu__remove {
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: var(--stds-glob-border-radius-md);
+  color: var(--stds-sem-color-neutral-variant-4);
+  cursor: pointer;
+  transition: background-color 0.12s, color 0.12s;
+}
+.game-menu__item--remove .game-menu__remove:hover { color: var(--stds-sem-color-on-surface-elevation-2); background: var(--stds-sem-color-interaction-hover); }
+.game-menu__item--remove .game-menu__remove:active { color: var(--stds-sem-color-on-surface-elevation-2); background: var(--stds-sem-color-interaction-pressed); }
 
 /* 그룹 없음 (최초 생성) — 폴더 28 + 문구 3줄, inverse-elevation-1 */
 .game-menu__empty {
