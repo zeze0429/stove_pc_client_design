@@ -586,7 +586,7 @@ var LibraryPanel = {
     // gameIds — 게임 메뉴 > 그룹 만들기 팝업에서 만들면 그 게임을 바로 넣는다
     createGroup: function (name, gameIds) {
       var id = 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-      this.groups.unshift({ id: id, title: name, gameIds: gameIds ? gameIds.slice() : [] });
+      this.groups.unshift({ id: id, title: name, gameIds: gameIds ? gameIds.slice() : [], createdAt: Date.now() }); // createdAt — 라이브러리 설정 목록 날짜
       this.creating = false;
       this.$refs.scrollEl.scrollTop = 0;
       // 새 그룹은 그룹 목록 맨 위 — 화면 밖이면 보이는 곳까지 스크롤

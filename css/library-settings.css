@@ -1,0 +1,210 @@
+/* =============================================================
+   라이브러리 설정 팝업 (js/library-settings-component.js)
+   Figma 클라이언트_v3.1 68061:330433 — 기준 Dialog 38783:264947 (664, 기본 높이 620 고정 + 본문 스크롤).
+   셸 · 버튼 · 체크박스 · 입력칸은 공통 부품, 여기는 섹션 배치와 그룹 목록 행만.
+   그룹 행 배경 gray800 / hover gray780 / pressed gray750 · 이름 변경 중 gray860은 Figma 글로벌(다크 기준, 라이트 값 미정)
+   ============================================================= */
+
+/* contents — 섹션 사이 28 (버튼 · 구분선 · 빠른 실행 · 구분선 · 게임 그룹 관리) */
+.library-settings {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2.8rem;
+}
+.library-settings__hidden { flex: 0 0 auto; }
+.library-settings__div { flex: 0 0 auto; align-self: stretch; height: 1px; background: var(--stds-sem-color-inverse-elevation-3); }
+
+.library-settings__section { align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; }
+.library-settings__section--quick { gap: 1.2rem; }
+.library-settings__section--groups { gap: 2rem; }
+.library-settings__head { display: flex; flex-direction: column; gap: 0.8rem; }
+/* 섹션 제목 Title7-B 16/24 glob white, 설명 Text3-R 14/24 elevation-4 (Figma) */
+.library-settings__title {
+  margin: 0;
+  color: var(--stds-glob-color-white);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 2.4rem;
+  letter-spacing: -0.048rem;
+}
+.library-settings__desc,
+.library-settings__hints {
+  margin: 0;
+  color: var(--stds-sem-color-on-surface-elevation-4);
+  font-size: 1.4rem;
+  line-height: 2.4rem;
+  letter-spacing: -0.042rem;
+}
+.library-settings__hints { padding: 0 0 0 2.1rem; list-style: disc; }
+/* 라벨 (그룹 만들기 · 나의 그룹 목록) Text3-M 14/24 elevation-1 */
+.library-settings__label {
+  margin: 0;
+  color: var(--stds-sem-color-on-surface-elevation-1);
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 2.4rem;
+  letter-spacing: -0.042rem;
+}
+.library-settings__section .stds-checkbox-label { color: var(--stds-sem-color-on-surface-elevation-2); }
+
+/* 그룹 만들기 — 라벨 아래 8, 입력칸 + 만들기(90) */
+.library-settings__create { align-self: stretch; display: flex; flex-direction: column; gap: 0.8rem; }
+.library-settings__make { flex: 0 0 auto; width: 9rem; }
+.library-settings__create .add-group-dialog__input:disabled { cursor: default; }
+
+/* 나의 그룹 목록 — 라벨 아래 8, 행 44 · 간격 8 */
+.library-settings__groups { align-self: stretch; display: flex; flex-direction: column; gap: 0.8rem; }
+.library-settings__list { display: flex; flex-direction: column; gap: 0.8rem; }
+.library-settings__empty { padding-top: 0; }
+
+/* 그룹 항목 행 (Figma 250808) — 44, 좌 16 · 우 10, 간격 12, 둥글기 8 */
+.library-settings__row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  height: 4.4rem;
+  padding: 0 1rem 0 1.6rem;
+  border-radius: var(--stds-glob-border-radius-lg);
+  background: var(--stds-glob-color-gray800);
+  transition: background-color 0.12s;
+}
+.library-settings__row:not(.is-editing):not(.is-ghost):not(.library-settings__drag):hover { background: var(--stds-glob-color-gray780); }
+.library-settings__row:not(.is-editing):not(.is-ghost):not(.library-settings__drag):active:not(:has(button:active)) { background: var(--stds-glob-color-gray750); }
+.library-settings__handle-btn {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--stds-sem-color-on-surface-elevation-4);
+  cursor: grab;
+}
+.library-settings__row.is-static .library-settings__handle-btn { cursor: default; }
+.library-settings__handle { font-size: 1.2rem; }
+/* 그룹명 + 개수 뱃지 + ✎ — 남는 폭, 넘치면 잘림 */
+.library-settings__name-wrap { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 0.4rem; overflow: hidden; }
+.library-settings__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--stds-sem-color-on-surface-elevation-3);
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 2rem;
+  letter-spacing: -0.042rem;
+}
+/* 개수 뱃지 — 14, neutral-variant-4 · elevation-3, Caption2-M 11 */
+.library-settings__badge {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  min-width: 1.6rem;
+  height: 1.4rem;
+  padding: 0 0.4rem;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-sem-color-neutral-variant-4);
+  color: var(--stds-sem-color-on-surface-elevation-3);
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.8rem;
+  letter-spacing: -0.022rem;
+}
+.library-settings__date {
+  flex: 0 0 auto;
+  color: var(--stds-sem-color-on-surface-elevation-3);
+  font-size: 1.2rem;
+  line-height: 1.8rem;
+  letter-spacing: -0.024rem;
+}
+/* ✎ · 🗑 — 24(아이콘 16), 둥글기 4, hover interaction-hover · pressed interaction-pressed. ✎ elevation-1, 🗑 elevation-4 */
+.library-settings__icon-btn {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--stds-glob-border-radius-md);
+  background: transparent;
+  color: var(--stds-sem-color-on-surface-elevation-1);
+  cursor: pointer;
+  transition: background-color 0.12s;
+}
+.library-settings__icon-btn i { font-size: 1.6rem; }
+.library-settings__delete { color: var(--stds-sem-color-on-surface-elevation-4); }
+button.library-settings__icon-btn:hover { background: var(--stds-sem-color-interaction-hover); }
+button.library-settings__icon-btn:active { background: var(--stds-sem-color-interaction-pressed); }
+
+/* 이름 변경 중 — 행 gray860, 입력 Title8-M elevation-2 · 캐럿 brand, 글자를 바꾸면 X(16) · 변경, 버튼 사이 4.
+   같은 이름이면 행 아래 8에 에러 (그룹 만들기 에러와 같은 모양) */
+.library-settings__edit { display: flex; flex-direction: column; gap: 0.8rem; }
+.library-settings__row.is-editing { background: var(--stds-glob-color-gray860); }
+.library-settings__row.is-editing .library-settings__handle { flex: 0 0 auto; color: var(--stds-sem-color-on-surface-elevation-4); }
+.library-settings__edit-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  caret-color: var(--stds-sem-color-brand-primary);
+  font: inherit;
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 2rem;
+  letter-spacing: -0.042rem;
+}
+.library-settings__edit-clear {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--stds-sem-color-on-surface-elevation-4);
+  cursor: pointer;
+}
+.library-settings__edit-clear i { font-size: 1.6rem; }
+.library-settings__edit-btns { flex: 0 0 auto; display: flex; gap: 0.4rem; }
+
+/* 순서 변경 — 원래 자리는 40% + 점선 2/2 white-50(.library-group__ghost, css/library-panel.css),
+   프리뷰는 드래그 프리뷰 공통(놓인 영역 배경 위 interaction-pressed · border 1 · 그림자 0 4 8 black-30 · 90%) */
+.library-settings__row.is-ghost { opacity: 0.4; background: transparent; }
+.library-settings__drag {
+  position: fixed;
+  z-index: 260;
+  opacity: 0.9;
+  background:
+    linear-gradient(var(--stds-sem-color-interaction-pressed), var(--stds-sem-color-interaction-pressed)),
+    var(--stds-sem-color-surface-elevation-1);
+  box-shadow: inset 0 0 0 1px var(--stds-sem-color-border), 0 0.4rem 0.8rem var(--stds-glob-color-black-30);
+  pointer-events: none;
+}
+body.is-library-settings-dragging,
+body.is-library-settings-dragging * { cursor: grabbing !important; }
+
+/* 삭제 확인 — 312, 위 24 · 좌우 24, 문구 Text2-R 15/24 elevation-2 가운데(그룹명 brand-primary), 버튼 2개 꽉 채움 · 간격 8 · 아래 24.
+   셸 모양(배경 · 둥글기 · 그림자)은 레이어 팝업 공통 */
+.library-settings-confirm-dim { z-index: 250; }
+.library-settings-confirm { width: 31.2rem; }
+.library-settings-confirm__text {
+  margin: 0;
+  padding: 2.4rem 2.4rem 0;
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  font-size: 1.5rem;
+  line-height: 2.4rem;
+  letter-spacing: -0.045rem;
+  text-align: center;
+  word-break: break-all;
+}
+.library-settings-confirm__text span { color: var(--stds-sem-color-brand-primary); }
+.library-settings-confirm__btns { display: flex; gap: 0.8rem; padding: 2.4rem; }
+.library-settings-confirm__btns .stds-button { flex: 1 1 0; }

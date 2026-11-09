@@ -236,7 +236,7 @@ var LibraryAddToGroupDialog = {
       var name = this.text.trim();
       if (this.groups.some(function (g) { return g.title === name; })) { this.error = LIBRARY_ADD_GROUP_DUP_MSG; return; }
       var id = 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-      this.groups.unshift({ id: id, title: name, gameIds: [] }); // 최신 생성 순 — 맨 위 (체크는 사용자가 직접)
+      this.groups.unshift({ id: id, title: name, gameIds: [], createdAt: Date.now() }); // 최신 생성 순 — 맨 위 (체크는 사용자가 직접)
       this.text = '';
       this.creating = false;
       this.$nextTick(this.checkListOverflow);
@@ -312,6 +312,7 @@ var LibraryAddToGroupDialog = {
 };
 
 var LibraryMain = {
+  // 'library-settings-dialog'는 js/library-settings-component.js가 로드되며 여기 붙인다 (그 파일이 이 파일의 상수 · 스토어를 쓴다)
   components: { 'add-to-group-dialog': LibraryAddToGroupDialog, 'stds-search-field': StdsSearchField, 'library-filter-layer': LibraryFilterLayer },
   data: function () {
     return {
@@ -327,6 +328,7 @@ var LibraryMain = {
       arrowRest: 0, // 방금 누른 화살표(-1 · 1) — 마우스가 나갈 때까지 hover 배경을 끈다
       store: LIBRARY_STORE,
       selected: [], // 선택 UI에서 고른 게임 id (고른 순서)
+      settingsOpen: false, // 라이브러리 설정 팝업 (타이틀 옆 설정 버튼)
       addedToast: null, // 그룹에 추가한 직후 토스트 { count, title } (3초)
       addGroupDialog: false, // 게임 선택 모드의 그룹에 추가 팝업
       headStuck: false, // 선택 UI 고정 헤더가 위에 붙어 있음 — 유틸리티 바 뒤까지 배경을 덮는다
@@ -341,6 +343,10 @@ var LibraryMain = {
     this._scrollBox = this.$refs.owned && this.$refs.owned.closest('.main');
     this._onScroll = this.checkHeadStuck.bind(this);
     if (this._scrollBox) this._scrollBox.addEventListener('scroll', this._onScroll, { passive: true });
+    // 라이브러리 타이틀 옆 설정 버튼(library.html 고정 마크업) — 라이브러리 설정 팝업
+    this._settingsBtn = document.querySelector('.client-page-title__setting');
+    this._onSettings = function () { vm.settingsOpen = true; };
+    if (this._settingsBtn) this._settingsBtn.addEventListener('click', this._onSettings);
     // 필터 레이어 바깥을 누르면 닫는다 (레이어 · 버튼은 click.stop)
     this._onDocClick = function () { vm.filterOpen = false; };
     document.addEventListener('click', this._onDocClick);
@@ -423,6 +429,12 @@ var LibraryMain = {
     selecting: function () { return !!this.addTarget || this.store.selectMode; },
     // 그룹 화면 (⑧) — 패널에서 그룹명을 누르면. 게임 추가(선택 UI) 중에는 보유게임 전체가 필요해서 열리지 않는다
     // "그룹 없는 게임"도 그룹 메뉴에 그룹 화면 보기가 있어 같은 모양으로 연다 (어느 그룹에도 없는 보유게임)
+    // 그룹에 하나도 없는 게임 수 — 라이브러리 설정 그룹 목록 맨 아래 "그룹 없는 게임"
+    ungroupedCount: function () {
+      var inGroup = {};
+      this.store.groups.forEach(function (g) { g.gameIds.forEach(function (id) { inGroup[id] = true; }); });
+      return this.owned.filter(function (g) { return !inGroup[g.id]; }).length;
+    },
     // 내가 만든 그룹 화면을 보는 중 (그룹 없는 게임 · 보유게임 탭 제외)
     inUserGroup: function () { return !!this.viewGroup && this.viewGroup.id !== 'ungrouped' && !this.store.viewOwned; },
     viewGroup: function () {
@@ -833,6 +845,8 @@ var LibraryMain = {
         '</div>' +
       '</transition>' +
 
+      // 라이브러리 설정 — 숨겨진 게임 보기는 팝업을 닫는다 (숨긴 게임 화면은 가이드 받으면)
+      '<library-settings-dialog v-if="settingsOpen" :ungrouped-count="ungroupedCount" @close="settingsOpen = false" @hidden-games="settingsOpen = false"></library-settings-dialog>' +
       '<add-to-group-dialog v-if="addGroupDialog" :groups="store.groups" :game-ids="selected" @confirm="confirmAddGroups" @close="addGroupDialog = false"></add-to-group-dialog>' +
 
       // 게임 추가 · 그룹에서 제거 완료 토스트 — 보유게임 영역 하단 가운데, 3초 뒤 사라진다

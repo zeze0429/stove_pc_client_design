@@ -16,6 +16,8 @@ var LayerDialog = {
     width: { type: String, default: '70rem' },
     // 내용이 짧아도 이 높이 밑으로는 안 줄어든다 (공지 = 32rem)
     minHeight: { type: String, default: null },
+    // 높이 상한 — 기본은 css의 52rem. 높이가 고정인 팝업은 minHeight와 같이 준다 (라이브러리 설정 = 62rem)
+    maxHeight: { type: String, default: null },
     // false면 셸 본문이 스크롤하지 않고, 본문 안쪽이 스크롤을 직접 맡는다 (공지: 상자 안 글만 스크롤)
     bodyScroll: { type: Boolean, default: true },
   },
@@ -31,7 +33,7 @@ var LayerDialog = {
     // 딤(팝업 바깥)을 눌러도 닫히지 않는다 — 닫기 버튼(또는 Esc)으로만 닫는다
     '<div class="layer-dialog-dim">' +
       '<div class="layer-dialog" role="dialog" aria-modal="true" :aria-label="title" ' +
-        ':style="{ width: width, minHeight: minHeight }" data-name="Dialog">' +
+        ':style="{ width: width, minHeight: minHeight, maxHeight: maxHeight }" data-name="Dialog">' +
         '<div class="layer-dialog__header" data-name="Dialog/Header">' +
           '<p class="layer-dialog__title stds-title7 fw-bold">{{ title }}</p>' +
           '<button class="layer-dialog__close" type="button" aria-label="닫기" @click="$emit(\'close\')">' +
