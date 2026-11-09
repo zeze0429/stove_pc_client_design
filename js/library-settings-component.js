@@ -87,7 +87,7 @@ var LibrarySettingsDialog = {
     var vm = this;
     protoSettingsSubscribe(function (s) { vm.quickOn = s.libraryQuick; });
   },
-  beforeUnmount: function () { this.endDrag(); },
+  beforeUnmount: function () { this.cancelPress(); this.endDrag(); },
   methods: {
     groupCount: libraryGroupCount,
     date: function (g) { return librarySettingsDate(g.createdAt); },
@@ -159,12 +159,37 @@ var LibrarySettingsDialog = {
 
     // ── 순서 변경 — 손잡이(≡)를 끌면 원래 자리는 40% + 점선, 커서를 따라 프리뷰(우측패널 규칙).
     // 그룹 없는 게임은 항상 맨 아래라 움직이지 않는다 ──
+    // 행 아무 데나 길게 눌러도 순서 변경 — 사이드바 · 우측패널과 같은 롱프레스(450ms, 6 넘게 움직이면 취소). ✎ · 🗑 버튼은 제외
+    onRowMouseDown: function (e, g, index) {
+      if (e.button !== 0 || this.editing || this.drag) return;
+      if (e.target.closest('button') && !e.target.closest('.library-settings__handle-btn')) return;
+      if (e.target.closest('.library-settings__handle-btn')) return; // 손잡이는 누르자마자 (startDrag)
+      var self = this, row = e.currentTarget, sx = e.clientX, sy = e.clientY;
+      this.cancelPress();
+      function onUp() { self.cancelPress(); }
+      function onMove(ev) { if (Math.abs(ev.clientX - sx) > 6 || Math.abs(ev.clientY - sy) > 6) self.cancelPress(); }
+      document.addEventListener('mouseup', onUp);
+      document.addEventListener('mousemove', onMove);
+      this._pressCleanup = function () { document.removeEventListener('mouseup', onUp); document.removeEventListener('mousemove', onMove); };
+      this._pressTimer = setTimeout(function () {
+        self.cancelPress();
+        self.beginDrag(row, g, index, sy, true);
+      }, typeof LIBRARY_DRAG_HOLD_MS === 'number' ? LIBRARY_DRAG_HOLD_MS : 450);
+    },
+    cancelPress: function () {
+      clearTimeout(this._pressTimer);
+      if (this._pressCleanup) { this._pressCleanup(); this._pressCleanup = null; }
+    },
+    // 손잡이(≡) — 누르고 3 움직이면 바로 시작
     startDrag: function (e, g, index) {
       if (e.button !== 0 || this.editing) return;
       e.preventDefault();
-      var row = e.currentTarget.closest('.library-settings__row');
+      this.beginDrag(e.currentTarget.closest('.library-settings__row'), g, index, e.clientY, false);
+    },
+    beginDrag: function (row, g, index, y, started) {
       var r = row.getBoundingClientRect();
-      this.drag = { id: g.id, from: index, to: index, x: r.left, y: r.top, width: r.width, offsetY: e.clientY - r.top, startY: e.clientY, started: false };
+      this.drag = { id: g.id, from: index, to: index, x: r.left, y: r.top, width: r.width, offsetY: y - r.top, startY: y, started: started };
+      if (started) document.body.classList.add('is-library-settings-dragging');
       this._onMove = this.onDragMove.bind(this);
       this._onUp = this.onDragUp.bind(this);
       document.addEventListener('mousemove', this._onMove);
@@ -266,7 +291,7 @@ var LibrarySettingsDialog = {
                   '<p v-if="editing.error" class="add-group-dialog__error" data-name="Input/Tag"><i class="ic-v2-state-warning-circle-fill" aria-hidden="true"></i>{{ editing.error }}</p>' +
                 '</div>' +
                 // 그룹 없는 게임 — 이름 변경 · 삭제 없음, 순서는 바꿀 수 있다 (사용자 11-09)
-                '<div v-else-if="row.g.ungrouped" class="library-settings__row" :class="{ \'is-ghost\': row.ghost }" data-name="그룹 항목">' +
+                '<div v-else-if="row.g.ungrouped" class="library-settings__row" :class="{ \'is-ghost\': row.ghost }" @mousedown="onRowMouseDown($event, row.g, i)" data-name="그룹 항목">' +
                   '<svg v-if="row.ghost" class="library-group__ghost" aria-hidden="true"><rect x="0.5" y="0.5" rx="7.5" ry="7.5"></rect></svg>' +
                   '<button class="library-settings__handle-btn" type="button" aria-label="순서 변경" @mousedown="startDrag($event, row.g, i)">' +
                     '<i class="ic-v2-navigation-menu-line library-settings__handle" aria-hidden="true"></i>' +
@@ -278,7 +303,7 @@ var LibrarySettingsDialog = {
                   '<span class="library-settings__date">{{ today }}</span>' +
                   '<span class="library-settings__icon-btn library-settings__delete" aria-hidden="true"></span>' +
                 '</div>' +
-                '<div v-else class="library-settings__row" :class="{ \'is-ghost\': row.ghost }" data-name="그룹 항목">' +
+                '<div v-else class="library-settings__row" :class="{ \'is-ghost\': row.ghost }" @mousedown="onRowMouseDown($event, row.g, i)" data-name="그룹 항목">' +
                   '<svg v-if="row.ghost" class="library-group__ghost" aria-hidden="true"><rect x="0.5" y="0.5" rx="7.5" ry="7.5"></rect></svg>' +
                   '<button class="library-settings__handle-btn" type="button" aria-label="순서 변경" @mousedown="startDrag($event, row.g, i)">' +
                     '<i class="ic-v2-navigation-menu-line library-settings__handle" aria-hidden="true"></i>' +
