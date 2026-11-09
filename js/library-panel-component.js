@@ -163,6 +163,11 @@ var LIBRARY_GAME_MENU = [
   { label: '게임 삭제', play: true },
 ];
 // play: 플레이(설치) 관련 — 미설치(action install) 게임이면 비활성 (사용자 11-09)
+// 패널 메뉴의 바닥 — 런처 영역(.app, 하단 PR 배너 제외) 아래 20을 비운다. 필터 레이어와 같은 기준 (LIBRARY_FILTER_BOTTOM_GAP)
+function libraryMenuBottom() {
+  var app = document.querySelector('.app');
+  return (app ? app.getBoundingClientRect().bottom : window.innerHeight) - LIBRARY_FILTER_BOTTOM_GAP;
+}
 // 숨겨진 게임 화면의 카드 우클릭 (사용자 11-09 캡처) — 즐겨찾기 · 숨김 목록에서 제거만 동작. play 항목은 미설치면 비활성
 var LIBRARY_GAME_MENU_HIDDEN = [
   { label: '즐겨찾기 추가', fav: true },
@@ -734,7 +739,9 @@ var LibraryPanel = {
         var h = el.offsetHeight;
         var left = anchor.alignRight ? anchor.x - w : anchor.x;
         var top = anchor.y;
-        if (top + h > window.innerHeight - 8) top = anchor.flipY - h; // 아래가 모자라면 위로
+        var maxBottom = libraryMenuBottom();
+        // ⋮ 버튼 = 아래가 모자라면 버튼 위로, 우클릭 = 바닥 여백에 붙여 위로 (필터 레이어와 같은 바닥, 사용자 11-09)
+        if (top + h > maxBottom) top = fromButton ? anchor.flipY - h : maxBottom - h;
         left = this.clampToPanel(left, w);
         this.menu.left = left;
         this.menu.top = Math.max(8, top);
@@ -816,10 +823,11 @@ var LibraryPanel = {
         if (!el || !this.gameMenu) return;
         var r = el.querySelector('.game-menu__face--front').getBoundingClientRect();
         var minTop = box ? box.top : 8;
-        var maxBottom = box ? box.bottom : window.innerHeight - 8;
+        var maxBottom = box ? box.bottom : libraryMenuBottom();
         if (floating) { x = floating.anchor.right - r.width; y = floating.anchor.top - 4 - r.height; }
         var left = box ? Math.max(box.left, Math.min(x, box.right - r.width)) : this.clampToPanel(x, r.width);
-        var top = floating ? y : y + r.height > maxBottom ? y - r.height : y; // 아래가 모자라면 위로
+        // 콘텐츠 영역 = 아래가 모자라면 커서 위로, 패널 = 바닥 여백(런처 영역 아래 20)에 붙여 위로 (사용자 11-09)
+        var top = floating ? y : y + r.height <= maxBottom ? y : box ? y - r.height : maxBottom - r.height;
         this.gameMenu.left = Math.round(left);
         this.gameMenu.top = Math.round(Math.max(minTop, top));
         this.gameMenu.measuring = false;
