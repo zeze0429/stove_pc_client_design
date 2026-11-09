@@ -95,6 +95,32 @@ var GNB_GAME_GROUPS = [
   },
 ];
 
+// 즐겨찾기는 페이지를 옮겨도 유지 — 사이드바 게임을 누르면 상세 페이지로 이동(새로 로드)하므로
+// 추가 · 제거 · 순서 변경한 목록을 탭 세션(sessionStorage)에 두고 로드할 때 되살린다. 새 탭이면 처음 목록
+var GNB_FAVORITES_KEY = 'stove-proto-favorites';
+function gnbSaveFavorites() {
+  try {
+    var fav = gnbFavoriteGroup();
+    if (!fav) return;
+    sessionStorage.setItem(GNB_FAVORITES_KEY, JSON.stringify({
+      count: fav.count,
+      games: fav.games.map(function (g) { return { id: g.id, game: g.game, badges: g.badges }; }),
+    }));
+  } catch (e) { /* 저장 못 하면 이 페이지에서만 유지 */ }
+}
+(function gnbRestoreFavorites() {
+  try {
+    var saved = JSON.parse(sessionStorage.getItem(GNB_FAVORITES_KEY) || 'null');
+    if (!saved || !Array.isArray(saved.games)) return;
+    var fav = GNB_GAME_GROUPS.find(function (g) { return g.id === 'favorites'; });
+    if (!fav) return;
+    fav.games = saved.games.map(function (e) {
+      return gnbGroupGame({ id: e.id, game: e.game || e.id.replace(/^fav-/, ''), badges: e.badges });
+    });
+    fav.count = saved.count;
+  } catch (e) { /* 깨진 값이면 처음 목록 */ }
+})();
+
 // 게임 리스트 뱃지 — 이미지 리소스 (Figma 2026_웹전환 11716:51837, 2배수 32 → 16 표시).
 // 게임마다 badges: ['link', 'multiplay'] 중 필요한 것만 달면 어느 게임에든 붙는다.
 // 파일명은 Figma 컴포넌트 이름 그대로 (공백은 %20)
@@ -197,6 +223,7 @@ function gnbAddFavorite(gameId) {
   if (!fav || gnbIsFavorite(gameId)) return false;
   fav.games.unshift(gnbGroupGame({ id: 'fav-' + gameId, game: gameId }));
   fav.count += 1;
+  gnbSaveFavorites();
   return true;
 }
 function gnbRemoveFavorite(gameId) {
@@ -205,6 +232,7 @@ function gnbRemoveFavorite(gameId) {
   var before = fav.games.length;
   fav.games = fav.games.filter(function (g) { return g.game !== gameId && g.id !== 'fav-' + gameId; });
   fav.count -= before - fav.games.length;
+  gnbSaveFavorites();
 }
 
 // id로 게임 하나 찾기 — 스토브게임/즐겨찾기 그룹을 가리지 않고 전체에서 검색
@@ -698,14 +726,16 @@ var GnbComponent = {
       if (!favGroup) return;
       var favId = 'fav-' + game.id;
       if (favGroup.games.some(function (g) { return g.id === favId; })) return; // 이미 즐겨찾기에 있음
-      favGroup.games.unshift({ id: favId, name: game.name, thumb: game.thumb, badges: game.badges });
+      favGroup.games.unshift({ id: favId, game: game.game, name: game.name, thumb: game.thumb, badges: game.badges });
       favGroup.count = favGroup.games.length;
+      gnbSaveFavorites();
     },
     removeFromFavorites: function (game) {
       var favGroup = this.gameGroups.find(function (g) { return g.id === 'favorites'; });
       if (!favGroup) return;
       favGroup.games = favGroup.games.filter(function (g) { return g.id !== game.id; });
       favGroup.count = favGroup.games.length;
+      gnbSaveFavorites();
     },
 
     // ── 즐겨찾기 롱프레스 드래그 순서변경 ────────────────────────
@@ -782,6 +812,7 @@ var GnbComponent = {
         if (d && d.targetIndex !== d.fromIndex) {
           var moved = group.games.splice(d.fromIndex, 1)[0];
           group.games.splice(d.targetIndex, 0, moved);
+          gnbSaveFavorites();
         }
         self.dragging = null;
         self.moveActiveIndicator('instant');
