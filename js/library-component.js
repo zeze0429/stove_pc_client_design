@@ -855,6 +855,13 @@ var LibraryMain = {
             '<p class="library-no-result__desc stds-text3">검색어의 단어 수를 줄이거나 필터 조건을 변경하세요.</p>' +
           '</div>' +
         '</div>' +
+        // 숨긴 게임이 없을 때 (Figma 클라이언트_v3.1 48960:383609) — 결과 없음 박스와 같은 크기 · 글자(사용자 11-09), 일러스트만 다름
+        '<div v-if="store.viewHidden && !hiddenGames.length" class="library-no-result" data-name="empty">' +
+          '<img class="library-no-result__img" src="assets/library/empty_hidden.svg" alt="" />' +
+          '<div class="library-no-result__text">' +
+            '<p class="library-no-result__title stds-title7 fw-medium">숨겨진 게임이 없습니다.</p>' +
+          '</div>' +
+        '</div>' +
         '<ul class="library-grid">' +
           '<li v-for="g in filteredOwned" :key="g.id" class="library-card" ' +
             ':class="{ \'is-selectable\': selecting, \'is-selected\': selecting && isSelected(g), \'is-added\': selecting && addedIds[g.id] }" ' +
