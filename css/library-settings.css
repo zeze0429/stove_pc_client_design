@@ -123,10 +123,10 @@
 }
 /* 한 자리 수는 14 × 14 원 (사용자 11-09) */
 .library-settings__badge.is-single { width: 1.4rem; padding-left: 0; padding-right: 0; }
-/* 생성일 Caption2-R 11/18 elevation-4, 🗑과 8 */
+/* 생성일 Caption2-R 11/18 elevation-4, 🗑과 6 (사용자 11-09, 시안 8) */
 .library-settings__date {
   flex: 0 0 auto;
-  margin-right: -0.4rem;
+  margin-right: -0.6rem;
   color: var(--stds-sem-color-on-surface-elevation-4);
   font-size: 1.1rem;
   line-height: 1.8rem;
