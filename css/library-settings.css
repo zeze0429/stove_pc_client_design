@@ -102,8 +102,9 @@
 /* 개수 뱃지 — 14, neutral-variant-4 · elevation-3, Caption2-M 11 */
 .library-settings__badge {
   flex: 0 0 auto;
-  display: grid;
-  place-items: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: 1.6rem;
   height: 1.4rem;
   padding: 0 0.4rem;
@@ -112,7 +113,7 @@
   color: var(--stds-sem-color-on-surface-elevation-3);
   font-size: 1.1rem;
   font-weight: 500;
-  line-height: 1.8rem;
+  line-height: 1; /* 뱃지 높이 14 안에서 숫자 가운데 — 줄 높이 18이면 위로 밀린다 (사용자 11-09) */
   letter-spacing: -0.022rem;
 }
 .library-settings__date {
