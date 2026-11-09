@@ -1065,7 +1065,7 @@ var LibraryPanel = {
       this.closeGameMenu();
       this.$nextTick(this.updateThumb);
     },
-    // 그룹에서 제거 — 그룹명을 고르면 바로 빠지고 메뉴는 닫힌다 + 패널 상단 완료 토스트 (사용자 11-09, Figma 11564:174292 문구)
+    // 그룹에서 제거 — 그룹명을 고르면 바로 빠지고 메뉴는 닫힌다 + 패널 상단 회색 토스트 (사용자 11-09)
     removeMenuGameFrom: function (group) {
       var i = group.gameIds.indexOf(this.gameMenu.gameId);
       if (i < 0) return;
@@ -1309,8 +1309,12 @@ var LibraryPanel = {
         '<div v-if="drag && drag.kind === \'games\'" class="library-panel__notice stds-cap1 fw-medium" role="status" data-name="toast popup">' +
           '<p><b>{{ drag.gameIds.length }}개 게임</b>을 다른 그룹에 추가합니다.</p>' +
         '</div>' +
-        '<div v-if="addedNotice" class="library-panel__added" role="status" data-name="toast popup">' +
-          '<p class="library-panel__added-title stds-cap1 fw-medium"><b>{{ addedNotice.count }}개 게임</b>{{ addedNotice.kind === \'remove\' ? \'을 해당 그룹에서 제거했습니다.\' : \'을 다른 그룹에 추가했습니다.\' }}</p>' +
+        // 그룹에서 제거 완료 — 진행 중 메시지와 같은 회색 토스트(사용자 11-09 이미지), 3초
+        '<div v-if="addedNotice && addedNotice.kind === \'remove\'" class="library-panel__notice stds-cap1 fw-medium" role="status" data-name="toast popup">' +
+          '<p><b>{{ addedNotice.count }}개 게임</b>을 해당 그룹에서 제거했습니다.</p>' +
+        '</div>' +
+        '<div v-else-if="addedNotice" class="library-panel__added" role="status" data-name="toast popup">' +
+          '<p class="library-panel__added-title stds-cap1 fw-medium"><b>{{ addedNotice.count }}개 게임</b>을 다른 그룹에 추가했습니다.</p>' +
           '<span class="library-panel__added-group" data-name="group name"><i class="ic-v2-control-long-arrow-right-line" aria-hidden="true"></i><span>{{ addedNotice.title }}</span></span>' +
         '</div>' +
         '<button class="stds-button stds-button-secondary stds-button-sm library-panel__create" type="button" :disabled="!canCreate" @click="startCreate">' +
