@@ -604,6 +604,22 @@
 .library-card__check:not(.is-checked) {
   background: color-mix(in srgb, var(--stds-checkbox-background) 80%, transparent);
 }
+/* 썸네일 이미지 위라 다크 · 라이트로 바뀌지 않게 글로벌 토큰 고정 (사용자 11-09) — 값은 다크 시멘틱과 같다:
+   미선택 neutral-variant-3 = gray840 · 보더 border = gray650, 선택 brand-primary = orange500,
+   이미 그룹에 있음(비활성 선택) disabled-variant-2 = gray600 · 아이콘 disabled-variant-4 = gray500 */
+.library-card .library-card__check {
+  --stds-checkbox-background: var(--stds-glob-color-gray840);
+  --stds-checkbox-line: var(--stds-glob-color-gray650);
+  --stds-checkbox-icon: var(--stds-glob-color-white);
+}
+.library-card .library-card__check.is-checked {
+  --stds-checkbox-background: var(--stds-glob-color-orange500);
+  --stds-checkbox-line: transparent;
+}
+.library-card .library-card__check.is-disabled.is-checked {
+  --stds-checkbox-background: var(--stds-glob-color-gray600);
+  --stds-checkbox-icon: var(--stds-glob-color-gray500);
+}
 /* 선택 / 이미 그룹에 있음 — 이미지 위 검정 40%, 보더 3 */
 .library-card.is-selected .library-card__media::after,
 .library-card.is-added .library-card__media::after {
@@ -616,7 +632,7 @@
 .library-card.is-added { cursor: default; }
 /* 이미 그룹에 있음 (Figma 2026_웹전환 1545:51480) — 체크는 STDS 비활성 선택,
    보더는 그 체크 배경(disabled-variant-2)과 같은 색 (사용자 11-05) */
-.library-card.is-added .library-card__border { border: 0.3rem solid var(--stds-sem-color-disabled-variant-2); }
+.library-card.is-added .library-card__border { border: 0.3rem solid var(--stds-glob-color-gray600); } /* 체크 배경과 같은 글로벌 고정 (이미지 위) */
 .library-card.is-added .library-card__genre,
 .library-card.is-added .library-card__name { color: var(--stds-sem-color-on-surface-elevation-4); }
 .library-card.is-added .library-card__thumb:hover .library-card__media img { transform: none; }
