@@ -164,6 +164,8 @@ var LibrarySettingsDialog = {
       if (e.button !== 0 || this.editing || this.drag) return;
       if (e.target.closest('button') && !e.target.closest('.library-settings__handle-btn')) return;
       if (e.target.closest('.library-settings__handle-btn')) return; // 손잡이는 누르자마자 (startDrag)
+      // 기본 동작(선택 제스처)을 막아야 크롬이 누르고 있는 동안에도 커서를 grabbing으로 바꿔 준다
+      e.preventDefault();
       var self = this, row = e.currentTarget, sx = e.clientX, sy = e.clientY;
       this.cancelPress();
       function onUp() { self.cancelPress(); }
