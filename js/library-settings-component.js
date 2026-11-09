@@ -265,7 +265,7 @@ var LibrarySettingsDialog = {
                   '</button>' +
                   '<span class="library-settings__name-wrap" data-name="게임명">' +
                     '<span class="library-settings__name">{{ row.g.title }}</span>' +
-                    '<span class="library-settings__badge" data-name="badge">{{ groupCount(row.g) }}</span>' +
+                    '<span class="library-settings__badge" :class="{ \'is-single\': groupCount(row.g) < 10 }" data-name="badge">{{ groupCount(row.g) }}</span>' +
                     '<button class="library-settings__icon-btn library-settings__edit-btn" type="button" aria-label="이름 변경" @click="startEdit(row.g)" data-name="btn"><i class="ic-v2-community-pencil-fill"></i></button>' +
                   '</span>' +
                   '<span class="library-settings__date">{{ date(row.g) }}</span>' +
@@ -277,7 +277,7 @@ var LibrarySettingsDialog = {
                 '<span class="library-settings__handle-btn" aria-hidden="true"><i class="ic-v2-navigation-menu-line library-settings__handle"></i></span>' +
                 '<span class="library-settings__name-wrap">' +
                   '<span class="library-settings__name">그룹 없는 게임</span>' +
-                  '<span class="library-settings__badge">{{ ungroupedCount }}</span>' +
+                  '<span class="library-settings__badge" :class="{ \'is-single\': ungroupedCount < 10 }">{{ ungroupedCount }}</span>' +
                 '</span>' +
                 '<span class="library-settings__date">{{ today }}</span>' +
                 '<span class="library-settings__icon-btn library-settings__delete" aria-hidden="true"></span>' +
@@ -297,7 +297,7 @@ var LibrarySettingsDialog = {
         '<span class="library-settings__handle-btn"><i class="ic-v2-navigation-menu-line library-settings__handle"></i></span>' +
         '<span class="library-settings__name-wrap">' +
           '<span class="library-settings__name">{{ dragGroup.title }}</span>' +
-          '<span class="library-settings__badge">{{ groupCount(dragGroup) }}</span>' +
+          '<span class="library-settings__badge" :class="{ \'is-single\': groupCount(dragGroup) < 10 }">{{ groupCount(dragGroup) }}</span>' +
           '<span class="library-settings__icon-btn"><i class="ic-v2-community-pencil-fill"></i></span>' +
         '</span>' +
         '<span class="library-settings__date">{{ date(dragGroup) }}</span>' +

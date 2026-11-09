@@ -106,17 +106,19 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  min-width: 1.4rem; /* 한 자리 수는 14 × 14 원 (사용자 11-09) — 두 자리부터 좌우 3씩 늘어난다 */
   height: 1.4rem;
-  padding: 0 0.3rem;
+  /* 좌우 4 (Figma 39640:305238). 위 1 — 숫자가 반 픽셀 위로 떠 보여서 아래로 맞춘다(사용자 11-09) */
+  padding: 1px 0.4rem 0;
   border-radius: var(--stds-glob-border-radius-full);
   background: var(--stds-sem-color-neutral-variant-4);
   color: var(--stds-sem-color-on-surface-elevation-3);
   font-size: 1.1rem;
   font-weight: 500;
-  line-height: 1; /* 뱃지 높이 14 안에서 숫자 가운데 — 줄 높이 18이면 위로 밀린다 (사용자 11-09) */
+  line-height: 1;
   letter-spacing: -0.022rem;
 }
+/* 한 자리 수는 14 × 14 원 (사용자 11-09) */
+.library-settings__badge.is-single { width: 1.4rem; padding-left: 0; padding-right: 0; }
 .library-settings__date {
   flex: 0 0 auto;
   color: var(--stds-sem-color-on-surface-elevation-3);
