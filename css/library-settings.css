@@ -152,10 +152,10 @@
 button.library-settings__icon-btn:hover { background: var(--stds-sem-color-interaction-hover); }
 button.library-settings__icon-btn:active { background: var(--stds-sem-color-interaction-pressed); }
 
-/* 이름 변경 중 — 행 inverse-elevation-4(사용자 11-09), 입력은 행 그룹명과 같은 Text4-R 13/22 elevation-2 · 캐럿 brand, 글자를 바꾸면 X(16) · 변경, 버튼 사이 4.
+/* 이름 변경 중 — 행 글로벌 black-8(사용자 11-09), 입력은 행 그룹명과 같은 Text4-R 13/22 elevation-2 · 캐럿 brand, 글자를 바꾸면 X(16) · 변경, 버튼 사이 4.
    같은 이름이면 행 아래 8에 에러 (그룹 만들기 에러와 같은 모양) */
 .library-settings__edit { display: flex; flex-direction: column; gap: 0.8rem; }
-.library-settings__row.is-editing { background: var(--stds-sem-color-inverse-elevation-4); } /* 사용자 11-09 (gray860 → inverse-elevation-5 → 4) */
+.library-settings__row.is-editing { background: var(--stds-glob-color-black-8); } /* 글로벌 black-8 고정 (사용자 11-09) */
 .library-settings__row.is-editing .library-settings__handle { flex: 0 0 auto; margin-right: -0.4rem; color: var(--stds-sem-color-on-surface-elevation-4); } /* ≡ ↔ 입력 8 (보통 행과 같음) */
 /* 버튼(xs 24) 위아래 6과 같게 오른쪽도 6 (사용자 11-09) */
 .library-settings__row.is-editing { padding-right: 0.6rem; }
