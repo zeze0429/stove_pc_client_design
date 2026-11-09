@@ -103,7 +103,7 @@
   line-height: 2.2rem;
   letter-spacing: -0.039rem;
 }
-/* 개수 뱃지 — 14, 배경 neutral-variant-1 · 숫자 neutral-variant-3 Bold 10 (68079:330436) */
+/* 개수 뱃지 — 14, 배경 inverse-elevation-5 · 숫자 on-surface-elevation-4 Bold 10 (사용자 11-09) */
 .library-settings__badge {
   flex: 0 0 auto;
   display: inline-flex;
@@ -114,8 +114,8 @@
   /* 좌우 4. 위 2 — 숫자(10 Bold)가 위로 떠 보여서 아래로 맞춘다 (8배 확대로 확인, 사용자 11-09) */
   padding: 2px 0.4rem 0;
   border-radius: var(--stds-glob-border-radius-full);
-  background: var(--stds-sem-color-neutral-variant-1);
-  color: var(--stds-sem-color-neutral-variant-3);
+  background: var(--stds-sem-color-inverse-elevation-5);
+  color: var(--stds-sem-color-on-surface-elevation-4);
   font-size: 1rem;
   font-weight: 700;
   line-height: 1;
