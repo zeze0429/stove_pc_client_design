@@ -54,12 +54,12 @@
 .library-settings__create .add-group-dialog__input:disabled { cursor: default; }
 .library-settings__make { flex: 0 0 auto; padding: 0 1.6rem; } /* 만들기 — 좌우 16 (Figma 65) */
 
-/* 나의 그룹 목록 — 라벨 아래 8, 행 36 · 간격 8 */
+/* 나의 그룹 목록 — 라벨 아래 8, 행 36 · 행 사이 4 */
 .library-settings__groups { align-self: stretch; display: flex; flex-direction: column; gap: 0.8rem; }
-.library-settings__list { display: flex; flex-direction: column; gap: 0.8rem; }
+.library-settings__list { display: flex; flex-direction: column; gap: 0.4rem; }
 .library-settings__empty { padding-top: 0; }
 
-/* 그룹 항목 행 (68079:330436 250808) — 36, 위아래 7 · 좌우 12, 둥글기 8, 배경 inverse-elevation-6.
+/* 그룹 항목 행 (68079:330436 250808) — 36, 위아래 7 · 좌 12 · 우 8, 둥글기 8, 배경 inverse-elevation-6.
    [≡ 8 그룹명 · 뱃지 · ✎] 12 [날짜 8 🗑]. hover · press는 같은 배경 위에 interaction-hover / pressed (가이드 없음) */
 .library-settings__row {
   position: relative;
@@ -67,7 +67,7 @@
   align-items: center;
   gap: 1.2rem;
   height: 3.6rem;
-  padding: 0 1.2rem;
+  padding: 0 0.8rem 0 1.2rem;
   border-radius: var(--stds-glob-border-radius-lg);
   background: var(--stds-sem-color-inverse-elevation-6);
 }
@@ -103,7 +103,7 @@
   line-height: 2.2rem;
   letter-spacing: -0.039rem;
 }
-/* 개수 뱃지 — 14, neutral-variant-4 · elevation-3, Caption2-M 11 */
+/* 개수 뱃지 — 14, 배경 neutral-variant-1 · 숫자 neutral-variant-3 Bold 10 (68079:330436) */
 .library-settings__badge {
   flex: 0 0 auto;
   display: inline-flex;
@@ -111,15 +111,15 @@
   justify-content: center;
   box-sizing: border-box;
   height: 1.4rem;
-  /* 좌우 4 (Figma 39640:305238). 위 1 — 숫자가 반 픽셀 위로 떠 보여서 아래로 맞춘다(사용자 11-09) */
-  padding: 1px 0.4rem 0;
+  /* 좌우 4. 위 2 — 숫자(10 Bold)가 위로 떠 보여서 아래로 맞춘다 (8배 확대로 확인, 사용자 11-09) */
+  padding: 2px 0.4rem 0;
   border-radius: var(--stds-glob-border-radius-full);
-  background: var(--stds-sem-color-neutral-variant-4);
-  color: var(--stds-sem-color-on-surface-elevation-3);
-  font-size: 1.1rem;
-  font-weight: 500;
+  background: var(--stds-sem-color-neutral-variant-1);
+  color: var(--stds-sem-color-neutral-variant-3);
+  font-size: 1rem;
+  font-weight: 700;
   line-height: 1;
-  letter-spacing: -0.022rem;
+  letter-spacing: -0.02rem;
 }
 /* 한 자리 수는 14 × 14 원 (사용자 11-09) */
 .library-settings__badge.is-single { width: 1.4rem; padding-left: 0; padding-right: 0; }
@@ -132,7 +132,7 @@
   line-height: 1.8rem;
   letter-spacing: -0.022rem;
 }
-/* ✎ 18 · 🗑 20 (아이콘 14), 둥글기 4, hover interaction-hover · pressed interaction-pressed. ✎ elevation-1, 🗑 elevation-4 */
+/* ✎ 18 · 🗑 20 (아이콘 14), 둥글기 4, hover interaction-hover · pressed interaction-pressed. 아이콘 둘 다 elevation-3 */
 .library-settings__icon-btn {
   flex: 0 0 auto;
   display: grid;
@@ -143,12 +143,12 @@
   border: 0;
   border-radius: var(--stds-glob-border-radius-md);
   background: transparent;
-  color: var(--stds-sem-color-on-surface-elevation-1);
+  color: var(--stds-sem-color-on-surface-elevation-3);
   cursor: pointer;
   transition: background-color 0.12s;
 }
 .library-settings__icon-btn i { font-size: 1.4rem; }
-.library-settings__delete { width: 2rem; height: 2rem; color: var(--stds-sem-color-on-surface-elevation-4); }
+.library-settings__delete { width: 2rem; height: 2rem; }
 button.library-settings__icon-btn:hover { background: var(--stds-sem-color-interaction-hover); }
 button.library-settings__icon-btn:active { background: var(--stds-sem-color-interaction-pressed); }
 
