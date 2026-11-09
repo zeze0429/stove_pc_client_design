@@ -165,7 +165,32 @@ function libraryReadHidden() {
   try { var v = JSON.parse(sessionStorage.getItem(LIBRARY_HIDDEN_KEY) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; }
 }
 var LIBRARY_STORE = Vue.reactive({ groups: [], addTargetId: null, selectMode: false, viewGroupId: null, viewOwned: false, removedToast: null, floatingAction: null, moreOpen: false,
-  hiddenIds: libraryReadHidden(), viewHidden: false });
+  hiddenIds: libraryReadHidden(), viewHidden: false,
+  // 그룹 없는 게임의 자리 — 바로 아래에 오는 그룹 id, null이면 맨 아래 (설정 팝업 · 우측패널에서 순서 변경 가능, 사용자 11-09)
+  ungroupedBefore: null });
+// 그룹 + 그룹 없는 게임을 화면 순서대로 — 그룹 없는 게임은 { id: 'ungrouped', ungrouped: true }
+function libraryGroupOrder(groups) {
+  var list = groups.slice();
+  var before = LIBRARY_STORE.ungroupedBefore;
+  var i = before ? list.findIndex(function (g) { return g.id === before; }) : -1;
+  list.splice(i < 0 ? list.length : i, 0, { id: 'ungrouped', ungrouped: true });
+  return list;
+}
+// 순서 변경 결과(id 배열, 'ungrouped' 포함 가능)를 그룹 배열 · 그룹 없는 게임 자리에 반영
+function libraryApplyOrder(ids) {
+  var byId = {};
+  LIBRARY_STORE.groups.forEach(function (g) { byId[g.id] = g; });
+  LIBRARY_STORE.groups = ids.filter(function (id) { return id !== 'ungrouped'; }).map(function (id) { return byId[id]; }).filter(Boolean);
+  var k = ids.indexOf('ungrouped');
+  if (k >= 0) LIBRARY_STORE.ungroupedBefore = k < ids.length - 1 ? ids[k + 1] : null;
+}
+// 그룹을 지우기 전에 — 그룹 없는 게임이 그 그룹 바로 위였으면 다음 그룹 위로 옮긴다
+function libraryBeforeDeleteGroup(id) {
+  if (LIBRARY_STORE.ungroupedBefore !== id) return;
+  var g = LIBRARY_STORE.groups;
+  var i = g.findIndex(function (x) { return x.id === id; });
+  LIBRARY_STORE.ungroupedBefore = i >= 0 && i < g.length - 1 ? g[i + 1].id : null;
+}
 // 숨기기 · 숨김 해제 — 게임 메뉴(패널)와 콘텐츠가 같이 쓴다. 최근에 숨긴 게임이 앞
 function libraryHideGames(ids) {
   var h = LIBRARY_STORE.hiddenIds;

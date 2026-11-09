@@ -64,9 +64,14 @@ var LibrarySettingsDialog = {
     groups: function () { return this.store.groups; },
     canCreate: function () { return this.groups.length < LIBRARY_ADD_GROUP_MAX; },
     canSubmitName: function () { return this.canCreate && !this.error && this.text.trim().length > 0; },
+    // 그룹 + 그룹 없는 게임(있을 때) 화면 순서 — 그룹 없는 게임도 순서를 바꿀 수 있다 (사용자 11-09)
+    entries: function () {
+      var list = libraryGroupOrder(this.groups);
+      return this.ungroupedCount ? list : list.filter(function (e) { return !e.ungrouped; });
+    },
     // 순서 변경 중이면 끄는 그룹을 놓일 자리(원래 자리 표시)로 옮겨서 보여 준다
     rows: function () {
-      var list = this.groups.slice();
+      var list = this.entries.slice();
       var d = this.drag;
       if (!d || !d.started) return list.map(function (g) { return { g: g, ghost: false }; });
       var dragged = list.splice(d.from, 1)[0];
@@ -75,7 +80,7 @@ var LibrarySettingsDialog = {
     },
     dragGroup: function () {
       var d = this.drag;
-      return d && d.started ? this.groups.find(function (g) { return g.id === d.id; }) : null;
+      return d && d.started ? this.entries.find(function (g) { return g.id === d.id; }) : null;
     },
   },
   mounted: function () {
@@ -147,6 +152,7 @@ var LibrarySettingsDialog = {
       var s = this.store;
       if (s.addTargetId === id) { s.addTargetId = null; s.selectMode = false; }
       if (s.viewGroupId === id) { s.viewGroupId = null; s.viewOwned = false; }
+      libraryBeforeDeleteGroup(id);
       s.groups = s.groups.filter(function (g) { return g.id !== id; });
       this.confirm = null;
     },
@@ -175,16 +181,17 @@ var LibrarySettingsDialog = {
       var list = this.$refs.list;
       var lr = list.getBoundingClientRect();
       var pitch = 52; // 행 44 + 간격 8
-      var top = Math.max(lr.top, Math.min(e.clientY - d.offsetY, lr.top + (this.groups.length - 1) * pitch));
+      var n = this.entries.length;
+      var top = Math.max(lr.top, Math.min(e.clientY - d.offsetY, lr.top + (n - 1) * pitch));
       d.y = top;
-      d.to = Math.max(0, Math.min(this.groups.length - 1, Math.round((top - lr.top) / pitch)));
+      d.to = Math.max(0, Math.min(n - 1, Math.round((top - lr.top) / pitch)));
     },
     onDragUp: function () {
       var d = this.drag;
       if (d && d.started && d.to !== d.from) {
-        var list = this.groups;
-        var moved = list.splice(d.from, 1)[0];
-        list.splice(d.to, 0, moved);
+        var ids = this.entries.map(function (e) { return e.id; });
+        ids.splice(d.to, 0, ids.splice(d.from, 1)[0]);
+        libraryApplyOrder(ids);
       }
       this.endDrag();
     },
@@ -258,6 +265,19 @@ var LibrarySettingsDialog = {
                   '</div>' +
                   '<p v-if="editing.error" class="add-group-dialog__error" data-name="Input/Tag"><i class="ic-v2-state-warning-circle-fill" aria-hidden="true"></i>{{ editing.error }}</p>' +
                 '</div>' +
+                // 그룹 없는 게임 — 이름 변경 · 삭제 없음, 순서는 바꿀 수 있다 (사용자 11-09)
+                '<div v-else-if="row.g.ungrouped" class="library-settings__row" :class="{ \'is-ghost\': row.ghost }" data-name="그룹 항목">' +
+                  '<svg v-if="row.ghost" class="library-group__ghost" aria-hidden="true"><rect x="0.5" y="0.5" rx="7.5" ry="7.5"></rect></svg>' +
+                  '<button class="library-settings__handle-btn" type="button" aria-label="순서 변경" @mousedown="startDrag($event, row.g, i)">' +
+                    '<i class="ic-v2-navigation-menu-line library-settings__handle" aria-hidden="true"></i>' +
+                  '</button>' +
+                  '<span class="library-settings__name-wrap">' +
+                    '<span class="library-settings__name">그룹 없는 게임</span>' +
+                    '<span class="library-settings__badge" :class="{ \'is-single\': ungroupedCount < 10 }">{{ ungroupedCount }}</span>' +
+                  '</span>' +
+                  '<span class="library-settings__date">{{ today }}</span>' +
+                  '<span class="library-settings__icon-btn library-settings__delete" aria-hidden="true"></span>' +
+                '</div>' +
                 '<div v-else class="library-settings__row" :class="{ \'is-ghost\': row.ghost }" data-name="그룹 항목">' +
                   '<svg v-if="row.ghost" class="library-group__ghost" aria-hidden="true"><rect x="0.5" y="0.5" rx="7.5" ry="7.5"></rect></svg>' +
                   '<button class="library-settings__handle-btn" type="button" aria-label="순서 변경" @mousedown="startDrag($event, row.g, i)">' +
@@ -272,16 +292,6 @@ var LibrarySettingsDialog = {
                   '<button class="library-settings__icon-btn library-settings__delete" type="button" aria-label="삭제" @click="askDelete(row.g)" data-name="삭제"><i class="ic-v2-object-delete-fill"></i></button>' +
                 '</div>' +
               '</template>' +
-              // 그룹 없는 게임 — 항상 맨 아래, 이름 변경 · 삭제 · 순서 변경 없음
-              '<div v-if="ungroupedCount" class="library-settings__row is-static" data-name="그룹 항목">' +
-                '<span class="library-settings__handle-btn" aria-hidden="true"><i class="ic-v2-navigation-menu-line library-settings__handle"></i></span>' +
-                '<span class="library-settings__name-wrap">' +
-                  '<span class="library-settings__name">그룹 없는 게임</span>' +
-                  '<span class="library-settings__badge" :class="{ \'is-single\': ungroupedCount < 10 }">{{ ungroupedCount }}</span>' +
-                '</span>' +
-                '<span class="library-settings__date">{{ today }}</span>' +
-                '<span class="library-settings__icon-btn library-settings__delete" aria-hidden="true"></span>' +
-              '</div>' +
             '</div>' +
             '<div v-else class="add-group-dialog__empty library-settings__empty" data-name="항목 없음">' +
               // 임시 정지 이미지 — 그룹에 추가 팝업과 같은 APNG 자리 (리소스 받으면 같이 교체)
@@ -295,13 +305,17 @@ var LibrarySettingsDialog = {
       // 끄는 동안 커서를 따라다니는 프리뷰
       '<div v-if="dragGroup" class="library-settings__row library-settings__drag" :style="{ left: drag.x + \'px\', top: drag.y + \'px\', width: drag.width + \'px\' }" aria-hidden="true">' +
         '<span class="library-settings__handle-btn"><i class="ic-v2-navigation-menu-line library-settings__handle"></i></span>' +
-        '<span class="library-settings__name-wrap">' +
+        '<span v-if="dragGroup.ungrouped" class="library-settings__name-wrap">' +
+          '<span class="library-settings__name">그룹 없는 게임</span>' +
+          '<span class="library-settings__badge" :class="{ \'is-single\': ungroupedCount < 10 }">{{ ungroupedCount }}</span>' +
+        '</span>' +
+        '<span v-else class="library-settings__name-wrap">' +
           '<span class="library-settings__name">{{ dragGroup.title }}</span>' +
           '<span class="library-settings__badge" :class="{ \'is-single\': groupCount(dragGroup) < 10 }">{{ groupCount(dragGroup) }}</span>' +
           '<span class="library-settings__icon-btn"><i class="ic-v2-community-pencil-fill"></i></span>' +
         '</span>' +
-        '<span class="library-settings__date">{{ date(dragGroup) }}</span>' +
-        '<span class="library-settings__icon-btn library-settings__delete"><i class="ic-v2-object-delete-fill"></i></span>' +
+        '<span class="library-settings__date">{{ dragGroup.ungrouped ? today : date(dragGroup) }}</span>' +
+        '<span class="library-settings__icon-btn library-settings__delete"><i v-if="!dragGroup.ungrouped" class="ic-v2-object-delete-fill"></i></span>' +
       '</div>' +
 
       '<settings-confirm v-if="confirm" :name="confirm.name" @confirm="doDelete" @cancel="confirm = null"></settings-confirm>' +

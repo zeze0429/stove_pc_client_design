@@ -232,7 +232,7 @@ function TITLE_TPL(idExpr, nameExpr, countExpr, withAdd) {
   return '<div class="game-group__title library-group__title" ' +
       ':class="{ \'is-hover\': hoveredTitleId === ' + idExpr + ', \'is-menu-open\': menu && menu.groupId === ' + idExpr + ', \'is-selected\': viewGroupId === ' + idExpr + ' }" ' +
       '@mouseenter="onTitleEnter($event, ' + idExpr + ')" @mouseleave="onTitleLeave" ' +
-      (withAdd ? '@mousedown="onTitleMouseDown($event, ' + idExpr + ')" ' : '') +
+      '@mousedown="onTitleMouseDown($event, ' + idExpr + ')" ' + // 그룹 없는 게임도 순서 변경 가능 (사용자 11-09)
       '@click="openGroupPage(' + idExpr + ')" @contextmenu.prevent="' + isTarget + ' || openMenu($event, ' + idExpr + ', false)" data-name="component/game_group/title">' +
     '<button class="game-group__btn-left-arrow" type="button" aria-label="펼치기/접기" :disabled="' + isTarget + '" @click.stop="toggleGroup(' + idExpr + ')" data-name="component/game_group/title/btn_left_arrow">' +
       '<i class="ic-v2-control-select-arrow-down-fill"></i>' +
@@ -397,11 +397,17 @@ var LibraryPanel = {
     rowOrder: function () {
       var order = {};
       var n = 0;
-      this.shownGroups.forEach(function (g) {
-        this.groupGames(g).forEach(function (game) { order[g.id + ':' + game.id] = n++; });
+      this.shownEntries.forEach(function (g) {
+        (g.ungrouped ? this.ungrouped : this.groupGames(g)).forEach(function (game) { order[g.id + ':' + game.id] = n++; });
       }, this);
-      this.ungrouped.forEach(function (game) { order['ungrouped:' + game.id] = n++; });
       return order;
+    },
+    // 화면 순서 — 그룹 + 그룹 없는 게임({ id: 'ungrouped', ungrouped: true }). 설정 순이면 저장된 자리, 이름 순이면 맨 아래.
+    // 그룹 없는 게임이 하나도 없으면 빠진다
+    shownEntries: function () {
+      var groups = this.shownGroups;
+      var list = this.filter.groupSort === 'name' ? groups.concat([{ id: 'ungrouped', ungrouped: true }]) : libraryGroupOrder(groups);
+      return this.ungrouped.length ? list : list.filter(function (e) { return !e.ungrouped; });
     },
     // 필터 정렬을 적용한 그룹 순서 (설정 순이면 그대로)
     shownGroups: function () {
@@ -641,6 +647,7 @@ var LibraryPanel = {
       var self = this;
       if (id === this.addTargetId) this.cancelAdd();
       if (id === this.store.viewGroupId) { this.store.viewGroupId = null; this.store.viewOwned = false; } // 보고 있던 그룹이면 보유게임 전체로
+      libraryBeforeDeleteGroup(id);
       this.groups = this.groups.filter(function (g) { return g.id !== id; });
       delete this.collapsed[id];
       this.addedNotice = null;
@@ -995,13 +1002,14 @@ var LibraryPanel = {
     },
     // 그룹 순서 변경 — 펼쳐져 있던 그룹도 전부 접고, 끝나면 원래 접힘 상태로 (Figma ⑫ 순서 변경 안내)
     beginGroupDrag: function (title, id, sx, sy) {
-      var group = this.groups.find(function (g) { return g.id === id; });
-      if (!group) return;
+      var order = this.shownEntries.map(function (e) { return e.id; }); // 그룹 없는 게임 포함 화면 순서
+      var group = id === 'ungrouped' ? { title: '그룹 없는 게임' } : this.groups.find(function (g) { return g.id === id; });
+      if (!group || order.indexOf(id) < 0) return;
       var r = title.getBoundingClientRect();
       this._collapsedBefore = Object.assign({}, this.collapsed);
       this.setAllCollapsed(true);
       this.startDrag({
-        kind: 'group', groupId: id, title: group.title, fromIndex: this.groups.indexOf(group), targetIndex: this.groups.indexOf(group),
+        kind: 'group', groupId: id, title: group.title, order: order, fromIndex: order.indexOf(id), targetIndex: order.indexOf(id),
         width: r.width, height: r.height, x: r.left, y: r.top, grabX: sx - r.left, grabY: sy - r.top,
         lineTop: 0, lineLeft: 0, lineWidth: 0, lineVisible: false,
       }, sx, sy);
@@ -1077,7 +1085,7 @@ var LibraryPanel = {
         d.targetId = group && d.gameIds.some(function (id) { return group.gameIds.indexOf(id) < 0; }) ? group.id : null;
         return;
       }
-      // 그룹 순서 — 프리뷰 중심이 어느 그룹의 중간선을 지났는지. 그룹 없는 게임은 항상 맨 아래라 그 아래로는 못 간다
+      // 그룹 순서 — 프리뷰 중심이 어느 그룹의 중간선을 지났는지 (그룹 없는 게임 섹션도 하나의 자리)
       var raw = sections.length;
       for (var i = 0; i < sections.length; i++) {
         var sr = sections[i].getBoundingClientRect();
@@ -1112,9 +1120,9 @@ var LibraryPanel = {
         }
       } else {
         if (commit && d.targetIndex !== d.fromIndex) {
-          var list = this.groups.slice();
-          list.splice(d.targetIndex, 0, list.splice(d.fromIndex, 1)[0]);
-          this.groups = list;
+          var ids = d.order.slice();
+          ids.splice(d.targetIndex, 0, ids.splice(d.fromIndex, 1)[0]);
+          libraryApplyOrder(ids);
         }
         this.collapsed = this._collapsedBefore || {};
         this.$nextTick(function () {
@@ -1500,7 +1508,18 @@ var LibraryPanel = {
           '</div>' +
           '<div v-if="showList" class="library-panel__list" data-name="게임그룹">' +
             // 사용자가 만든 그룹
-            '<section v-for="group in shownGroups" :key="group.id" class="game-group library-group" :data-group-id="group.id" ' +
+            // 그룹 + 그룹 없는 게임을 저장된 순서대로 (그룹 없는 게임도 롱프레스로 옮길 수 있다, 사용자 11-09)
+            '<template v-for="group in shownEntries" :key="group.id">' +
+            // 그룹 없는 게임 — 게임 추가 버튼은 없다 (④)
+            '<section v-if="group.ungrouped" class="game-group library-group" data-group-id="ungrouped" ' +
+              ':class="{ \'is-collapsed\': isCollapsed(\'ungrouped\'), \'is-reorder-ghost\': drag && drag.kind === \'group\' && drag.groupId === \'ungrouped\' }" data-name="component/game_group">' +
+              '<svg v-if="drag && drag.kind === \'group\' && drag.groupId === \'ungrouped\'" class="library-group__ghost" aria-hidden="true"><rect x="0.5" y="0.5" rx="7.5" ry="7.5"></rect></svg>' +
+              TITLE_TPL("'ungrouped'", "'그룹 없는 게임'", 'ungrouped.length', false) +
+              '<ul class="game-group__list-group" data-name="component/game_group/list_group">' +
+                ROW_TPL('ungrouped', "'ungrouped'") +
+              '</ul>' +
+            '</section>' +
+            '<section v-else class="game-group library-group" :data-group-id="group.id" ' +
               ':class="{ \'is-collapsed\': isCollapsed(group.id), \'is-empty\': !owned.length, \'is-renaming\': renamingId === group.id, \'is-add-target\': addTargetId === group.id, ' +
                 '\'is-drop-target\': drag && drag.targetId === group.id, \'is-reorder-ghost\': drag && drag.kind === \'group\' && drag.groupId === group.id }" data-name="component/game_group">' +
               // 순서 변경 중 원래 자리 — 점선 2/2 (Figma 2904:34341)
@@ -1521,14 +1540,7 @@ var LibraryPanel = {
                 ROW_TPL('groupGames(group)', 'group.id') +
               '</ul>' +
             '</section>' +
-
-            // 그룹 없는 게임 — 보유게임이 있을 때만. 게임 추가 버튼은 없다 (④)
-            '<section v-if="ungrouped.length" class="game-group library-group" :class="{ \'is-collapsed\': isCollapsed(\'ungrouped\') }" data-name="component/game_group">' +
-              TITLE_TPL("'ungrouped'", "'그룹 없는 게임'", 'ungrouped.length', false) +
-              '<ul class="game-group__list-group" data-name="component/game_group/list_group">' +
-                ROW_TPL('ungrouped', "'ungrouped'") +
-              '</ul>' +
-            '</section>' +
+            '</template>' +
           '</div>' +
         '</div>' +
 
