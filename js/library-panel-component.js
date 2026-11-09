@@ -161,12 +161,21 @@ var LIBRARY_GAME_MENU = [
   { label: '로컬 파일 보기' },
   { label: '게임 삭제' },
 ];
+// 숨겨진 게임 화면의 카드 우클릭 (사용자 11-09 캡처) — 즐겨찾기 · 숨김 목록에서 제거만 동작, 회색은 비활성
+var LIBRARY_GAME_MENU_HIDDEN = [
+  { label: '즐겨찾기 추가', fav: true },
+  { label: '바탕화면 바로가기 만들기', disabled: true },
+  { label: '게임 파일 검사 및 복구', disabled: true },
+  { label: '필수 프로그램 관리' },
+  { label: '숨김 목록에서 제거', unhide: true },
+  { label: '게임 삭제', disabled: true },
+];
 var LIBRARY_GAME_TOGGLE_DEFAULT = { autoUpdate: false, cloud: true }; // Figma 1뎁스 예시값
 // 여러 개 선택 후 우클릭 (Figma 3-5-3)
 var LIBRARY_GAME_MENU_MULTI = [
   { label: '선택한 게임 즐겨찾기 추가', fav: true },
   { label: '선택한 게임 그룹에 추가', sub: 'add' },
-  { label: '선택한 게임 숨기기' },
+  { label: '선택한 게임 숨기기', hide: true },
 ];
 
 // 2뎁스 내용 (그룹에 추가 · 그룹에서 제거) — 패널은 뒷면(플립)에, 콘텐츠 영역은 옆에 띄운 서브메뉴에 같은 내용을 넣는다
@@ -293,7 +302,7 @@ var LibraryPanel = {
   components: { 'group-name-input': LibraryGroupNameInput, 'create-group-dialog': LibraryCreateGroupDialog, 'library-filter-layer': LibraryFilterLayer },
   data: function () {
     return {
-      owned: LIBRARY_OWNED.map(libraryGame),
+      ownedAll: LIBRARY_OWNED.map(libraryGame), // 숨긴 게임 포함 — 목록에는 owned(숨긴 게임 뺀 것)
       store: LIBRARY_STORE, // groups · addTargetId — 콘텐츠(보유게임 선택 UI)와 같이 쓴다
       deletedNotice: false, // 그룹 삭제 직후 버튼 그룹 위에 띄우는 "그룹이 삭제되었습니다." (3초)
       addedNotice: null, // 게임을 그룹에 넣거나 뺀 직후 같은 자리에 띄우는 완료 토스트 { count, title } (3초)
@@ -335,6 +344,10 @@ var LibraryPanel = {
     };
   },
   computed: {
+    owned: function () {
+      var h = this.store.hiddenIds;
+      return h.length ? this.ownedAll.filter(function (g) { return h.indexOf(g.id) < 0; }) : this.ownedAll;
+    },
     // { id, title, gameIds: [] } — 새 그룹이 맨 위
     groups: {
       get: function () { return this.store.groups; },
@@ -397,7 +410,7 @@ var LibraryPanel = {
     canCreate: function () { return this.groups.length < LIBRARY_GROUP_MAX; },
     menuGame: function () {
       var id = this.gameMenu && this.gameMenu.gameId;
-      return id ? this.owned.find(function (g) { return g.id === id; }) : null;
+      return id ? this.ownedAll.find(function (g) { return g.id === id; }) : null;
     },
     // 그 게임이 들어 있는 그룹 — 그룹에서 제거 2뎁스 목록
     menuGameGroups: function () {
@@ -407,6 +420,10 @@ var LibraryPanel = {
     // 1뎁스 — 그룹에 하나도 없는 게임은 그룹에서 제거를 뺀다
     gameMenuItems: function () {
       if (this.gameMenu && this.gameMenu.multi) return LIBRARY_GAME_MENU_MULTI;
+      if (this.gameMenu && this.gameMenu.hidden) {
+        var fav = gnbIsFavorite(this.gameMenu.gameId);
+        return LIBRARY_GAME_MENU_HIDDEN.map(function (item) { return item.fav && fav ? { label: '즐겨찾기에서 제거', fav: true } : item; });
+      }
       var inGroup = this.menuGameGroups.length > 0;
       var isFav = gnbIsFavorite(this.gameMenu.gameId);
       return LIBRARY_GAME_MENU.filter(function (item) { return item.sub !== 'remove' || inGroup; })
@@ -495,6 +512,7 @@ var LibraryPanel = {
     // 필터 레이어 기준 — 버튼 그룹 (폭 240과 같은 왼쪽 끝)
     actionsEl: function () { return this.$refs.actions; },
     isCollapsed: function (id) { return id !== this.addTargetId && !!this.collapsed[id]; },
+    groupCount: libraryGroupCount,
     groupGames: function (group) {
       var byId = {};
       this.owned.forEach(function (g) { byId[g.id] = g; });
@@ -759,18 +777,19 @@ var LibraryPanel = {
       if (d.source === 'floating') {
         // 더보기를 다시 누르면 닫힌다
         if (this.gameMenu && this.gameMenu.source === 'floating') { this.closeGameMenu(); return; }
-        var first = this.owned.find(function (g) { return g.id === d.gameIds[0]; });
+        var first = this.ownedAll.find(function (g) { return g.id === d.gameIds[0]; });
         if (first) this.showGameMenu(first, null, 0, 0, d.area, { gameIds: d.gameIds, anchor: d.anchor });
         return;
       }
-      var game = this.owned.find(function (g) { return g.id === d.gameId; });
-      if (game) this.showGameMenu(game, null, d.x, d.y, d.area);
+      var game = this.ownedAll.find(function (g) { return g.id === d.gameId; });
+      if (game) this.showGameMenu(game, null, d.x, d.y, d.area, null, d.hidden);
     },
     // area = 콘텐츠 영역(.main) 사각형 — 있으면 1 · 2뎁스 모두 그 안쪽 40 여백 안에만 띄운다(패널 · 사이드바로 넘어가지 않음, 사용자 11-04).
     // 없으면 패널 메뉴 — 패널 안 좌우 16 안으로
     // floating = 하단 플로팅 더보기 { gameIds, anchor: { right, top } } — 콘텐츠 선택 UI에서 고른 게임 n개 메뉴를
     // 더보기 버튼 위 4에, 오른쪽 끝을 더보기 오른쪽 끝에 맞춰 연다 (Figma 클라이언트_v3.1 68059:330432)
-    showGameMenu: function (game, rowKey, x, y, area, floating) {
+    // hidden = 숨겨진 게임 화면의 카드 — 숨긴 게임 메뉴(LIBRARY_GAME_MENU_HIDDEN)
+    showGameMenu: function (game, rowKey, x, y, area, floating, hidden) {
       this.closeMenu();
       this.btnTip = null;
       this.titleTip = null;
@@ -783,7 +802,7 @@ var LibraryPanel = {
       var box = area ? { left: area.left + 40, top: area.top + 40, right: area.right - 40, bottom: area.bottom - 40 } : null;
       this.gameMenu = {
         gameId: game.id, gameIds: floating ? floating.gameIds.slice() : multi ? this.selectedGameIds() : [game.id], multi: multi,
-        source: floating ? 'floating' : null,
+        source: floating ? 'floating' : null, hidden: !!hidden,
         rowKey: multi ? null : rowKey, left: x, top: y, depth: 1, back: 'add', measuring: true,
         cascade: !!box, box: box, subLeft: 0, subTop: 0, subMeasuring: false, // cascade = 2뎁스를 옆에 띄움 (콘텐츠 영역)
       };
@@ -804,6 +823,14 @@ var LibraryPanel = {
     },
     // 즐겨찾기 추가 — 사이드바 즐겨찾기 맨 위에 들어가고 메뉴는 닫힌다. 이미 있으면 제거.
     // 여러 개 선택(3-5-3)은 전부 추가하고 선택 해제
+    // 선택한 게임 숨기기 — 보유게임 · 빠른 실행 · 패널에서 빠지고 숨겨진 게임 화면으로. 더보기에서 누르면 선택 UI도 끝난다
+    hideMenuGames: function () {
+      var m = this.gameMenu;
+      libraryHideGames(m.gameIds);
+      this.clearSelection();
+      if (m.source === 'floating') this.store.floatingAction = { kind: 'done', at: Date.now() };
+      this.closeGameMenu();
+    },
     toggleMenuFavorite: function () {
       var m = this.gameMenu;
       if (m.multi) {
@@ -820,7 +847,10 @@ var LibraryPanel = {
       if (item.sub && this.gameMenu.cascade) { clearTimeout(this._subTimer); this.openGameSub(e.currentTarget, item.sub); }
       else if (item.sub) { this.gameMenu.back = item.sub; this.gameMenu.depth = 2; this.menuTip = null; }
       else if (item.toggle) { var t = this.gameToggles[this.gameMenu.gameId]; t[item.toggle] = !t[item.toggle]; }
+      else if (item.disabled) return;
       else if (item.fav) this.toggleMenuFavorite();
+      else if (item.hide) this.hideMenuGames();
+      else if (item.unhide) { libraryUnhideGames(this.gameMenu.gameIds); this.closeGameMenu(); }
       else this.closeGameMenu(); // 나머지 항목은 아직 동작 없음
     },
     // 콘텐츠 영역(카드)에서 연 메뉴 — 2뎁스는 플립 대신 1뎁스 옆에 4 띄워 뜬다 (사용자 11-04).
@@ -1467,7 +1497,7 @@ var LibraryPanel = {
               '<group-name-input v-if="renamingId === group.id" :initial="group.title" confirm-label="확인" ' +
                 ':validate="validateRename" @submit="renameGroup" @cancel="renamingId = null"></group-name-input>' +
               '<template v-else>' +
-                TITLE_TPL('group.id', 'group.title', 'group.gameIds.length', true) +
+                TITLE_TPL('group.id', 'group.title', 'groupCount(group)', true) +
               '</template>' +
               // 게임 없는 그룹 — 게임 추가 버튼 (Figma ④ "게임이 추가되지 않은 그룹은 게임 추가 버튼이 바로 노출")
               // 게임 추가 중이면 선택 상태(타이틀만)라 이 버튼은 숨긴다 (3-3 "5월에 할 게임 0")
@@ -1524,7 +1554,7 @@ var LibraryPanel = {
           '<div class="game-menu__face game-menu__face--front" role="menu" :aria-hidden="gameMenu.depth === 2 && !gameMenu.cascade">' +
             '<button v-for="item in gameMenuItems" :key="item.label" class="game-menu__item stds-btn3 fw-medium" ' +
               ':class="{ \'has-sub\': item.sub, \'has-toggle\': item.toggle, \'is-open\': gameMenu.cascade && gameMenu.depth === 2 && gameMenu.back === item.sub }" ' +
-              'type="button" role="menuitem" @click="onGameMenuItem(item, $event)" @mouseenter="onGameItemEnter($event, item)" data-name="menu">' +
+              'type="button" role="menuitem" :disabled="item.disabled" @click="onGameMenuItem(item, $event)" @mouseenter="onGameItemEnter($event, item)" data-name="menu">' +
               '<span class="game-menu__label">{{ item.label }}</span>' +
               '<span v-if="item.sub" class="game-menu__icon" aria-hidden="true"><i class="ic-v2-control-arrow-right-line"></i></span>' +
               '<span v-if="item.toggle" class="game-menu__toggle" :class="{ \'is-on\': gameToggles[gameMenu.gameId][item.toggle] }" ' +

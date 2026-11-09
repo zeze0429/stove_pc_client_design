@@ -84,6 +84,7 @@ var LibrarySettingsDialog = {
   },
   beforeUnmount: function () { this.endDrag(); },
   methods: {
+    groupCount: libraryGroupCount,
     date: function (g) { return librarySettingsDate(g.createdAt); },
     setQuick: function (on) { protoSettingsWrite({ libraryQuick: on }); },
     openHidden: function () { this.$emit('hidden-games'); },
@@ -114,13 +115,15 @@ var LibrarySettingsDialog = {
     startEdit: function (g) {
       this.editing = { id: g.id, text: g.title, origin: g.title, error: '' };
       this.$nextTick(function () {
-        var el = this.$refs.editInput;
+        var el = this.editEl();
         if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
       });
     },
+    // v-for 안의 ref는 배열로 온다
+    editEl: function () { var el = this.$refs.editInput; return Array.isArray(el) ? el[0] : el; },
     onEditInput: function (e) { this.editing.text = e.target.value; this.editing.error = ''; },
     editChanged: function () { return !!this.editing && this.editing.text.trim() !== this.editing.origin; },
-    clearEdit: function () { this.editing.text = ''; this.editing.error = ''; this.$refs.editInput.focus(); },
+    clearEdit: function () { this.editing.text = ''; this.editing.error = ''; var el = this.editEl(); if (el) el.focus(); },
     saveEdit: function () {
       var e = this.editing;
       var name = e.text.trim();
@@ -262,7 +265,7 @@ var LibrarySettingsDialog = {
                   '</button>' +
                   '<span class="library-settings__name-wrap" data-name="게임명">' +
                     '<span class="library-settings__name">{{ row.g.title }}</span>' +
-                    '<span class="library-settings__badge" data-name="badge">{{ row.g.gameIds.length }}</span>' +
+                    '<span class="library-settings__badge" data-name="badge">{{ groupCount(row.g) }}</span>' +
                     '<button class="library-settings__icon-btn library-settings__edit-btn" type="button" aria-label="이름 변경" @click="startEdit(row.g)" data-name="btn"><i class="ic-v2-community-pencil-fill"></i></button>' +
                   '</span>' +
                   '<span class="library-settings__date">{{ date(row.g) }}</span>' +
@@ -294,7 +297,7 @@ var LibrarySettingsDialog = {
         '<span class="library-settings__handle-btn"><i class="ic-v2-navigation-menu-line library-settings__handle"></i></span>' +
         '<span class="library-settings__name-wrap">' +
           '<span class="library-settings__name">{{ dragGroup.title }}</span>' +
-          '<span class="library-settings__badge">{{ dragGroup.gameIds.length }}</span>' +
+          '<span class="library-settings__badge">{{ groupCount(dragGroup) }}</span>' +
           '<span class="library-settings__icon-btn"><i class="ic-v2-community-pencil-fill"></i></span>' +
         '</span>' +
         '<span class="library-settings__date">{{ date(dragGroup) }}</span>' +

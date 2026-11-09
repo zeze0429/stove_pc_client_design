@@ -245,6 +245,12 @@
 .proto-library-quick-off .library-quick { display: none; }
 .proto-library-quick-off .library-owned { margin-top: 0; }
 
+/* 숨겨진 게임 화면 (Figma 클라이언트_v3.1 48960:383358 참고, 레이아웃은 지금 보유게임 그대로) — 빠른 실행 없이 타이틀 바로 아래,
+   제목 오른쪽 끝에 "보유 게임 목록 >"(tertiary sm). 버튼은 타이틀 줄 높이(20)를 늘리지 않게 위아래로 걸친다 */
+.library-owned.is-hidden-view { margin-top: 0; }
+.library-hidden-title { display: flex; align-items: center; justify-content: space-between; height: 2rem; }
+.library-hidden-title .stds-button { margin: -0.6rem 0; }
+
 /* ---- 그룹 화면 타이틀 (Figma ⑧ 1263:303751 배치 + 0.3.2 component/tilte 5219:3337 상태) ----
    보유게임 | 그룹명 · 닫기. 둘은 탭처럼 하나만 활성 — activated(제목 elevation-1 · 개수 elevation-4),
    나머지는 inacitve(제목 · 개수 disabled-variant-2)이고 누를 수 있는 링크라 hover · press에

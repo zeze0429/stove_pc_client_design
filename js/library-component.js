@@ -158,7 +158,29 @@ function libraryPlayedLabel(min) {
 //   viewGroupId: 그룹 화면으로 연 그룹 — 타이틀에 "보유게임 | 그룹명 · X"가 붙는다 (Figma 1131:5779 ⑧ 1260:25286)
 //   viewOwned: 그룹 화면 타이틀에서 "보유게임"을 눌러 전체를 보는 중 — 그룹명은 비활성으로 남고, X를 눌러야 없어진다
 // removedToast: 패널 컨텍스트메뉴 '그룹에서 제거' 직후 보유게임 하단 토스트 요청 { count, title, at }
-var LIBRARY_STORE = Vue.reactive({ groups: [], addTargetId: null, selectMode: false, viewGroupId: null, viewOwned: false, removedToast: null, floatingAction: null, moreOpen: false });
+// hiddenIds: 숨긴 게임 (보유게임 · 빠른 실행 · 우측패널에서 빠지고 숨겨진 게임 화면에만), viewHidden: 숨겨진 게임 화면을 보는 중
+// 숨긴 게임은 페이지를 옮겨도 유지 — 탭 세션(sessionStorage)에 둔다
+var LIBRARY_HIDDEN_KEY = 'stove-proto-library-hidden';
+function libraryReadHidden() {
+  try { var v = JSON.parse(sessionStorage.getItem(LIBRARY_HIDDEN_KEY) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; }
+}
+var LIBRARY_STORE = Vue.reactive({ groups: [], addTargetId: null, selectMode: false, viewGroupId: null, viewOwned: false, removedToast: null, floatingAction: null, moreOpen: false,
+  hiddenIds: libraryReadHidden(), viewHidden: false });
+// 숨기기 · 숨김 해제 — 게임 메뉴(패널)와 콘텐츠가 같이 쓴다. 최근에 숨긴 게임이 앞
+function libraryHideGames(ids) {
+  var h = LIBRARY_STORE.hiddenIds;
+  ids.slice().reverse().forEach(function (id) { if (h.indexOf(id) < 0) h.unshift(id); });
+  try { sessionStorage.setItem(LIBRARY_HIDDEN_KEY, JSON.stringify(h)); } catch (e) { /* 이 페이지에서만 유지 */ }
+}
+// 그룹 개수 표시 — 숨긴 게임은 세지 않는다 (그룹에는 남아 있어 숨김 해제하면 다시 보인다)
+function libraryGroupCount(group) {
+  var h = LIBRARY_STORE.hiddenIds;
+  return h.length ? group.gameIds.filter(function (id) { return h.indexOf(id) < 0; }).length : group.gameIds.length;
+}
+function libraryUnhideGames(ids) {
+  LIBRARY_STORE.hiddenIds = LIBRARY_STORE.hiddenIds.filter(function (id) { return ids.indexOf(id) < 0; });
+  try { sessionStorage.setItem(LIBRARY_HIDDEN_KEY, JSON.stringify(LIBRARY_STORE.hiddenIds)); } catch (e) { /* 이 페이지에서만 유지 */ }
+}
 // moreOpen: 더보기 메뉴가 열려 있는 동안 — 더보기 버튼 selected
 // floatingAction: 하단 플로팅 더보기 메뉴(패널이 띄움)에서 고른 동작 { kind: 'add' (groupIds) | 'done', at } — 콘텐츠가 받아 선택 UI를 끝낸다
 var LIBRARY_TOAST_MS = 3000;
@@ -316,7 +338,7 @@ var LibraryMain = {
   components: { 'add-to-group-dialog': LibraryAddToGroupDialog, 'stds-search-field': StdsSearchField, 'library-filter-layer': LibraryFilterLayer },
   data: function () {
     return {
-      owned: LIBRARY_OWNED.map(libraryGame),
+      ownedAll: LIBRARY_OWNED.map(libraryGame), // 숨긴 게임 포함 전체 — 화면에는 owned(숨긴 게임 뺀 것)
       quickPage: 0,
       quickActive: 0, // 넓게 펼쳐진 카드 — 마우스를 올린 카드, 없으면 지금 페이지 첫 카드
       view: 'grid',
@@ -359,10 +381,15 @@ var LibraryMain = {
   },
   watch: {
     // 선택 UI 진입 경로 두 가지 — 패널 게임 추가(대상 그룹) · 게임 선택 버튼(대상 없음)
-    'store.addTargetId': function (id, prev) { this.onSelectEnter(id, prev); },
+    'store.addTargetId': function (id, prev) { if (id) this.store.viewHidden = false; this.onSelectEnter(id, prev); },
     'store.selectMode': function (on, prev) { this.onSelectEnter(on, prev); },
     // 그룹 화면을 열고 닫거나 다른 그룹으로 바꾸면 맨 위(라이브러리 타이틀)부터
-    'store.viewGroupId': function () { this.onViewChange(); },
+    'store.viewGroupId': function (id) { if (id) this.store.viewHidden = false; this.onViewChange(); },
+    // 숨겨진 게임 화면을 열고 닫으면 맨 위부터 (빠른 실행은 숨긴다)
+    'store.viewHidden': function () {
+      this.selected = [];
+      if (this._scrollBox) this._scrollBox.scrollTo({ top: 0 });
+    },
     // 패널에서 그룹에서 제거 — 추가 완료 토스트와 같은 자리 · 모양, 문구만 제거 (사용자 11-09, Figma 11564:174292)
     // 더보기 메뉴 동작 — 그룹에 추가(2뎁스 그룹 · 그룹 만들기)는 그룹에 추가 팝업 확인과 같이(종료 + 하단 토스트),
     // 즐겨찾기 추가는 선택 UI만 끝낸다
@@ -387,6 +414,16 @@ var LibraryMain = {
     },
   },
   computed: {
+    owned: function () {
+      var h = this.store.hiddenIds;
+      return h.length ? this.ownedAll.filter(function (g) { return h.indexOf(g.id) < 0; }) : this.ownedAll;
+    },
+    // 숨겨진 게임 화면 — 최근에 숨긴 게임부터
+    hiddenGames: function () {
+      var byId = {};
+      this.ownedAll.forEach(function (g) { byId[g.id] = g; });
+      return this.store.hiddenIds.map(function (id) { return byId[id]; }).filter(Boolean);
+    },
     // 빠른 실행 — 플레이 기록이 있는 정식 게임(DLC · 데모 · 합본팩 · 부가 콘텐츠 제외)을 최근 순으로 최대 20개
     quick: function () {
       return this.owned
@@ -429,7 +466,7 @@ var LibraryMain = {
     selecting: function () { return !!this.addTarget || this.store.selectMode; },
     // 그룹 화면 (⑧) — 패널에서 그룹명을 누르면. 게임 추가(선택 UI) 중에는 보유게임 전체가 필요해서 열리지 않는다
     // "그룹 없는 게임"도 그룹 메뉴에 그룹 화면 보기가 있어 같은 모양으로 연다 (어느 그룹에도 없는 보유게임)
-    // 그룹에 하나도 없는 게임 수 — 라이브러리 설정 그룹 목록 맨 아래 "그룹 없는 게임"
+    // 그룹에 하나도 없는 게임 수 (숨긴 게임 제외) — 라이브러리 설정 그룹 목록 맨 아래 "그룹 없는 게임"
     ungroupedCount: function () {
       var inGroup = {};
       this.store.groups.forEach(function (g) { g.gameIds.forEach(function (id) { inGroup[id] = true; }); });
@@ -452,6 +489,7 @@ var LibraryMain = {
     },
     // 보유게임 영역의 바탕 목록 — 그룹 화면에서 그룹명이 활성이면 그 그룹 게임(그룹에 넣은 순서), 아니면 보유게임 전체
     baseOwned: function () {
+      if (this.store.viewHidden) return this.hiddenGames;
       if (!this.viewGroup || this.store.viewOwned) return this.owned;
       var byId = {};
       this.owned.forEach(function (g) { byId[g.id] = g; });
@@ -568,7 +606,7 @@ var LibraryMain = {
       var bar = document.querySelector('.utility-bar'); // 콘텐츠 위에 떠 있는 유틸리티 바 아래부터
       var top = bar ? Math.max(r.top, bar.getBoundingClientRect().bottom) : r.top;
       var area = { left: r.left, top: top, right: r.right, bottom: r.bottom };
-      window.dispatchEvent(new CustomEvent('library-game-menu', { detail: { gameId: g.id, x: e.clientX, y: e.clientY, area: area } }));
+      window.dispatchEvent(new CustomEvent('library-game-menu', { detail: { gameId: g.id, x: e.clientX, y: e.clientY, area: area, hidden: this.store.viewHidden } }));
     },
     // 하단 플로팅 더보기 (Figma 클라이언트_v3.1 48960:386175 "더보기 상세" — 케이스는 게임 메뉴 가이드) —
     // 여러 개 선택 메뉴(3-5-3)를 더보기 위에 연다. 메뉴 · 그룹 동작은 패널이 맡고, 결과는 store.floatingAction으로 받는다
@@ -640,6 +678,16 @@ var LibraryMain = {
     // 필터 레이어 오른쪽 끝 = 검색 필드 오른쪽 끝
     searchEl: function () { return this.$refs.search && this.$refs.search.$el; },
     filterBtnEl: function () { return this.$refs.filterBtn; },
+    // 라이브러리 설정 > 숨겨진 게임 보기 — 팝업을 닫고 보유게임 자리에 숨겨진 게임 (그룹 화면 · 선택 UI는 끝낸다)
+    groupCount: libraryGroupCount,
+    openHidden: function () {
+      this.settingsOpen = false;
+      this.store.addTargetId = null;
+      this.store.selectMode = false;
+      this.store.viewGroupId = null;
+      this.store.viewOwned = false;
+      this.store.viewHidden = true;
+    },
     startSelect: function () { this.store.addTargetId = null; this.store.selectMode = true; },
     // 그룹 화면 닫기(X) — 그룹명이 타이틀에서 빠지고 보유게임 전체로, 패널은 아무 그룹도 선택되지 않은 상태 (⑧)
     closeGroupView: function () {
@@ -696,7 +744,7 @@ var LibraryMain = {
 
 
       // ---- 빠른 실행 ----
-      '<section class="library-section library-quick">' +
+      '<section v-if="!store.viewHidden" class="library-section library-quick">' +
         '<div class="library-section__head">' +
           '<h2 class="library-section__title">빠른 실행<span>{{ quick.length }}</span></h2>' +
           '<div class="library-quick__nav">' +
@@ -736,7 +784,7 @@ var LibraryMain = {
       '</section>' +
 
       // ---- 보유게임 ----
-      '<section ref="owned" class="library-section library-owned" :class="{ \'is-selecting\': selecting, \'is-head-stuck\': selecting && headStuck }" ' +
+      '<section ref="owned" class="library-section library-owned" :class="{ \'is-hidden-view\': store.viewHidden, \'is-selecting\': selecting, \'is-head-stuck\': selecting && headStuck }" ' +
         ':style="ownedMinHeight ? { minHeight: ownedMinHeight + \'px\' } : null">' +
         // 선택 UI에서는 타이틀 · 구분선 · 도구 줄이 위에 고정되고 아래 카드만 스크롤된다 (사용자 요청)
         '<div ref="ownedHead" class="library-owned__head">' +
@@ -749,11 +797,16 @@ var LibraryMain = {
             '@click="store.viewOwned = true" data-name="component/tilte">보유게임<span>{{ owned.length }}</span></button>' +
           '<i class="library-crumb__div" aria-hidden="true"></i>' +
           '<button class="library-crumb" :class="{ \'is-active\': !store.viewOwned }" type="button" :aria-pressed="String(!store.viewOwned)" ' +
-            '@click="store.viewOwned = false" data-name="component/tilte">{{ viewGroup.title }}<span>{{ viewGroup.gameIds.length }}</span></button>' +
+            '@click="store.viewOwned = false" data-name="component/tilte">{{ viewGroup.title }}<span>{{ groupCount(viewGroup) }}</span></button>' +
           '<button class="library-crumb__close" type="button" aria-label="그룹 화면 닫기" @click="closeGroupView">' +
             '<i class="ic-v2-control-close-circle-fill"></i>' +
           '</button>' +
         '</h2>' +
+        // 숨겨진 게임 화면 (Figma 클라이언트_v3.1 48960:383358 참고) — 제목 + 오른쪽 "보유 게임 목록 >"(돌아가기)
+        '<div v-else-if="store.viewHidden" class="library-hidden-title">' +
+          '<h2 class="library-section__title">숨겨진 게임<span>{{ hiddenGames.length }}</span></h2>' +
+          '<button class="stds-button stds-button-tertiary stds-button-sm has-arrow library-tool-btn" type="button" @click="store.viewHidden = false">보유 게임 목록<i class="ic-v2-control-arrow-right-line" aria-hidden="true"></i></button>' +
+        '</div>' +
         '<h2 v-else class="library-section__title">보유게임<span>{{ owned.length }}</span></h2>' +
         '<div class="library-owned__divider"></div>' +
         // 선택 UI — 도구 줄 자리에 게임 추가 취소 + 안내 문구 (Figma ⑦ · 0825 게임 추가 취소)
@@ -767,7 +820,8 @@ var LibraryMain = {
           '</p>' +
         '</div>' +
         '<div v-else class="library-toolbar" data-name="filter area">' +
-          '<button class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" type="button" @click="startSelect"><i class="ic-v2-control-check-circle-line"></i>게임 선택</button>' +
+          '<button v-if="!store.viewHidden" class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" type="button" @click="startSelect"><i class="ic-v2-control-check-circle-line"></i>게임 선택</button>' +
+          '<span v-else aria-hidden="true"></span>' +
           '<div class="library-toolbar__right">' +
             '<div class="library-view-toggle" role="tablist" aria-label="보기 방식">' +
               '<button type="button" role="tab" :aria-selected="view === \'grid\'" :class="{ \'is-selected\': view === \'grid\' }" aria-label="카드 보기" @click="view = \'grid\'"><i class="ic-v2-community-view-card-fill"></i></button>' +
@@ -846,7 +900,7 @@ var LibraryMain = {
       '</transition>' +
 
       // 라이브러리 설정 — 숨겨진 게임 보기는 팝업을 닫는다 (숨긴 게임 화면은 가이드 받으면)
-      '<library-settings-dialog v-if="settingsOpen" :ungrouped-count="ungroupedCount" @close="settingsOpen = false" @hidden-games="settingsOpen = false"></library-settings-dialog>' +
+      '<library-settings-dialog v-if="settingsOpen" :ungrouped-count="ungroupedCount" @close="settingsOpen = false" @hidden-games="openHidden"></library-settings-dialog>' +
       '<add-to-group-dialog v-if="addGroupDialog" :groups="store.groups" :game-ids="selected" @confirm="confirmAddGroups" @close="addGroupDialog = false"></add-to-group-dialog>' +
 
       // 게임 추가 · 그룹에서 제거 완료 토스트 — 보유게임 영역 하단 가운데, 3초 뒤 사라진다
