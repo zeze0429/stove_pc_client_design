@@ -872,7 +872,7 @@
 .game-menu__thumb:hover,
 .game-menu__scroll.is-dragging .game-menu__thumb { background: var(--stds-sem-color-inverse-elevation-1); }
 /* 그룹에서 제거 ⊗ — 14 그대로(18 버튼 틀 없음), 평소 neutral-variant-4.
-   버튼 hover = 아이콘 on-surface-elevation-2 + 14 둥글기 4 배경 interaction-hover + 툴팁 (Figma 12151:66110 btn_right) */
+   버튼 hover · press = 아이콘 on-surface-elevation-2 + 툴팁 (Figma 12151:66110 btn_right) */
 .game-menu__item--remove .game-menu__remove {
   width: 1.4rem;
   height: 1.4rem;
@@ -881,8 +881,9 @@
   cursor: pointer;
   transition: background-color 0.12s, color 0.12s;
 }
-.game-menu__item--remove .game-menu__remove:hover { color: var(--stds-sem-color-on-surface-elevation-2); background: var(--stds-sem-color-interaction-hover); }
-.game-menu__item--remove .game-menu__remove:active { color: var(--stds-sem-color-on-surface-elevation-2); background: var(--stds-sem-color-interaction-pressed); }
+/* 영역(배경) 상태값 없이 아이콘 색만 바뀐다 (사용자 11-09) */
+.game-menu__item--remove .game-menu__remove:hover,
+.game-menu__item--remove .game-menu__remove:active { color: var(--stds-sem-color-on-surface-elevation-2); background: transparent; }
 
 /* 그룹 없음 (최초 생성) — 폴더 28 + 문구 3줄, inverse-elevation-1 */
 .game-menu__empty {

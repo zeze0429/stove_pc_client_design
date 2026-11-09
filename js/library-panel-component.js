@@ -1109,7 +1109,9 @@ var LibraryPanel = {
       this.$nextTick(function () {
         var tip = this.$refs.menuTipEl;
         if (!tip || !this.menuTip || this.menuTip.kind !== 'remove') return;
-        iconTipPlace(this.menuTip, tip, r, face.getBoundingClientRect());
+        // 노출 영역 = 메뉴 좌우 끝에서 12 안쪽 (Figma 12151:66110 — 툴팁 우측 끝이 메뉴 끝에서 12, ⊗ 우측 + 2)
+        var f = face.getBoundingClientRect();
+        iconTipPlace(this.menuTip, tip, r, { left: f.left + 12, right: f.right - 12 });
       });
     },
     hideMenuTip: function () { this.menuTip = null; },
