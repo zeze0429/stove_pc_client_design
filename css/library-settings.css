@@ -1,42 +1,39 @@
 /* =============================================================
    라이브러리 설정 팝업 (js/library-settings-component.js)
-   Figma 클라이언트_v3.1 68061:330433 — 기준 Dialog 38783:264947 (폭 560 — 사용자 11-09, Figma 664 · 기본 높이 620 고정 + 본문 스크롤).
-   셸 · 버튼 · 체크박스 · 입력칸은 공통 부품, 여기는 섹션 배치와 그룹 목록 행만.
-   그룹 행 배경 gray800 / hover gray780 / pressed gray750 · 이름 변경 중 gray860은 Figma 글로벌(다크 기준, 라이트 값 미정)
+   기준: Figma 클라이언트_v3.1 68079:330436 (사용자 11-09 수정본 — 560 · 기본 높이 620 고정 + 본문 스크롤).
+   예전 기준 68061:330433. 셸 · 버튼 · 체크박스 · 입력칸은 공통 부품, 여기는 섹션 배치와 그룹 목록 행만.
    ============================================================= */
 
-/* contents — 섹션 사이 28 (버튼 · 구분선 · 빠른 실행 · 구분선 · 게임 그룹 관리) */
+/* contents — 섹션 사이 20 (버튼 · 구분선 · 빠른 실행 · 구분선 · 게임 그룹 관리) */
 .library-settings {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 2.8rem;
+  gap: 2rem;
 }
 .library-settings__hidden { flex: 0 0 auto; }
-.library-settings__div { flex: 0 0 auto; align-self: stretch; height: 1px; background: var(--stds-sem-color-inverse-elevation-3); }
+.library-settings__div { flex: 0 0 auto; align-self: stretch; height: 1px; margin-bottom: -1px; background: var(--stds-sem-color-inverse-elevation-3); } /* Figma 선은 높이 0 — 아래 간격 20이 선 위치부터 */
 
 .library-settings__section { align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; }
 .library-settings__section--quick { gap: 1.2rem; }
-.library-settings__section--groups { gap: 2rem; }
-.library-settings__head { display: flex; flex-direction: column; gap: 0.8rem; }
-/* 섹션 제목 Title7-B 16/24 glob white, 설명 Text3-R 14/24 elevation-4 (Figma) */
+.library-settings__section--groups { gap: 1.6rem; }
+.library-settings__head { display: flex; flex-direction: column; gap: 0.4rem; }
+/* 섹션 제목 Title8-B 14/20 elevation-1, 설명 Text4-R 13/22 elevation-4 */
 .library-settings__title {
   margin: 0;
-  color: var(--stds-glob-color-white);
-  font-size: 1.6rem;
-  font-weight: 700;
-  line-height: 2.4rem;
-  letter-spacing: -0.048rem;
-}
-.library-settings__desc,
-.library-settings__hints {
-  margin: 0;
-  color: var(--stds-sem-color-on-surface-elevation-4);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   font-size: 1.4rem;
-  line-height: 2.4rem;
+  font-weight: 700;
+  line-height: 2rem;
   letter-spacing: -0.042rem;
 }
-.library-settings__hints { padding: 0 0 0 2.1rem; list-style: disc; }
+.library-settings__desc {
+  margin: 0;
+  color: var(--stds-sem-color-on-surface-elevation-4);
+  font-size: 1.3rem;
+  line-height: 2.2rem;
+  letter-spacing: -0.039rem;
+}
 /* 라벨 (그룹 만들기 · 나의 그룹 목록) Text3-M 14/24 elevation-1 */
 .library-settings__label {
   margin: 0;
@@ -48,56 +45,63 @@
 }
 .library-settings__section .stds-checkbox-label { color: var(--stds-sem-color-on-surface-elevation-2); }
 
-/* 그룹 만들기 — 라벨 아래 8, 입력칸 + 만들기(90) */
+/* 그룹 만들기 — 라벨 아래 8, 입력칸(32) + 만들기(primary sm, hug) 간격 8.
+   입력칸은 그룹에 추가 팝업과 같은 상태값, 크기만 sm — 높이 32 · 좌우 12 · 글자 Button3-R 12/18 */
 .library-settings__create { align-self: stretch; display: flex; flex-direction: column; gap: 0.8rem; }
-.library-settings__make { flex: 0 0 auto; width: 9rem; }
+.library-settings__create .add-group-dialog__field { height: 3.2rem; padding: 0 calc(1.2rem - 1px); }
+.library-settings__create .add-group-dialog__field:is(.is-active, .is-error) { padding: 0 calc(1.2rem - 2px); }
+.library-settings__create .add-group-dialog__input { font-size: 1.2rem; line-height: 1.8rem; letter-spacing: -0.024rem; }
 .library-settings__create .add-group-dialog__input:disabled { cursor: default; }
+.library-settings__make { flex: 0 0 auto; padding: 0 1.6rem; } /* 만들기 — 좌우 16 (Figma 65) */
 
-/* 나의 그룹 목록 — 라벨 아래 8, 행 44 · 간격 8 */
+/* 나의 그룹 목록 — 라벨 아래 8, 행 36 · 간격 8 */
 .library-settings__groups { align-self: stretch; display: flex; flex-direction: column; gap: 0.8rem; }
 .library-settings__list { display: flex; flex-direction: column; gap: 0.8rem; }
 .library-settings__empty { padding-top: 0; }
 
-/* 그룹 항목 행 (Figma 250808) — 44, 좌 16 · 우 10, 간격 12, 둥글기 8 */
+/* 그룹 항목 행 (68079:330436 250808) — 36, 위아래 7 · 좌우 12, 둥글기 8, 배경 inverse-elevation-6.
+   [≡ 8 그룹명 · 뱃지 · ✎] 12 [날짜 8 🗑]. hover · press는 같은 배경 위에 interaction-hover / pressed (가이드 없음) */
 .library-settings__row {
   position: relative;
   display: flex;
   align-items: center;
   gap: 1.2rem;
-  height: 4.4rem;
-  padding: 0 1rem 0 1.6rem;
+  height: 3.6rem;
+  padding: 0 1.2rem;
   border-radius: var(--stds-glob-border-radius-lg);
-  background: var(--stds-glob-color-gray800);
-  transition: background-color 0.12s;
+  background: var(--stds-sem-color-inverse-elevation-6);
 }
-.library-settings__row:not(.is-editing):not(.is-ghost):not(.library-settings__drag):hover { background: var(--stds-glob-color-gray780); }
-.library-settings__row:not(.is-editing):not(.is-ghost):not(.library-settings__drag):active:not(:has(button:active)) { background: var(--stds-glob-color-gray750); }
+.library-settings__row:not(.is-editing):not(.is-ghost):not(.library-settings__drag):hover {
+  background: linear-gradient(var(--stds-sem-color-interaction-hover), var(--stds-sem-color-interaction-hover)), var(--stds-sem-color-inverse-elevation-6);
+}
+.library-settings__row:not(.is-editing):not(.is-ghost):not(.library-settings__drag):active:not(:has(button:not(.library-settings__handle-btn):active)) {
+  background: linear-gradient(var(--stds-sem-color-interaction-pressed), var(--stds-sem-color-interaction-pressed)), var(--stds-sem-color-inverse-elevation-6);
+}
 .library-settings__handle-btn {
   flex: 0 0 auto;
   display: grid;
   place-items: center;
   width: 1.2rem;
   height: 1.2rem;
+  margin-right: -0.4rem; /* ≡ ↔ 그룹명 8 */
   padding: 0;
   border: 0;
   background: transparent;
   color: var(--stds-sem-color-on-surface-elevation-4);
   cursor: grab;
 }
-.library-settings__row.is-static .library-settings__handle-btn { cursor: default; }
 .library-settings__handle { font-size: 1.2rem; }
-/* 그룹명 + 개수 뱃지 + ✎ — 남는 폭, 넘치면 잘림 */
+/* 그룹명(Text4-R 13/22 elevation-2) + 개수 뱃지 + ✎ — 남는 폭, 넘치면 이름만 잘림 */
 .library-settings__name-wrap { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 0.4rem; overflow: hidden; }
 .library-settings__name {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--stds-sem-color-on-surface-elevation-3);
-  font-size: 1.4rem;
-  font-weight: 500;
-  line-height: 2rem;
-  letter-spacing: -0.042rem;
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  font-size: 1.3rem;
+  line-height: 2.2rem;
+  letter-spacing: -0.039rem;
 }
 /* 개수 뱃지 — 14, neutral-variant-4 · elevation-3, Caption2-M 11 */
 .library-settings__badge {
@@ -119,20 +123,22 @@
 }
 /* 한 자리 수는 14 × 14 원 (사용자 11-09) */
 .library-settings__badge.is-single { width: 1.4rem; padding-left: 0; padding-right: 0; }
+/* 생성일 Caption2-R 11/18 elevation-4, 🗑과 8 */
 .library-settings__date {
   flex: 0 0 auto;
-  color: var(--stds-sem-color-on-surface-elevation-3);
-  font-size: 1.2rem;
+  margin-right: -0.4rem;
+  color: var(--stds-sem-color-on-surface-elevation-4);
+  font-size: 1.1rem;
   line-height: 1.8rem;
-  letter-spacing: -0.024rem;
+  letter-spacing: -0.022rem;
 }
-/* ✎ · 🗑 — 24(아이콘 16), 둥글기 4, hover interaction-hover · pressed interaction-pressed. ✎ elevation-1, 🗑 elevation-4 */
+/* ✎ 18 · 🗑 20 (아이콘 14), 둥글기 4, hover interaction-hover · pressed interaction-pressed. ✎ elevation-1, 🗑 elevation-4 */
 .library-settings__icon-btn {
   flex: 0 0 auto;
   display: grid;
   place-items: center;
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 1.8rem;
+  height: 1.8rem;
   padding: 0;
   border: 0;
   border-radius: var(--stds-glob-border-radius-md);
@@ -141,12 +147,12 @@
   cursor: pointer;
   transition: background-color 0.12s;
 }
-.library-settings__icon-btn i { font-size: 1.6rem; }
-.library-settings__delete { color: var(--stds-sem-color-on-surface-elevation-4); }
+.library-settings__icon-btn i { font-size: 1.4rem; }
+.library-settings__delete { width: 2rem; height: 2rem; color: var(--stds-sem-color-on-surface-elevation-4); }
 button.library-settings__icon-btn:hover { background: var(--stds-sem-color-interaction-hover); }
 button.library-settings__icon-btn:active { background: var(--stds-sem-color-interaction-pressed); }
 
-/* 이름 변경 중 — 행 gray860, 입력 Title8-M elevation-2 · 캐럿 brand, 글자를 바꾸면 X(16) · 변경, 버튼 사이 4.
+/* 이름 변경 중 — 행 gray860(예전 가이드, 수정본엔 없음), 입력은 행 그룹명과 같은 Text4-R 13/22 elevation-2 · 캐럿 brand, 글자를 바꾸면 X(16) · 변경, 버튼 사이 4.
    같은 이름이면 행 아래 8에 에러 (그룹 만들기 에러와 같은 모양) */
 .library-settings__edit { display: flex; flex-direction: column; gap: 0.8rem; }
 .library-settings__row.is-editing { background: var(--stds-glob-color-gray860); }
@@ -161,10 +167,9 @@ button.library-settings__icon-btn:active { background: var(--stds-sem-color-inte
   color: var(--stds-sem-color-on-surface-elevation-2);
   caret-color: var(--stds-sem-color-brand-primary);
   font: inherit;
-  font-size: 1.4rem;
-  font-weight: 500;
-  line-height: 2rem;
-  letter-spacing: -0.042rem;
+  font-size: 1.3rem;
+  line-height: 2.2rem;
+  letter-spacing: -0.039rem;
 }
 /* 지우기 — 다른 입력칸 클리어(그룹 이름 입력 · 서치필드)와 같은 inverse-elevation-2, hover 60% · press 80% (사용자 11-09) */
 .library-settings__edit-clear {

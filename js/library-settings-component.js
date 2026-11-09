@@ -231,8 +231,8 @@ var LibrarySettingsDialog = {
   template:
     '<layer-dialog title="라이브러리 설정" width="56rem" min-height="62rem" max-height="62rem" @close="$emit(\'close\')">' +
       '<div class="library-settings" data-name="contents">' +
-        // ① 숨겨진 게임 보기 — 공통 버튼 secondary md + 아이콘
-        '<button class="stds-button stds-button-secondary stds-button-md library-settings__hidden" type="button" @click="openHidden" data-name="Button">' +
+        // ① 숨겨진 게임 보기 — 공통 버튼 secondary sm + 아이콘 16
+        '<button class="stds-button stds-button-secondary stds-button-sm library-settings__hidden" type="button" @click="openHidden" data-name="Button">' +
           '<i class="ic-v2-community-number-of-view-line" aria-hidden="true"></i>숨겨진 게임 보기' +
         '</button>' +
         '<div class="library-settings__div" aria-hidden="true"></div>' +
@@ -251,12 +251,9 @@ var LibrarySettingsDialog = {
         '<section class="library-settings__section library-settings__section--groups" data-name="게임 그룹화">' +
           '<div class="library-settings__head" data-name="title">' +
             '<h3 class="library-settings__title">게임 그룹 관리</h3>' +
-            '<ul class="library-settings__hints">' +
-              '<li>라이브러리에 있는 게임을 원하는 방식으로 정리할 수 있어요.</li>' +
-              '<li>그룹은 최대 ' + LIBRARY_ADD_GROUP_MAX + '개까지 만들 수 있어요.</li>' +
-            '</ul>' +
+            '<p class="library-settings__desc">라이브러리에 있는 게임을 원하는 방식으로 정리할 수 있어요.<br />그룹은 최대 ' + LIBRARY_ADD_GROUP_MAX + '개까지 만들 수 있어요.</p>' +
           '</div>' +
-          // 그룹 만들기 — 라벨 + 입력칸 + 만들기(90)
+          // 그룹 만들기 — 라벨 + 입력칸(32) + 만들기(primary sm)
           '<div class="library-settings__create" data-name="그룹 생성">' +
             '<p class="library-settings__label">그룹 만들기</p>' +
             '<div class="add-group-dialog__row" data-name="input">' +
@@ -266,7 +263,7 @@ var LibrarySettingsDialog = {
                   'placeholder="그룹 이름을 입력해주세요 (최대 ' + LIBRARY_ADD_GROUP_NAME_MAX + '자)" @input="onInput" @scroll="checkOverflow" @keyup="checkOverflow" @keydown="onCreateKey" @focus="focused = true" @blur="focused = false" />' +
                 '<button v-if="text" class="add-group-dialog__clear" type="button" aria-label="지우기" @mousedown.prevent @click="clear"><i class="ic-v2-control-close-circle-fill"></i></button>' +
               '</label>' +
-              '<button class="stds-button stds-button-primary stds-button-md library-settings__make" type="button" :disabled="!canSubmitName" @mousedown.prevent @click="create" data-name="Button">만들기</button>' +
+              '<button class="stds-button stds-button-primary stds-button-sm library-settings__make" type="button" :disabled="!canSubmitName" @mousedown.prevent @click="create" data-name="Button">만들기</button>' +
             '</div>' +
             '<p v-if="error" class="add-group-dialog__error" data-name="유효성문구"><i class="ic-v2-state-warning-circle-fill" aria-hidden="true"></i>{{ error }}</p>' +
           '</div>' +
