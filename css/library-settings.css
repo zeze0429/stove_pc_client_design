@@ -132,7 +132,7 @@
   line-height: 1.8rem;
   letter-spacing: -0.022rem;
 }
-/* ✎ 18 · 🗑 20 (아이콘 14), 둥글기 4, hover interaction-hover · pressed interaction-pressed. 아이콘 둘 다 elevation-3 */
+/* ✎ 18 · 🗑 20 (아이콘 14), 둥글기 4, hover interaction-hover · pressed interaction-pressed. ✎ elevation-2 · 🗑 elevation-4 (사용자 11-09) */
 .library-settings__icon-btn {
   flex: 0 0 auto;
   display: grid;
@@ -148,7 +148,8 @@
   transition: background-color 0.12s;
 }
 .library-settings__icon-btn i { font-size: 1.4rem; }
-.library-settings__delete { width: 2rem; height: 2rem; }
+.library-settings__edit-btn { color: var(--stds-sem-color-on-surface-elevation-2); }
+.library-settings__delete { width: 2rem; height: 2rem; color: var(--stds-sem-color-on-surface-elevation-4); }
 button.library-settings__icon-btn:hover { background: var(--stds-sem-color-interaction-hover); }
 button.library-settings__icon-btn:active { background: var(--stds-sem-color-interaction-pressed); }
 
