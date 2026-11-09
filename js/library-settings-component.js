@@ -1,7 +1,7 @@
 /**
  * 라이브러리 설정 — 센터 레이어 팝업 (Vue 3 CDN 컴포넌트)
  * -------------------------------------------------------------
- * Figma 클라이언트_v3.1 68061:330433 "라이브러리 설정" (기준 Dialog 38783:264947, 664 · 기본 높이 620 고정 + 스크롤).
+ * Figma 클라이언트_v3.1 68061:330433 "라이브러리 설정" (기준 Dialog 38783:264947 — 폭 560(사용자 11-09, Figma 664) · 기본 높이 620 고정 + 스크롤).
  * 라이브러리 타이틀 옆 설정 버튼(.client-page-title__setting)으로 연다.
  * 공통으로 정해 둔 것은 공통 부품 그대로: 셸 LayerDialog, 버튼 .stds-button, 체크박스 <stds-checkbox>,
  * 그룹 만들기 입력칸은 그룹에 추가 팝업과 같은 모양(.add-group-dialog__field), 드래그 원래 자리 · 프리뷰는 우측패널 규칙.
@@ -197,7 +197,7 @@ var LibrarySettingsDialog = {
     },
   },
   template:
-    '<layer-dialog title="라이브러리 설정" width="66.4rem" min-height="62rem" max-height="62rem" @close="$emit(\'close\')">' +
+    '<layer-dialog title="라이브러리 설정" width="56rem" min-height="62rem" max-height="62rem" @close="$emit(\'close\')">' +
       '<div class="library-settings" data-name="contents">' +
         // ① 숨겨진 게임 보기 — 공통 버튼 secondary md + 아이콘
         '<button class="stds-button stds-button-secondary stds-button-md library-settings__hidden" type="button" @click="openHidden" data-name="Button">' +
