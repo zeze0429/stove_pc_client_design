@@ -191,11 +191,11 @@ var GAME_MENU_SUB_TPL =
       '</div>' +
     '</template>' +
     '<div v-else class="game-menu__groups" @scroll="hideMenuTip">' +
-      '<div v-for="g in menuGameGroups" :key="g.id" class="game-menu__item game-menu__item--remove stds-btn3 fw-medium" ' +
-        '@mouseenter="showNameTip" @mouseleave="hideMenuTip" data-name="menu">' +
+      '<div v-for="g in menuGameGroups" :key="g.id" class="game-menu__item game-menu__item--remove stds-btn3 fw-medium" role="button" tabindex="0" ' +
+        '@click="removeMenuGameFrom(g)" @keydown.enter="removeMenuGameFrom(g)" @mouseenter="showNameTip" @mouseleave="hideMenuTip" data-name="menu">' +
         '<span class="game-menu__label game-menu__name">{{ g.title }}</span>' +
         '<button class="game-menu__icon game-menu__remove" type="button" aria-label="이 그룹에서 제거" ' +
-          '@click="removeMenuGameFrom(g)" @mouseenter.stop="showRemoveTip" @mouseleave="hideMenuTip" data-name="component/game_group/title/btn_right">' +
+          '@click.stop="removeMenuGameFrom(g)" @mouseenter.stop="showRemoveTip" @mouseleave="hideMenuTip" data-name="component/game_group/title/btn_right">' +
           '<i class="ic-v2-control-close-circle-fill"></i>' +
         '</button>' +
       '</div>' +
@@ -289,7 +289,7 @@ var LibraryPanel = {
       owned: LIBRARY_OWNED.map(libraryGame),
       store: LIBRARY_STORE, // groups · addTargetId — 콘텐츠(보유게임 선택 UI)와 같이 쓴다
       deletedNotice: false, // 그룹 삭제 직후 버튼 그룹 위에 띄우는 "그룹이 삭제되었습니다." (3초)
-      addedNotice: null, // 게임을 그룹에 넣은 직후 같은 자리에 띄우는 완료 토스트 { count, title } (3초)
+      addedNotice: null, // 게임을 그룹에 넣거나 뺀 직후 같은 자리에 띄우는 완료 토스트 { count, title, kind: add|remove } (3초)
       collapsed: {}, // 그룹 id → 접힘 여부 ('ungrouped' = 그룹 없는 게임)
       creating: false, // 그룹 만들기 입력칸이 열려 있는지
       renamingId: null, // 이름 변경 중인 그룹 id
@@ -849,11 +849,11 @@ var LibraryPanel = {
       this.selectedRows = [rowKey];
       this.selectAnchor = rowKey;
     },
-    // 게임 추가 완료 토스트 — 패널 상단(버튼 그룹 위), 3초. 삭제 안내와 자리를 같이 쓰니 하나만 보인다
-    showAddedNotice: function (count, title) {
+    // 게임 추가 · 그룹에서 제거 완료 토스트 — 패널 상단(버튼 그룹 위), 3초. 삭제 안내와 자리를 같이 쓰니 하나만 보인다
+    showAddedNotice: function (count, title, kind) {
       var self = this;
       this.deletedNotice = false;
-      this.addedNotice = { count: count, title: title };
+      this.addedNotice = { count: count, title: title, kind: kind || 'add' };
       clearTimeout(this._noticeTimer);
       this._noticeTimer = setTimeout(function () { self.addedNotice = null; }, 3000);
     },
@@ -1065,12 +1065,13 @@ var LibraryPanel = {
       this.closeGameMenu();
       this.$nextTick(this.updateThumb);
     },
-    // 그룹에서 제거 — 그 행만 빠지고 메뉴는 그대로. 남은 그룹이 없으면 1뎁스로 돌아간다
+    // 그룹에서 제거 — 그룹명을 고르면 바로 빠지고 메뉴는 닫힌다 + 패널 상단 완료 토스트 (사용자 11-09, Figma 11564:174292 문구)
     removeMenuGameFrom: function (group) {
       var i = group.gameIds.indexOf(this.gameMenu.gameId);
-      if (i >= 0) group.gameIds.splice(i, 1);
-      this.menuTip = null;
-      if (!this.menuGameGroups.length) this.flipBack();
+      if (i < 0) return;
+      group.gameIds.splice(i, 1);
+      this.closeGameMenu();
+      this.showAddedNotice(1, group.title, 'remove');
       this.$nextTick(this.updateThumb);
     },
     openCreateFromMenu: function () {
@@ -1309,7 +1310,7 @@ var LibraryPanel = {
           '<p><b>{{ drag.gameIds.length }}개 게임</b>을 다른 그룹에 추가합니다.</p>' +
         '</div>' +
         '<div v-if="addedNotice" class="library-panel__added" role="status" data-name="toast popup">' +
-          '<p class="library-panel__added-title stds-cap1 fw-medium"><b>{{ addedNotice.count }}개 게임</b>을 다른 그룹에 추가했습니다.</p>' +
+          '<p class="library-panel__added-title stds-cap1 fw-medium"><b>{{ addedNotice.count }}개 게임</b>{{ addedNotice.kind === \'remove\' ? \'을 해당 그룹에서 제거했습니다.\' : \'을 다른 그룹에 추가했습니다.\' }}</p>' +
           '<span class="library-panel__added-group" data-name="group name"><i class="ic-v2-control-long-arrow-right-line" aria-hidden="true"></i><span>{{ addedNotice.title }}</span></span>' +
         '</div>' +
         '<button class="stds-button stds-button-secondary stds-button-sm library-panel__create" type="button" :disabled="!canCreate" @click="startCreate">' +

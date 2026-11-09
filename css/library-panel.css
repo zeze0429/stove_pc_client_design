@@ -777,7 +777,7 @@
   cursor: pointer;
 }
 .game-menu__item.has-sub { gap: 0.4rem; padding-right: calc(0.6rem - 1px); }
-.game-menu__item--remove { padding-right: calc(0.6rem - 1px); cursor: default; }
+.game-menu__item--remove { padding-right: calc(0.6rem - 1px); } /* 행 전체를 눌러도 제거 (사용자 11-09) */
 .game-menu__item:hover { background: var(--stds-sem-color-interaction-hover); }
 .game-menu__item:active:not(:has(.game-menu__remove:active)) { background: var(--stds-sem-color-interaction-pressed); color: var(--stds-sem-color-on-surface-elevation-2); }
 .game-menu__item:disabled { color: var(--stds-sem-color-disabled-variant-1); background: transparent; cursor: default; }
