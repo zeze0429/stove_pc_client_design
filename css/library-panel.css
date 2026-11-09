@@ -680,7 +680,7 @@
   padding: 0 calc(1.2rem - 1px);
   border: 0;
   background: transparent;
-  color: var(--stds-sem-color-on-surface-elevation-3);
+  color: var(--stds-sem-color-on-surface-elevation-2); /* 활성 항목 elevation-2 (사용자 11-09, 사이드바 메뉴와 같음) */
   text-align: left;
   white-space: nowrap;
   cursor: pointer;
@@ -762,7 +762,7 @@
 .game-menu__flip:not(.is-flipped) .game-menu__face--back,
 .game-menu__flip.is-flipped .game-menu__face--front { pointer-events: none; }
 
-/* 항목 (menu) — 32, 좌 12 · 우 12(화살표 · 버튼이 있으면 6). enabled elevation-3 / hover · press · selected */
+/* 항목 (menu) — 32, 좌 12 · 우 12(화살표 · 버튼이 있으면 6). enabled elevation-2(사용자 11-09, 예전 3) / hover · press · selected */
 .game-menu__item {
   display: flex;
   align-items: center;
@@ -772,7 +772,7 @@
   padding: 0.7rem calc(1.2rem - 1px) 0.7rem calc(1.2rem - 1px); /* 보더 1 안쪽 기준 좌우 12 */
   border: 0;
   background: transparent;
-  color: var(--stds-sem-color-on-surface-elevation-3);
+  color: var(--stds-sem-color-on-surface-elevation-2);
   text-align: left;
   cursor: pointer;
 }
