@@ -166,6 +166,7 @@ button.library-settings__icon-btn:active { background: var(--stds-sem-color-inte
   line-height: 2rem;
   letter-spacing: -0.042rem;
 }
+/* 지우기 — 다른 입력칸 클리어(그룹 이름 입력 · 서치필드)와 같은 inverse-elevation-2, hover 60% · press 80% (사용자 11-09) */
 .library-settings__edit-clear {
   flex: 0 0 auto;
   display: grid;
@@ -173,10 +174,13 @@ button.library-settings__icon-btn:active { background: var(--stds-sem-color-inte
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--stds-sem-color-on-surface-elevation-4);
+  color: var(--stds-sem-color-inverse-elevation-2);
   cursor: pointer;
+  transition: opacity 0.15s;
 }
 .library-settings__edit-clear i { font-size: 1.6rem; }
+.library-settings__edit-clear:hover { opacity: 0.6; }
+.library-settings__edit-clear:active { opacity: 0.8; }
 .library-settings__edit-btns { flex: 0 0 auto; display: flex; gap: 0.4rem; }
 
 /* 순서 변경 — 원래 자리는 40% + 점선 2/2 white-50(.library-group__ghost, css/library-panel.css),
