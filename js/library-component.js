@@ -157,7 +157,8 @@ function libraryPlayedLabel(min) {
 //   selectMode: 보유게임 "게임 선택" 버튼으로 들어간 선택 UI (대상 그룹 없음, Figma 클라이언트_v3.1 67959:409416)
 //   viewGroupId: 그룹 화면으로 연 그룹 — 타이틀에 "보유게임 | 그룹명 · X"가 붙는다 (Figma 1131:5779 ⑧ 1260:25286)
 //   viewOwned: 그룹 화면 타이틀에서 "보유게임"을 눌러 전체를 보는 중 — 그룹명은 비활성으로 남고, X를 눌러야 없어진다
-var LIBRARY_STORE = Vue.reactive({ groups: [], addTargetId: null, selectMode: false, viewGroupId: null, viewOwned: false });
+// removedToast: 패널 컨텍스트메뉴 '그룹에서 제거' 직후 보유게임 하단 토스트 요청 { count, title, at }
+var LIBRARY_STORE = Vue.reactive({ groups: [], addTargetId: null, selectMode: false, viewGroupId: null, viewOwned: false, removedToast: null });
 var LIBRARY_TOAST_MS = 3000;
 
 // 썸네일 아래 뱃지 — 합본팩(collection 표시한 것)은 Collection, 카탈로그 type이 dlc · demo면 DLC · DEMO (모양은 같은 Badge/Game type)
@@ -353,6 +354,14 @@ var LibraryMain = {
     'store.selectMode': function (on, prev) { this.onSelectEnter(on, prev); },
     // 그룹 화면을 열고 닫거나 다른 그룹으로 바꾸면 맨 위(라이브러리 타이틀)부터
     'store.viewGroupId': function () { this.onViewChange(); },
+    // 패널에서 그룹에서 제거 — 추가 완료 토스트와 같은 자리 · 모양, 문구만 제거 (사용자 11-09, Figma 11564:174292)
+    'store.removedToast': function (t) {
+      if (!t) return;
+      var self = this;
+      this.addedToast = { count: t.count, title: t.title, removed: true };
+      clearTimeout(this._toastTimer);
+      this._toastTimer = setTimeout(function () { self.addedToast = null; }, LIBRARY_TOAST_MS);
+    },
     // 타이틀의 보유게임 ↔ 그룹명 전환은 목록만 바꾸고 스크롤은 그대로 (사용자 11-06)
     'store.viewOwned': function () { this.selected = []; },
     'selected.length': function () { this.$nextTick(this.snapFloating); },
@@ -783,14 +792,14 @@ var LibraryMain = {
 
       '<add-to-group-dialog v-if="addGroupDialog" :groups="store.groups" :game-ids="selected" @confirm="confirmAddGroups" @close="addGroupDialog = false"></add-to-group-dialog>' +
 
-      // 게임 추가 완료 토스트 — 보유게임 영역 하단 가운데, 3초 뒤 사라진다
+      // 게임 추가 · 그룹에서 제거 완료 토스트 — 보유게임 영역 하단 가운데, 3초 뒤 사라진다
       '<transition name="library-toast">' +
         '<div v-if="addedToast" class="library-toast-wrap">' +
           '<div class="library-toast" :class="{ \'is-error\': !addedToast.count }" role="status" data-name="toast popup">' +
             '<img class="library-toast__icon" :src="addedToast.count ? \'assets/library/check_circle_color.svg\' : \'assets/library/close_circle_color.svg\'" alt="" />' +
             '<div class="library-toast__body">' +
               '<p v-if="!addedToast.count" class="library-toast__text stds-title8">선택한 게임이 이미 포함되어 있습니다.</p>' +
-              '<p v-else class="library-toast__text stds-title8"><template v-if="addedToast.skipped">이미 포함된 게임을 제외하고 </template><b>{{ addedToast.count }}개 게임</b>을 추가했습니다.</p>' +
+              '<p v-else class="library-toast__text stds-title8"><template v-if="addedToast.skipped">이미 포함된 게임을 제외하고 </template><b>{{ addedToast.count }}개 게임</b>{{ addedToast.removed ? \'을 해당 그룹에서 제거했습니다.\' : \'을 추가했습니다.\' }}</p>' +
               '<span class="library-toast__group stds-cap2"><i class="ic-v2-control-long-arrow-right-line" aria-hidden="true"></i>{{ addedToast.title }}</span>' +
             '</div>' +
           '</div>' +
