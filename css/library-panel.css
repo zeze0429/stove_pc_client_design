@@ -821,6 +821,9 @@
 }
 .game-menu__toggle.is-on { background: var(--stds-sem-color-brand-primary); }
 .game-menu__toggle.is-on::after { transform: translateX(1rem); }
+/* 미설치 게임이라 비활성인 토글 (자동업데이트 · 클라우드) — 꺼진 모양으로 회색 (가이드 없음, 비활성 체크박스 색에 맞춤) */
+.game-menu__item:disabled .game-menu__toggle { background: var(--stds-sem-color-disabled-variant-2); }
+.game-menu__item:disabled .game-menu__toggle::after { background: var(--stds-sem-color-disabled-variant-4); }
 
 /* 2뎁스 상단 — ← + 메뉴명(elevation-1), 좌 6 · 우 12. 상태값은 ← 버튼에만 (hover · press 배경) */
 .game-menu__head {

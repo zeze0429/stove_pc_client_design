@@ -151,24 +151,26 @@ var LIBRARY_GAME_MENU = [
   { label: '즐겨찾기 추가', fav: true }, // 이미 즐겨찾기면 "즐겨찾기에서 제거" (Figma 1217:18832)
   { label: '그룹에 추가', sub: 'add' },
   { label: '그룹에서 제거', sub: 'remove' },
-  { label: '자동업데이트', toggle: 'autoUpdate' },
-  { label: '클라우드 저장 사용', toggle: 'cloud' },
-  { label: '실행옵션' },
-  { label: '게임 파일 검사 및 복구' },
-  { label: '바탕화면 바로가기 만들기' },
+  { label: '자동업데이트', toggle: 'autoUpdate', play: true },
+  { label: '클라우드 저장 사용', toggle: 'cloud', play: true },
+  { label: '실행옵션', play: true },
+  { label: '게임 파일 검사 및 복구', play: true },
+  { label: '바탕화면 바로가기 만들기', play: true },
   { label: 'DLC' },
-  { label: '게임 옵션 설정' },
-  { label: '로컬 파일 보기' },
-  { label: '게임 삭제' },
+  { label: '게임 옵션 설정', play: true },
+  { label: '로컬 파일 보기', play: true },
+  { label: '이 게임 숨기기', hide: true }, // 게임 삭제 바로 위 (사용자 11-09)
+  { label: '게임 삭제', play: true },
 ];
-// 숨겨진 게임 화면의 카드 우클릭 (사용자 11-09 캡처) — 즐겨찾기 · 숨김 목록에서 제거만 동작, 회색은 비활성
+// play: 플레이(설치) 관련 — 미설치(action install) 게임이면 비활성 (사용자 11-09)
+// 숨겨진 게임 화면의 카드 우클릭 (사용자 11-09 캡처) — 즐겨찾기 · 숨김 목록에서 제거만 동작. play 항목은 미설치면 비활성
 var LIBRARY_GAME_MENU_HIDDEN = [
   { label: '즐겨찾기 추가', fav: true },
-  { label: '바탕화면 바로가기 만들기', disabled: true },
-  { label: '게임 파일 검사 및 복구', disabled: true },
+  { label: '바탕화면 바로가기 만들기', play: true },
+  { label: '게임 파일 검사 및 복구', play: true },
   { label: '필수 프로그램 관리' },
   { label: '숨김 목록에서 제거', unhide: true },
-  { label: '게임 삭제', disabled: true },
+  { label: '게임 삭제', play: true },
 ];
 var LIBRARY_GAME_TOGGLE_DEFAULT = { autoUpdate: false, cloud: true }; // Figma 1뎁스 예시값
 // 여러 개 선택 후 우클릭 (Figma 3-5-3)
@@ -420,14 +422,16 @@ var LibraryPanel = {
     // 1뎁스 — 그룹에 하나도 없는 게임은 그룹에서 제거를 뺀다
     gameMenuItems: function () {
       if (this.gameMenu && this.gameMenu.multi) return LIBRARY_GAME_MENU_MULTI;
-      if (this.gameMenu && this.gameMenu.hidden) {
-        var fav = gnbIsFavorite(this.gameMenu.gameId);
-        return LIBRARY_GAME_MENU_HIDDEN.map(function (item) { return item.fav && fav ? { label: '즐겨찾기에서 제거', fav: true } : item; });
-      }
-      var inGroup = this.menuGameGroups.length > 0;
       var isFav = gnbIsFavorite(this.gameMenu.gameId);
-      return LIBRARY_GAME_MENU.filter(function (item) { return item.sub !== 'remove' || inGroup; })
-        .map(function (item) { return item.fav && isFav ? { label: '즐겨찾기에서 제거', fav: true } : item; });
+      var notInstalled = !!this.menuGame && this.menuGame.action === 'install';
+      var fix = function (item) {
+        if (item.fav && isFav) return { label: '즐겨찾기에서 제거', fav: true };
+        if (item.play && notInstalled) return Object.assign({}, item, { disabled: true });
+        return item;
+      };
+      if (this.gameMenu.hidden) return LIBRARY_GAME_MENU_HIDDEN.map(fix);
+      var inGroup = this.menuGameGroups.length > 0;
+      return LIBRARY_GAME_MENU.filter(function (item) { return item.sub !== 'remove' || inGroup; }).map(fix);
     },
     titleTipText: function () {
       if (!this.titleTip) return '';
@@ -1557,7 +1561,7 @@ var LibraryPanel = {
               'type="button" role="menuitem" :disabled="item.disabled" @click="onGameMenuItem(item, $event)" @mouseenter="onGameItemEnter($event, item)" data-name="menu">' +
               '<span class="game-menu__label">{{ item.label }}</span>' +
               '<span v-if="item.sub" class="game-menu__icon" aria-hidden="true"><i class="ic-v2-control-arrow-right-line"></i></span>' +
-              '<span v-if="item.toggle" class="game-menu__toggle" :class="{ \'is-on\': gameToggles[gameMenu.gameId][item.toggle] }" ' +
+              '<span v-if="item.toggle" class="game-menu__toggle" :class="{ \'is-on\': gameToggles[gameMenu.gameId][item.toggle] && !item.disabled }" ' +
                 'role="switch" :aria-checked="String(gameToggles[gameMenu.gameId][item.toggle])" data-name="Toggle"></span>' +
             '</button>' +
           '</div>' +
