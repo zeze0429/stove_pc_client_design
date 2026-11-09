@@ -424,11 +424,6 @@ var LibraryMain = {
     // 그룹 화면 (⑧) — 패널에서 그룹명을 누르면. 게임 추가(선택 UI) 중에는 보유게임 전체가 필요해서 열리지 않는다
     // "그룹 없는 게임"도 그룹 메뉴에 그룹 화면 보기가 있어 같은 모양으로 연다 (어느 그룹에도 없는 보유게임)
     // 내가 만든 그룹 화면을 보는 중 (그룹 없는 게임 · 보유게임 탭 제외)
-    // 그룹에 추가 팝업 목록 — 내가 만든 그룹 화면에선 "다른 그룹에 추가"라 보고 있는 그룹은 뺀다
-    dialogGroups: function () {
-      var id = this.inUserGroup ? this.store.viewGroupId : null;
-      return id ? this.store.groups.filter(function (g) { return g.id !== id; }) : this.store.groups;
-    },
     inUserGroup: function () { return !!this.viewGroup && this.viewGroup.id !== 'ungrouped' && !this.store.viewOwned; },
     viewGroup: function () {
       var id = this.store.viewGroupId;
@@ -838,7 +833,7 @@ var LibraryMain = {
         '</div>' +
       '</transition>' +
 
-      '<add-to-group-dialog v-if="addGroupDialog" :groups="dialogGroups" :game-ids="selected" @confirm="confirmAddGroups" @close="addGroupDialog = false"></add-to-group-dialog>' +
+      '<add-to-group-dialog v-if="addGroupDialog" :groups="store.groups" :game-ids="selected" @confirm="confirmAddGroups" @close="addGroupDialog = false"></add-to-group-dialog>' +
 
       // 게임 추가 · 그룹에서 제거 완료 토스트 — 보유게임 영역 하단 가운데, 3초 뒤 사라진다
       '<transition name="library-toast">' +
