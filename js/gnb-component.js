@@ -181,6 +181,32 @@ function iconTipTailStyle(tip) {
     : { marginLeft: tip.tailLeft + 'px' };
 }
 
+// 사이드바 즐겨찾기 — 다른 화면(라이브러리 게임 메뉴)에서도 같은 목록을 바꾼다.
+// Vue.reactive(GNB_GAME_GROUPS)는 사이드바 data가 쓰는 것과 같은 프록시라 바로 다시 그려진다.
+// gameId = 카탈로그 게임 id (js/game-catalog.js)
+function gnbFavoriteGroup() {
+  return Vue.reactive(GNB_GAME_GROUPS).find(function (g) { return g.id === 'favorites'; });
+}
+function gnbIsFavorite(gameId) {
+  var fav = gnbFavoriteGroup();
+  return !!fav && fav.games.some(function (g) { return g.game === gameId || g.id === 'fav-' + gameId; });
+}
+// 맨 위에 넣는다 (사이드바 컨텍스트메뉴 "즐겨찾기 추가"와 같은 자리). 개수는 표시값(가짜 총수)에 더한다
+function gnbAddFavorite(gameId) {
+  var fav = gnbFavoriteGroup();
+  if (!fav || gnbIsFavorite(gameId)) return false;
+  fav.games.unshift(gnbGroupGame({ id: 'fav-' + gameId, game: gameId }));
+  fav.count += 1;
+  return true;
+}
+function gnbRemoveFavorite(gameId) {
+  var fav = gnbFavoriteGroup();
+  if (!fav) return;
+  var before = fav.games.length;
+  fav.games = fav.games.filter(function (g) { return g.game !== gameId && g.id !== 'fav-' + gameId; });
+  fav.count -= before - fav.games.length;
+}
+
 // id로 게임 하나 찾기 — 스토브게임/즐겨찾기 그룹을 가리지 않고 전체에서 검색
 // (게임 상세 페이지가 자기 id로 어떤 게임인지 알아내는 데 씀).
 function gnbFindGameById(id) {

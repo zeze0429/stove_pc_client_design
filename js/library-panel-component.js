@@ -148,7 +148,7 @@ var LibraryCreateGroupDialog = {
 
 // 게임 우클릭 메뉴 1뎁스 (Figma 3-5-2) — sub: 2뎁스로 플립, toggle: 토글(메뉴 유지), 나머지는 누르면 닫힌다(동작은 아직 없음)
 var LIBRARY_GAME_MENU = [
-  { label: '즐겨찾기 추가' },
+  { label: '즐겨찾기 추가', fav: true }, // 이미 즐겨찾기면 "즐겨찾기에서 제거" (Figma 1217:18832)
   { label: '그룹에 추가', sub: 'add' },
   { label: '그룹에서 제거', sub: 'remove' },
   { label: '자동업데이트', toggle: 'autoUpdate' },
@@ -164,7 +164,7 @@ var LIBRARY_GAME_MENU = [
 var LIBRARY_GAME_TOGGLE_DEFAULT = { autoUpdate: false, cloud: true }; // Figma 1뎁스 예시값
 // 여러 개 선택 후 우클릭 (Figma 3-5-3)
 var LIBRARY_GAME_MENU_MULTI = [
-  { label: '선택한 게임 즐겨찾기 추가' },
+  { label: '선택한 게임 즐겨찾기 추가', fav: true },
   { label: '선택한 게임 그룹에 추가', sub: 'add' },
   { label: '선택한 게임 숨기기' },
 ];
@@ -408,7 +408,9 @@ var LibraryPanel = {
     gameMenuItems: function () {
       if (this.gameMenu && this.gameMenu.multi) return LIBRARY_GAME_MENU_MULTI;
       var inGroup = this.menuGameGroups.length > 0;
-      return LIBRARY_GAME_MENU.filter(function (item) { return item.sub !== 'remove' || inGroup; });
+      var isFav = gnbIsFavorite(this.gameMenu.gameId);
+      return LIBRARY_GAME_MENU.filter(function (item) { return item.sub !== 'remove' || inGroup; })
+        .map(function (item) { return item.fav && isFav ? { label: '즐겨찾기에서 제거', fav: true } : item; });
     },
     titleTipText: function () {
       if (!this.titleTip) return '';
@@ -788,11 +790,23 @@ var LibraryPanel = {
         this.gameMenu.measuring = false;
       });
     },
+    // 즐겨찾기 추가 — 사이드바 즐겨찾기 맨 위에 들어가고 메뉴는 닫힌다. 이미 있으면 제거.
+    // 여러 개 선택(3-5-3)은 전부 추가하고 선택 해제
+    toggleMenuFavorite: function () {
+      var m = this.gameMenu;
+      if (m.multi) {
+        m.gameIds.slice().reverse().forEach(gnbAddFavorite); // 선택 순서대로 위에서부터
+        this.clearSelection();
+      } else if (gnbIsFavorite(m.gameId)) gnbRemoveFavorite(m.gameId);
+      else gnbAddFavorite(m.gameId);
+      this.closeGameMenu();
+    },
     closeGameMenu: function () { clearTimeout(this._subTimer); this.gameMenu = null; this.menuTip = null; },
     onGameMenuItem: function (item, e) {
       if (item.sub && this.gameMenu.cascade) { clearTimeout(this._subTimer); this.openGameSub(e.currentTarget, item.sub); }
       else if (item.sub) { this.gameMenu.back = item.sub; this.gameMenu.depth = 2; this.menuTip = null; }
       else if (item.toggle) { var t = this.gameToggles[this.gameMenu.gameId]; t[item.toggle] = !t[item.toggle]; }
+      else if (item.fav) this.toggleMenuFavorite();
       else this.closeGameMenu(); // 나머지 항목은 아직 동작 없음
     },
     // 콘텐츠 영역(카드)에서 연 메뉴 — 2뎁스는 플립 대신 1뎁스 옆에 4 띄워 뜬다 (사용자 11-04).
