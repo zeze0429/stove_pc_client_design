@@ -585,6 +585,22 @@
 }
 .library-select-msg__icon { display: block; flex: 0 0 auto; width: 2rem; height: 2rem; }
 .library-select-msg__count { color: var(--stds-sem-color-on-surface-elevation-1); font-weight: 700; }
+/* 결과 문구 옆 그룹명 칩 (67953:409405) — 문구와 8, 위아래 2 · 좌 5 · 우 8, surface-variant-2, Caption2-M 11/18 elevation-4, → 12 */
+.library-select-msg__group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: 0.4rem;
+  padding: 0.2rem 0.8rem 0.2rem 0.5rem;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-sem-color-surface-variant-2);
+  color: var(--stds-sem-color-on-surface-elevation-4);
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.8rem;
+  letter-spacing: -0.022rem;
+}
+.library-select-msg__group i { font-size: 1.2rem; }
 
 /* 카드 — 아무 곳이나 누르면 선택/해제. 체크박스 28 원(사용자 변경 32 → 28, 11-03 — ✓ 아이콘 20은 유지),
    썸네일 좌상단 10 (사용자 변경 12 → 10, 11-03).

@@ -377,6 +377,9 @@ var LibraryMain = {
       selected: [], // 선택 UI에서 고른 게임 id (고른 순서)
       settingsOpen: false, // 라이브러리 설정 팝업 (타이틀 옆 설정 버튼)
       addedToast: null, // 그룹에 추가한 직후 토스트 { count, title } (3초)
+      // 결과 메시지 위치 (사용자 11-10): 선택 UI가 유지되면 툴 영역 안내 문구 자리(selectNotice),
+      // 선택 UI가 닫히면 일반 화면으로 돌아가면서 하단 토스트(addedToast). 모양 { count, skipped, removed, title }
+      selectNotice: null,
       addGroupDialog: false, // 게임 선택 모드의 그룹에 추가 팝업
       headStuck: false, // 선택 UI 고정 헤더가 위에 붙어 있음 — 유틸리티 바 뒤까지 배경을 덮는다
       ownedMinHeight: 0, // 그룹 화면에서 보유게임 영역 최소 높이(px) — 타이틀을 고정 헤더 자리까지 올릴 수 있게
@@ -420,19 +423,18 @@ var LibraryMain = {
     // 즐겨찾기 추가는 선택 UI만 끝낸다
     'store.floatingAction': function (a) {
       if (!a) return;
-      if (a.kind === 'add') { this.confirmAddGroups(a.groupIds); this.store.addTargetId = null; }
+      if (a.kind === 'add') this.confirmAddGroups(a.groupIds);
       else this.cancelAdd();
     },
+    // 선택 UI 중이면 툴 영역, 아니면 하단 토스트 (사용자 11-10)
     'store.removedToast': function (t) {
-      if (!t) return;
-      var self = this;
-      this.addedToast = { count: t.count, title: t.title, removed: true };
-      clearTimeout(this._toastTimer);
-      this._toastTimer = setTimeout(function () { self.addedToast = null; }, LIBRARY_TOAST_MS);
+      if (t) this.showResult({ count: t.count, title: t.title, removed: true });
     },
+    // 선택 UI가 끝나면 툴 영역 결과 문구도 같이 없앤다. 게임을 다시 고르면 선택 안내 문구로
+    selecting: function (on) { if (!on) this.selectNotice = null; },
     // 타이틀의 보유게임 ↔ 그룹명 전환은 목록만 바꾸고 스크롤은 그대로 (사용자 11-06)
     'store.viewOwned': function () { this.selected = []; },
-    'selected.length': function () { this.$nextTick(this.snapFloating); },
+    'selected.length': function () { this.selectNotice = null; this.$nextTick(this.snapFloating); },
     // 광고를 켜고 끄면 카드 수가 바뀐다 — 없어진 페이지에 머물지 않게
     quickPages: function (n) {
       if (this.quickPage > n - 1) this.goQuick(n - 1 - this.quickPage);
@@ -658,9 +660,7 @@ var LibraryMain = {
       this.store.addTargetId = null;
       this.store.selectMode = false;
       if (this._scrollBox) this._scrollBox.scrollTo({ top: 0, behavior: 'smooth' });
-      this.addedToast = { count: removed, title: group.title, removed: true };
-      clearTimeout(this._toastTimer);
-      this._toastTimer = setTimeout(function () { self.addedToast = null; }, LIBRARY_TOAST_MS);
+      this.showResult({ count: removed, title: group.title, removed: true });
     },
     // 그룹에 추가 팝업 확인 — 체크한 그룹마다 아직 없는 게임만 넣고, 선택 UI를 끝내고 토스트 (사용자 결정: 종료 + 토스트)
     confirmAddGroups: function (groupIds) {
@@ -677,13 +677,15 @@ var LibraryMain = {
         });
       });
       this.addGroupDialog = false;
-      this.store.selectMode = false;
-      // 취소와 같이 앵커를 풀고 맨 위(라이브러리 타이틀)로 (사용자 11-03)
-      if (this._scrollBox) this._scrollBox.scrollTo({ top: 0, behavior: 'smooth' });
       var title = picked.length > 1 ? picked[0].title + ' 외 ' + (picked.length - 1) + '개 그룹' : (picked[0] && picked[0].title) || '';
-      this.addedToast = { count: added.length, skipped: skipped, title: title };
-      clearTimeout(this._toastTimer);
-      this._toastTimer = setTimeout(function () { self.addedToast = null; }, LIBRARY_TOAST_MS);
+      // 하나도 안 들어감(전부 이미 포함) — 선택 UI를 그대로 두고 툴 영역에 ✖ 문구 (사용자 11-10)
+      if (added.length) {
+        this.store.addTargetId = null;
+        this.store.selectMode = false;
+        // 취소와 같이 앵커를 풀고 맨 위(라이브러리 타이틀)로 (사용자 11-03)
+        if (this._scrollBox) this._scrollBox.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      this.showResult({ count: added.length, skipped: skipped, title: title });
     },
     // 하단 플로팅을 정수 픽셀에 맞춘다 — 버튼 폭(글자 폭)이 소수면 아이콘이 반 픽셀에 그려져 굵기가 번지고
     // 더보기 점 세 개 크기가 달라 보인다. 버튼 폭은 짝수 정수로 올리고(아이콘이 가운데 정수 위치),
@@ -740,6 +742,20 @@ var LibraryMain = {
       this.queries = [];
       this.query = '';
     },
+    // 결과 메시지 — 선택 UI가 아직 열려 있으면 툴 영역, 닫혔으면 하단 토스트 (사용자 11-10). 3초 뒤 사라진다
+    showResult: function (r) {
+      var self = this;
+      clearTimeout(this._toastTimer);
+      if (this.selecting) {
+        this.addedToast = null;
+        this.selectNotice = r;
+        this._toastTimer = setTimeout(function () { self.selectNotice = null; }, LIBRARY_TOAST_MS);
+      } else {
+        this.selectNotice = null;
+        this.addedToast = r;
+        this._toastTimer = setTimeout(function () { self.addedToast = null; }, LIBRARY_TOAST_MS);
+      }
+    },
     // 게임 선택 취소 — 시작할 때 걸었던 앵커를 풀고 맨 위(라이브러리 타이틀)로 되돌린다 (사용자 11-03)
     cancelAdd: function () {
       this.store.addTargetId = null;
@@ -758,10 +774,7 @@ var LibraryMain = {
       var count = this.selected.length;
       Array.prototype.push.apply(group.gameIds, this.selected);
       this.store.addTargetId = null;
-      var self = this;
-      this.addedToast = { count: count, title: group.title };
-      clearTimeout(this._toastTimer);
-      this._toastTimer = setTimeout(function () { self.addedToast = null; }, LIBRARY_TOAST_MS);
+      this.showResult({ count: count, title: group.title });
     },
   },
   template:
@@ -839,9 +852,18 @@ var LibraryMain = {
           '<button class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" type="button" @click="cancelAdd"><i class="ic-v2-control-long-arrow-left-line"></i>{{ addTarget ? \'게임 추가 취소\' : \'게임 선택 취소\' }}</button>' +
           // 메시지 영역 (Figma 클라이언트_v3.1 67953:409405) — 게임 선택 전 / 선택 후
           '<p class="library-select-msg" role="status" data-name="안내 문구">' +
-            '<img class="library-select-msg__icon" src="assets/library/img_info.png" alt="" />' +
-            '<span v-if="!selected.length">게임을 먼저 선택해 주세요.</span>' +
-            '<span v-else><b class="library-select-msg__count">{{ selected.length }}개 게임</b>이 선택되었습니다.</span>' +
+            // 결과 (67953:409405 그룹에 추가 · 그룹에서 제거) — 선택 UI가 유지될 때만 여기, ✔ img_done / ✖ img_error + 그룹명 칩
+            '<template v-if="selectNotice">' +
+              '<img class="library-select-msg__icon" :src="selectNotice.count ? \'assets/library/img_done.png\' : \'assets/library/img_error.png\'" alt="" />' +
+              '<span v-if="!selectNotice.count">선택한 게임이 이미 포함되어 있습니다.</span>' +
+              '<span v-else><template v-if="selectNotice.skipped">이미 포함된 게임을 제외하고 </template><b class="library-select-msg__count">{{ selectNotice.count }}개 게임</b>{{ selectNotice.removed ? \'을 해당 그룹에서 제거했습니다.\' : \'을 추가했습니다.\' }}</span>' +
+              '<span class="library-select-msg__group" data-name="group"><i class="ic-v2-control-long-arrow-right-line" aria-hidden="true"></i>{{ selectNotice.title }}</span>' +
+            '</template>' +
+            '<template v-else>' +
+              '<img class="library-select-msg__icon" src="assets/library/img_info.png" alt="" />' +
+              '<span v-if="!selected.length">게임을 먼저 선택해 주세요.</span>' +
+              '<span v-else><b class="library-select-msg__count">{{ selected.length }}개 게임</b>이 선택되었습니다.</span>' +
+            '</template>' +
           '</p>' +
         '</div>' +
         '<div v-else class="library-toolbar" data-name="filter area">' +
