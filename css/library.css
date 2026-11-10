@@ -986,7 +986,12 @@
 /* 체크 — 이름 Bold elevation-1 (다크 흰색, 라이트 검정) */
 .add-group-dialog__item.is-checked .add-group-dialog__name { color: var(--stds-sem-color-on-surface-elevation-1); font-weight: 700; }
 /* 이미 다 들어 있는 그룹 — 비활성(체크된 채) */
-.add-group-dialog__item.is-full { cursor: default; }
+/* 비활성 행 — 배경 없이 같은 색(inverse-elevation-6) 1px 보더만 (사용자 11-10). 크기 안 바뀌게 inset 그림자로 */
+.add-group-dialog__item.is-full {
+  cursor: default;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--stds-sem-color-inverse-elevation-6);
+}
 .add-group-dialog__item.is-full .add-group-dialog__name { color: var(--stds-sem-color-disabled-variant-1); font-weight: 700; }
 .add-group-dialog__item.is-full .add-group-dialog__count { background: var(--stds-sem-color-disabled-variant-2); color: var(--stds-sem-color-disabled-variant-4); }
 /* 그룹 없음 — 그림 120 + 문구 (목록 라벨 아래 56 띄움 · 가로 가운데) */
