@@ -593,7 +593,8 @@ var LibraryMain = {
   },
   methods: {
     goQuick: function (delta) {
-      var next = Math.min(Math.max(this.quickPage + delta, 0), this.quickPages - 1);
+      // 카드가 없을 때(보유게임 없음) 페이지 수 0 → -1로 내려가지 않게 0 아래로는 안 간다
+      var next = Math.max(Math.min(this.quickPage + delta, this.quickPages - 1), 0);
       if (next === this.quickPage) return;
       this.quickPage = next;
       this.quickActive = next * LIBRARY_QUICK_STEP;
