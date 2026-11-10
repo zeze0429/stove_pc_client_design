@@ -889,7 +889,7 @@ var LibraryMain = {
           '<button class="stds-button stds-button-tertiary stds-button-sm has-arrow library-tool-btn" type="button" @click="store.viewHidden = false">보유 게임 목록<i class="ic-v2-control-arrow-right-line" aria-hidden="true"></i></button>' +
         '</div>' +
         '<h2 v-else class="library-section__title">보유게임<span>{{ owned.length }}</span></h2>' +
-        '<div class="library-owned__divider"></div>' +
+        '<div v-if="!store.noOwned" class="library-owned__divider"></div>' + // 보유게임 없음이면 구분선도 미노출 (사용자 11-10)
         // 선택 UI — 도구 줄 자리에 게임 추가 취소 + 안내 문구 (Figma ⑦ · 0825 게임 추가 취소)
         '<div v-if="selecting" class="library-toolbar library-toolbar--select" data-name="filter area">' +
           '<button class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" type="button" @click="cancelAdd"><i class="ic-v2-control-long-arrow-left-line"></i>{{ addTarget ? \'게임 추가 취소\' : \'게임 선택 취소\' }}</button>' +
