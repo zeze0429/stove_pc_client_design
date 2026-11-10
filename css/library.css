@@ -983,8 +983,8 @@
   letter-spacing: -0.024rem;
   text-align: center;
 }
-/* 체크 — 이름 elevation-1 (다크 흰색, 라이트 검정), Regular 400 (사용자 11-10) */
-.add-group-dialog__item.is-checked .add-group-dialog__name { color: var(--stds-sem-color-on-surface-elevation-1); font-weight: 400; }
+/* 체크(선택) — 이름 elevation-1 (다크 흰색, 라이트 검정), Bold 700 — 700은 선택 상태만, 기본 · 비활성은 400 (사용자 11-10) */
+.add-group-dialog__item.is-checked .add-group-dialog__name { color: var(--stds-sem-color-on-surface-elevation-1); font-weight: 700; }
 /* 이미 다 들어 있는 그룹 — 비활성(체크된 채) */
 /* 비활성 행 — 배경 없이 같은 색(inverse-elevation-6) 1px 보더만 (사용자 11-10). 크기 안 바뀌게 inset 그림자로 */
 .add-group-dialog__item.is-full {
