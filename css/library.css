@@ -992,7 +992,7 @@
   background: transparent;
   box-shadow: inset 0 0 0 1px var(--stds-sem-color-inverse-elevation-6);
 }
-.add-group-dialog__item.is-full .add-group-dialog__name { color: var(--stds-sem-color-disabled-variant-1); font-weight: 700; }
+.add-group-dialog__item.is-full .add-group-dialog__name { color: var(--stds-sem-color-disabled-variant-1); font-weight: 400; } /* 비활성 이름은 Regular (사용자 11-10) */
 /* 비활성 뱃지 — 배경은 활성과 같은 inverse-elevation-5, 숫자만 한 단계 낮게 (사용자 11-10).
    활성 elevation-4(다크 gray500 · 라이트 gray400)보다 한 단계 아래 = placeholder(다크 gray600 · 라이트 gray300).
    disabled-variant-3도 써 봤는데 원복 (사용자 11-10) */
