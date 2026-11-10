@@ -947,21 +947,15 @@ var LibraryMain = {
             '<p class="library-no-result__desc stds-text3">검색어의 단어 수를 줄이거나 필터 조건을 변경하세요.</p>' +
           '</div>' +
         '</div>' +
-        // 보유게임 없음 (Figma 클라이언트_v3.1 48960:383577 empty — 예전 레이아웃이라 글자 · 크기는 지금 결과 없음 박스 기준, 사용자 11-10).
-        // 오른쪽 220은 스토어 홈 바로가기
+        // 보유게임 없음 안내 (사용자 시안 11-10 — Figma 48960:383577의 일러스트 · 오른쪽 스토어 홈 칸 대신 아이콘 + 버튼 한 줄 가운데).
+        // 박스는 결과 없음 박스와 같은 셸, 버튼은 시스템 primary md + 오른쪽 아이콘
         '<div v-if="store.noOwned && !store.viewHidden && !resultsActive" class="library-no-result library-no-owned" data-name="empty">' +
-          '<div class="library-no-owned__body" data-name="img+text">' +
-            '<img class="library-no-result__img theme-img--dark" src="assets/library/empty_no_game.png" alt="" />' +
-            '<img class="library-no-result__img theme-img--light" src="assets/library/empty_no_game_light.png" alt="" />' +
-            '<div class="library-no-result__text">' +
-              '<p class="library-no-result__title stds-title7 fw-medium">아직 보유한 게임이 없으시군요.</p>' +
-              '<p class="library-no-result__desc stds-text3">재미있는 게임을 찾아서 라이브러리를 채워보세요.</p>' +
-            '</div>' +
+          '<i class="library-no-owned__icon ic-v2-object-game-fill" aria-hidden="true"></i>' +
+          '<div class="library-no-result__text">' +
+            '<p class="library-no-owned__title stds-title6 fw-bold">아직 보유한 게임이 없어요.</p>' +
+            '<p class="library-no-owned__desc stds-text3">재미있는 게임을 찾아서 라이브러리를 채워보세요.</p>' +
           '</div>' +
-          '<a class="library-no-owned__link" href="app-shell.html" data-name="link">' +
-            '<span class="library-no-owned__circle" aria-hidden="true"><i class="ic-v2-control-long-arrow-right-line"></i></span>' +
-            '<span class="library-no-owned__label stds-title7 fw-bold">스토어 홈</span>' +
-          '</a>' +
+          '<a class="stds-button stds-button-primary stds-button-md library-no-owned__btn" href="app-shell.html">스토어 둘러보기<i class="ic-v2-control-arrow-right-circle-fill" aria-hidden="true"></i></a>' +
         '</div>' +
         // 숨긴 게임이 없을 때 (Figma 클라이언트_v3.1 48960:383609) — 결과 없음 박스와 같은 크기 · 글자(사용자 11-09), 일러스트만 다름
         '<div v-if="store.viewHidden && !hiddenGames.length" class="library-no-result" data-name="empty">' +
