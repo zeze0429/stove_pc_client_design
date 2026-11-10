@@ -966,7 +966,8 @@ var LibraryMain = {
             '<p class="library-no-result__title stds-title7 fw-medium">숨겨진 게임이 없습니다.</p>' +
           '</div>' +
         '</div>' +
-        '<ul class="library-grid">' +
+        // 보유게임 없음이면 빈 목록이 위 여백(16)만 남기니 빼 둔다 — 안내 박스 아래가 바로 섹션 끝
+        '<ul v-if="!store.noOwned" class="library-grid">' +
           '<li v-for="g in filteredOwned" :key="g.id" class="library-card" ' +
             ':class="{ \'is-selectable\': selecting, \'is-selected\': selecting && isSelected(g), \'is-added\': selecting && addedIds[g.id] }" ' +
             ':aria-checked="selecting ? String(isSelected(g)) : null" :role="selecting ? \'checkbox\' : null" @click="toggleSelect(g)" @contextmenu.prevent="openCardMenu($event, g)">' +
@@ -993,7 +994,8 @@ var LibraryMain = {
 
       // ---- 보유게임 없음 — 추천 목록 (스토어 상품 카드, 썸네일 · 이름은 보유게임 카드와 같은 크기) ----
       '<section v-if="store.noOwned && !store.viewHidden" class="library-section library-hot" data-name="list">' +
-        '<div class="library-section__head"><h2 class="library-section__title">지금! 가장 핫한 게임을 해보세요.</h2></div>' +
+        // 제목은 24 줄(head) 없이 바로 — 빠른 실행 → 보유게임처럼 위 섹션 끝에서 제목까지 36 (사용자 11-10)
+        '<h2 class="library-section__title">지금! 가장 핫한 게임을 해보세요.</h2>' +
         '<ul class="library-grid">' +
           '<li v-for="g in hotGames" :key="g.id" class="library-card" data-name="component/list">' +
             '<div class="library-card__thumb">' +
