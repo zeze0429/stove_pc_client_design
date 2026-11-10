@@ -910,8 +910,9 @@ var LibraryMain = {
             '</template>' +
           '</p>' +
         '</div>' +
-        '<div v-else class="library-toolbar" data-name="filter area">' +
-          '<button v-if="!store.viewHidden" class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" type="button" :disabled="!owned.length" @click="startSelect"><i class="ic-v2-control-check-circle-line"></i>게임 선택</button>' +
+        // 보유게임 없음이면 도구 줄 전체 미노출 (사용자 11-10) — 구분선 아래 바로 빈 상태 박스
+        '<div v-else-if="!store.noOwned" class="library-toolbar" data-name="filter area">' +
+          '<button v-if="!store.viewHidden" class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" type="button" @click="startSelect"><i class="ic-v2-control-check-circle-line"></i>게임 선택</button>' +
           '<span v-else aria-hidden="true"></span>' +
           '<div class="library-toolbar__right">' +
             '<div class="library-view-toggle" role="tablist" aria-label="보기 방식">' +
