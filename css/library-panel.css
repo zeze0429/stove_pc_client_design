@@ -566,6 +566,10 @@
 }
 .library-group.is-drop-target .game-group__list { opacity: 0.6; }
 .library-group.is-drop-target .library-group__add-box { border-color: transparent; opacity: 0.6; }
+/* 드래그 중엔 게임 추가 버튼 hover(오렌지)를 끈다 — 오렌지는 선택 UI 전용 (사용자 11-10) */
+.library-panel.is-dragging .library-group__add-box:hover,
+.library-panel.is-dragging .library-group__add-box:active { color: var(--stds-sem-color-on-surface-elevation-4); cursor: inherit; }
+.library-panel.is-dragging .library-group:not(.is-drop-target) .library-group__add-box:hover { border-color: var(--stds-sem-color-inverse-elevation-3); }
 
 /* 순서 변경 중 원래 자리 (Figma 2904:34341) — 그룹 전체 40%, 점선 2/2 white-50 (Figma 글로벌). CSS dashed는 간격을 못 정해 SVG로 */
 .library-panel .library-group.is-reorder-ghost { position: relative; opacity: 0.4; }

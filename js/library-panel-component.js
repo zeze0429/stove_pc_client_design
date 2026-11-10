@@ -1409,7 +1409,7 @@ var LibraryPanel = {
     contextMenuLock('library', false);
   },
   template:
-    '<div class="library-panel" data-name="layout/library/pannel">' +
+    '<div class="library-panel" :class="{ \'is-dragging\': !!drag }" data-name="layout/library/pannel">' +
       // 헤더 — 고정
       '<div class="library-panel__title" data-name="title">' +
         '<i class="ic-v2-content-folder-open-fill" aria-hidden="true"></i>' +
