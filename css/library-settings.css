@@ -71,6 +71,8 @@
   border-radius: var(--stds-glob-border-radius-lg);
   background: var(--stds-sem-color-inverse-elevation-6);
 }
+/* 행 어디든 길게 눌러 순서 변경 — 호버부터 손(grab) 커서. ✎ · 🗑은 pointer 그대로, 이름 수정 중엔 기본 */
+.library-settings__row:not(.is-editing) { cursor: grab; }
 .library-settings__row:not(.is-editing):not(.is-ghost):not(.library-settings__drag):hover {
   background: linear-gradient(var(--stds-sem-color-interaction-hover), var(--stds-sem-color-interaction-hover)), var(--stds-sem-color-inverse-elevation-6);
 }
