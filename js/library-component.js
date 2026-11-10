@@ -430,6 +430,8 @@ var LibraryMain = {
       this.store.addTargetId = null;
       this.store.selectMode = false;
       this.store.viewHidden = false;
+      this.store.viewGroupId = null; // 보유게임 없음 = 그룹 화면(앵커) 안 잡음
+      this.store.viewOwned = false;
     },
     // 그룹 화면을 열고 닫거나 다른 그룹으로 바꾸면 맨 위(라이브러리 타이틀)부터
     'store.viewGroupId': function (id) { if (id) this.store.viewHidden = false; this.onViewChange(); },
