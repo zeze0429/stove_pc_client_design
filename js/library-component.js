@@ -851,7 +851,8 @@ var LibraryMain = {
         '<div v-if="selecting" class="library-toolbar library-toolbar--select" data-name="filter area">' +
           '<button class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" type="button" @click="cancelAdd"><i class="ic-v2-control-long-arrow-left-line"></i>{{ addTarget ? \'게임 추가 취소\' : \'게임 선택 취소\' }}</button>' +
           // 메시지 영역 (Figma 클라이언트_v3.1 67953:409405) — 게임 선택 전 / 선택 후
-          '<p class="library-select-msg" role="status" data-name="안내 문구">' +
+          // 결과 문구가 길어 취소 버튼을 가릴 수 있어서, 결과가 떠 있는 동안은 툴 줄 전체를 배경색 레이어로 덮고 가운데 (66867:271587)
+          '<p class="library-select-msg" :class="{ \'is-result\': selectNotice }" role="status" data-name="안내 문구">' +
             // 결과 (67953:409405 그룹에 추가 · 그룹에서 제거) — 선택 UI가 유지될 때만 여기, ✔ img_done / ✖ img_error + 그룹명 칩
             '<template v-if="selectNotice">' +
               '<img class="library-select-msg__icon" :src="selectNotice.count ? \'assets/library/img_done.png\' : \'assets/library/img_error.png\'" alt="" />' +

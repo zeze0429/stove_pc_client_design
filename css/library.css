@@ -583,6 +583,16 @@
   letter-spacing: -0.042rem;
   white-space: nowrap;
 }
+.library-select-msg.is-result {
+  /* 결과 문구 (66867:271587, 2026.08.11 협의) — 취소 버튼까지 덮는 배경 레이어(background-variant-1), 높이 = 버튼 32, 문구는 가운데.
+     문구가 사라지면 레이어도 같이 사라진다 */
+  left: 0;
+  right: 0;
+  height: 3.2rem;
+  justify-content: center;
+  transform: translateY(-50%);
+  background: var(--stds-sem-color-background-variant-1);
+}
 .library-select-msg__icon { display: block; flex: 0 0 auto; width: 2rem; height: 2rem; }
 .library-select-msg__count { color: var(--stds-sem-color-on-surface-elevation-1); font-weight: 700; }
 /* 결과 문구 옆 그룹명 칩 (67953:409405) — 문구와 8, 위아래 2 · 좌 5 · 우 8, surface-variant-2, Caption2-M 11/18 elevation-4, → 12 */
