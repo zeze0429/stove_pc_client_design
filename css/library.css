@@ -993,8 +993,10 @@
   box-shadow: inset 0 0 0 1px var(--stds-sem-color-inverse-elevation-6);
 }
 .add-group-dialog__item.is-full .add-group-dialog__name { color: var(--stds-sem-color-disabled-variant-1); font-weight: 700; }
-/* 비활성 뱃지 — 배경은 활성과 같은 inverse-elevation-5, 숫자만 disabled-variant-3(다크 gray750 · 라이트 gray80) (사용자 11-10) */
-.add-group-dialog__item.is-full .add-group-dialog__count { color: var(--stds-sem-color-disabled-variant-3); }
+/* 비활성 뱃지 — 배경은 활성과 같은 inverse-elevation-5, 숫자만 한 단계 낮게 (사용자 11-10).
+   활성 elevation-4(다크 gray500 · 라이트 gray400)보다 한 단계 아래 = placeholder(다크 gray600 · 라이트 gray300).
+   disabled-variant-3도 써 봤는데 원복 (사용자 11-10) */
+.add-group-dialog__item.is-full .add-group-dialog__count { color: var(--stds-sem-color-placeholder); }
 /* 그룹 없음 — 그림 120 + 문구 (목록 라벨 아래 56 띄움 · 가로 가운데) */
 .add-group-dialog__empty { display: flex; flex-direction: column; align-items: center; padding-top: 2.2rem; }
 .add-group-dialog__empty img { display: block; width: 12rem; height: 12rem; }
