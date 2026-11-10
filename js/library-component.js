@@ -758,6 +758,7 @@ var LibraryMain = {
       this.store.viewOwned = false;
       this.store.viewHidden = true;
     },
+    goStore: function () { location.href = typeof gnbFreshUrl === 'function' ? gnbFreshUrl('app-shell.html') : 'app-shell.html'; },
     startSelect: function () { this.store.addTargetId = null; this.store.selectMode = true; },
     // 그룹 화면 닫기(X) — 그룹명이 타이틀에서 빠지고 보유게임 전체로, 패널은 아무 그룹도 선택되지 않은 상태 (⑧)
     closeGroupView: function () {
@@ -952,10 +953,11 @@ var LibraryMain = {
         '<div v-if="store.noOwned && !store.viewHidden && !resultsActive" class="library-no-result library-no-owned" data-name="empty">' +
           '<i class="library-no-owned__icon ic-v2-object-game-fill" aria-hidden="true"></i>' +
           '<div class="library-no-result__text">' +
-            '<p class="library-no-owned__title stds-title6 fw-bold">아직 보유한 게임이 없어요.</p>' +
-            '<p class="library-no-owned__desc stds-text3">재미있는 게임을 찾아서 라이브러리를 채워보세요.</p>' +
+            '<p class="library-no-result__title stds-title7 fw-medium">아직 보유한 게임이 없어요.</p>' +
+            '<p class="library-no-result__desc stds-text3">재미있는 게임을 찾아서 라이브러리를 채워보세요.</p>' +
           '</div>' +
-          '<a class="stds-button stds-button-primary stds-button-md library-no-owned__btn" href="app-shell.html">스토어 둘러보기<i class="ic-v2-control-arrow-right-circle-fill" aria-hidden="true"></i></a>' +
+          // 시스템 버튼은 <button>이어야 hover · pressed가 걸린다 (:enabled) — 누르면 스토어 페이지로 (GNB와 같은 이동)
+          '<button class="stds-button stds-button-primary stds-button-md library-no-owned__btn" type="button" @click="goStore">스토어 둘러보기<i class="ic-v2-control-arrow-right-circle-fill" aria-hidden="true"></i></button>' +
         '</div>' +
         // 숨긴 게임이 없을 때 (Figma 클라이언트_v3.1 48960:383609) — 결과 없음 박스와 같은 크기 · 글자(사용자 11-09), 일러스트만 다름
         '<div v-if="store.viewHidden && !hiddenGames.length" class="library-no-result" data-name="empty">' +
