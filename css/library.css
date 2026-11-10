@@ -788,7 +788,7 @@
   align-items: center;
   gap: 1.2rem;
   padding: calc(1.6rem - 1px);
-  border: 1px solid var(--stds-glob-color-white-40);
+  border: 1px solid var(--stds-sem-color-inverse-elevation-1); /* 토스트 보더 — 다크 white-30 · 라이트 black-30 (사용자 11-10, 예전 glob white-40) */
   border-radius: var(--stds-glob-border-radius-xl);
   background: var(--stds-glob-color-tint-blue100);
   box-shadow: var(--library-floating-shadow);
