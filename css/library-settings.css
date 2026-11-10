@@ -46,11 +46,8 @@
 .library-settings__section .stds-checkbox-label { color: var(--stds-sem-color-on-surface-elevation-2); }
 
 /* 그룹 만들기 — 라벨 아래 8, 입력칸(32) + 만들기(primary sm, hug) 간격 8.
-   입력칸은 그룹에 추가 팝업과 같은 상태값, 크기만 sm — 높이 32 · 좌우 12 · 글자 Button3-R 12/18 */
+   입력칸은 그룹에 추가 팝업과 같은 공용(.add-group-dialog__field, css/library.css) — 높이 32 · 좌우 12 · 글자 12/18 */
 .library-settings__create { align-self: stretch; display: flex; flex-direction: column; gap: 0.8rem; }
-.library-settings__create .add-group-dialog__field { height: 3.2rem; padding: 0 calc(1.2rem - 1px); }
-.library-settings__create .add-group-dialog__field:is(.is-active, .is-error) { padding: 0 calc(1.2rem - 2px); }
-.library-settings__create .add-group-dialog__input { font-size: 1.2rem; line-height: 1.8rem; letter-spacing: -0.024rem; }
 .library-settings__create .add-group-dialog__input:disabled { cursor: default; }
 .library-settings__make { flex: 0 0 auto; padding: 0 1.6rem; } /* 만들기 — 좌우 16 (Figma 65) */
 

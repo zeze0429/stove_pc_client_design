@@ -322,7 +322,7 @@ var LibraryAddToGroupDialog = {
                 'placeholder="그룹 이름을 입력해주세요 (최대 ' + LIBRARY_ADD_GROUP_NAME_MAX + '자)" @input="onInput" @scroll="checkOverflow" @keyup="checkOverflow" @keydown="onKey" @focus="focused = true" @blur="focused = false" />' +
               '<button v-if="text" class="add-group-dialog__clear" type="button" aria-label="지우기" @mousedown.prevent @click="clear"><i class="ic-v2-control-close-circle-fill"></i></button>' +
             '</label>' +
-            '<button class="stds-button stds-button-primary stds-button-md add-group-dialog__done" type="button" :disabled="!canSubmitName" @mousedown.prevent @click="submitName" data-name="Button">완료</button>' +
+            '<button class="stds-button stds-button-primary stds-button-sm add-group-dialog__done" type="button" :disabled="!canSubmitName" @mousedown.prevent @click="submitName" data-name="Button">완료</button>' +
           '</div>' +
           '<p v-if="error" class="add-group-dialog__error" data-name="유효성문구"><i class="ic-v2-state-warning-circle-fill" aria-hidden="true"></i>{{ error }}</p>' +
         '</div>' +

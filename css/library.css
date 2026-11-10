@@ -848,7 +848,8 @@
 .add-group-dialog__create--input { flex-direction: column; gap: 1rem; }
 /* 그룹 만들기 버튼 — 우측패널 버튼(.library-panel__create, css/library-panel.css) 그대로, 폭만 hug */
 .add-group-dialog .add-group-dialog__tab { flex: 0 0 auto; } /* library-panel.css가 뒤에 로드돼 flex 1 1 0을 덮어써야 한다 */
-/* 입력칸 + 완료 — 44. 기본 보더 1 border, 입력 중 2 gray400(Figma 글로벌), 에러 2 error */
+/* 입력칸 + 완료 — 32 (사용자 11-10: 44에서 한 단계 줄여 라이브러리 설정 그룹 만들기와 같게). 좌우 12 · 글자 Button3-R 12/18.
+   기본 보더 1 border, 입력 중 2 gray400(Figma 글로벌), 에러 2 error. 그룹에 추가 팝업 · 라이브러리 설정 공용 */
 .add-group-dialog__row { display: flex; gap: 0.8rem; }
 .add-group-dialog__field {
   position: relative;
@@ -857,15 +858,15 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  height: 4.4rem;
-  padding: 0 calc(1.6rem - 1px);
+  height: 3.2rem;
+  padding: 0 calc(1.2rem - 1px);
   border: 1px solid var(--stds-sem-color-border);
   border-radius: var(--stds-glob-border-radius-lg);
   background: var(--stds-sem-color-neutral-variant-3);
   cursor: text;
 }
-.add-group-dialog__field.is-active { border: 2px solid var(--stds-glob-color-gray400); padding: 0 calc(1.6rem - 2px); }
-.add-group-dialog__field.is-error { border: 2px solid var(--stds-sem-color-error); padding: 0 calc(1.6rem - 2px); }
+.add-group-dialog__field.is-active { border: 2px solid var(--stds-glob-color-gray400); padding: 0 calc(1.2rem - 2px); }
+.add-group-dialog__field.is-error { border: 2px solid var(--stds-sem-color-error); padding: 0 calc(1.2rem - 2px); }
 .add-group-dialog__input {
   flex: 1 1 auto;
   min-width: 0;
@@ -876,9 +877,9 @@
   color: var(--stds-sem-color-on-surface-elevation-2);
   caret-color: var(--stds-sem-color-brand-primary);
   font: inherit;
-  font-size: 1.4rem;
-  line-height: 2rem;
-  letter-spacing: -0.042rem;
+  font-size: 1.2rem;
+  line-height: 1.8rem;
+  letter-spacing: -0.024rem;
 }
 .add-group-dialog__input::placeholder { color: var(--stds-sem-color-placeholder); }
 /* 입력이 칸보다 길면 앞쪽이 흐려진다 (가이드 "잘리는 부분은 그라디언트 노출") */
@@ -903,7 +904,8 @@
   cursor: pointer;
 }
 .add-group-dialog__clear i { font-size: 1.6rem; }
-/* 완료 — 공통 버튼 primary md (사용자 지정, 가이드의 neutral-variant-1 대신) / 비어 있거나 에러면 비활성 */
+/* 완료 — 공통 버튼 primary sm, 좌우 16 (라이브러리 설정 만들기와 같게, 사용자 11-10) / 비어 있거나 에러면 비활성 */
+.add-group-dialog__done { flex: 0 0 auto; padding: 0 1.6rem; }
 .add-group-dialog__error {
   display: flex;
   align-items: flex-start;
