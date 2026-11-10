@@ -914,7 +914,8 @@
   background: linear-gradient(to top, var(--stds-sem-color-surface-elevation-1) 26.667%, transparent 88.06%);
   pointer-events: none;
 }
-/* 목록 항목 (component/selection UI/dialog/list) — 48, 좌우 16, 둥글기 8, gray860 / hover #303030(토큰 없음 → 가장 가까운 gray820) */
+/* 목록 항목 (component/selection UI/dialog/list) — 48, 좌우 16, 둥글기 8.
+   색은 라이브러리 설정 그룹 행과 같게 (사용자 11-10): 배경 inverse-elevation-6, hover는 그 위에 interaction-hover, 이름 elevation-2 */
 .add-group-dialog__item {
   flex: 0 0 auto;
   display: flex;
@@ -924,12 +925,12 @@
   padding: 0 1.6rem;
   border: 0;
   border-radius: var(--stds-glob-border-radius-lg);
-  background: var(--stds-glob-color-gray860);
-  color: var(--stds-sem-color-on-surface-elevation-3);
+  background: var(--stds-sem-color-inverse-elevation-6);
+  color: var(--stds-sem-color-on-surface-elevation-2);
   text-align: left;
   cursor: pointer;
 }
-.add-group-dialog__item:not(:disabled):hover { background: var(--stds-glob-color-gray820); }
+.add-group-dialog__item:not(:disabled):hover { background: linear-gradient(var(--stds-sem-color-interaction-hover), var(--stds-sem-color-interaction-hover)), var(--stds-sem-color-inverse-elevation-6); }
 /* 체크 — 공통 체크박스 sm 상자 (css/checkbox.css, 사용자 11-03) */
 .add-group-dialog__check { flex: 0 0 auto; cursor: inherit; }
 .add-group-dialog__name {
@@ -948,16 +949,16 @@
   height: 1.6rem;
   padding: 0.1rem 0.4rem 0;
   border-radius: var(--stds-glob-border-radius-full);
-  background: var(--stds-glob-color-white-50);
-  color: var(--stds-glob-color-gray860);
+  background: var(--stds-sem-color-inverse-elevation-5); /* 설정 그룹 행 뱃지와 같은 색 (사용자 11-10) */
+  color: var(--stds-sem-color-on-surface-elevation-4);
   font-size: 1.2rem;
   font-weight: 700;
   line-height: 1.5rem;
   letter-spacing: -0.024rem;
   text-align: center;
 }
-/* 체크 — 이름 Bold white */
-.add-group-dialog__item.is-checked .add-group-dialog__name { color: var(--stds-glob-color-white); font-weight: 700; }
+/* 체크 — 이름 Bold elevation-1 (다크 흰색, 라이트 검정) */
+.add-group-dialog__item.is-checked .add-group-dialog__name { color: var(--stds-sem-color-on-surface-elevation-1); font-weight: 700; }
 /* 이미 다 들어 있는 그룹 — 비활성(체크된 채) */
 .add-group-dialog__item.is-full { cursor: default; }
 .add-group-dialog__item.is-full .add-group-dialog__name { color: var(--stds-sem-color-disabled-variant-1); font-weight: 700; }
