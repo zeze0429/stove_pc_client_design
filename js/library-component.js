@@ -210,6 +210,7 @@ function libraryHideGames(ids) {
 }
 // 그룹 개수 표시 — 숨긴 게임은 세지 않는다 (그룹에는 남아 있어 숨김 해제하면 다시 보인다)
 function libraryGroupCount(group) {
+  if (LIBRARY_STORE.noOwned) return 0; // 보유게임 없음 — 그룹에 넣어 둔 게임도 보유가 아니니 0
   var h = LIBRARY_STORE.hiddenIds;
   return h.length ? group.gameIds.filter(function (id) { return h.indexOf(id) < 0; }).length : group.gameIds.length;
 }

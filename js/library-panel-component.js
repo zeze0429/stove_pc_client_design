@@ -251,7 +251,8 @@ function TITLE_TPL(idExpr, nameExpr, countExpr, withAdd) {
       : '') +
     '<span' + (withAdd ? ' v-else' : '') + ' class="library-group__btns" data-name="btn">' +
       (withAdd
-        ? '<button class="library-group__btn" type="button" aria-label="게임 추가" @click.stop="startAdd(' + idExpr + ')" @mouseenter="showBtnTip($event, \'게임 추가\')" @mouseleave="hideBtnTip" data-name="component/game_group/title/btn">' +
+        // 게임 추가(+) — 넣을 보유게임이 없으면(보유게임 없음) 미노출 (사용자 11-10)
+        ? '<button v-if="owned.length" class="library-group__btn" type="button" aria-label="게임 추가" @click.stop="startAdd(' + idExpr + ')" @mouseenter="showBtnTip($event, \'게임 추가\')" @mouseleave="hideBtnTip" data-name="component/game_group/title/btn">' +
             '<i class="ic-v2-control-add-circle-fill"></i>' +
           '</button>'
         : '') +
@@ -467,11 +468,11 @@ var LibraryPanel = {
         ? [{ action: 'view', label: '그룹 화면 보기' }, fold]
         : [
             { action: 'view', label: '그룹 화면 보기' },
-            { action: 'add', label: '게임 추가' },
+            { action: 'add', label: '게임 추가', hide: !this.owned.length }, // 보유게임 없음이면 미노출 (사용자 11-10)
             { action: 'rename', label: '그룹 이름 변경' },
             { action: 'delete', label: '그룹 삭제' },
             fold,
-          ];
+          ].filter(function (it) { return !it.hide; });
       return head.concat([
         { divider: true },
         { action: 'expandAll', label: '모든 그룹 펼치기' },
@@ -1540,7 +1541,7 @@ var LibraryPanel = {
                 ':disabled="renamingId === group.id" @click="startAdd(group.id)" data-name="component/game_group/btn_게임 추가">' +
                 '<i class="ic-v2-control-add-circle-fill" aria-hidden="true"></i>게임 추가' +
               '</button>' +
-              '<ul v-else-if="group.gameIds.length" class="game-group__list-group" data-name="component/game_group/list_group">' +
+              '<ul v-else-if="groupGames(group).length" class="game-group__list-group" data-name="component/game_group/list_group">' +
                 ROW_TPL('groupGames(group)', 'group.id') +
               '</ul>' +
             '</section>' +
