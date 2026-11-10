@@ -467,7 +467,7 @@ var LibraryPanel = {
       var head = id === 'ungrouped'
         ? [{ action: 'view', label: '그룹 화면 보기' }, fold]
         : [
-            { action: 'view', label: '그룹 화면 보기', hide: !this.owned.length }, // 보유게임 없음 = 그룹 화면(앵커) 안 잡음 (사용자 11-11)
+            { action: 'view', label: '그룹 화면 보기' },
             { action: 'add', label: '게임 추가', hide: !this.owned.length }, // 보유게임 없음이면 미노출 (사용자 11-10)
             { action: 'rename', label: '그룹 이름 변경' },
             { action: 'delete', label: '그룹 삭제' },
@@ -698,7 +698,7 @@ var LibraryPanel = {
     // 패널의 그 그룹 타이틀은 선택 상태(우측 버튼 항상 노출). 그룹 없는 게임도 같다(그룹 메뉴에 그룹 화면 보기가 있음).
     // 게임 추가(선택 UI) 중 · 이름 변경 중 · 드래그 직후 클릭은 무시
     openGroupPage: function (id) {
-      if (this.store.noOwned || this.addTargetId || this.renamingId === id || this._justDragged) return; // 보유게임 없음 = 앵커 안 잡음 (사용자 11-11)
+      if (this.addTargetId || this.renamingId === id || this._justDragged) return;
       this.closeMenu();
       this.store.selectMode = false; // 게임 선택 중이었으면 끝내고 그룹 화면으로
       this.store.viewGroupId = id;

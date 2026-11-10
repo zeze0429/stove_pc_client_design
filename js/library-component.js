@@ -430,8 +430,6 @@ var LibraryMain = {
       this.store.addTargetId = null;
       this.store.selectMode = false;
       this.store.viewHidden = false;
-      this.store.viewGroupId = null; // 보유게임 없음 = 그룹 화면(앵커) 안 잡음
-      this.store.viewOwned = false;
     },
     // 그룹 화면을 열고 닫거나 다른 그룹으로 바꾸면 맨 위(라이브러리 타이틀)부터
     'store.viewGroupId': function (id) { if (id) this.store.viewHidden = false; this.onViewChange(); },
@@ -649,7 +647,7 @@ var LibraryMain = {
     // 그룹 화면은 게임이 적어도 타이틀이 그 자리까지 올라가야 한다 — 보유게임 영역을 화면 높이만큼은 잡아 둔다
     updateOwnedMinHeight: function () {
       var box = this._scrollBox;
-      if (!box || !this.viewGroup) { this.ownedMinHeight = 0; return; }
+      if (!box || !this.viewGroup || this.store.noOwned) { this.ownedMinHeight = 0; return; }
       this.ownedMinHeight = box.clientHeight - this.ownedAnchorPad(box) - (parseFloat(getComputedStyle(box).paddingBottom) || 0);
     },
     // ── 선택 UI (게임 추가) — 카드 아무 곳이나 누르면 선택/해제, 이미 그룹에 있는 게임은 못 고른다 ──
@@ -770,9 +768,11 @@ var LibraryMain = {
     },
     // 그룹 화면을 열거나 다른 그룹으로 바꾸면 고른 게임은 비우고 선택 UI처럼 보유게임 타이틀을 위로 올린다.
     // X로 닫으면 맨 위(라이브러리 타이틀)로 (게임 선택 취소와 같음)
+    // 보유게임 없음이면 위치를 그대로 둔다 — 앵커(타이틀 위로 올리기) 안 잡음 (사용자 11-11)
     onViewChange: function () {
       this.selected = [];
       this.updateOwnedMinHeight();
+      if (this.store.noOwned) return;
       if (this.viewGroup) this.$nextTick(this.scrollToOwned);
       else if (this._scrollBox) this._scrollBox.scrollTo({ top: 0, behavior: 'smooth' });
     },
