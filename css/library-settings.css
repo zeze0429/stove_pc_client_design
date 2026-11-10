@@ -57,7 +57,9 @@
 /* 나의 그룹 목록 — 라벨 아래 8, 행 36 · 행 사이 4 */
 .library-settings__groups { align-self: stretch; display: flex; flex-direction: column; gap: 0.8rem; }
 .library-settings__list { display: flex; flex-direction: column; gap: 0.4rem; }
+/* 그룹 없음 — 팝업 높이 620 고정 안에 스크롤 없이, 문구 아래 32(본문 하단 여백). 이미지 120 → 108 (사용자 11-10) */
 .library-settings__empty { padding-top: 0; }
+.library-settings__empty img { width: 10.8rem; height: 10.8rem; }
 
 /* 그룹 항목 행 (68079:330436 250808) — 36, 위아래 7 · 좌 12 · 우 8, 둥글기 8, 배경 inverse-elevation-6.
    [≡ 8 그룹명 · 뱃지 · ✎] 12 [날짜 8 🗑]. hover · press는 같은 배경 위에 interaction-hover / pressed (가이드 없음) */
