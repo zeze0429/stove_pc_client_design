@@ -222,7 +222,7 @@
   display: flex;
   align-items: center;
   padding: calc(1.2rem - 1px) calc(1.6rem - 1px); /* 한 줄이면 42 — 긴 문구는 줄바꿈 (0922 "텍스트 길이 대응") */
-  border: 1px solid var(--stds-sem-color-inverse-elevation-1); /* 토스트 보더 — 다크 white-30 · 라이트 black-30 (사용자 11-10, 예전 glob white-40) */
+  border: 1px solid var(--stds-sem-color-inverse-elevation-3); /* 토스트 보더 — 다크 white-10 · 라이트 black-10 (사용자 11-10, 예전 glob white-40) */
   border-radius: var(--stds-glob-border-radius-lg);
   background: var(--stds-glob-color-gray200);
   color: var(--stds-glob-color-gray750);
@@ -245,7 +245,7 @@
   align-items: flex-start;
   gap: 0.4rem;
   padding: calc(1.2rem - 1px) calc(1.6rem - 1px);
-  border: 1px solid var(--stds-sem-color-inverse-elevation-1); /* 토스트 보더 — 다크 white-30 · 라이트 black-30 (사용자 11-10, 예전 glob white-40) */
+  border: 1px solid var(--stds-sem-color-inverse-elevation-3); /* 토스트 보더 — 다크 white-10 · 라이트 black-10 (사용자 11-10, 예전 glob white-40) */
   border-radius: var(--stds-glob-border-radius-lg);
   background: var(--stds-glob-color-tint-blue100);
   color: var(--library-toast-navy);
