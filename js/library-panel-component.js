@@ -352,6 +352,7 @@ var LibraryPanel = {
   },
   computed: {
     owned: function () {
+      if (this.store.noOwned) return []; // 보유게임 없음 화면 (하단 메뉴패널 옵션)
       var h = this.store.hiddenIds;
       return h.length ? this.ownedAll.filter(function (g) { return h.indexOf(g.id) < 0; }) : this.ownedAll;
     },

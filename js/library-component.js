@@ -166,8 +166,19 @@ function libraryReadHidden() {
 }
 var LIBRARY_STORE = Vue.reactive({ groups: [], addTargetId: null, selectMode: false, viewGroupId: null, viewOwned: false, removedToast: null, floatingAction: null, moreOpen: false,
   hiddenIds: libraryReadHidden(), viewHidden: false,
+  // 보유게임 없음 화면 (하단 메뉴패널 > 라이브러리 설정 > 보유게임 없음, Figma 클라이언트_v3.1 48960:383577) — 콘텐츠 · 패널 모두 보유게임 0개로
+  noOwned: !!protoSettingsRead().libraryNoOwned,
   // 그룹 없는 게임의 자리 — 바로 아래에 오는 그룹 id, null이면 맨 아래 (설정 팝업 · 우측패널에서 순서 변경 가능, 사용자 11-09)
   ungroupedBefore: null });
+protoSettingsSubscribe(function (s) { LIBRARY_STORE.noOwned = !!s.libraryNoOwned; });
+// 보유게임 없음 화면의 추천 목록 "지금! 가장 핫한 게임을 해보세요." — 스토어(타팀) 상품 카드, 가격 정보는 시안 그대로
+var LIBRARY_HOT_GAMES = [
+  { id: 'atom-rpg', badge: 'Collection', sale: '-50%', origin: '₩32,000', price: '₩16,000' },
+  { id: 'illips', badge: 'PRE · DLC', price: '₩16,000' },
+  { id: 'cabbage', price: '무료', free: true },
+  { id: 'four-lights', note: '구매할 수 없는 게임입니다' },
+  { id: 'ghostrunner', price: '출시 예정' },
+];
 // 그룹 + 그룹 없는 게임을 화면 순서대로 — 그룹 없는 게임은 { id: 'ungrouped', ungrouped: true }
 function libraryGroupOrder(groups) {
   var list = groups.slice();
@@ -411,6 +422,14 @@ var LibraryMain = {
     // 선택 UI 진입 경로 두 가지 — 패널 게임 추가(대상 그룹) · 게임 선택 버튼(대상 없음)
     'store.addTargetId': function (id, prev) { if (id) this.store.viewHidden = false; this.onSelectEnter(id, prev); },
     'store.selectMode': function (on, prev) { this.onSelectEnter(on, prev); },
+    // 보유게임 없음으로 바뀌면 고를 게임이 없으니 선택 UI · 숨겨진 게임 화면을 끝낸다
+    'store.noOwned': function (on) {
+      if (!on) return;
+      this.selected = [];
+      this.store.addTargetId = null;
+      this.store.selectMode = false;
+      this.store.viewHidden = false;
+    },
     // 그룹 화면을 열고 닫거나 다른 그룹으로 바꾸면 맨 위(라이브러리 타이틀)부터
     'store.viewGroupId': function (id) { if (id) this.store.viewHidden = false; this.onViewChange(); },
     // 숨겨진 게임 화면을 열고 닫으면 맨 위부터 (빠른 실행은 숨긴다)
@@ -449,11 +468,16 @@ var LibraryMain = {
   },
   computed: {
     owned: function () {
+      if (this.store.noOwned) return [];
       var h = this.store.hiddenIds;
       return h.length ? this.ownedAll.filter(function (g) { return h.indexOf(g.id) < 0; }) : this.ownedAll;
     },
+    hotGames: function () {
+      return LIBRARY_HOT_GAMES.map(function (h) { return Object.assign({}, gameInfo(h.id), h); });
+    },
     // 숨겨진 게임 화면 — 최근에 숨긴 게임부터
     hiddenGames: function () {
+      if (this.store.noOwned) return [];
       var byId = {};
       this.ownedAll.forEach(function (g) { byId[g.id] = g; });
       return this.store.hiddenIds.map(function (id) { return byId[id]; }).filter(Boolean);
@@ -796,11 +820,11 @@ var LibraryMain = {
     },
   },
   template:
-    '<div class="library">' +
+    '<div class="library" :class="{ \'is-no-owned\': store.noOwned }">' +
 
 
       // ---- 빠른 실행 ----
-      '<section v-if="!store.viewHidden" class="library-section library-quick">' +
+      '<section v-if="!store.viewHidden && !store.noOwned" class="library-section library-quick">' +
         '<div class="library-section__head">' +
           '<h2 class="library-section__title">빠른 실행<span>{{ quick.length }}</span></h2>' +
           '<div class="library-quick__nav">' +
@@ -886,7 +910,7 @@ var LibraryMain = {
           '</p>' +
         '</div>' +
         '<div v-else class="library-toolbar" data-name="filter area">' +
-          '<button v-if="!store.viewHidden" class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" type="button" @click="startSelect"><i class="ic-v2-control-check-circle-line"></i>게임 선택</button>' +
+          '<button v-if="!store.viewHidden" class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" type="button" :disabled="!owned.length" @click="startSelect"><i class="ic-v2-control-check-circle-line"></i>게임 선택</button>' +
           '<span v-else aria-hidden="true"></span>' +
           '<div class="library-toolbar__right">' +
             '<div class="library-view-toggle" role="tablist" aria-label="보기 방식">' +
@@ -921,6 +945,22 @@ var LibraryMain = {
             '<p class="library-no-result__desc stds-text3">검색어의 단어 수를 줄이거나 필터 조건을 변경하세요.</p>' +
           '</div>' +
         '</div>' +
+        // 보유게임 없음 (Figma 클라이언트_v3.1 48960:383577 empty — 예전 레이아웃이라 글자 · 크기는 지금 결과 없음 박스 기준, 사용자 11-10).
+        // 오른쪽 220은 스토어 홈 바로가기
+        '<div v-if="store.noOwned && !store.viewHidden && !resultsActive" class="library-no-result library-no-owned" data-name="empty">' +
+          '<div class="library-no-owned__body" data-name="img+text">' +
+            '<img class="library-no-result__img theme-img--dark" src="assets/library/empty_no_game.png" alt="" />' +
+            '<img class="library-no-result__img theme-img--light" src="assets/library/empty_no_game_light.png" alt="" />' +
+            '<div class="library-no-result__text">' +
+              '<p class="library-no-result__title stds-title7 fw-medium">아직 보유한 게임이 없으시군요.</p>' +
+              '<p class="library-no-result__desc stds-text3">재미있는 게임을 찾아서 라이브러리를 채워보세요.</p>' +
+            '</div>' +
+          '</div>' +
+          '<a class="library-no-owned__link" href="app-shell.html" data-name="link">' +
+            '<span class="library-no-owned__circle" aria-hidden="true"><i class="ic-v2-control-long-arrow-right-line"></i></span>' +
+            '<span class="library-no-owned__label stds-title7 fw-bold">스토어 홈</span>' +
+          '</a>' +
+        '</div>' +
         // 숨긴 게임이 없을 때 (Figma 클라이언트_v3.1 48960:383609) — 결과 없음 박스와 같은 크기 · 글자(사용자 11-09), 일러스트만 다름
         '<div v-if="store.viewHidden && !hiddenGames.length" class="library-no-result" data-name="empty">' +
           '<img class="library-no-result__img" src="assets/library/empty_hidden.svg" alt="" />' +
@@ -948,6 +988,31 @@ var LibraryMain = {
                 '<p class="library-card__name">{{ g.name }}</p>' +
               '</div>' +
               '<p v-if="g.lastPlayed && !selecting" class="library-card__played">{{ g.lastPlayed }}</p>' +
+            '</div>' +
+          '</li>' +
+        '</ul>' +
+      '</section>' +
+
+      // ---- 보유게임 없음 — 추천 목록 (스토어 상품 카드, 썸네일 · 이름은 보유게임 카드와 같은 크기) ----
+      '<section v-if="store.noOwned && !store.viewHidden" class="library-section library-hot" data-name="list">' +
+        '<div class="library-section__head"><h2 class="library-section__title">지금! 가장 핫한 게임을 해보세요.</h2></div>' +
+        '<ul class="library-grid">' +
+          '<li v-for="g in hotGames" :key="g.id" class="library-card" data-name="component/list">' +
+            '<div class="library-card__thumb">' +
+              '<span class="library-card__media"><img :src="g.thumb" alt="" loading="lazy" /></span>' +
+              '<span class="library-card__border" aria-hidden="true"></span>' +
+              '<span v-if="g.badge" class="library-card__badge">{{ g.badge }}</span>' +
+            '</div>' +
+            '<div class="library-card__text library-hot__text">' +
+              '<p class="library-card__name">{{ g.name }}</p>' +
+              '<p v-if="g.note" class="library-hot__note">{{ g.note }}</p>' +
+              '<div v-else class="library-hot__price" :class="{ \'is-free\': g.free }" data-name="가격정보">' +
+                '<span v-if="g.sale" class="library-hot__sale" data-name="Badge_sale">{{ g.sale }}</span>' +
+                '<span class="library-hot__amount">' +
+                  '<s v-if="g.origin" class="library-hot__origin">{{ g.origin }}</s>' +
+                  '<span class="library-hot__now">{{ g.price }}</span>' +
+                '</span>' +
+              '</div>' +
             '</div>' +
           '</li>' +
         '</ul>' +

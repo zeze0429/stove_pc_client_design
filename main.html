@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/button.css?v=5" />
   <link rel="stylesheet" href="css/desktop.css?v=18" />
   <link rel="stylesheet" href="css/notice.css?v=16" />
-  <script src="js/proto-settings.js?v=29"></script>
+  <script src="js/proto-settings.js?v=30"></script>
   <script>
     // 업데이트 버튼·공지사항·다운로드 관리·스튜디오 테스트·메뉴 강조·PR 배너 종류는 저장해 두지 않는다 —
     // 미리보기에 새로 들어올 때마다 아래 기본 상태로 시작한다(오늘의 1등 뱃지만 켜짐,
@@ -213,6 +213,10 @@
       <div class="proto-panel__section" id="protoLibrarySettings" hidden>
         <hr class="proto-panel__divider" />
         <h2 class="proto-panel__title">라이브러리 설정</h2>
+        <div class="proto-panel__row">
+          <span class="proto-panel__label">보유게임 없음</span>
+          <button class="proto-switch" type="button" role="switch" data-proto-key="libraryNoOwned" aria-label="보유게임 없음"></button>
+        </div>
         <div class="proto-panel__row">
           <span class="proto-panel__label">빠른 실행</span>
           <span class="proto-panel__controls">

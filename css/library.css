@@ -328,6 +328,11 @@
 }
 .stds-button-tertiary.library-tool-btn:is(:hover, .is-hover):enabled   { --stds-button-background: var(--library-tool-background-hover); }
 .stds-button-tertiary.library-tool-btn:is(:active, .is-pressed):enabled { --stds-button-background: var(--library-tool-background-pressed); }
+/* 비활성(보유게임 없음일 때 게임 선택) — 위 예외 배경을 걷고 시스템 버튼 disabled 값 그대로 (css/button.css) */
+.stds-button-tertiary.library-tool-btn:disabled {
+  --stds-button-background: var(--stds-sem-color-disabled-variant-3);
+  --stds-button-text-color: var(--stds-sem-color-disabled-variant-1);
+}
 /* 필터 레이어가 열린 동안 — 우측패널 아이콘 버튼 selected와 같게 2px on-surface-elevation-2 (Figma 12007:57385) */
 .stds-button.library-tool-btn.is-selected { box-shadow: inset 0 0 0 2px var(--stds-sem-color-on-surface-elevation-2); }
 
@@ -424,6 +429,76 @@
 .library-no-result p { margin: 0; }
 .library-no-result__title { color: var(--stds-sem-color-on-surface-elevation-2); }
 .library-no-result__desc { color: var(--stds-sem-color-on-surface-elevation-4); }
+
+/* 보유게임 없음 (Figma 클라이언트_v3.1 48960:383577) — 결과 없음 박스 + 오른쪽 220 스토어 홈 바로가기.
+   글자 · 그림 크기는 지금 결과 없음 박스 기준(사용자 11-10: 예전 시안이라 최신에 맞춤).
+   바로가기 칸 배경 black-15 · 원 white · 글자 white는 Figma 글로벌 지정 */
+.library-no-owned {
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.library-no-owned__body {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 3.2rem 3.2rem 4.8rem;
+}
+.library-no-owned__link {
+  flex: 0 0 22rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  background: var(--stds-glob-color-black-15);
+  color: var(--stds-glob-color-white);
+  text-decoration: none;
+}
+.library-no-owned__circle {
+  display: grid;
+  place-items: center;
+  width: 7.2rem;
+  height: 7.2rem;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-glob-color-white);
+  color: var(--stds-glob-color-black);
+  font-size: 3.2rem;
+  transition: transform 0.2s ease;
+}
+.library-no-owned__link:hover .library-no-owned__circle { transform: translateX(0.4rem); }
+.library.is-no-owned .library-owned { margin-top: 0; } /* 빠른 실행이 없으니 페이지 타이틀 바로 아래 */
+
+/* 추천 목록 "지금! 가장 핫한 게임을 해보세요." — 섹션 간격 · 그리드 · 썸네일 · 이름은 보유게임 카드와 같고 장르 대신 가격 정보.
+   가격 정보는 스토어(타팀) 카드 값 (Figma 가격정보 1line · 2line) */
+.library-hot { margin-top: 3.6rem; }
+.library-hot .library-grid { margin-top: 1.6rem; }
+.library-hot .library-card { cursor: default; }
+.library-hot__text { gap: 0.8rem; }
+.library-hot__note { overflow: hidden; color: var(--stds-sem-color-on-surface-elevation-4); font-size: 1.4rem; line-height: 2.4rem; letter-spacing: -0.042rem; white-space: nowrap; text-overflow: ellipsis; }
+.library-hot__price { display: flex; align-items: center; gap: 0.8rem; }
+.library-hot__sale {
+  display: flex;
+  align-items: center;
+  height: 2.4rem;
+  padding: 0 0.3rem;
+  border-radius: var(--stds-glob-border-radius-md);
+  background: var(--stds-sem-color-brand-primary);
+  color: var(--stds-glob-color-white);
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 2rem;
+  letter-spacing: -0.042rem;
+}
+.library-hot__amount { display: flex; flex-direction: column; }
+.library-hot__origin { margin-bottom: -0.4rem; color: var(--stds-sem-color-on-surface-elevation-4); font-size: 1.1rem; line-height: 1.8rem; letter-spacing: -0.022rem; }
+.library-hot__now { color: var(--stds-sem-color-on-surface-elevation-1); font-size: 1.4rem; font-weight: 700; line-height: 2.4rem; letter-spacing: -0.042rem; }
+.library-hot__price.is-free .library-hot__now { color: var(--stds-sem-color-brand-primary); }
 
 .library-grid {
   display: grid;

@@ -29,6 +29,7 @@ var PROTO_SETTINGS_DEFAULTS = {
   ad: true,
   favorites: true,
   rightPanel: true,  // 클라이언트 레이아웃 — 우측패널 280 (다운로드 관리·스튜디오, 라이브러리는 항상)
+  libraryNoOwned: false, // 라이브러리 설정 — 보유게임 없음 화면 (빠른 실행 · 보유게임 · 패널 게임 0개 + 추천 목록)
   libraryQuick: true, // 라이브러리 설정 — 빠른 실행 영역 노출 (사용자 설정으로 숨길 수 있음)
   libraryQuickAd: true, // 빠른 실행 두 번째 자리 게임 광고 카드
   libraryPanelSkeleton: false, // 우측패널 목록을 10개씩 나눠 불러오기 — 아직 안 온 행은 스켈레톤 (SGVN 로딩 개선 시안)
