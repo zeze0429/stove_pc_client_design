@@ -996,7 +996,7 @@ var LibraryMain = {
       '</section>' +
 
       // ---- 보유게임 없음 — 추천 목록 (스토어 상품 카드, 썸네일 · 이름은 보유게임 카드와 같은 크기) ----
-      '<section v-if="store.noOwned && !store.viewHidden" class="library-section library-hot" data-name="list">' +
+      '<section v-if="store.noOwned && !store.viewHidden && (!viewGroup || store.viewOwned)" class="library-section library-hot" data-name="list">' +
         // 제목은 24 줄(head) 없이 바로 — 빠른 실행 → 보유게임처럼 위 섹션 끝에서 제목까지 36 (사용자 11-10)
         '<h2 class="library-section__title">지금! 가장 핫한 게임을 해보세요.</h2>' +
         '<ul class="library-grid">' +
