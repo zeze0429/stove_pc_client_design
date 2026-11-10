@@ -842,12 +842,13 @@ var LibraryPanel = {
     },
     // 즐겨찾기 추가 — 사이드바 즐겨찾기 맨 위에 들어가고 메뉴는 닫힌다. 이미 있으면 제거.
     // 여러 개 선택(3-5-3)은 전부 추가하고 선택 해제
-    // 선택한 게임 숨기기 — 보유게임 · 빠른 실행 · 패널에서 빠지고 숨겨진 게임 화면으로. 더보기에서 누르면 선택 UI도 끝난다
+    // 선택한 게임 숨기기 — 보유게임 · 빠른 실행 · 패널에서 빠지고 숨겨진 게임 화면으로.
+    // 더보기에서 누르면 선택 UI는 유지하고 선택만 비운다 (사용자 11-10)
     hideMenuGames: function () {
       var m = this.gameMenu;
       libraryHideGames(m.gameIds);
       this.clearSelection();
-      if (m.source === 'floating') this.store.floatingAction = { kind: 'done', at: Date.now() };
+      if (m.source === 'floating') this.store.floatingAction = { kind: 'reset', at: Date.now() };
       this.closeGameMenu();
     },
     toggleMenuFavorite: function () {

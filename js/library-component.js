@@ -425,6 +425,7 @@ var LibraryMain = {
     'store.floatingAction': function (a) {
       if (!a) return;
       if (a.kind === 'add') this.confirmAddGroups(a.groupIds);
+      else if (a.kind === 'reset') this.selected = []; // 선택 UI 유지 · 선택만 리셋 (숨기기)
       else this.cancelAdd();
     },
     // 선택 UI 중이면 툴 영역, 아니면 하단 토스트 (사용자 11-10)
