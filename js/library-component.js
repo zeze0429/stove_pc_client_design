@@ -207,7 +207,7 @@ function libraryUnhideGames(ids) {
   try { sessionStorage.setItem(LIBRARY_HIDDEN_KEY, JSON.stringify(LIBRARY_STORE.hiddenIds)); } catch (e) { /* 이 페이지에서만 유지 */ }
 }
 // moreOpen: 더보기 메뉴가 열려 있는 동안 — 더보기 버튼 selected
-// floatingAction: 하단 플로팅 더보기 메뉴(패널이 띄움)에서 고른 동작 { kind: 'add' (groupIds) | 'done', at } — 콘텐츠가 받아 선택 UI를 끝낸다
+// floatingAction: 하단 플로팅 더보기 메뉴(패널이 띄움)에서 고른 동작 { kind: 'add' (groupIds) | 'done', at } — 콘텐츠가 받아 처리
 var LIBRARY_TOAST_MS = 3000;
 
 // 썸네일 아래 뱃지 — 합본팩(collection 표시한 것)은 Collection, 카탈로그 type이 dlc · demo면 DLC · DEMO (모양은 같은 Badge/Game type)
@@ -419,7 +419,8 @@ var LibraryMain = {
       if (this._scrollBox) this._scrollBox.scrollTo({ top: 0 });
     },
     // 패널에서 그룹에서 제거 — 추가 완료 토스트와 같은 자리 · 모양, 문구만 제거 (사용자 11-09, Figma 11564:174292)
-    // 더보기 메뉴 동작 — 그룹에 추가(2뎁스 그룹 · 그룹 만들기)는 그룹에 추가 팝업 확인과 같이(종료 + 하단 토스트),
+    // 더보기 메뉴 동작 — 그룹에 추가(2뎁스 그룹 · 그룹 만들기)는 그룹에 추가 팝업 확인과 같이
+    // (게임 선택 진입이면 선택 UI 유지 + 툴 영역, 패널 게임 추가면 종료 + 하단 토스트 — 사용자 11-10),
     // 즐겨찾기 추가는 선택 UI만 끝낸다
     'store.floatingAction': function (a) {
       if (!a) return;
@@ -434,7 +435,12 @@ var LibraryMain = {
     selecting: function (on) { if (!on) this.selectNotice = null; },
     // 타이틀의 보유게임 ↔ 그룹명 전환은 목록만 바꾸고 스크롤은 그대로 (사용자 11-06)
     'store.viewOwned': function () { this.selected = []; },
-    'selected.length': function () { this.selectNotice = null; this.$nextTick(this.snapFloating); },
+    // 게임을 다시 고르면 결과 문구 대신 선택 안내로 — 결과와 함께 선택을 비운 경우(_keepNotice)만 예외
+    'selected.length': function () {
+      if (this._keepNotice) this._keepNotice = false;
+      else this.selectNotice = null;
+      this.$nextTick(this.snapFloating);
+    },
     // 광고를 켜고 끄면 카드 수가 바뀐다 — 없어진 페이지에 머물지 않게
     quickPages: function (n) {
       if (this.quickPage > n - 1) this.goQuick(n - 1 - this.quickPage);
@@ -657,12 +663,20 @@ var LibraryMain = {
       var ids = this.selected.slice();
       var removed = ids.filter(function (id) { return group.gameIds.indexOf(id) >= 0; }).length;
       group.gameIds = group.gameIds.filter(function (id) { return ids.indexOf(id) < 0; });
-      this.store.addTargetId = null;
-      this.store.selectMode = false;
-      if (this._scrollBox) this._scrollBox.scrollTo({ top: 0, behavior: 'smooth' });
+      // 게임 선택 버튼으로 들어온 선택 UI는 계속 유지(사용자 11-10) — 빠진 게임은 목록에서 사라지니 선택에서도 뺀다.
+      // 결과는 툴 영역 (선택이 바뀌어도 이번 결과 문구는 지우지 않게 표시)
+      if (this.store.selectMode) {
+        this._keepNotice = true;
+        this.selected = [];
+      } else {
+        this.store.addTargetId = null;
+        if (this._scrollBox) this._scrollBox.scrollTo({ top: 0, behavior: 'smooth' });
+      }
       this.showResult({ count: removed, title: group.title, removed: true });
     },
-    // 그룹에 추가 팝업 확인 — 체크한 그룹마다 아직 없는 게임만 넣고, 선택 UI를 끝내고 토스트 (사용자 결정: 종료 + 토스트)
+    // 그룹에 추가 팝업 확인 · 더보기 그룹 선택 — 체크한 그룹마다 아직 없는 게임만 넣는다.
+    // 플로우 (사용자 11-10): 게임 선택 버튼으로 들어온 선택 UI(selectMode)는 계속 고를 수 있게 유지 → 결과는 툴 영역,
+    // 우측패널 게임 추가(대상 그룹)는 일회성 → 끝나면 일반 UI로 돌아가며 하단 토스트
     confirmAddGroups: function (groupIds) {
       var self = this;
       var games = this.selected.slice();
@@ -678,10 +692,9 @@ var LibraryMain = {
       });
       this.addGroupDialog = false;
       var title = picked.length > 1 ? picked[0].title + ' 외 ' + (picked.length - 1) + '개 그룹' : (picked[0] && picked[0].title) || '';
-      // 하나도 안 들어감(전부 이미 포함) — 선택 UI를 그대로 두고 툴 영역에 ✖ 문구 (사용자 11-10)
-      if (added.length) {
+      // 하나도 안 들어감(전부 이미 포함)이면 어느 경로든 선택 UI를 그대로 두고 툴 영역에 ✖ 문구. 고른 게임은 그대로 둔다
+      if (added.length && !this.store.selectMode) {
         this.store.addTargetId = null;
-        this.store.selectMode = false;
         // 취소와 같이 앵커를 풀고 맨 위(라이브러리 타이틀)로 (사용자 11-03)
         if (this._scrollBox) this._scrollBox.scrollTo({ top: 0, behavior: 'smooth' });
       }
