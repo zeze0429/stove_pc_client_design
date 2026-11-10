@@ -693,7 +693,11 @@ var LibraryMain = {
       this.addGroupDialog = false;
       var title = picked.length > 1 ? picked[0].title + ' 외 ' + (picked.length - 1) + '개 그룹' : (picked[0] && picked[0].title) || '';
       // 하나도 안 들어감(전부 이미 포함)이면 어느 경로든 선택 UI를 그대로 두고 툴 영역에 ✖ 문구. 고른 게임은 그대로 둔다
-      if (added.length && !this.store.selectMode) {
+      if (added.length && this.store.selectMode) {
+        // 게임 선택 진입은 선택 UI 유지 + 선택만 리셋 (체크 해제 · 플로팅 비활성, 사용자 11-10). 결과 문구는 남긴다
+        this._keepNotice = true;
+        this.selected = [];
+      } else if (added.length) {
         this.store.addTargetId = null;
         // 취소와 같이 앵커를 풀고 맨 위(라이브러리 타이틀)로 (사용자 11-03)
         if (this._scrollBox) this._scrollBox.scrollTo({ top: 0, behavior: 'smooth' });
