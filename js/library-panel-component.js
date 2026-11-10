@@ -856,8 +856,9 @@ var LibraryPanel = {
       if (m.multi) {
         m.gameIds.slice().reverse().forEach(gnbAddFavorite); // 선택 순서대로 위에서부터
         this.clearSelection();
-        // 더보기 — 게임 선택 진입이면 선택 UI 유지 + 선택 리셋(사용자 11-10), 패널 게임 추가 진입이면 선택 UI 종료
-        if (m.source === 'floating') this.store.floatingAction = { kind: this.store.selectMode ? 'reset' : 'done', at: Date.now() };
+        // 더보기 — 게임 선택 진입이면 선택 UI 유지 + 선택 리셋, 패널 게임 추가 진입이면 메인 과업(그룹에 추가) 전이라
+        // 선택 UI · 고른 게임 그대로 (사용자 11-10)
+        if (m.source === 'floating' && this.store.selectMode) this.store.floatingAction = { kind: 'reset', at: Date.now() };
       } else if (gnbIsFavorite(m.gameId)) gnbRemoveFavorite(m.gameId);
       else gnbAddFavorite(m.gameId);
       this.closeGameMenu();
