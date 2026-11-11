@@ -732,25 +732,28 @@ var LibraryMain = {
       d.targetId = group && d.gameIds.some(function (gid) { return group.gameIds.indexOf(gid) < 0; }) ? group.id : null;
       this.clampCardDragToPanel(d, cx); // 추가 불가면 뒤 판이 없어 범위가 달라진다 — 판정 뒤에
     },
-    // 프리뷰 위치 제한 (사용자 11-11) — 언제나 사이드바(GNB)로는 안 넘어간다(콘텐츠 영역 왼쪽 끝까지).
+    // 프리뷰 위치 제한 (사용자 11-11) — 언제나 사이드바(GNB)와 아래 PR영역으로는 안 넘어간다.
     // 커서가 우측패널 안이면: 오른쪽은 패널 끝에서 16, 위 · 아래는 그룹 영역(스크롤)에서 12 안. 왼쪽은 풀어 둔다(웹 전체 영역 가정).
     // 뒤 판이 삐져나오는 만큼(회전 ±5도 · 13 어긋남 — 실제 기하로 계산)도 안에 들어오게
     clampCardDragToPanel: function (d, cx) {
       var clamp = function (v, lo, hi) { return Math.max(lo, Math.min(v, hi)); };
-      var main = document.querySelector('.app > .main');
-      if (main) d.x = Math.max(d.x, main.getBoundingClientRect().left);
-      var panel = document.querySelector('.library-panel');
-      var list = document.querySelector('.library-panel__scroll');
-      if (!panel || !list) return;
-      var pr = panel.getBoundingClientRect();
-      if (cx < pr.left) return;
       var rem = (parseFloat(getComputedStyle(document.documentElement).fontSize) || 10) / 10;
-      var lr = list.getBoundingClientRect();
       var s = d.size, off = 13 * rem, cos = Math.cos(Math.PI / 36), sin = Math.sin(Math.PI / 36);
       var n = d.blocked ? 1 : d.gameIds.length;
       var extX = 0, extY = 0;
       if (n >= 2) { extX = s * (cos + sin) - s; extY = off + s * cos - s; }          // --mid: 위 13, -5도
       if (n >= 3) { extX = Math.max(extX, off + s * cos - s); extY = Math.max(extY, s * (cos + sin) - s); } // --back: 왼쪽 13, 5도
+      var main = document.querySelector('.app > .main');
+      if (main) d.x = Math.max(d.x, main.getBoundingClientRect().left);
+      // 아래 PR영역(.proto-pr)으로도 안 내려간다 — 클라이언트(.app)는 PR 높이만큼 줄어 있으니 그 바닥까지
+      var app = document.querySelector('.app');
+      if (app) d.y = Math.min(d.y, app.getBoundingClientRect().bottom - s - extY);
+      var panel = document.querySelector('.library-panel');
+      var list = document.querySelector('.library-panel__scroll');
+      if (!panel || !list) return;
+      var pr = panel.getBoundingClientRect();
+      if (cx < pr.left) return;
+      var lr = list.getBoundingClientRect();
       d.x = Math.min(d.x, pr.right - 16 * rem - s - extX);
       d.y = clamp(d.y, lr.top + 12 * rem, lr.bottom - 12 * rem - s - extY);
     },
