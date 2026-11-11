@@ -732,9 +732,13 @@ var LibraryMain = {
       d.targetId = group && d.gameIds.some(function (gid) { return group.gameIds.indexOf(gid) < 0; }) ? group.id : null;
       this.clampCardDragToPanel(d, cx); // 추가 불가면 뒤 판이 없어 범위가 달라진다 — 판정 뒤에
     },
-    // 커서가 우측패널 안이면 프리뷰는 그룹 목록 안에서만 — 그룹 영역(스크롤) 상하좌우 12 안, 그룹 보더에 닿지 않게 (사용자 11-11).
-    // 뒤 판(5도 회전, 13 어긋남)이 삐져나오는 만큼도 안에 들어오게
+    // 프리뷰 위치 제한 (사용자 11-11) — 언제나 사이드바(GNB)로는 안 넘어간다(콘텐츠 영역 왼쪽 끝까지).
+    // 커서가 우측패널 안이면: 오른쪽은 패널 끝에서 16, 위 · 아래는 그룹 영역(스크롤)에서 12 안. 왼쪽은 풀어 둔다(웹 전체 영역 가정).
+    // 뒤 판이 삐져나오는 만큼(회전 ±5도 · 13 어긋남 — 실제 기하로 계산)도 안에 들어오게
     clampCardDragToPanel: function (d, cx) {
+      var clamp = function (v, lo, hi) { return Math.max(lo, Math.min(v, hi)); };
+      var main = document.querySelector('.app > .main');
+      if (main) d.x = Math.max(d.x, main.getBoundingClientRect().left);
       var panel = document.querySelector('.library-panel');
       var list = document.querySelector('.library-panel__scroll');
       if (!panel || !list) return;
@@ -742,11 +746,13 @@ var LibraryMain = {
       if (cx < pr.left) return;
       var rem = (parseFloat(getComputedStyle(document.documentElement).fontSize) || 10) / 10;
       var lr = list.getBoundingClientRect();
-      var gap = 12 * rem, size = d.size;
-      var ext = d.gameIds.length > 1 && !d.blocked ? 13 * rem : 0;
-      var clamp = function (v, lo, hi) { return Math.max(lo, Math.min(v, hi)); };
-      d.x = clamp(d.x, lr.left + gap, lr.right - gap - size - ext);
-      d.y = clamp(d.y, lr.top + gap, lr.bottom - gap - size - ext);
+      var s = d.size, off = 13 * rem, cos = Math.cos(Math.PI / 36), sin = Math.sin(Math.PI / 36);
+      var n = d.blocked ? 1 : d.gameIds.length;
+      var extX = 0, extY = 0;
+      if (n >= 2) { extX = s * (cos + sin) - s; extY = off + s * cos - s; }          // --mid: 위 13, -5도
+      if (n >= 3) { extX = Math.max(extX, off + s * cos - s); extY = Math.max(extY, s * (cos + sin) - s); } // --back: 왼쪽 13, 5도
+      d.x = Math.min(d.x, pr.right - 16 * rem - s - extX);
+      d.y = clamp(d.y, lr.top + 12 * rem, lr.bottom - 12 * rem - s - extY);
     },
     // 패널 스크롤 영역 위 · 아래 64 안이면 자동 스크롤 — 패널 드래그(dragAutoScroll)와 같은 속도
     cardDragAutoScroll: function () {
