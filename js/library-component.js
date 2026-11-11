@@ -715,7 +715,6 @@ var LibraryMain = {
       if (!d) return;
       d.x = cx - d.grabX;
       d.y = cy - d.grabY;
-      this.clampCardDragToPanel(d, cx);
       d.lastX = cx;
       d.lastY = cy;
       var body = document.querySelector('.library-panel__scroll');
@@ -731,8 +730,9 @@ var LibraryMain = {
       d.blocked = id === 'ungrouped';
       var group = id && !d.blocked && this.store.groups.find(function (x) { return x.id === id; });
       d.targetId = group && d.gameIds.some(function (gid) { return group.gameIds.indexOf(gid) < 0; }) ? group.id : null;
+      this.clampCardDragToPanel(d, cx); // 추가 불가면 뒤 판이 없어 범위가 달라진다 — 판정 뒤에
     },
-    // 커서가 우측패널 안이면 프리뷰는 그룹 목록 안에서만 — 좌우 패널 끝 16 안, 위는 그룹 영역(스크롤) 상단, 아래 16.
+    // 커서가 우측패널 안이면 프리뷰는 그룹 목록 안에서만 — 그룹 영역(스크롤) 상하좌우 12 안, 그룹 보더에 닿지 않게 (사용자 11-11).
     // 뒤 판(5도 회전, 13 어긋남)이 삐져나오는 만큼도 안에 들어오게
     clampCardDragToPanel: function (d, cx) {
       var panel = document.querySelector('.library-panel');
@@ -742,11 +742,11 @@ var LibraryMain = {
       if (cx < pr.left) return;
       var rem = (parseFloat(getComputedStyle(document.documentElement).fontSize) || 10) / 10;
       var lr = list.getBoundingClientRect();
-      var gap = 16 * rem, size = d.size;
+      var gap = 12 * rem, size = d.size;
       var ext = d.gameIds.length > 1 && !d.blocked ? 13 * rem : 0;
       var clamp = function (v, lo, hi) { return Math.max(lo, Math.min(v, hi)); };
-      d.x = clamp(d.x, pr.left + gap, pr.right - gap - size - ext);
-      d.y = clamp(d.y, lr.top, lr.bottom - gap - size - ext);
+      d.x = clamp(d.x, lr.left + gap, lr.right - gap - size - ext);
+      d.y = clamp(d.y, lr.top + gap, lr.bottom - gap - size - ext);
     },
     // 패널 스크롤 영역 위 · 아래 64 안이면 자동 스크롤 — 패널 드래그(dragAutoScroll)와 같은 속도
     cardDragAutoScroll: function () {
@@ -1100,8 +1100,10 @@ var LibraryMain = {
             '<div class="library-card__thumb">' +
               '<span class="library-card__media"><img :src="g.thumb" alt="" loading="lazy" /></span>' +
               '<span class="library-card__border" aria-hidden="true"></span>' +
-              // 끄는 중 원래 자리 — 카드 30% + 점선 3 (4/8 · 센터 · 라운드 캡) brand-primary (Figma 1562:54194). CSS dashed는 간격을 못 정해 SVG
-              '<svg v-if="store.cardDrag && store.cardDrag.gameIds.indexOf(g.id) >= 0" class="library-card__dash" aria-hidden="true"><rect rx="20" ry="20"></rect></svg>' +
+              // 끄는 중 원래 자리 — 카드 30% + 점선 3 (4/8 · 센터 · 라운드 캡) brand-primary (Figma 1562:54194). CSS dashed는 간격을 못 정해 SVG — 경로는 Figma 내보내기 그대로(왼쪽 위 모서리 아래에서 시작).
+              // 둘레 445.7을 4+8 37번으로 맞춰(pathLength 444) 시작 · 끝 이음매에서 점선이 붙지 않게
+              '<svg v-if="store.cardDrag && store.cardDrag.gameIds.indexOf(g.id) >= 0" class="library-card__dash" viewBox="0 0 123 123" preserveAspectRatio="none" aria-hidden="true">' +
+                '<path d="M1.5 21.5C1.5 10.4543 10.4543 1.5 21.5 1.5H101.5C112.546 1.5 121.5 10.4543 121.5 21.5V101.5C121.5 112.546 112.546 121.5 101.5 121.5H21.5C10.4543 121.5 1.5 112.546 1.5 101.5V21.5Z" pathLength="444"></path></svg>' +
               // 선택 UI 체크 — STDS 체크박스 상자(css/checkbox.css) 그대로, 모양만 원. 미선택 · 선택 · 이미 그룹에 있음(비활성 선택)
               '<span v-if="selecting" class="stds-checkbox-box library-card__check" :class="{ \'is-checked\': isSelected(g) || addedIds[g.id], \'is-disabled\': addedIds[g.id] }" aria-hidden="true" data-name="Checkbox">' +
                 '<i class="ic-v2-control-check-bold-line"></i>' +

@@ -695,17 +695,15 @@
 /* 원래 자리 (Figma 1562:54194) — 카드 30%, 실선 보더 대신 점선 3 · 4/8 · 센터 · 라운드 캡 brand-primary */
 .library-card.is-drag-origin { opacity: 0.3; }
 .library-card.is-drag-origin .library-card__border { border: 0; }
-.library-card__dash {
+.library-card__dash { /* Figma 내보내기 123 = 카드 120 + 센터 스트록 바깥 1.5씩 */
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  inset: -0.15rem;
+  width: calc(100% + 0.3rem);
+  height: calc(100% + 0.3rem);
   overflow: visible;
   pointer-events: none;
 }
-.library-card__dash rect { /* Figma: 센터 스트록 · 라운드 캡 — 대시 4 + 캡 양쪽 1.5 = 보이는 대시 7, 간격 5 */
-  width: 100%;
-  height: 100%;
+.library-card__dash path { /* Figma: 센터 스트록 · 라운드 캡 — 대시 4 + 캡 양쪽 1.5 = 보이는 대시 7, 간격 5 */
   fill: none;
   stroke: var(--stds-sem-color-brand-primary);
   stroke-width: 3;
