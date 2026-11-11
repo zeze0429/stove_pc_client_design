@@ -717,7 +717,7 @@
   stroke-dasharray: 4 8;
 }
 /* 드래그 프리뷰 (Figma interaction_drag 4493:55947) — 크기는 카드 썸네일 + 16(JS가 넣음), 모서리 20 (사용자 11-11):
-   카드 보더 3 brand-primary · 그림자 0 3 16 black, n개면 뒤에 같은 크기 판 2장(±5도, 13 어긋남) + 개수 뱃지 */
+   카드 보더 3 brand-primary · 그림자는 하단 플로팅과 같은 --library-floating-shadow, n개면 뒤에 같은 크기 판 2장(±5도, 13 어긋남) + 개수 뱃지 */
 .library-card-drag {
   position: fixed;
   z-index: 2000;
@@ -737,8 +737,8 @@
 }
 .library-card-drag__layer { background: var(--stds-sem-color-surface-elevation-1); transform-origin: 0 0; }
 .library-card-drag__layer--back { left: 1.3rem; transform: rotate(5deg); }
-.library-card-drag__layer--mid { top: 1.3rem; transform: rotate(-5deg); box-shadow: inset 0 0 0 0.3rem var(--stds-sem-color-brand-primary), 0 0.3rem 1.6rem var(--stds-glob-color-black); }
-.library-card-drag__card { overflow: hidden; box-shadow: 0 0.3rem 1.6rem var(--stds-glob-color-black); }
+.library-card-drag__layer--mid { top: 1.3rem; transform: rotate(-5deg); box-shadow: inset 0 0 0 0.3rem var(--stds-sem-color-brand-primary), var(--library-floating-shadow); }
+.library-card-drag__card { overflow: hidden; box-shadow: var(--library-floating-shadow); } /* 그림자는 하단 플로팅과 같은 스타일 (사용자 11-11) */
 .library-card-drag__card img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .library-card-drag__card::after { /* 보더는 이미지 위에 */
   content: '';
