@@ -831,7 +831,7 @@ var LibraryMain = {
       // ---- 빠른 실행 ----
       '<section v-if="!store.viewHidden && !store.noOwned" class="library-section library-quick">' +
         '<div class="library-section__head">' +
-          '<h2 class="library-section__title">빠른 실행<span>{{ quick.length }}</span></h2>' +
+          '<h2 class="client-section-title library-section__title">빠른 실행<span>{{ quick.length }}</span></h2>' +
           '<div class="library-quick__nav">' +
             '<button class="library-quick__arrow" :class="{ \'is-rest\': arrowRest === -1 }" type="button" aria-label="이전" :disabled="quickPage === 0" @click="pressArrow(-1)" @mouseleave="arrowRest = 0"><i class="ic-v2-control-arrow-left-line"></i></button>' +
             '<button class="library-quick__arrow" :class="{ \'is-rest\': arrowRest === 1 }" type="button" aria-label="다음" :disabled="quickPage >= quickPages - 1" @click="pressArrow(1)" @mouseleave="arrowRest = 0"><i class="ic-v2-control-arrow-right-line"></i></button>' +
@@ -877,7 +877,7 @@ var LibraryMain = {
         // 그룹 화면 (⑧ component/title/group) — 보유게임 | 그룹명 개수 · 닫기(X).
         // 보유게임 · 그룹명은 탭처럼 하나만 활성(activated), 나머지는 비활성(inacitve, 마우스 올리면 link line).
         // 보유게임을 눌러도 그룹명은 남고, X를 눌러야 빠진다 (사용자 11-06)
-        '<h2 v-if="viewGroup" class="library-section__title library-section__title--group" data-name="component/title/group">' +
+        '<h2 v-if="viewGroup" class="client-section-title library-section__title library-section__title--group" data-name="component/title/group">' +
           '<button class="library-crumb" :class="{ \'is-active\': store.viewOwned }" type="button" :aria-pressed="String(store.viewOwned)" ' +
             '@click="store.viewOwned = true" data-name="component/tilte">보유게임<span>{{ owned.length }}</span></button>' +
           '<i class="library-crumb__div" aria-hidden="true"></i>' +
@@ -889,10 +889,10 @@ var LibraryMain = {
         '</h2>' +
         // 숨겨진 게임 화면 (Figma 클라이언트_v3.1 48960:383358 참고) — 제목 + 오른쪽 "보유 게임 목록 >"(돌아가기)
         '<div v-else-if="store.viewHidden" class="library-hidden-title">' +
-          '<h2 class="library-section__title">숨겨진 게임<span>{{ hiddenGames.length }}</span></h2>' +
+          '<h2 class="client-section-title library-section__title">숨겨진 게임<span>{{ hiddenGames.length }}</span></h2>' +
           '<button class="stds-button stds-button-tertiary stds-button-sm has-arrow library-tool-btn" type="button" @click="store.viewHidden = false">보유 게임 목록<i class="ic-v2-control-arrow-right-line" aria-hidden="true"></i></button>' +
         '</div>' +
-        '<h2 v-else class="library-section__title">보유게임<span>{{ owned.length }}</span></h2>' +
+        '<h2 v-else class="client-section-title library-section__title">보유게임<span>{{ owned.length }}</span></h2>' +
         '<div v-if="!store.noOwned" class="library-owned__divider"></div>' + // 보유게임 없음이면 구분선도 미노출 (사용자 11-10)
         // 선택 UI — 도구 줄 자리에 게임 추가 취소 + 안내 문구 (Figma ⑦ · 0825 게임 추가 취소)
         '<div v-if="selecting" class="library-toolbar library-toolbar--select" data-name="filter area">' +
@@ -998,7 +998,7 @@ var LibraryMain = {
       // ---- 보유게임 없음 — 추천 목록 (스토어 상품 카드, 썸네일 · 이름은 보유게임 카드와 같은 크기) ----
       '<section v-if="store.noOwned && !store.viewHidden && (!viewGroup || store.viewOwned)" class="library-section library-hot" data-name="list">' +
         // 제목은 24 줄(head) 없이 바로 — 빠른 실행 → 보유게임처럼 위 섹션 끝에서 제목까지 36 (사용자 11-10)
-        '<h2 class="library-section__title">지금! 가장 핫한 게임을 해보세요.</h2>' +
+        '<h2 class="client-section-title library-section__title">지금! 가장 핫한 게임을 해보세요.</h2>' +
         '<ul class="library-grid">' +
           '<li v-for="g in hotGames" :key="g.id" class="library-card" data-name="component/list">' +
             '<div class="library-card__thumb">' +

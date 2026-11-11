@@ -17,18 +17,7 @@
   height: 2.4rem;
 }
 /* 타이틀 컴포넌트 (Figma NEW 클라이언트-Library 0.3.2 component/tilte 5219:3337) — 제목 · 개수 간격 2 */
-.library-section__title {
-  display: flex;
-  gap: 0.2rem;
-  margin: 0;
-  color: var(--stds-sem-color-on-surface-elevation-1);
-  /* 14/20 — stds-title8, 우측패널 "나의 게임 그룹"과 같은 크기 (사용자 변경, 11-03) */
-  font-size: 1.4rem;
-  font-weight: 700;
-  line-height: 2rem;
-  letter-spacing: -0.03em;
-}
-.library-section__title span { color: var(--stds-sem-color-on-surface-elevation-4); }
+/* 섹션 타이틀(크기 · 색 · 제목-개수 간격 2)은 공통 .client-section-title (css/dashboard.css) */
 
 /* ---- 빠른 실행 — 타이틀 아래 20 ---------------------------------
    카드 120 정사각(모서리 20), 하나만 260으로 펼쳐진다(마우스를 올린 카드,
