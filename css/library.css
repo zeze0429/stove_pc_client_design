@@ -688,6 +688,116 @@
 .library-card.is-added .library-card__name { color: var(--stds-sem-color-on-surface-elevation-4); }
 .library-card.is-added .library-card__thumb:hover .library-card__media img { transform: none; }
 
+/* ---- 7-3 그룹에 게임 추가 > 드래그 (2026_웹전환 12221:52390) ----
+   끄는 동안 콘텐츠 · 패널의 호버는 전부 끈다(마우스 이벤트는 document에서 받는다) */
+.is-card-dragging .app { pointer-events: none; }
+.is-card-dragging, .is-card-dragging * { user-select: none; }
+/* 원래 자리 (Figma 1562:54194) — 카드 30%, 실선 보더 대신 점선 3 · 4/8 brand-primary */
+.library-card.is-drag-origin { opacity: 0.3; }
+.library-card.is-drag-origin .library-card__border { border: 0; }
+.library-card__dash {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.library-card__dash rect {
+  width: calc(100% - 3px);
+  height: calc(100% - 3px);
+  fill: none;
+  stroke: var(--stds-sem-color-brand-primary);
+  stroke-width: 3;
+  stroke-dasharray: 4 8;
+}
+/* 드래그 프리뷰 (Figma interaction_drag 4493:55947) — 컴포넌트 180을 시안 화면 크기 148로(0.82배):
+   카드 보더 3 brand-primary · 그림자 0 3 16 black, n개면 뒤에 같은 크기 판 2장(±5도, 13 어긋남) + 개수 뱃지 */
+.library-card-drag {
+  position: fixed;
+  z-index: 2000;
+  width: 14.8rem;
+  height: 14.8rem;
+  pointer-events: none;
+}
+.library-card-drag__card,
+.library-card-drag__layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--stds-glob-border-radius-2xl);
+  box-shadow: inset 0 0 0 0.3rem var(--stds-sem-color-brand-primary);
+}
+.library-card-drag__layer { background: var(--stds-sem-color-surface-elevation-1); transform-origin: 0 0; }
+.library-card-drag__layer--back { left: 1.3rem; transform: rotate(5deg); }
+.library-card-drag__layer--mid { top: 1.3rem; transform: rotate(-5deg); box-shadow: inset 0 0 0 0.3rem var(--stds-sem-color-brand-primary), 0 0.3rem 1.6rem var(--stds-glob-color-black); }
+.library-card-drag__card { overflow: hidden; box-shadow: 0 0.3rem 1.6rem var(--stds-glob-color-black); }
+.library-card-drag__card img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.library-card-drag__card::after { /* 보더는 이미지 위에 */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 0.3rem var(--stds-sem-color-brand-primary);
+}
+.library-card-drag__count {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  min-width: 2.6rem;
+  height: 2.6rem;
+  padding: 0 0.7rem;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-sem-color-brand-primary);
+  color: var(--stds-glob-color-white);
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 2.6rem;
+  text-align: center;
+}
+/* 추가 불가 — 그룹 없는 게임 위 (case=추가불가). 이미지 위라 테마 고정 글로벌: 보더 · 아이콘 tint-red-a700,
+   이미지 위 gray860 90%(Figma #222 — 가장 가까운 글로벌), 글자 white 12/18 Bold */
+.library-card-drag.is-blocked .library-card-drag__card::after { box-shadow: inset 0 0 0 0.3rem var(--stds-glob-color-tint-red-a700); }
+.library-card-drag.is-blocked .library-card-drag__card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--stds-glob-color-gray860) 90%, transparent);
+}
+.library-card-drag__blocked {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  color: var(--stds-glob-color-white);
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.8rem;
+  text-align: center;
+}
+.library-card-drag__blocked i {
+  position: relative;
+  display: block;
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--stds-glob-color-tint-red-a700);
+}
+.library-card-drag__blocked i::after { /* 느낌표는 흰색 — 아이콘 폰트의 빈 자리 뒤에 흰 판 (Figma Rectangle 3977) */
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 20%;
+  left: 35%;
+  width: 30%;
+  height: 60%;
+  background: var(--stds-glob-color-white);
+}
+
 /* 하단 플로팅 (component/selection UI/floating) — 콘텐츠 영역 바닥 120, 배경색으로 페이드. 72 높이 알약.
    비활성(고르기 전): 다크 gray780 · 글자/아이콘 gray650 (Figma 2115:32819) / 라이트 gray200 · gray400 (라이트 시안),
    구분선 inverse-elevation-6. 두 테마 값을 함께 만족하는 시멘틱이 없어 공용 전용 변수 --floating-off-background / -text-color (css/dashboard.css)

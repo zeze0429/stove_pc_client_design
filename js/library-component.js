@@ -169,7 +169,10 @@ var LIBRARY_STORE = Vue.reactive({ groups: [], addTargetId: null, selectMode: fa
   // 보유게임 없음 화면 (하단 메뉴패널 > 라이브러리 설정 > 보유게임 없음, Figma 클라이언트_v3.1 48960:383577) — 콘텐츠 · 패널 모두 보유게임 0개로
   noOwned: !!protoSettingsRead().libraryNoOwned,
   // 그룹 없는 게임의 자리 — 바로 아래에 오는 그룹 id, null이면 맨 아래 (설정 팝업 · 우측패널에서 순서 변경 가능, 사용자 11-09)
-  ungroupedBefore: null });
+  ungroupedBefore: null,
+  // 선택 UI에서 고른 게임을 우측패널 그룹으로 끄는 중 (2026_웹전환 7-3 12221:52390) — { gameIds, thumb, x, y, targetId, blocked }.
+  // 콘텐츠가 끌고, 패널은 targetId 그룹을 놓을 그룹 상태로 보여 준다
+  cardDrag: null });
 protoSettingsSubscribe(function (s) { LIBRARY_STORE.noOwned = !!s.libraryNoOwned; });
 // 보유게임 없음 화면의 추천 목록 "지금! 가장 핫한 게임을 해보세요." — 스토어(타팀) 상품 카드, 가격 정보는 시안 그대로
 var LIBRARY_HOT_GAMES = [
@@ -412,10 +415,14 @@ var LibraryMain = {
     // 필터 레이어 바깥을 누르면 닫는다 (레이어 · 버튼은 click.stop)
     this._onDocClick = function () { vm.filterOpen = false; };
     document.addEventListener('click', this._onDocClick);
+    this._onCardDragKey = function (e) { if (e.key === 'Escape' && vm.store.cardDrag) vm.endCardDrag(false); };
+    document.addEventListener('keydown', this._onCardDragKey);
   },
   unmounted: function () {
     clearTimeout(this._toastTimer);
     document.removeEventListener('click', this._onDocClick);
+    document.removeEventListener('keydown', this._onCardDragKey);
+    this.endCardDrag(false);
     window.removeEventListener('resize', this._onResize);
     if (this._scrollBox) this._scrollBox.removeEventListener('scroll', this._onScroll);
   },
@@ -653,10 +660,102 @@ var LibraryMain = {
     // ── 선택 UI (게임 추가) — 카드 아무 곳이나 누르면 선택/해제, 이미 그룹에 있는 게임은 못 고른다 ──
     isSelected: function (g) { return this.selected.indexOf(g.id) >= 0; },
     toggleSelect: function (g) {
+      if (this._dragClickGuard) return; // 끌었다 같은 카드 위에서 놓으면 click이 한 번 더 온다
       if (!this.selecting || this.addedIds[g.id]) return;
       var i = this.selected.indexOf(g.id);
       if (i >= 0) this.selected.splice(i, 1);
       else this.selected.push(g.id);
+    },
+    // ── 7-3 그룹에 게임 추가 > 드래그 (2026_웹전환 12221:52390, 패널 쪽 놓을 그룹 상태는 지금 패널 디자인이 최신 — 사용자 11-11) ──
+    // 선택 UI에서 카드를 눌러 5px 넘게 움직이면 시작. 누른 카드가 안 골라져 있으면 골라서 같이 끈다. 이미 그룹에 있는 카드는 못 끈다
+    onCardPointerDown: function (e, g) {
+      if (e.button !== 0 || !this.selecting || this.addedIds[g.id]) return;
+      var vm = this;
+      var thumb = e.currentTarget.querySelector('.library-card__thumb').getBoundingClientRect();
+      var sx = e.clientX, sy = e.clientY;
+      var move = function (ev) {
+        if (!vm.store.cardDrag) {
+          if (Math.abs(ev.clientX - sx) < 5 && Math.abs(ev.clientY - sy) < 5) return;
+          vm.beginCardDrag(g, thumb, sx, sy);
+        }
+        vm.onCardDragMove(ev.clientX, ev.clientY);
+      };
+      var up = function () {
+        document.removeEventListener('mousemove', move);
+        document.removeEventListener('mouseup', up);
+        if (vm.store.cardDrag) vm.endCardDrag(true);
+      };
+      document.addEventListener('mousemove', move);
+      document.addEventListener('mouseup', up);
+      this._cardDragUnbind = function () { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); };
+    },
+    beginCardDrag: function (g, thumb, sx, sy) {
+      if (!this.isSelected(g)) this.selected.push(g.id);
+      var size = 14.8 * (parseFloat(getComputedStyle(document.documentElement).fontSize) || 10);
+      var k = size / thumb.width; // 카드 120 → 프리뷰 148, 잡은 자리 비율 그대로
+      this.store.moreOpen = false;
+      this.store.cardDrag = {
+        gameIds: this.selected.slice(), thumb: g.thumb, x: 0, y: 0, targetId: null, blocked: false,
+        grabX: (sx - thumb.left) * k, grabY: (sy - thumb.top) * k,
+      };
+      document.documentElement.classList.add('is-card-dragging');
+      this._dragClickGuard = true;
+      var vm = this;
+      (function tick() {
+        if (!vm.store.cardDrag) return;
+        vm.cardDragAutoScroll();
+        vm._cardDragRaf = requestAnimationFrame(tick);
+      })();
+    },
+    // 놓을 그룹 = 커서가 패널 스크롤 영역 안 그룹 위. 그룹 없는 게임 위면 추가 불가 프리뷰,
+    // 끄는 게임이 전부 이미 든 그룹은 대상 아님 (패널 복제 드래그와 같은 규칙)
+    onCardDragMove: function (cx, cy) {
+      var d = this.store.cardDrag;
+      if (!d) return;
+      d.x = cx - d.grabX;
+      d.y = cy - d.grabY;
+      d.lastX = cx;
+      d.lastY = cy;
+      var body = document.querySelector('.library-panel__scroll');
+      var r = body && body.getBoundingClientRect();
+      var inside = r && cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom;
+      var hit = inside && Array.prototype.slice.call(body.querySelectorAll('.library-group[data-group-id]')).find(function (s) {
+        var sr = s.getBoundingClientRect();
+        return cy >= sr.top && cy <= sr.bottom;
+      });
+      var id = hit && hit.dataset.groupId;
+      d.blocked = id === 'ungrouped';
+      var group = id && !d.blocked && this.store.groups.find(function (x) { return x.id === id; });
+      d.targetId = group && d.gameIds.some(function (gid) { return group.gameIds.indexOf(gid) < 0; }) ? group.id : null;
+    },
+    // 패널 스크롤 영역 위 · 아래 64 안이면 자동 스크롤 — 패널 드래그(dragAutoScroll)와 같은 속도
+    cardDragAutoScroll: function () {
+      var d = this.store.cardDrag;
+      var box = document.querySelector('.library-panel__scroll');
+      if (!d || !box || d.lastY == null) return;
+      var r = box.getBoundingClientRect();
+      if (d.lastX < r.left || d.lastX > r.right) return;
+      var top = document.querySelector('.library-panel__top');
+      var bottom = top ? top.getBoundingClientRect().top : r.bottom;
+      var edge = 64, dir = 0, dist = 0;
+      if (d.lastY < r.top + edge && d.lastY >= r.top) { dir = -1; dist = r.top + edge - d.lastY; }
+      else if (d.lastY > bottom - edge && d.lastY <= r.bottom) { dir = 1; dist = d.lastY - (bottom - edge); }
+      if (!dir) return;
+      var prev = box.scrollTop;
+      box.scrollTop += dir * Math.min(7, 1.5 + dist * 0.1);
+      if (box.scrollTop !== prev) this.onCardDragMove(d.lastX, d.lastY);
+    },
+    // commit = 마우스를 뗌 (Esc는 취소). 놓으면 그룹에 추가 확인과 같은 흐름(결과 문구 · 선택 리셋 · 토스트)
+    endCardDrag: function (commit) {
+      var d = this.store.cardDrag;
+      if (!d) return;
+      if (this._cardDragUnbind) this._cardDragUnbind();
+      cancelAnimationFrame(this._cardDragRaf);
+      this.store.cardDrag = null;
+      document.documentElement.classList.remove('is-card-dragging');
+      var vm = this;
+      setTimeout(function () { vm._dragClickGuard = false; }, 0);
+      if (commit && d.targetId) this.confirmAddGroups([d.targetId]);
     },
     // 카드 우클릭 — 우측패널의 게임 메뉴를 그 자리에 연다 (메뉴 · 그룹 동작은 패널이 맡는다). 선택 UI 중에는 열지 않는다.
     // 메뉴는 콘텐츠 영역(.main) 안에만 뜬다 — 그 사각형을 같이 넘긴다
@@ -972,11 +1071,15 @@ var LibraryMain = {
         // 보유게임 없음이면 빈 목록이 위 여백(16)만 남기니 빼 둔다 — 안내 박스 아래가 바로 섹션 끝
         '<ul v-if="!store.noOwned" class="library-grid">' +
           '<li v-for="g in filteredOwned" :key="g.id" class="library-card" ' +
-            ':class="{ \'is-selectable\': selecting, \'is-selected\': selecting && isSelected(g), \'is-added\': selecting && addedIds[g.id] }" ' +
-            ':aria-checked="selecting ? String(isSelected(g)) : null" :role="selecting ? \'checkbox\' : null" @click="toggleSelect(g)" @contextmenu.prevent="openCardMenu($event, g)">' +
+            ':class="{ \'is-selectable\': selecting, \'is-selected\': selecting && isSelected(g), \'is-added\': selecting && addedIds[g.id], ' +
+              '\'is-drag-origin\': store.cardDrag && store.cardDrag.gameIds.indexOf(g.id) >= 0 }" ' +
+            ':aria-checked="selecting ? String(isSelected(g)) : null" :role="selecting ? \'checkbox\' : null" @click="toggleSelect(g)" ' +
+            '@mousedown="onCardPointerDown($event, g)" @dragstart.prevent @contextmenu.prevent="openCardMenu($event, g)">' +
             '<div class="library-card__thumb">' +
               '<span class="library-card__media"><img :src="g.thumb" alt="" loading="lazy" /></span>' +
               '<span class="library-card__border" aria-hidden="true"></span>' +
+              // 끄는 중 원래 자리 — 카드 30% + 점선 3 (4/8) brand-primary (Figma 1562:54194). CSS dashed는 간격을 못 정해 SVG
+              '<svg v-if="store.cardDrag && store.cardDrag.gameIds.indexOf(g.id) >= 0" class="library-card__dash" aria-hidden="true"><rect x="1.5" y="1.5" rx="18.5" ry="18.5"></rect></svg>' +
               // 선택 UI 체크 — STDS 체크박스 상자(css/checkbox.css) 그대로, 모양만 원. 미선택 · 선택 · 이미 그룹에 있음(비활성 선택)
               '<span v-if="selecting" class="stds-checkbox-box library-card__check" :class="{ \'is-checked\': isSelected(g) || addedIds[g.id], \'is-disabled\': addedIds[g.id] }" aria-hidden="true" data-name="Checkbox">' +
                 '<i class="ic-v2-control-check-bold-line"></i>' +
@@ -1042,6 +1145,23 @@ var LibraryMain = {
 
       // 라이브러리 설정 — 숨겨진 게임 보기는 팝업을 닫는다 (숨긴 게임 화면은 가이드 받으면)
       '<library-settings-dialog v-if="settingsOpen" :ungrouped-count="ungroupedCount" @close="settingsOpen = false" @hidden-games="openHidden"></library-settings-dialog>' +
+      // 7-3 드래그 프리뷰 (Figma interaction_drag 4493:55947 — 1개 / n개이상 / 추가불가). 시안 화면 크기 148(컴포넌트 180의 0.82배).
+      // 패널 위까지 따라가야 해서 body로 띄운다
+      '<teleport to="body">' +
+        '<div v-if="store.cardDrag" class="library-card-drag" :class="{ \'is-blocked\': store.cardDrag.blocked }" ' +
+          ':style="{ left: store.cardDrag.x + \'px\', top: store.cardDrag.y + \'px\' }" aria-hidden="true" data-name="interaction_drag">' +
+          '<template v-if="store.cardDrag.gameIds.length > 1 && !store.cardDrag.blocked">' +
+            '<span class="library-card-drag__layer library-card-drag__layer--back"></span>' +
+            '<span class="library-card-drag__layer library-card-drag__layer--mid"></span>' +
+          '</template>' +
+          '<span class="library-card-drag__card"><img :src="store.cardDrag.thumb" alt="" /></span>' +
+          '<span v-if="store.cardDrag.gameIds.length > 1 && !store.cardDrag.blocked" class="library-card-drag__count" data-name="badge/게임선택갯수">{{ store.cardDrag.gameIds.length }}</span>' +
+          '<span v-if="store.cardDrag.blocked" class="library-card-drag__blocked">' +
+            '<i class="ic-v2-state-warning-circle-fill"></i>' +
+            '<span>그룹 없는 게임에는<br>추가할 수 없습니다.</span>' +
+          '</span>' +
+        '</div>' +
+      '</teleport>' +
       '<add-to-group-dialog v-if="addGroupDialog" :groups="store.groups" :game-ids="selected" @confirm="confirmAddGroups" @close="addGroupDialog = false"></add-to-group-dialog>' +
 
       // 게임 추가 · 그룹에서 제거 완료 토스트 — 보유게임 영역 하단 가운데, 3초 뒤 사라진다

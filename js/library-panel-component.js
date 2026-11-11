@@ -768,6 +768,11 @@ var LibraryPanel = {
     },
     // 메뉴가 떠 있거나 드래그 중 — 호버 인디케이터 · 툴팁을 띄우지 않는다
     anyMenuOpen: function () { return !!(this.menu || this.gameMenu || this.drag); },
+    // 놓을 그룹 — 패널 안 복제 드래그 또는 콘텐츠 선택 UI 카드 드래그(7-3, store.cardDrag)
+    dropTargetId: function () {
+      if (this.drag) return this.drag.targetId;
+      return this.store.cardDrag ? this.store.cardDrag.targetId : null;
+    },
     // 컨텍스트메뉴는 패널 밖으로 나가지 않는다 — 패널 안 좌우 16 여백 안에서만 (그룹 메뉴 · 게임 메뉴 공통)
     clampToPanel: function (left, width) {
       var r = this.$el.getBoundingClientRect();
@@ -1414,7 +1419,7 @@ var LibraryPanel = {
     contextMenuLock('library', false);
   },
   template:
-    '<div class="library-panel" :class="{ \'is-dragging\': !!drag }" data-name="layout/library/pannel">' +
+    '<div class="library-panel" :class="{ \'is-dragging\': !!drag || !!store.cardDrag }" data-name="layout/library/pannel">' +
       // 헤더 — 고정
       '<div class="library-panel__title" data-name="title">' +
         '<i class="ic-v2-content-folder-open-fill" aria-hidden="true"></i>' +
@@ -1526,7 +1531,7 @@ var LibraryPanel = {
             '</section>' +
             '<section v-else class="game-group library-group" :data-group-id="group.id" ' +
               ':class="{ \'is-collapsed\': isCollapsed(group.id), \'is-empty\': !owned.length, \'is-renaming\': renamingId === group.id, \'is-add-target\': addTargetId === group.id, ' +
-                '\'is-drop-target\': drag && drag.targetId === group.id, \'is-reorder-ghost\': drag && drag.kind === \'group\' && drag.groupId === group.id }" data-name="component/game_group">' +
+                '\'is-drop-target\': dropTargetId() === group.id, \'is-reorder-ghost\': drag && drag.kind === \'group\' && drag.groupId === group.id }" data-name="component/game_group">' +
               // 순서 변경 중 원래 자리 — 점선 2/2 (Figma 2904:34341)
               '<svg v-if="drag && drag.kind === \'group\' && drag.groupId === group.id" class="library-group__ghost" aria-hidden="true"><rect x="0.5" y="0.5" rx="7.5" ry="7.5"></rect></svg>' +
               // 이름 변경 중 — 타이틀(화살표 포함)만 입력칸으로 바뀐다. 아래 게임 추가 · 게임 목록은 그대로 (Figma ⑬)
