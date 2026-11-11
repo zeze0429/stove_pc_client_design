@@ -397,6 +397,7 @@ var LibraryMain = {
       selectNotice: null,
       addGroupDialog: false, // 게임 선택 모드의 그룹에 추가 팝업
       headStuck: false, // 선택 UI 고정 헤더가 위에 붙어 있음 — 유틸리티 바 뒤까지 배경을 덮는다
+      headOver: false, // 카드가 고정 헤더 밑으로 스크롤돼 들어감 — 이때만 헤더 배경
       ownedMinHeight: 0, // 그룹 화면에서 보유게임 영역 최소 높이(px) — 타이틀을 고정 헤더 자리까지 올릴 수 있게
     };
   },
@@ -624,10 +625,13 @@ var LibraryMain = {
     checkHeadStuck: function () {
       var box = this._scrollBox;
       var head = this.selecting && this.$refs.ownedHead;
-      if (!box || !head) { this.headStuck = false; return; }
+      if (!box || !head) { this.headStuck = false; this.headOver = false; return; }
       var stickyTop = box.getBoundingClientRect().top + (parseFloat(getComputedStyle(box).paddingTop) || 0) +
         (parseFloat(getComputedStyle(head).top) || 0);
       this.headStuck = head.getBoundingClientRect().top <= stickyTop + 0.5;
+      // 카드가 실제로 헤더 밑으로 스크롤돼 들어갔을 때만 헤더 배경을 깐다 — 가만히 있을 땐 끄는 중 점선(바깥 1.5)이 가리지 않게
+      var grid = head.parentNode.querySelector('.library-grid');
+      this.headOver = !!grid && grid.getBoundingClientRect().top < head.getBoundingClientRect().bottom - 0.5;
     },
     onSelectEnter: function (on, prev) {
       this.selected = [];
@@ -999,7 +1003,7 @@ var LibraryMain = {
       '</section>' +
 
       // ---- 보유게임 ----
-      '<section ref="owned" class="library-section library-owned" :class="{ \'is-hidden-view\': store.viewHidden, \'is-selecting\': selecting, \'is-head-stuck\': selecting && headStuck }" ' +
+      '<section ref="owned" class="library-section library-owned" :class="{ \'is-hidden-view\': store.viewHidden, \'is-selecting\': selecting, \'is-head-stuck\': selecting && headStuck, \'is-head-over\': selecting && headOver }" ' +
         ':style="ownedMinHeight ? { minHeight: ownedMinHeight + \'px\' } : null">' +
         // 선택 UI에서는 타이틀 · 구분선 · 도구 줄이 위에 고정되고 아래 카드만 스크롤된다 (사용자 요청)
         '<div ref="ownedHead" class="library-owned__head">' +
@@ -1109,6 +1113,9 @@ var LibraryMain = {
             '<div class="library-card__thumb">' +
               '<span class="library-card__media"><img :src="g.thumb" alt="" loading="lazy" /></span>' +
               '<span class="library-card__border" aria-hidden="true"></span>' +
+              // 끄는 중 원래 자리 — 카드 30% + 점선 (Figma 1562:54194). 둥근 끝(라운드 캡)은 CSS border로 못 해서 SVG rect —
+              // 값은 전부 CSS(library.css .library-card__dash). 카드 가장자리에 걸치는 센터 스트록
+              '<svg v-if="store.cardDrag && store.cardDrag.gameIds.indexOf(g.id) >= 0" class="library-card__dash" aria-hidden="true"><rect pathLength="444"></rect></svg>' +
               // 선택 UI 체크 — STDS 체크박스 상자(css/checkbox.css) 그대로, 모양만 원. 미선택 · 선택 · 이미 그룹에 있음(비활성 선택)
               '<span v-if="selecting" class="stds-checkbox-box library-card__check" :class="{ \'is-checked\': isSelected(g) || addedIds[g.id], \'is-disabled\': addedIds[g.id] }" aria-hidden="true" data-name="Checkbox">' +
                 '<i class="ic-v2-control-check-bold-line"></i>' +

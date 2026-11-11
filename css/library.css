@@ -576,15 +576,16 @@
   /* 사이드바 "스토어" · 우측패널 "나의 게임 그룹"과 같은 글자 줄 y82 (사용자 요청, 11-03) */
   top: 3.4rem;
   padding-bottom: 1.6rem;
-  background: var(--stds-sem-color-background-variant-1);
 }
+/* 헤더 배경은 카드가 헤더 밑으로 들어갔을 때만 (사용자 11-11) — 가만히 있을 땐 바로 아래 카드의 점선이 가리지 않게 */
+.library-owned.is-head-over .library-owned__head { background: var(--stds-sem-color-background-variant-1); }
 .library-owned.is-head-stuck .library-owned__head::before {
   content: '';
   position: absolute;
   left: 0;
   right: 0;
   bottom: 100%;
-  background: inherit;
+  background: var(--stds-sem-color-background-variant-1);
   height: calc(4.8rem + var(--utility-notice-h, 0px) + 3.4rem);
   /* 좌우 끝까지는 그림자로 — 폭을 넓히면 .main 가로 스크롤 폭이 늘어난다. 위아래는 clip-path로 자른다 */
   box-shadow: 0 0 0 100vw var(--stds-sem-color-background-variant-1);
@@ -692,14 +693,28 @@
    끄는 동안 콘텐츠 · 패널의 호버는 전부 끈다(마우스 이벤트는 document에서 받는다) */
 .is-card-dragging .app { pointer-events: none; }
 .is-card-dragging, .is-card-dragging * { user-select: none; }
-/* 원래 자리 (Figma 1562:54194) — 카드 30%, 실선 보더 대신 점선 3 brand-primary, 센터 스트록.
-   CSS dashed로 그린다(사용자 11-11) — 대시 · 간격 길이는 브라우저가 정해서 Figma 4/8 · 라운드 캡과 조금 다름.
-   센터 = 보더 박스를 바깥으로 1.5 키우고 모서리도 20 + 1.5 */
+/* 원래 자리 (Figma 1562:54194) — 카드 30%, 실선 보더 대신 점선 3 · 4/8 · 센터 스트록 · 라운드 캡 brand-primary.
+   SVG rect를 코드 값으로 (CSS border dashed는 점 끝을 둥글게 못 함 — 사용자 11-11 SVG로 결정).
+   pathLength 444 = 둘레(120 · r20 = 445.7)를 4+8 37번으로 — 시작 · 끝 이음매에서 점이 붙지 않게 */
 .library-card.is-drag-origin { opacity: 0.3; }
-.library-card.is-drag-origin .library-card__border {
-  inset: -0.15rem;
-  border: 0.3rem dashed var(--stds-sem-color-brand-primary);
-  border-radius: calc(var(--stds-glob-border-radius-3xl) + 0.15rem);
+.library-card.is-drag-origin .library-card__border { border: 0; }
+.library-card__dash {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.library-card__dash rect {
+  width: 100%;
+  height: 100%;
+  rx: var(--stds-glob-border-radius-3xl);
+  fill: none;
+  stroke: var(--stds-sem-color-brand-primary);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 4 8;
 }
 /* 드래그 프리뷰 (Figma interaction_drag 4493:55947) — 크기는 카드 썸네일 + 16(JS가 넣음), 모서리 20 (사용자 11-11):
    카드 보더 3 brand-primary · 그림자 0 3 16 black, n개면 뒤에 같은 크기 판 2장(±5도, 13 어긋남) + 개수 뱃지 */
