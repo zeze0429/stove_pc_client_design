@@ -691,11 +691,12 @@ var LibraryMain = {
     },
     beginCardDrag: function (g, thumb, sx, sy) {
       if (!this.isSelected(g)) this.selected.push(g.id);
-      var size = 14.8 * (parseFloat(getComputedStyle(document.documentElement).fontSize) || 10);
-      var k = size / thumb.width; // 카드 120 → 프리뷰 148, 잡은 자리 비율 그대로
+      var rem = (parseFloat(getComputedStyle(document.documentElement).fontSize) || 10) / 10;
+      var size = thumb.width + 16 * rem; // 프리뷰 = 지금 카드 썸네일보다 가로 · 세로 16 크게 (사용자 11-11)
+      var k = size / thumb.width; // 잡은 자리 비율 그대로
       this.store.moreOpen = false;
       this.store.cardDrag = {
-        gameIds: this.selected.slice(), thumb: g.thumb, x: 0, y: 0, targetId: null, blocked: false,
+        gameIds: this.selected.slice(), thumb: g.thumb, x: 0, y: 0, size: size, targetId: null, blocked: false,
         grabX: (sx - thumb.left) * k, grabY: (sy - thumb.top) * k,
       };
       document.documentElement.classList.add('is-card-dragging');
@@ -741,7 +742,7 @@ var LibraryMain = {
       if (cx < pr.left) return;
       var rem = (parseFloat(getComputedStyle(document.documentElement).fontSize) || 10) / 10;
       var lr = list.getBoundingClientRect();
-      var gap = 16 * rem, size = 148 * rem;
+      var gap = 16 * rem, size = d.size;
       var ext = d.gameIds.length > 1 && !d.blocked ? 13 * rem : 0;
       var clamp = function (v, lo, hi) { return Math.max(lo, Math.min(v, hi)); };
       d.x = clamp(d.x, pr.left + gap, pr.right - gap - size - ext);
@@ -1166,11 +1167,11 @@ var LibraryMain = {
 
       // 라이브러리 설정 — 숨겨진 게임 보기는 팝업을 닫는다 (숨긴 게임 화면은 가이드 받으면)
       '<library-settings-dialog v-if="settingsOpen" :ungrouped-count="ungroupedCount" @close="settingsOpen = false" @hidden-games="openHidden"></library-settings-dialog>' +
-      // 7-3 드래그 프리뷰 (Figma interaction_drag 4493:55947 — 1개 / n개이상 / 추가불가). 시안 화면 크기 148(컴포넌트 180의 0.82배).
+      // 7-3 드래그 프리뷰 (Figma interaction_drag 4493:55947 — 1개 / n개이상 / 추가불가). 크기는 카드 썸네일 + 16 (사용자 11-11).
       // 패널 위까지 따라가야 해서 body로 띄운다
       '<teleport to="body">' +
         '<div v-if="store.cardDrag" class="library-card-drag" :class="{ \'is-blocked\': store.cardDrag.blocked }" ' +
-          ':style="{ left: store.cardDrag.x + \'px\', top: store.cardDrag.y + \'px\' }" aria-hidden="true" data-name="interaction_drag">' +
+          ':style="{ left: store.cardDrag.x + \'px\', top: store.cardDrag.y + \'px\', width: store.cardDrag.size + \'px\', height: store.cardDrag.size + \'px\' }" aria-hidden="true" data-name="interaction_drag">' +
           // 판은 고른 개수만큼만 — 2개면 카드 + 판 1장, 3개 이상이면 판 2장
           '<template v-if="store.cardDrag.gameIds.length > 1 && !store.cardDrag.blocked">' +
             '<span v-if="store.cardDrag.gameIds.length > 2" class="library-card-drag__layer library-card-drag__layer--back"></span>' +

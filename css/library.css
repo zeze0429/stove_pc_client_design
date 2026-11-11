@@ -712,13 +712,13 @@
   stroke-linecap: round;
   stroke-dasharray: 4 8;
 }
-/* 드래그 프리뷰 (Figma interaction_drag 4493:55947) — 컴포넌트 180을 시안 화면 크기 148로(0.82배):
+/* 드래그 프리뷰 (Figma interaction_drag 4493:55947) — 크기는 카드 썸네일 + 16(JS가 넣음), 모서리 20 (사용자 11-11):
    카드 보더 3 brand-primary · 그림자 0 3 16 black, n개면 뒤에 같은 크기 판 2장(±5도, 13 어긋남) + 개수 뱃지 */
 .library-card-drag {
   position: fixed;
   z-index: 2000;
-  width: 14.8rem;
-  height: 14.8rem;
+  width: 13.6rem;
+  height: 13.6rem;
   pointer-events: none;
 }
 .library-card-drag__card,
@@ -728,7 +728,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: var(--stds-glob-border-radius-2xl);
+  border-radius: var(--stds-glob-border-radius-3xl);
   box-shadow: inset 0 0 0 0.3rem var(--stds-sem-color-brand-primary);
 }
 .library-card-drag__layer { background: var(--stds-sem-color-surface-elevation-1); transform-origin: 0 0; }
