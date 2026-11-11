@@ -787,6 +787,7 @@
 }
 .library-card-drag__blocked i {
   position: relative;
+  isolation: isolate; /* 흰 판(::after z -1)이 아이콘 바로 뒤에 깔리게 — 없으면 프리뷰 맨 뒤로 내려가 안 보인다 */
   display: block;
   font-size: 3rem;
   line-height: 1;
