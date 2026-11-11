@@ -692,7 +692,7 @@
    끄는 동안 콘텐츠 · 패널의 호버는 전부 끈다(마우스 이벤트는 document에서 받는다) */
 .is-card-dragging .app { pointer-events: none; }
 .is-card-dragging, .is-card-dragging * { user-select: none; }
-/* 원래 자리 (Figma 1562:54194) — 카드 30%, 실선 보더 대신 점선 3 · 4/8 brand-primary */
+/* 원래 자리 (Figma 1562:54194) — 카드 30%, 실선 보더 대신 점선 3 · 4/8 · 센터 · 라운드 캡 brand-primary */
 .library-card.is-drag-origin { opacity: 0.3; }
 .library-card.is-drag-origin .library-card__border { border: 0; }
 .library-card__dash {
@@ -703,12 +703,13 @@
   overflow: visible;
   pointer-events: none;
 }
-.library-card__dash rect {
-  width: calc(100% - 3px);
-  height: calc(100% - 3px);
+.library-card__dash rect { /* Figma: 센터 스트록 · 라운드 캡 — 대시 4 + 캡 양쪽 1.5 = 보이는 대시 7, 간격 5 */
+  width: 100%;
+  height: 100%;
   fill: none;
   stroke: var(--stds-sem-color-brand-primary);
   stroke-width: 3;
+  stroke-linecap: round;
   stroke-dasharray: 4 8;
 }
 /* 드래그 프리뷰 (Figma interaction_drag 4493:55947) — 컴포넌트 180을 시안 화면 크기 148로(0.82배):

@@ -714,11 +714,14 @@ var LibraryMain = {
       if (!d) return;
       d.x = cx - d.grabX;
       d.y = cy - d.grabY;
+      this.clampCardDragToPanel(d, cx);
       d.lastX = cx;
       d.lastY = cy;
       var body = document.querySelector('.library-panel__scroll');
+      var panel = document.querySelector('.library-panel');
       var r = body && body.getBoundingClientRect();
-      var inside = r && cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom;
+      var pr = panel && panel.getBoundingClientRect(); // 좌우는 패널 여백까지 — 프리뷰가 패널 안에 갇히니 끝에서도 놓을 수 있게
+      var inside = r && pr && cx >= pr.left && cx <= pr.right && cy >= r.top && cy <= r.bottom;
       var hit = inside && Array.prototype.slice.call(body.querySelectorAll('.library-group[data-group-id]')).find(function (s) {
         var sr = s.getBoundingClientRect();
         return cy >= sr.top && cy <= sr.bottom;
@@ -728,13 +731,31 @@ var LibraryMain = {
       var group = id && !d.blocked && this.store.groups.find(function (x) { return x.id === id; });
       d.targetId = group && d.gameIds.some(function (gid) { return group.gameIds.indexOf(gid) < 0; }) ? group.id : null;
     },
+    // 커서가 우측패널 안이면 프리뷰는 그룹 목록 안에서만 — 좌우 패널 끝 16 안, 위는 그룹 영역(스크롤) 상단, 아래 16.
+    // 뒤 판(5도 회전, 13 어긋남)이 삐져나오는 만큼도 안에 들어오게
+    clampCardDragToPanel: function (d, cx) {
+      var panel = document.querySelector('.library-panel');
+      var list = document.querySelector('.library-panel__scroll');
+      if (!panel || !list) return;
+      var pr = panel.getBoundingClientRect();
+      if (cx < pr.left) return;
+      var rem = (parseFloat(getComputedStyle(document.documentElement).fontSize) || 10) / 10;
+      var lr = list.getBoundingClientRect();
+      var gap = 16 * rem, size = 148 * rem;
+      var ext = d.gameIds.length > 1 && !d.blocked ? 13 * rem : 0;
+      var clamp = function (v, lo, hi) { return Math.max(lo, Math.min(v, hi)); };
+      d.x = clamp(d.x, pr.left + gap, pr.right - gap - size - ext);
+      d.y = clamp(d.y, lr.top, lr.bottom - gap - size - ext);
+    },
     // 패널 스크롤 영역 위 · 아래 64 안이면 자동 스크롤 — 패널 드래그(dragAutoScroll)와 같은 속도
     cardDragAutoScroll: function () {
       var d = this.store.cardDrag;
       var box = document.querySelector('.library-panel__scroll');
       if (!d || !box || d.lastY == null) return;
       var r = box.getBoundingClientRect();
-      if (d.lastX < r.left || d.lastX > r.right) return;
+      var panel = document.querySelector('.library-panel');
+      var pr = panel ? panel.getBoundingClientRect() : r;
+      if (d.lastX < pr.left || d.lastX > pr.right) return;
       var top = document.querySelector('.library-panel__top');
       var bottom = top ? top.getBoundingClientRect().top : r.bottom;
       var edge = 64, dir = 0, dist = 0;
@@ -1078,8 +1099,8 @@ var LibraryMain = {
             '<div class="library-card__thumb">' +
               '<span class="library-card__media"><img :src="g.thumb" alt="" loading="lazy" /></span>' +
               '<span class="library-card__border" aria-hidden="true"></span>' +
-              // 끄는 중 원래 자리 — 카드 30% + 점선 3 (4/8) brand-primary (Figma 1562:54194). CSS dashed는 간격을 못 정해 SVG
-              '<svg v-if="store.cardDrag && store.cardDrag.gameIds.indexOf(g.id) >= 0" class="library-card__dash" aria-hidden="true"><rect x="1.5" y="1.5" rx="18.5" ry="18.5"></rect></svg>' +
+              // 끄는 중 원래 자리 — 카드 30% + 점선 3 (4/8 · 센터 · 라운드 캡) brand-primary (Figma 1562:54194). CSS dashed는 간격을 못 정해 SVG
+              '<svg v-if="store.cardDrag && store.cardDrag.gameIds.indexOf(g.id) >= 0" class="library-card__dash" aria-hidden="true"><rect rx="20" ry="20"></rect></svg>' +
               // 선택 UI 체크 — STDS 체크박스 상자(css/checkbox.css) 그대로, 모양만 원. 미선택 · 선택 · 이미 그룹에 있음(비활성 선택)
               '<span v-if="selecting" class="stds-checkbox-box library-card__check" :class="{ \'is-checked\': isSelected(g) || addedIds[g.id], \'is-disabled\': addedIds[g.id] }" aria-hidden="true" data-name="Checkbox">' +
                 '<i class="ic-v2-control-check-bold-line"></i>' +
@@ -1150,8 +1171,9 @@ var LibraryMain = {
       '<teleport to="body">' +
         '<div v-if="store.cardDrag" class="library-card-drag" :class="{ \'is-blocked\': store.cardDrag.blocked }" ' +
           ':style="{ left: store.cardDrag.x + \'px\', top: store.cardDrag.y + \'px\' }" aria-hidden="true" data-name="interaction_drag">' +
+          // 판은 고른 개수만큼만 — 2개면 카드 + 판 1장, 3개 이상이면 판 2장
           '<template v-if="store.cardDrag.gameIds.length > 1 && !store.cardDrag.blocked">' +
-            '<span class="library-card-drag__layer library-card-drag__layer--back"></span>' +
+            '<span v-if="store.cardDrag.gameIds.length > 2" class="library-card-drag__layer library-card-drag__layer--back"></span>' +
             '<span class="library-card-drag__layer library-card-drag__layer--mid"></span>' +
           '</template>' +
           '<span class="library-card-drag__card"><img :src="store.cardDrag.thumb" alt="" /></span>' +
