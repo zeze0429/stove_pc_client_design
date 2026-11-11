@@ -1100,10 +1100,6 @@ var LibraryMain = {
             '<div class="library-card__thumb">' +
               '<span class="library-card__media"><img :src="g.thumb" alt="" loading="lazy" /></span>' +
               '<span class="library-card__border" aria-hidden="true"></span>' +
-              // 끄는 중 원래 자리 — 카드 30% + 점선 3 (4/8 · 센터 · 라운드 캡) brand-primary (Figma 1562:54194). CSS dashed는 간격을 못 정해 SVG — 경로는 Figma 내보내기 그대로(왼쪽 위 모서리 아래에서 시작).
-              // 둘레 445.7을 4+8 37번으로 맞춰(pathLength 444) 시작 · 끝 이음매에서 점선이 붙지 않게
-              '<svg v-if="store.cardDrag && store.cardDrag.gameIds.indexOf(g.id) >= 0" class="library-card__dash" viewBox="0 0 123 123" preserveAspectRatio="none" aria-hidden="true">' +
-                '<path d="M1.5 21.5C1.5 10.4543 10.4543 1.5 21.5 1.5H101.5C112.546 1.5 121.5 10.4543 121.5 21.5V101.5C121.5 112.546 112.546 121.5 101.5 121.5H21.5C10.4543 121.5 1.5 112.546 1.5 101.5V21.5Z" pathLength="444"></path></svg>' +
               // 선택 UI 체크 — STDS 체크박스 상자(css/checkbox.css) 그대로, 모양만 원. 미선택 · 선택 · 이미 그룹에 있음(비활성 선택)
               '<span v-if="selecting" class="stds-checkbox-box library-card__check" :class="{ \'is-checked\': isSelected(g) || addedIds[g.id], \'is-disabled\': addedIds[g.id] }" aria-hidden="true" data-name="Checkbox">' +
                 '<i class="ic-v2-control-check-bold-line"></i>' +

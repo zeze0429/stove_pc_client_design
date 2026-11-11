@@ -692,23 +692,14 @@
    끄는 동안 콘텐츠 · 패널의 호버는 전부 끈다(마우스 이벤트는 document에서 받는다) */
 .is-card-dragging .app { pointer-events: none; }
 .is-card-dragging, .is-card-dragging * { user-select: none; }
-/* 원래 자리 (Figma 1562:54194) — 카드 30%, 실선 보더 대신 점선 3 · 4/8 · 센터 · 라운드 캡 brand-primary */
+/* 원래 자리 (Figma 1562:54194) — 카드 30%, 실선 보더 대신 점선 3 brand-primary, 센터 스트록.
+   CSS dashed로 그린다(사용자 11-11) — 대시 · 간격 길이는 브라우저가 정해서 Figma 4/8 · 라운드 캡과 조금 다름.
+   센터 = 보더 박스를 바깥으로 1.5 키우고 모서리도 20 + 1.5 */
 .library-card.is-drag-origin { opacity: 0.3; }
-.library-card.is-drag-origin .library-card__border { border: 0; }
-.library-card__dash { /* Figma 내보내기 123 = 카드 120 + 센터 스트록 바깥 1.5씩 */
-  position: absolute;
+.library-card.is-drag-origin .library-card__border {
   inset: -0.15rem;
-  width: calc(100% + 0.3rem);
-  height: calc(100% + 0.3rem);
-  overflow: visible;
-  pointer-events: none;
-}
-.library-card__dash path { /* Figma: 센터 스트록 · 라운드 캡 — 대시 4 + 캡 양쪽 1.5 = 보이는 대시 7, 간격 5 */
-  fill: none;
-  stroke: var(--stds-sem-color-brand-primary);
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-dasharray: 4 8;
+  border: 0.3rem dashed var(--stds-sem-color-brand-primary);
+  border-radius: calc(var(--stds-glob-border-radius-3xl) + 0.15rem);
 }
 /* 드래그 프리뷰 (Figma interaction_drag 4493:55947) — 크기는 카드 썸네일 + 16(JS가 넣음), 모서리 20 (사용자 11-11):
    카드 보더 3 brand-primary · 그림자 0 3 16 black, n개면 뒤에 같은 크기 판 2장(±5도, 13 어긋남) + 개수 뱃지 */
