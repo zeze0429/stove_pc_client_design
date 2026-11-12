@@ -735,7 +735,7 @@
   border-radius: var(--stds-glob-border-radius-3xl);
   box-shadow: inset 0 0 0 0.3rem var(--stds-sem-color-brand-primary);
 }
-.library-card-drag__layer { background: var(--stds-sem-color-surface-elevation-1); transform-origin: 0 0; }
+.library-card-drag__layer { background: var(--stds-glob-color-gray840); transform-origin: 0 0; } /* 테마 무관 — 다크 surface-elevation-1 값 그대로 (사용자 11-12) */
 .library-card-drag__layer--back { left: 1.3rem; transform: rotate(5deg); }
 .library-card-drag__layer--mid { top: 1.3rem; transform: rotate(-5deg); box-shadow: inset 0 0 0 0.3rem var(--stds-sem-color-brand-primary), var(--library-floating-shadow); }
 .library-card-drag__card { overflow: hidden; box-shadow: var(--library-floating-shadow); } /* 그림자는 하단 플로팅과 같은 스타일 (사용자 11-11) */
