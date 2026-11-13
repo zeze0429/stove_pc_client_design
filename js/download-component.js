@@ -30,9 +30,9 @@ var DOWNLOAD_RUN = {
   prepareTicks: 2,   // 설치 준비 중 유지(초)
   speedScale: 3,     // 진행은 그래프 속도의 3배로 — 시연이 오래 걸리지 않게 러프하게 (사용자 11-13)
   installRate: 0.7,  // 설치 속도 = 다운로드 속도 × 0.7 (받은 만큼만 설치)
-  verifyStep: 0.25,  // 무결성 검사는 1초에 전체의 약 1/4 (4초 안팎)
+  verifyRate: 450,   // 무결성 검사 1초에 약 450개(±100) — 용량에 비례한 파일 수라 큰 게임은 길고 DLC는 짧게
   moveTicks: 2,      // 묶음(기본 게임 + DLC) 마지막 설치 완료를 잠깐 보여 준 뒤 플레이 가능으로 옮기기까지(초)
-  resetTicks: 6,     // 큐가 다 비면 이만큼 있다가 처음부터 다시(시연용)
+  resetTicks: 8,     // 큐가 다 비면(빈 상태) 이만큼 보여 주고 처음부터 다시(시연용)
 };
 
 // 용량(MB)마다 진행 — 무결성 검사 파일 수는 용량에 비례(599.04MB = 1,234개, Figma 케이스 값)
@@ -44,8 +44,10 @@ function downloadNewRun(size) {
 
 // 한 틱 진행 배율 — 0(멈칫, 1~2초 이어질 수 있음) 또는 0.5~1.8(덩어리). 평균은 1 안팎
 function downloadBurst(r) {
-  if (r.stall > 0) { r.stall--; return 0; }
-  if (Math.random() < 0.22) { r.stall = Math.random() < 0.35 ? 1 : 0; return 0; }
+  if (r.stall > 0) { r.stall--; if (!r.stall) r.moveNext = true; return 0; }
+  // 멈칫이 끝난 다음 틱은 반드시 진행 — 멈칫이 길게 이어지지 않게(최대 2초)
+  if (!r.moveNext && Math.random() < 0.22) { r.stall = Math.random() < 0.35 ? 1 : 0; if (!r.stall) r.moveNext = true; return 0; }
+  r.moveNext = false;
   return 0.5 + Math.random() * 1.3;
 }
 
@@ -99,7 +101,10 @@ function downloadWalk(prev, min, max, jump) {
 
 var DownloadItem = {
   name: 'DownloadItem',
-  props: { item: { type: Object, required: true } },
+  props: {
+    item: { type: Object, required: true },
+    top: { type: Boolean, default: false }, // 1뎁스(기본 게임) 행 — 진행 중이면 "완료 후 실행" 토글이 붙는다
+  },
   computed: {
     game: function () { return gameInfo(this.item.id) || { name: this.item.id, thumb: '' }; },
     run: function () { return this.item.run || downloadNewRun(this.item.size); },
@@ -140,7 +145,8 @@ var DownloadItem = {
         '<span>설치 완료</span>' +
       '</div>' +
       // 진행 중 — 진행 바 420. 단계(run.phase)마다 머리글 · 상세 · 버튼이 바뀐다
-      '<div v-else-if="item.status === \'progress\'" class="download-item__status download-item__progress" :class="{ \'is-two-btns\': run.paused || run.phase === \'prepare\' }" data-name="status">' +
+      // 1뎁스는 status 640 고정 — 진행 바 420은 왼쪽, 토글 · 버튼은 오른쪽 끝 (Figma 8:3467). DLC(2뎁스)는 토글 없이 바 뒤에 붙임
+      '<div v-else-if="item.status === \'progress\'" class="download-item__status download-item__progress" :class="{ \'is-top\': top, \'is-two-btns\': run.paused || run.phase === \'prepare\' }" data-name="status">' +
         '<div class="download-progress" :class="{ \'is-paused\': run.paused, \'is-prepare\': run.phase === \'prepare\' }" data-name="component/progressbar/line">' +
           '<div class="download-progress__head">' +
             '<p v-if="run.phase === \'prepare\'" class="download-progress__step download-progress__prepare"><b>설치 준비 중</b></p>' +
@@ -159,6 +165,12 @@ var DownloadItem = {
           '<p class="download-progress__file">{{ run.phase === \'verify\' ? \'확인 파일\' : \'설치 파일\' }} : {{ fileName }}</p>' +
         '</div>' +
         '<div class="download-item__btns" data-name="btn">' +
+          // 완료 후 실행 — 1뎁스만, 설치 준비 중엔 없음 (Figma toggle 2189:9940 · 공통 stds-switch sm)
+          '<label v-if="top && run.phase !== \'prepare\'" class="stds-switch stds-switch-sm download-item__run-after" data-name="toggle">' +
+            '<input class="stds-switch-checkbox" type="checkbox" v-model="item.runAfter" />' +
+            '<span class="stds-switch-track" aria-hidden="true"></span>' +
+            '<span class="stds-switch-label">완료 후 실행</span>' +
+          '</label>' +
           '<template v-if="run.paused">' +
             '<button class="download-icon-btn" type="button" aria-label="이어받기" @click="run.paused = false"><i class="ic-v2-object-download-line"></i></button>' +
             '<button class="download-icon-btn" type="button" aria-label="취소"><i class="ic-v2-control-close-line"></i></button>' +
@@ -296,6 +308,8 @@ var DownloadMain = {
         cur = flat.filter(function (x) { return x.it.status === 'waiting'; })[0];
         if (!cur) return;
         cur.it.status = 'progress';
+        // DLC 용량은 매번 무작위(180~720MB) — 작은 고정값이면 시작하자마자 95%로 튀어서 어색함 (사용자 11-13)
+        if (cur.it !== cur.group) cur.it.size = Math.round((180 + Math.random() * 540) * 100) / 100;
         cur.it.run = downloadNewRun(cur.it.size);
       }
       var it = cur.it, g = cur.group, r = it.run;
@@ -316,8 +330,8 @@ var DownloadMain = {
         if (r.installed >= r.total) { r.phase = 'verify'; r.file = 1; }
         return;
       }
-      // verify — 1초에 전체의 20~30%
-      r.checked = Math.min(r.files, r.checked + Math.ceil(r.files * (R.verifyStep - 0.05 + Math.random() * 0.1) * burst));
+      // verify — 1초에 350~550개(멈칫 · 덩어리 배율 포함)
+      r.checked = Math.min(r.files, r.checked + Math.ceil((R.verifyRate - 100 + Math.random() * 200) * burst));
       r.file = 1 + Math.floor(r.checked / r.files * 11);
       if (r.checked < r.files) return;
       // 설치 완료 — 기본 게임은 남은 DLC가 있으면 'DLC 설치 중'으로, 묶음이 다 끝나면 플레이 가능으로 옮길 준비
@@ -357,8 +371,16 @@ var DownloadMain = {
       '</section>' +
       '<section class="download-section" data-name="설치 중">' +
         '<h2 class="client-section-title">설치 중 / 대기<span>{{ total }}</span></h2>' +
+        // 설치할 항목이 없으면 그래프 대신 빈 상태 (사용자 11-13) — Figma 공통 empty variant=basic 377:4377,
+        // 라이브러리 결과 없음 박스와 같은 셸 · 그림(APNG 08_down_none 120)
+        '<div v-if="!queue.length" class="download-empty" data-name="empty">' +
+          '<img class="download-empty__img theme-img--dark" src="assets/library/08_down_none_dark.png" width="120" height="120" alt="" />' +
+          '<img class="download-empty__img theme-img--light" src="assets/library/08_down_none_light.png" width="120" height="120" alt="" loading="lazy" />' +
+          '<p class="download-empty__title">설치 대기중 항목이 없습니다.</p>' +
+        '</div>' +
         // 성능 그래프 (Figma 그래프 · gragh) — 더미 데이터로 계속 흘러간다(경로는 mounted · drawGraph가 그림), 색은 토큰
-        '<div class="download-perf" data-name="그래프">' +
+        // 빈 상태에서도 v-show로 DOM은 남긴다(그래프 경로를 $refs로 계속 그리므로)
+        '<div v-show="queue.length" class="download-perf" data-name="그래프">' +
           '<svg class="download-perf__graph" viewBox="0 0 960 116" preserveAspectRatio="none" aria-hidden="true">' +
             '<path ref="area" class="download-perf__area"/>' +
             '<path ref="lineDown" class="download-perf__line download-perf__line--download"/>' +
@@ -379,9 +401,9 @@ var DownloadMain = {
           '<button class="download-icon-btn download-perf__setting" type="button" aria-label="다운로드 설정"><i class="ic-v2-navigation-setting-fill"></i></button>' +
         '</div>' +
         // 다운로드 목록 — 본 게임 하나 + 그 DLC(들여쓰기 · 연결선)가 한 묶음, 묶음 사이 12
-        '<div class="download-list">' +
+        '<div v-if="queue.length" class="download-list">' +
           '<div v-for="g in queue" :key="g.id" class="download-group">' +
-            '<download-item :item="g"></download-item>' +
+            '<download-item :item="g" top></download-item>' +
             '<div v-if="g.dlc && g.dlc.length" class="download-group__dlc">' +
               '<download-item v-for="d in g.dlc" :key="d.id" :item="d"></download-item>' +
             '</div>' +

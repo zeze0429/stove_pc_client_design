@@ -1,0 +1,67 @@
+/* =============================================================
+   STDS Switch — 공통 컴포넌트
+   구조 · 이름: 사내 Storybook SSwitch (stds-dev.onstove.com, Components/Switch)
+     .stds-switch > input.stds-switch-checkbox(투명, 위에 덮음) + 트랙(::before가 손잡이)
+     sm 26 × 16 · 손잡이 10 (위 · 왼쪽 3, 켜지면 오른쪽으로 10) · 모서리 8 · 손잡이 전환 0.4s
+     꺼짐 neutral-variant-4 / 켜짐 brand-primary / 손잡이 흰색 / 비활성 opacity 0.5
+   값: Figma Toggle (Size=16) — 클라이언트-Library 0.3.1 toggle 2189:9940 "완료 후 실행"
+     호버 · 프레스: 꺼짐 gray650, 켜짐 brand-primary-hover(orange400) · -pressed(orange300)
+     글자 있는 형태(토글 · 글자 순, 사이 8, Text4-M 13/22 elevation-2)는 Figma 순서를 따름
+     (Storybook visible label은 글자가 앞)
+   ============================================================= */
+
+:root { --stds-switch-off-hover: var(--stds-glob-color-gray650); } /* Figma 다크 gray650 */
+:root[data-theme="light"] { --stds-switch-off-hover: var(--stds-glob-color-gray200); } /* 라이트 시안 없음 — 꺼짐(gray150)보다 한 단계 진하게 */
+
+.stds-switch {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.8rem;
+  vertical-align: top;
+  cursor: pointer;
+}
+.stds-switch-checkbox {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.stds-switch-track {
+  position: relative;
+  flex: none;
+  width: 2.6rem;
+  height: 1.6rem;
+  border-radius: var(--stds-glob-border-radius-lg);
+  background: var(--stds-sem-color-neutral-variant-4);
+}
+.stds-switch-track::before {
+  content: '';
+  position: absolute;
+  top: 0.3rem;
+  left: 0.3rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-glob-color-white);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.stds-switch-checkbox:checked + .stds-switch-track { background: var(--stds-sem-color-brand-primary); }
+.stds-switch-checkbox:checked + .stds-switch-track::before { transform: translateX(1rem); }
+/* 호버 · 프레스 — 글자까지 포함한 전체 영역 기준 (Figma toggle status=hover · pressed) */
+.stds-switch:hover .stds-switch-checkbox:enabled:not(:checked) + .stds-switch-track,
+.stds-switch .stds-switch-checkbox:enabled:not(:checked):active + .stds-switch-track { background: var(--stds-switch-off-hover); }
+.stds-switch:hover .stds-switch-checkbox:enabled:checked + .stds-switch-track { background: var(--stds-sem-color-brand-primary-hover); }
+.stds-switch .stds-switch-checkbox:enabled:checked:active + .stds-switch-track { background: var(--stds-sem-color-brand-primary-pressed); }
+.stds-switch-checkbox:focus-visible + .stds-switch-track { outline: 2px solid var(--stds-sem-color-brand-primary); outline-offset: 2px; }
+.stds-switch-checkbox:disabled { cursor: not-allowed; }
+.stds-switch:has(.stds-switch-checkbox:disabled) { opacity: 0.5; cursor: not-allowed; }
+/* 글자 — Text4-M 13/22 elevation-2 */
+.stds-switch-label {
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  font-size: 1.3rem; font-weight: 500; line-height: 2.2rem; letter-spacing: -0.025em;
+  white-space: nowrap;
+}

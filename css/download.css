@@ -158,6 +158,30 @@
   font-variant-numeric: tabular-nums;
 }
 .download-item__ready-btns { align-items: center; gap: 2rem; }
+/* 1뎁스 진행 행 — status 640 고정, 진행 바 420은 왼쪽 · 토글과 버튼은 오른쪽 끝 (Figma 8:3467) */
+.download-item__progress.is-top { flex: 0 1 64rem; justify-content: space-between; gap: 2rem; }
+.download-item__progress.is-top .download-item__btns { align-items: center; }
+.download-item__run-after { max-width: 11.6rem; margin-right: 1.2rem; } /* 토글 ~ 아이콘 버튼 20 (버튼 사이 8 + 12) */
+
+/* 빈 상태 (Figma 공통 empty variant=basic 377:4377) — 라이브러리 결과 없음 박스와 같은 값:
+   surface-variant-1 · 모서리 20 · 위 32 좌우 32 아래 48 · 그림 120 + 12 + 문구(Title7-M elevation-2), 제목 아래 16 */
+.download-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  margin-top: 1.6rem;
+  padding: 3.2rem 3.2rem 4.8rem;
+  border-radius: var(--stds-glob-border-radius-3xl);
+  background: var(--stds-sem-color-surface-variant-1);
+  text-align: center;
+}
+.download-empty__img { display: block; width: 12rem; height: 12rem; }
+.download-empty__title {
+  margin: 0;
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  font-size: 1.6rem; font-weight: 500; line-height: 2.4rem; letter-spacing: -0.03em;
+}
 .download-item__dlc-state { display: flex; align-items: center; gap: 0.8rem; color: var(--stds-sem-color-brand-blue); }
 .download-item__dots { fill: currentColor; }
 /* 점 3개가 왼쪽→오른쪽으로 차례로 밝아짐 (사용자 11-13). 시안 정지 프레임 = 0.5 · 1 · 0.3 */
