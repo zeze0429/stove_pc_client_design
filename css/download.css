@@ -11,14 +11,14 @@
 /* 섹션 제목은 라이브러리 첫 섹션 제목과 같은 자리 — 페이지 타이틀 아래 22 (빠른 실행 꺼짐 보유게임과 같은 2) */
 .download-section { margin-top: 0.2rem; }
 
-/* ---- 성능 그래프 카드 (Figma 그래프) — 제목 아래 16, 높이 180, glob gray940, 모서리 20 ---- */
+/* ---- 성능 그래프 카드 (Figma 그래프) — 제목 아래 16, 높이 180, 모서리 20 ---- */
 .download-perf {
   position: relative;
   height: 18rem;
   margin-top: 1.6rem;
   overflow: hidden;
   border-radius: var(--stds-glob-border-radius-3xl);
-  background: var(--stds-glob-color-gray940); /* Figma가 글로벌로 지정 */
+  background: var(--stds-sem-color-background-variant-3); /* Figma는 글로벌 gray940 → 같은 값 시멘틱(사용자 정의, 다크 gray940 / 라이트 gray100) */
 }
 .download-perf__graph { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 11.6rem; }
 .download-perf__area { fill: var(--stds-sem-color-brand-blue); opacity: 0.2; }
@@ -183,13 +183,13 @@
 /* 좁으면 뒤쪽 수치만 말줄임 — 라벨 · 도움말 아이콘은 그대로 */
 .download-progress__step { min-width: 0; }
 .download-progress__step > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
-.download-progress__step > span::before { /* 구분선 1 × 9 — Figma 글로벌 white-20 */
+.download-progress__step > span::before { /* 구분선 1 × 9 — Figma는 글로벌 white-20, 라이트에서 안 보여 인버스 시멘틱으로(사용자 11-13). 라이브러리 구분선(1 × 14)과 같은 inverse-elevation-2 */
   content: '';
   display: inline-block;
   width: 0.1rem;
   height: 0.9rem;
   margin-right: 0.4rem;
-  background: var(--stds-glob-color-white-20);
+  background: var(--stds-sem-color-inverse-elevation-2);
   vertical-align: -0.1rem;
 }
 .download-progress__bar {
