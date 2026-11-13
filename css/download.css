@@ -162,6 +162,8 @@
 /* ---- 진행 바 (component/progressbar/line) — 폭 420, 일시정지와 60 ---- */
 /* 폭이 좁으면 진행 바 쪽이 줄어든다(기본 420) */
 .download-item__progress { flex: 0 1 auto; gap: 6rem; min-width: 0; }
+/* 버튼이 1개(설치 중)든 2개(설치 준비 중 · 일시정지)든 진행 바 위치 · 길이가 같게 — 버튼 자리 2개(32+8+32) 고정, 오른쪽 정렬 */
+.download-item__progress > .download-item__btns { flex: none; justify-content: flex-end; width: 7.2rem; }
 .download-progress { display: flex; flex: 0 1 42rem; flex-direction: column; justify-content: flex-end; gap: 0.6rem; width: 42rem; min-width: 0; }
 .download-progress__head { display: flex; align-items: center; gap: 0.8rem; height: 3.2rem; }
 .download-progress__percent {
