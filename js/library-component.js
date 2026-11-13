@@ -488,6 +488,8 @@ var LibraryMain = {
       return LIBRARY_HOT_GAMES.map(function (h) { return Object.assign({}, gameInfo(h.id), h); });
     },
     // 숨겨진 게임 화면 — 최근에 숨긴 게임부터
+    // 숨겨진 게임 화면인데 숨긴 게임이 없음 — 구분선 · 도구 줄 없이 안내 박스만 (사용자 11-13)
+    hiddenEmpty: function () { return this.store.viewHidden && !this.hiddenGames.length; },
     hiddenGames: function () {
       if (this.store.noOwned) return [];
       var byId = {};
@@ -1030,7 +1032,7 @@ var LibraryMain = {
           '<button class="stds-button stds-button-tertiary stds-button-sm has-arrow library-tool-btn" type="button" @click="store.viewHidden = false">보유 게임 목록<i class="ic-v2-control-arrow-right-line" aria-hidden="true"></i></button>' +
         '</div>' +
         '<h2 v-else class="client-section-title library-section__title">보유게임<span>{{ owned.length }}</span></h2>' +
-        '<div v-if="!store.noOwned" class="library-owned__divider"></div>' + // 보유게임 없음이면 구분선도 미노출 (사용자 11-10)
+        '<div v-if="!store.noOwned && !hiddenEmpty" class="library-owned__divider"></div>' + // 보유게임 없음 · 숨긴 게임 없음이면 구분선도 미노출 (사용자 11-10 · 11-13)
         // 선택 UI — 도구 줄 자리에 게임 추가 취소 + 안내 문구 (Figma ⑦ · 0825 게임 추가 취소)
         '<div v-if="selecting" class="library-toolbar library-toolbar--select" data-name="filter area">' +
           '<button class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" type="button" @click="cancelAdd"><i class="ic-v2-control-long-arrow-left-line"></i>{{ addTarget ? \'게임 추가 취소\' : \'게임 선택 취소\' }}</button>' +
@@ -1051,8 +1053,8 @@ var LibraryMain = {
             '</template>' +
           '</p>' +
         '</div>' +
-        // 보유게임 없음이면 도구 줄 전체 미노출 (사용자 11-10) — 구분선 아래 바로 빈 상태 박스
-        '<div v-else-if="!store.noOwned" class="library-toolbar" data-name="filter area">' +
+        // 보유게임 없음 · 숨긴 게임 없음이면 도구 줄 전체 미노출 (사용자 11-10 · 11-13) — 타이틀 아래 바로 빈 상태 박스
+        '<div v-else-if="!store.noOwned && !hiddenEmpty" class="library-toolbar" data-name="filter area">' +
           '<button v-if="!store.viewHidden" class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" type="button" @click="startSelect"><i class="ic-v2-control-check-circle-line"></i>게임 선택</button>' +
           '<span v-else aria-hidden="true"></span>' +
           '<div class="library-toolbar__right">' +
@@ -1081,7 +1083,7 @@ var LibraryMain = {
           '</div>' +
         '</div>' +
         // 결과 없음 안내 박스 (Figma 클라이언트_v3.1 48960:383019 empty / basic) — 그림은 사용자 APNG 06_contents(320 → 160)
-        '<div v-if="resultsActive && !filteredOwned.length && !(store.viewHidden && !hiddenGames.length)" class="library-no-result" data-name="empty">' +
+        '<div v-if="resultsActive && !filteredOwned.length && !hiddenEmpty" class="library-no-result" data-name="empty">' +
           '<img class="library-no-result__img theme-img--dark" src="assets/library/06_contents_dark.png" width="160" height="160" alt="" />' +
           '<img class="library-no-result__img theme-img--light" src="assets/library/06_contents_light.png" width="160" height="160" alt="" loading="lazy" />' +
           '<div class="library-no-result__text">' +
@@ -1101,7 +1103,7 @@ var LibraryMain = {
           '<button class="stds-button stds-button-primary stds-button-md library-no-owned__btn" type="button" @click="goStore">스토어 둘러보기<i class="ic-v2-control-arrow-right-circle-fill" aria-hidden="true"></i></button>' +
         '</div>' +
         // 숨긴 게임이 없을 때 (Figma 클라이언트_v3.1 48960:383609) — 결과 없음 박스와 같은 크기 · 글자(사용자 11-09), 그림은 사용자 APNG 08_down_none(320 → 160)
-        '<div v-if="store.viewHidden && !hiddenGames.length" class="library-no-result" data-name="empty">' +
+        '<div v-if="hiddenEmpty" class="library-no-result" data-name="empty">' +
           '<img class="library-no-result__img theme-img--dark" src="assets/library/08_down_none_dark.png" width="160" height="160" alt="" />' +
           '<img class="library-no-result__img theme-img--light" src="assets/library/08_down_none_light.png" width="160" height="160" alt="" loading="lazy" />' +
           '<div class="library-no-result__text">' +
