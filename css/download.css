@@ -227,7 +227,7 @@
   background-size: 1.2rem 0.4rem, 100% 100%;
   background-repeat: repeat-x, no-repeat;
   animation: download-progress-flow 0.6s linear infinite;
-  transition: width 1s linear; /* 더미 진행은 1초마다 — 그 사이를 이어서 */
+  transition: width 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); /* 1초마다 확 늘었다가 툭 멈춤 — 쭉 이어지지 않게 (사용자 11-13) */
 }
 @keyframes download-progress-flow {
   from { background-position: 0 0, 0 0; }

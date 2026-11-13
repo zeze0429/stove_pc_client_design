@@ -42,6 +42,13 @@ function downloadNewRun(size) {
     total: size, files: Math.max(40, Math.round(size * 1234 / 599.04)) };
 }
 
+// 한 틱 진행 배율 — 0(멈칫, 1~2초 이어질 수 있음) 또는 0.5~1.8(덩어리). 평균은 1 안팎
+function downloadBurst(r) {
+  if (r.stall > 0) { r.stall--; return 0; }
+  if (Math.random() < 0.22) { r.stall = Math.random() < 0.35 ? 1 : 0; return 0; }
+  return 0.5 + Math.random() * 1.3;
+}
+
 // 999:30:10 형식 (시간은 자릿수 제한 없음)
 function downloadClock(sec) {
   sec = Math.max(0, Math.ceil(sec));
@@ -294,20 +301,23 @@ var DownloadMain = {
       var it = cur.it, g = cur.group, r = it.run;
       if (r.paused) return; // 일시정지 중엔 뒤 항목도 기다린다
       speed *= R.speedScale;
-      r.speed = speed; // 남은 시간도 이 속도로 계산 — 진행과 맞게
+      // 남은 시간은 평균 속도로 — 멈칫하는 순간에도 시간이 튀지 않게
+      r.speed = r.speed ? r.speed * 0.7 + speed * 0.3 : speed;
       if (r.phase === 'prepare') {
         if (++r.ticks >= R.prepareTicks) { r.phase = 'install'; r.ticks = 0; }
         return;
       }
+      // 쭉 가지 않고 갔다가 툭 끊기게 (사용자 11-13) — 가끔 1~2초 멈칫, 나머지는 덩어리로 확 진행
+      var burst = downloadBurst(r);
       if (r.phase === 'install') {
-        r.downloaded = Math.min(r.total, r.downloaded + speed);
-        r.installed = Math.min(r.downloaded, r.installed + speed * R.installRate);
+        r.downloaded = Math.min(r.total, r.downloaded + speed * burst);
+        r.installed = Math.min(r.downloaded, r.installed + speed * R.installRate * burst);
         r.file = 1 + Math.floor(r.installed / r.total * 11); // data01 ~ data12
         if (r.installed >= r.total) { r.phase = 'verify'; r.file = 1; }
         return;
       }
       // verify — 1초에 전체의 20~30%
-      r.checked = Math.min(r.files, r.checked + Math.ceil(r.files * (R.verifyStep - 0.05 + Math.random() * 0.1)));
+      r.checked = Math.min(r.files, r.checked + Math.ceil(r.files * (R.verifyStep - 0.05 + Math.random() * 0.1) * burst));
       r.file = 1 + Math.floor(r.checked / r.files * 11);
       if (r.checked < r.files) return;
       // 설치 완료 — 기본 게임은 남은 DLC가 있으면 'DLC 설치 중'으로, 묶음이 다 끝나면 플레이 가능으로 옮길 준비
