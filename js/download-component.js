@@ -89,7 +89,7 @@ var DownloadItem = {
       // 본 게임 — DLC 설치 중
       '<div v-else-if="item.status === \'dlc\'" class="download-item__status download-item__dlc" data-name="status">' +
         '<span class="download-item__dlc-state" data-name="DLC 설치 중">' +
-          '<svg class="download-item__dots" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="2" cy="8" r="2" opacity="0.5"/><circle cx="8" cy="8" r="2"/><circle cx="14" cy="8" r="2" opacity="0.3"/></svg>' +
+          '<svg class="download-item__dots" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="2" cy="8" r="2"/><circle cx="8" cy="8" r="2"/><circle cx="14" cy="8" r="2"/></svg>' +
           'DLC 설치 중' +
         '</span>' +
         '<button class="stds-button stds-button-blue stds-button-sm" type="button"><i class="ic-v2-media-av-play-round-fill"></i>기본 게임 먼저 플레이</button>' +
