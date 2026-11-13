@@ -1094,7 +1094,9 @@ var LibraryMain = {
         // 보유게임 없음 안내 (사용자 시안 11-10 — Figma 48960:383577의 일러스트 · 오른쪽 스토어 홈 칸 대신 아이콘 + 버튼 한 줄 가운데).
         // 박스는 결과 없음 박스와 같은 셸, 버튼은 시스템 primary md + 오른쪽 아이콘
         '<div v-if="store.noOwned && !store.viewHidden && !resultsActive" class="library-no-result library-no-owned" data-name="empty">' +
-          '<i class="library-no-owned__icon ic-v2-object-game-fill" aria-hidden="true"></i>' +
+          // 그림은 숨겨진 게임 없음과 같은 APNG 08_down_none 120 (사용자 11-13, 아이콘 48 대신)
+          '<img class="library-no-result__img theme-img--dark" src="assets/library/08_down_none_dark.png" width="120" height="120" alt="" />' +
+          '<img class="library-no-result__img theme-img--light" src="assets/library/08_down_none_light.png" width="120" height="120" alt="" loading="lazy" />' +
           '<div class="library-no-result__text">' +
             '<p class="library-no-result__title stds-title7 fw-medium">아직 보유한 게임이 없어요.</p>' +
             '<p class="library-no-result__desc stds-text3">재미있는 게임을 찾아서 라이브러리를 채워보세요.</p>' +

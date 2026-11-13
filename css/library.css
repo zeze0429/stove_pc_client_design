@@ -238,7 +238,7 @@
 
 /* 숨겨진 게임 화면 (Figma 클라이언트_v3.1 48960:383358 참고, 레이아웃은 지금 보유게임 그대로) — 빠른 실행 없이 타이틀 바로 아래,
    제목 오른쪽 끝에 "보유 게임 목록 >"(tertiary sm). 버튼은 타이틀 줄 높이(20)를 늘리지 않게 위아래로 걸친다 */
-.library-owned.is-hidden-view { margin-top: 0; }
+.library-owned.is-hidden-view { margin-top: 0.2rem; } /* 빠른 실행 꺼짐 · 보유게임 없음과 같은 2 — 보유게임 없음 토글 때 흔들리지 않게 (사용자 11-13) */
 .library-hidden-title { display: flex; align-items: center; justify-content: space-between; height: 2rem; }
 .library-hidden-title .stds-button { margin: -0.6rem 0; }
 
@@ -417,10 +417,8 @@
 .library-no-result__desc { color: var(--stds-sem-color-on-surface-elevation-4); }
 
 /* 보유게임 없음 안내 (사용자 시안 11-10) — 결과 없음 박스 셸 · 글자(제목 title7 Medium elevation-2 · 설명 text3 elevation-4) 그대로,
-   아이콘 → 12 → 글자 → 24 → 버튼. 위 40 · 아래 32 */
-.library-no-owned { padding: 4rem 3.2rem 3.2rem; gap: 0; }
-/* 아이콘 48(글리프 40 × 32) — 줄 높이를 글리프 높이 32로 잡아 위 40 · 아래 12가 글리프 기준이 되게 */
-.library-no-owned__icon { display: block; height: 3.2rem; font-size: 4.8rem; line-height: 3.2rem; color: var(--stds-sem-color-on-surface-elevation-4); }
+   그림(APNG 120, 11-13) → 12 → 글자 → 24 → 버튼. 위 32(결과 없음 박스와 같게) · 아래 32 */
+.library-no-owned { padding: 3.2rem 3.2rem 3.2rem; gap: 0; }
 .library-no-owned .library-no-result__text { margin-top: 1.2rem; }
 .library-no-owned__btn { margin-top: 2.4rem; }
 .library.is-no-owned .library-owned { margin-top: 0.2rem; } /* 빠른 실행이 없으니 맨 위 — 빠른 실행 제목과 같은 자리 (위 quick-off와 같음) */
