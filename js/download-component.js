@@ -115,7 +115,7 @@ var DownloadItem = {
         '<span>설치 완료</span>' +
       '</div>' +
       // 진행 중 — 진행 바 420. 단계(run.phase)마다 머리글 · 상세 · 버튼이 바뀐다
-      '<div v-else-if="item.status === \'progress\'" class="download-item__status download-item__progress" data-name="status">' +
+      '<div v-else-if="item.status === \'progress\'" class="download-item__status download-item__progress" :class="{ \'is-two-btns\': run.paused || run.phase === \'prepare\' }" data-name="status">' +
         '<div class="download-progress" :class="{ \'is-paused\': run.paused, \'is-prepare\': run.phase === \'prepare\' }" data-name="component/progressbar/line">' +
           '<div class="download-progress__head">' +
             '<p v-if="run.phase === \'prepare\'" class="download-progress__step download-progress__prepare"><b>설치 준비 중</b></p>' +
