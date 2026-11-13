@@ -27,8 +27,10 @@
 // 그래프와 같은 1초 주기로 진행되고, 다운로드 속도는 그래프의 "현재 다운로드 속도"를 그대로 쓴다.
 // 설치 완료 뒤 잠깐 있다가 다시 설치 준비 중부터 반복(시연용).
 var DOWNLOAD_RUN = {
-  prepareTicks: 3,   // 설치 준비 중 유지(초)
+  prepareTicks: 2,   // 설치 준비 중 유지(초)
+  speedScale: 3,     // 진행은 그래프 속도의 3배로 — 시연이 오래 걸리지 않게 러프하게 (사용자 11-13)
   installRate: 0.7,  // 설치 속도 = 다운로드 속도 × 0.7 (받은 만큼만 설치)
+  verifyStep: 0.25,  // 무결성 검사는 1초에 전체의 약 1/4 (4초 안팎)
   moveTicks: 2,      // 묶음(기본 게임 + DLC) 마지막 설치 완료를 잠깐 보여 준 뒤 플레이 가능으로 옮기기까지(초)
   resetTicks: 6,     // 큐가 다 비면 이만큼 있다가 처음부터 다시(시연용)
 };
@@ -291,7 +293,8 @@ var DownloadMain = {
       }
       var it = cur.it, g = cur.group, r = it.run;
       if (r.paused) return; // 일시정지 중엔 뒤 항목도 기다린다
-      r.speed = speed;
+      speed *= R.speedScale;
+      r.speed = speed; // 남은 시간도 이 속도로 계산 — 진행과 맞게
       if (r.phase === 'prepare') {
         if (++r.ticks >= R.prepareTicks) { r.phase = 'install'; r.ticks = 0; }
         return;
@@ -303,8 +306,8 @@ var DownloadMain = {
         if (r.installed >= r.total) { r.phase = 'verify'; r.file = 1; }
         return;
       }
-      // verify — 1초에 150~250개 확인
-      r.checked = Math.min(r.files, r.checked + 150 + Math.floor(Math.random() * 100));
+      // verify — 1초에 전체의 20~30%
+      r.checked = Math.min(r.files, r.checked + Math.ceil(r.files * (R.verifyStep - 0.05 + Math.random() * 0.1)));
       r.file = 1 + Math.floor(r.checked / r.files * 11);
       if (r.checked < r.files) return;
       // 설치 완료 — 기본 게임은 남은 DLC가 있으면 'DLC 설치 중'으로, 묶음이 다 끝나면 플레이 가능으로 옮길 준비
