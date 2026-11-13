@@ -442,9 +442,11 @@ var LibraryMain = {
     },
     // 그룹 화면을 열고 닫거나 다른 그룹으로 바꾸면 맨 위(라이브러리 타이틀)부터
     'store.viewGroupId': function (id) { if (id) this.store.viewHidden = false; this.onViewChange(); },
-    // 숨겨진 게임 화면을 열고 닫으면 맨 위부터 (빠른 실행은 숨긴다)
+    // 숨겨진 게임 화면을 열고 닫으면 맨 위부터 (빠른 실행은 숨긴다).
+    // 보유게임 ↔ 숨겨진 게임은 다른 목록이라 검색어 · 필터 조건은 넘어가지 않게 비운다(정렬은 유지) — 사용자 11-13
     'store.viewHidden': function () {
       this.selected = [];
+      this.resetResults();
       if (this._scrollBox) this._scrollBox.scrollTo({ top: 0 });
     },
     // 패널에서 그룹에서 제거 — 추가 완료 토스트와 같은 자리 · 모양, 문구만 제거 (사용자 11-09, Figma 11564:174292)
@@ -1079,7 +1081,7 @@ var LibraryMain = {
           '</div>' +
         '</div>' +
         // 결과 없음 안내 박스 (Figma 클라이언트_v3.1 48960:383019 empty / basic) — 그림은 사용자 APNG 06_contents(320 → 160)
-        '<div v-if="resultsActive && !filteredOwned.length" class="library-no-result" data-name="empty">' +
+        '<div v-if="resultsActive && !filteredOwned.length && !(store.viewHidden && !hiddenGames.length)" class="library-no-result" data-name="empty">' +
           '<img class="library-no-result__img theme-img--dark" src="assets/library/06_contents_dark.png" width="160" height="160" alt="" />' +
           '<img class="library-no-result__img theme-img--light" src="assets/library/06_contents_light.png" width="160" height="160" alt="" loading="lazy" />' +
           '<div class="library-no-result__text">' +
