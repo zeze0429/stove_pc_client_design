@@ -4,8 +4,9 @@
      .stds-switch > input.stds-switch-checkbox(투명, 위에 덮음) + 트랙(::before가 손잡이)
      sm 26 × 16 · 손잡이 10 (위 · 왼쪽 3, 켜지면 오른쪽으로 10) · 모서리 8 · 손잡이 전환 0.4s
      꺼짐 neutral-variant-4 / 켜짐 brand-primary / 손잡이 흰색 / 비활성 opacity 0.5
-   값: Figma Toggle (Size=16) — 클라이언트-Library 0.3.1 toggle 2189:9940 "완료 후 실행"
-     호버 · 프레스: 꺼짐 gray650, 켜짐 brand-primary-hover(orange400) · -pressed(orange300)
+   값: Figma STDS Toggle 983:8362 (Size 16) + 클라이언트-Library 0.3.1 toggle 2189:9940 "완료 후 실행"
+     호버 · 프레스는 Storybook · STDS 둘 다 없음 — 클라이언트 toggle(다크)에만 있음:
+     꺼짐 gray650, 켜짐 brand-primary-hover(orange400) · -pressed(orange300). 라이트 꺼짐 호버는 시안 없음(임시)
      글자 있는 형태(토글 · 글자 순, 사이 8, Text4-M 13/22 elevation-2)는 Figma 순서를 따름
      (Storybook visible label은 글자가 앞)
    ============================================================= */
@@ -58,7 +59,10 @@
 .stds-switch .stds-switch-checkbox:enabled:checked:active + .stds-switch-track { background: var(--stds-sem-color-brand-primary-pressed); }
 .stds-switch-checkbox:focus-visible + .stds-switch-track { outline: 2px solid var(--stds-sem-color-brand-primary); outline-offset: 2px; }
 .stds-switch-checkbox:disabled { cursor: not-allowed; }
-.stds-switch:has(.stds-switch-checkbox:disabled) { opacity: 0.5; cursor: not-allowed; }
+/* 비활성 — Figma STDS Toggle 983:8362: 켜짐 0.5 · 꺼짐 0.6 (Storybook은 둘 다 0.5), 트랙에만 */
+.stds-switch:has(.stds-switch-checkbox:disabled) { cursor: not-allowed; }
+.stds-switch-checkbox:disabled + .stds-switch-track { opacity: 0.6; }
+.stds-switch-checkbox:disabled:checked + .stds-switch-track { opacity: 0.5; }
 /* 글자 — Text4-M 13/22 elevation-2 */
 .stds-switch-label {
   color: var(--stds-sem-color-on-surface-elevation-2);
