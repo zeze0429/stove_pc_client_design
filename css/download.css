@@ -1,0 +1,197 @@
+/* =================================================================
+   다운로드 관리 (js/download-component.js)
+   Figma 클라이언트_v3.1 native_download_MD 67359:360700 — 시안은 참고만 (사용자 11-13).
+   페이지 타이틀은 공통 .client-page-title, 섹션 제목은 공통 .client-section-title.
+   ================================================================= */
+
+.download {
+  flex: 0 0 auto; /* .main은 세로 flex — 줄어들지 않게 */
+  padding: 0 4rem 10rem;
+}
+/* 섹션 제목은 라이브러리 첫 섹션 제목과 같은 자리 — 페이지 타이틀 아래 22 (빠른 실행 꺼짐 보유게임과 같은 2) */
+.download-section { margin-top: 0.2rem; }
+
+/* ---- 성능 그래프 카드 (Figma 그래프) — 제목 아래 16, 높이 180, glob gray940, 모서리 20 ---- */
+.download-perf {
+  position: relative;
+  height: 18rem;
+  margin-top: 1.6rem;
+  overflow: hidden;
+  border-radius: var(--stds-glob-border-radius-3xl);
+  background: var(--stds-glob-color-gray940); /* Figma가 글로벌로 지정 */
+}
+.download-perf__graph { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 11.6rem; }
+.download-perf__area { fill: var(--stds-sem-color-brand-blue); opacity: 0.2; }
+.download-perf__line { fill: none; vector-effect: non-scaling-stroke; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; }
+.download-perf__line--download { stroke: var(--stds-sem-color-brand-blue); }
+.download-perf__line--disk { stroke: var(--stds-sem-color-brand-primary); }
+
+.download-perf__info { position: absolute; top: 2.4rem; left: 2.4rem; right: 6.4rem; display: flex; gap: 4.8rem; } /* 오른쪽은 설정 버튼(32) + 여백 */
+.download-perf__title { display: flex; flex-direction: column; gap: 1.2rem; }
+.download-perf__name { /* Title7-B 16/24 */
+  margin: 0;
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  font-size: 1.6rem; font-weight: 700; line-height: 2.4rem; letter-spacing: -0.03em;
+}
+.download-perf__legend { display: flex; flex-direction: column; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
+.download-perf__legend li { /* Caption1-R 12/18 */
+  display: flex; align-items: center; gap: 0.8rem;
+  color: var(--stds-sem-color-on-surface-elevation-3);
+  font-size: 1.2rem; line-height: 1.8rem; letter-spacing: -0.02em; white-space: nowrap;
+}
+.download-perf__legend span { width: 1.6rem; height: 0.4rem; border-radius: var(--stds-glob-border-radius-sm); }
+.download-perf__legend .is-disk { background: var(--stds-sem-color-brand-primary); }
+.download-perf__legend .is-download { background: var(--stds-sem-color-brand-blue); }
+
+/* 폭이 좁으면(최소 창 1280 · 우측패널 있음) 수치가 다음 줄로 — 설정 버튼과 겹치지 않게 */
+.download-perf__stats { display: flex; flex-wrap: wrap; gap: 0.4rem 2.4rem; min-width: 0; margin: 0; white-space: nowrap; }
+.download-perf__stats dt { /* Caption2-R 11/18 */
+  color: var(--stds-sem-color-on-surface-elevation-4);
+  font-size: 1.1rem; line-height: 1.8rem; letter-spacing: -0.02em;
+}
+.download-perf__stats dd { /* Title8-B 14/20 */
+  margin: 0;
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  font-size: 1.4rem; font-weight: 700; line-height: 2rem; letter-spacing: -0.03em;
+}
+.download-perf__setting { position: absolute; top: 2.4rem; right: 2.4rem; color: var(--stds-sem-color-on-surface-elevation-1); }
+
+/* ---- 아이콘 버튼 32 · 아이콘 24 · 모서리 8 (Figma component/btn/icon/24) ----
+   hover · pressed 가이드는 아직 못 찾음 — 공통 interaction 오버레이로 임시 */
+.download-icon-btn {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 3.2rem;
+  height: 3.2rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--stds-glob-border-radius-lg);
+  background: transparent;
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  cursor: pointer;
+}
+.download-icon-btn i { font-size: 2.4rem; }
+.download-icon-btn:hover:enabled { background: var(--stds-sem-color-interaction-hover); }
+.download-icon-btn:active:enabled { background: var(--stds-sem-color-interaction-pressed); }
+.download-icon-btn:disabled { color: var(--stds-sem-color-disabled-variant-3); cursor: default; }
+
+/* ---- 다운로드 목록 — 그래프 아래 20, 묶음 사이 12 ---- */
+.download-list { display: flex; flex-direction: column; gap: 1.2rem; margin-top: 2rem; }
+.download-group { display: flex; flex-direction: column; gap: 1.2rem; }
+
+/* DLC — 본 게임 아래 왼쪽 52 들여쓰기, 연결선은 x36에서 2px(neutral-variant-2), 마지막은 모서리 8로 꺾임.
+   선은 각 DLC 행이 그린다: 위쪽(본 게임 아래 · 이전 DLC 가운데)부터 자기 가운데까지 세로 + 가운데에서 행 왼쪽까지 가로 */
+.download-group__dlc { display: flex; flex-direction: column; gap: 1.2rem; padding-left: 5.2rem; }
+.download-group__dlc > .download-item::before {
+  content: '';
+  position: absolute;
+  left: -1.6rem;
+  top: calc(-1.2rem - 4.5rem); /* 이전 DLC 행 가운데부터 */
+  width: 1.6rem;
+  height: calc(1.2rem + 4.5rem + 4.5rem + 0.1rem);
+  border-left: 0.2rem solid var(--stds-sem-color-neutral-variant-2);
+  border-bottom: 0.2rem solid var(--stds-sem-color-neutral-variant-2);
+  box-sizing: border-box;
+  pointer-events: none;
+}
+.download-group__dlc > .download-item:first-child::before { top: -1.2rem; height: calc(1.2rem + 4.5rem + 0.1rem); } /* 첫 DLC는 본 게임 아래부터 */
+.download-group__dlc > .download-item:last-child::before { border-bottom-left-radius: var(--stds-glob-border-radius-lg); }
+
+/* ---- 목록 행 (component/list/download) — 높이 90 · surface-variant-1 · 모서리 20 · 좌 12 우 20 ---- */
+.download-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5.6rem;
+  height: 9rem;
+  padding: 0 2rem 0 1.2rem;
+  border-radius: var(--stds-glob-border-radius-3xl);
+  background: var(--stds-sem-color-surface-variant-1);
+}
+.download-item.is-progress,
+.download-item.is-dlc { gap: 4rem; }
+.download-item__info { display: flex; flex: 1 1 0; align-items: center; gap: 1.6rem; min-width: 18rem; } /* 좁아져도 이름이 일부는 보이게 */
+.download-item__thumb {
+  flex: 0 0 auto;
+  width: 6.6rem;
+  height: 6.6rem;
+  border-radius: 1rem; /* Figma 10 — 맞는 radius 토큰 없음(lg 8 · xl 12) */
+  object-fit: cover;
+}
+.download-item__name { /* Title7-B 16/24 */
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--stds-sem-color-on-surface-elevation-1);
+  font-size: 1.6rem; font-weight: 700; line-height: 2.4rem; letter-spacing: -0.03em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.download-item__status { display: flex; flex: 0 0 auto; align-items: center; }
+
+/* 상태 글자 — Text4-M 13/22 */
+.download-item__done,
+.download-item__dlc-state,
+.download-item__state {
+  font-size: 1.3rem; font-weight: 500; line-height: 2.2rem; letter-spacing: -0.025em; white-space: nowrap;
+}
+.download-item__done { gap: 0.4rem; padding-right: 0.4rem; color: var(--stds-sem-color-brand-blue); }
+.download-item__waiting { gap: 2rem; }
+.download-item__state { color: var(--stds-sem-color-on-surface-elevation-4); }
+.download-item__btns { display: flex; gap: 0.8rem; }
+.download-item__dlc { gap: 2rem; padding-right: 0.8rem; }
+.download-item__dlc-state { display: flex; align-items: center; gap: 0.8rem; color: var(--stds-sem-color-brand-blue); }
+.download-item__dots { fill: currentColor; }
+
+/* ---- 진행 바 (component/progressbar/line) — 폭 420, 일시정지와 60 ---- */
+/* 폭이 좁으면 진행 바 쪽이 줄어든다(기본 420) */
+.download-item__progress { flex: 0 1 auto; gap: 6rem; min-width: 0; }
+.download-progress { display: flex; flex: 0 1 42rem; flex-direction: column; justify-content: flex-end; gap: 0.6rem; width: 42rem; min-width: 0; }
+.download-progress__head { display: flex; align-items: center; gap: 0.8rem; height: 3.2rem; }
+.download-progress__percent {
+  color: var(--stds-sem-color-brand-blue);
+  font-size: 2.2rem; font-weight: 700; line-height: 2.4rem; letter-spacing: -0.03em;
+}
+.download-progress__steps { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; overflow: hidden; }
+.download-progress__step {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  color: var(--stds-sem-color-on-surface-elevation-3);
+  font-size: 1rem; line-height: 1.5rem; letter-spacing: -0.025em; white-space: nowrap;
+}
+.download-progress__step b { color: var(--stds-sem-color-on-surface-elevation-2); font-weight: 700; }
+.download-progress__step > * + *::before { /* 구분선 1 × 9 — Figma 글로벌 white-20 */
+  content: '';
+  display: inline-block;
+  width: 0.1rem;
+  height: 0.9rem;
+  margin-right: 0.4rem;
+  background: var(--stds-glob-color-white-20);
+  vertical-align: -0.1rem;
+}
+.download-progress__bar {
+  position: relative;
+  height: 0.4rem;
+  overflow: hidden;
+  border-radius: var(--stds-glob-border-radius-sm);
+  background: var(--stds-glob-color-gray800); /* Figma가 글로벌로 지정 */
+}
+/* 채움 — Figma는 변수 없는 그라데이션(#3772ff → #09b9ff) + 흰 15% 사선 무늬.
+   맞는 토큰이 없어 임시로 blue500 → tint-blue-a200 (확정 필요) */
+.download-progress__bar > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 0 var(--stds-glob-border-radius-sm) var(--stds-glob-border-radius-sm) 0;
+  background:
+    repeating-linear-gradient(45deg, var(--stds-glob-color-white-15) 0 0.42rem, transparent 0.42rem 0.85rem),
+    linear-gradient(90deg, var(--stds-glob-color-blue500), var(--stds-glob-color-tint-blue-a200));
+}
+.download-progress__file {
+  margin: 0;
+  color: var(--stds-sem-color-on-surface-elevation-4);
+  font-size: 1rem; line-height: 1.4rem; letter-spacing: -0.025em;
+}

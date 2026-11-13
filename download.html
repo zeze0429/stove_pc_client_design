@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="css/profile-popup.css?v=11" />
   <link rel="stylesheet" href="css/stove-app-dialog.css?v=5" />
   <link rel="stylesheet" href="css/utility-notice.css?v=12" />
+  <link rel="stylesheet" href="css/download.css?v=2" />
 </head>
 <body>
   <div class="app app--client">
@@ -40,13 +41,15 @@
         <h1 class="client-page-title__text">다운로드 관리</h1>
         <button class="client-page-title__setting" type="button" aria-label="다운로드 관리 설정"><i class="ic-v2-navigation-setting-fill"></i></button>
       </div>
+      <!-- 다운로드 관리 진입 화면 (Figma 클라이언트_v3.1 67359:360700 참고) — js/download-component.js -->
+      <div id="download-mount"></div>
     </div>
     <aside class="client-panel" aria-label="우측패널" data-name="Pannel Area"></aside>
 
   </div>
 
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <script src="js/game-catalog.js?v=9"></script>
+  <script src="js/game-catalog.js?v=10"></script>
   <script src="js/gnb-component.js?v=69"></script>
   <script src="js/layer-dialog-component.js?v=5"></script>
   <script src="js/pcbang-benefits-component.js?v=6"></script>
@@ -55,10 +58,12 @@
   <script src="js/stove-app-dialog-component.js?v=3"></script>
   <script src="js/utility-notice-component.js?v=7"></script>
   <script src="js/utility-bar-component.js?v=13"></script>
+  <script src="js/download-component.js?v=1"></script>
   <script src="js/page-scrollbar.js?v=2"></script>
   <script>
     mountGnb('#gnb-mount');
     mountUtilityBar('#utility-bar-mount');
+    mountDownloadMain('#download-mount');
     mountPageScrollbar(document.querySelector('.app > .main'));
   </script>
 </body>
