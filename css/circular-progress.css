@@ -13,6 +13,7 @@
   --circular-progress-size: 4rem;
   --circular-progress-thickness: 0.4rem;
   --circular-progress-arc: 126deg;
+  --circular-progress-color: var(--stds-sem-color-brand-primary); /* 돌아가는 호 — 화면에서 덮어쓸 수 있게 변수로 */
   position: relative;
   display: inline-block;
   flex: none;
@@ -21,7 +22,7 @@
   border-radius: var(--stds-glob-border-radius-full);
   background: conic-gradient(
     from calc(var(--circular-progress-arc) / -2),
-    var(--stds-sem-color-brand-primary) 0 var(--circular-progress-arc),
+    var(--circular-progress-color) 0 var(--circular-progress-arc),
     var(--stds-sem-color-background-variant-1) var(--circular-progress-arc) 360deg
   );
   /* 가운데를 비워 링으로 */
@@ -38,7 +39,7 @@
   width: var(--circular-progress-thickness);
   height: var(--circular-progress-thickness);
   border-radius: var(--stds-glob-border-radius-full);
-  background: var(--stds-sem-color-brand-primary);
+  background: var(--circular-progress-color);
 }
 .stds-circular-progress::before { left: calc(50% - (50% - var(--circular-progress-thickness) / 2) * 0.891 - var(--circular-progress-thickness) / 2); }
 .stds-circular-progress::after { left: calc(50% + (50% - var(--circular-progress-thickness) / 2) * 0.891 - var(--circular-progress-thickness) / 2); }
