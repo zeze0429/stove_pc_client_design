@@ -192,17 +192,34 @@
   height: 0.4rem;
   overflow: hidden;
   border-radius: var(--stds-glob-border-radius-sm);
-  background: var(--stds-glob-color-gray800); /* Figma가 글로벌로 지정 */
+  background: var(--stds-sem-color-neutral-variant-2); /* Track — Figma #333333 = 다크 neutral-variant-2 */
 }
-/* 채움 — Figma는 변수 없는 그라데이션(#3772ff → #09b9ff) + 흰 15% 사선 무늬.
-   맞는 토큰이 없어 임시로 blue500 → tint-blue-a200 (확정 필요) */
+/* 채움 (Figma 설치 진행 프로그레스 바 68154:332928) — 색은 치환되는 건 시멘틱, 없으면 헥스 (사용자 11-13)
+   설치 진행 = #1358FF(54.688%까지) → #32B0FF 그라데이션(맞는 토큰 없음) + 사선 무늬가 오른쪽으로 계속 흐름.
+   무늬: 시안 cell 10×4 + 간격 2 = 12px 주기, 흰 15% 평행사변형 — 이미지 대신 코드(SVG 타일)로 그림 */
 .download-progress__bar > span {
   position: absolute;
   inset: 0 auto 0 0;
   border-radius: 0 var(--stds-glob-border-radius-sm) var(--stds-glob-border-radius-sm) 0;
-  background:
-    repeating-linear-gradient(45deg, var(--stds-glob-color-white-15) 0 0.42rem, transparent 0.42rem 0.85rem),
-    linear-gradient(90deg, var(--stds-glob-color-blue500), var(--stds-glob-color-tint-blue-a200));
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='4'%3E%3Cpath d='M4 0H10L6 4H0Z' fill='%23fff' fill-opacity='.15'/%3E%3C/svg%3E"),
+    linear-gradient(90deg, #1358ff 54.688%, #32b0ff);
+  background-size: 1.2rem 0.4rem, 100% 100%;
+  background-repeat: repeat-x, no-repeat;
+  animation: download-progress-flow 0.6s linear infinite;
+  transition: width 0.3s ease-out; /* 더미 진행 값이 바뀔 때 부드럽게 */
+}
+@keyframes download-progress-flow {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 1.2rem 0, 0 0; }
+}
+/* 일시 정지 — #B2B2B2 = 다크 on-surface-elevation-3, 무늬 없음 */
+.download-progress.is-paused .download-progress__bar > span {
+  background: var(--stds-sem-color-on-surface-elevation-3);
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .download-progress__bar > span { animation: none; }
 }
 .download-progress__file {
   margin: 0;
