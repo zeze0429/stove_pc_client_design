@@ -14,6 +14,7 @@
   --circular-progress-thickness: 0.4rem;
   --circular-progress-arc: 126deg;
   --circular-progress-color: var(--stds-sem-color-brand-primary); /* 돌아가는 호 — 화면에서 덮어쓸 수 있게 변수로 */
+  --circular-progress-track-color: var(--stds-sem-color-background-variant-1); /* 트랙 — 마찬가지로 덮어쓸 수 있게 */
   position: relative;
   display: inline-block;
   flex: none;
@@ -23,7 +24,7 @@
   background: conic-gradient(
     from calc(var(--circular-progress-arc) / -2),
     var(--circular-progress-color) 0 var(--circular-progress-arc),
-    var(--stds-sem-color-background-variant-1) var(--circular-progress-arc) 360deg
+    var(--circular-progress-track-color) var(--circular-progress-arc) 360deg
   );
   /* 가운데를 비워 링으로 */
   -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--circular-progress-thickness)), #000 calc(100% - var(--circular-progress-thickness) + 0.5px));

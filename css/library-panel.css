@@ -90,8 +90,11 @@
 .library-panel__scroll::-webkit-scrollbar { display: none; }
 /* 로딩 서클 (보기 옵션 "패널 로딩 서클", 사용자 11-13) — 목록 자리 한가운데, 공통 stds-circular-progress-sm */
 .library-panel__loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-/* 패널 로딩은 눈에 띌 필요가 없어 호를 그레이톤으로 (사용자 11-13, "좀 더 어둡게") — neutral-variant-4: 다크 gray700 / 라이트 gray150 */
-.library-panel__loading .stds-circular-progress { --circular-progress-color: var(--stds-sem-color-neutral-variant-4); }
+/* 패널 로딩은 눈에 띌 필요가 없어 그레이톤 — 글로벌 토큰으로 테마별 지정 (사용자 11-13)
+   다크: 호 gray700 · 트랙 gray860 (배경 gray940보다 조금 밝게) / 라이트: 호 gray300 · 트랙 gray150 (배경 gray100보다 진하게) */
+:root { --library-panel-loading-color: var(--stds-glob-color-gray700); --library-panel-loading-track-color: var(--stds-glob-color-gray860); }
+:root[data-theme="light"] { --library-panel-loading-color: var(--stds-glob-color-gray300); --library-panel-loading-track-color: var(--stds-glob-color-gray150); }
+.library-panel__loading .stds-circular-progress { --circular-progress-color: var(--library-panel-loading-color); --circular-progress-track-color: var(--library-panel-loading-track-color); }
 
 /* 그룹 없음 (component/game_group/그룹없음) — 위아래 16, 박스 56 · 둥글기 8 */
 .library-panel__empty { flex: 0 0 auto; padding: 1.6rem 0; }
