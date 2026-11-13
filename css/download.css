@@ -177,8 +177,11 @@
   color: var(--stds-sem-color-on-surface-elevation-3);
   font-size: 1rem; line-height: 1.5rem; letter-spacing: -0.025em; white-space: nowrap;
 }
-.download-progress__step b { color: var(--stds-sem-color-on-surface-elevation-2); font-weight: 700; }
-.download-progress__step > * + *::before { /* 구분선 1 × 9 — Figma 글로벌 white-20 */
+.download-progress__step b { flex: none; color: var(--stds-sem-color-on-surface-elevation-2); font-weight: 700; }
+/* 좁으면 뒤쪽 수치만 말줄임 — 라벨 · 도움말 아이콘은 그대로 */
+.download-progress__step { min-width: 0; }
+.download-progress__step > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.download-progress__step > span::before { /* 구분선 1 × 9 — Figma 글로벌 white-20 */
   content: '';
   display: inline-block;
   width: 0.1rem;
@@ -207,7 +210,7 @@
   background-size: 1.2rem 0.4rem, 100% 100%;
   background-repeat: repeat-x, no-repeat;
   animation: download-progress-flow 0.6s linear infinite;
-  transition: width 0.3s ease-out; /* 더미 진행 값이 바뀔 때 부드럽게 */
+  transition: width 1s linear; /* 더미 진행은 1초마다 — 그 사이를 이어서 */
 }
 @keyframes download-progress-flow {
   from { background-position: 0 0, 0 0; }
@@ -221,6 +224,14 @@
 @media (prefers-reduced-motion: reduce) {
   .download-progress__bar > span { animation: none; }
 }
+/* 설치 준비 중(8:3473) — 글자만 아래 붙고 바는 비어 있음, 설치 파일 줄은 자리만 */
+.download-progress.is-prepare .download-progress__head { align-items: flex-end; }
+.download-progress.is-prepare .download-progress__file { visibility: hidden; }
+.download-progress__prepare { padding-bottom: 0.1rem; }
+/* 일시 정지 됨(8:3470) — 퍼센트는 회색 */
+.download-progress.is-paused .download-progress__percent { color: var(--stds-sem-color-on-surface-elevation-2); }
+.download-progress__steps { font-variant-numeric: tabular-nums; } /* 숫자가 매초 바뀌어도 덜 흔들리게 */
+.download-progress__help { flex: none; margin-left: -0.2rem; font-size: 1.2rem; color: var(--stds-sem-color-on-surface-elevation-3); } /* 수치와 2 (Figma info gap) */
 .download-progress__file {
   margin: 0;
   color: var(--stds-sem-color-on-surface-elevation-4);

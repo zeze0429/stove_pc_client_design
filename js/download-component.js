@@ -9,23 +9,43 @@
  *
  * 항목 상태(status):
  *   done      — 설치 완료 (체크 아이콘 + 파란 글자)
- *   progress  — 다운로드 · 설치 진행 중 (퍼센트 · 상세 2줄 · 진행 바 · 설치 파일 + 일시정지)
+ *   progress  — 진행 중. run.phase: prepare(설치 준비 중) → install(설치 중) → verify(무결성 검사) → done,
+ *               run.paused = 일시 정지 됨 (더미 진행은 DOWNLOAD_RUN · stepRuns)
  *   waiting   — 대기 중 (다운로드 · 취소 버튼)
  *   dlc       — 본 게임: DLC 설치 중 + "기본 게임 먼저 플레이"
  */
+
+// ---- 진행 행 더미 데이터 (사용자 11-13 "프로그레스 바에도 그래프처럼 더미 데이터") ----
+// 케이스 참고: Figma 클라이언트-Library-0.3.1 component/list/download 8:3463
+//   설치 준비 중(8:3473) → 설치 중(8:3467) → 무결성검사(2952:17031) → 설치 완료, 일시 정지 됨(8:3470)
+// 그래프와 같은 1초 주기로 진행되고, 다운로드 속도는 그래프의 "현재 다운로드 속도"를 그대로 쓴다.
+// 설치 완료 뒤 잠깐 있다가 다시 설치 준비 중부터 반복(시연용).
+var DOWNLOAD_RUN = {
+  total: 599.04,     // MB
+  files: 1234,       // 무결성 검사 파일 수
+  prepareTicks: 3,   // 설치 준비 중 유지(초)
+  installRate: 0.7,  // 설치 속도 = 다운로드 속도 × 0.7 (받은 만큼만 설치)
+  doneTicks: 4,      // 설치 완료 표시 후 다시 시작까지(초)
+};
+
+function downloadNewRun() {
+  return { phase: 'prepare', paused: false, ticks: 0, speed: 0, downloaded: 0, installed: 0, checked: 0, file: 1 };
+}
+
+// 999:30:10 형식 (시간은 자릿수 제한 없음)
+function downloadClock(sec) {
+  sec = Math.max(0, Math.ceil(sec));
+  var h = Math.floor(sec / 3600), m = Math.floor(sec / 60) % 60, s = sec % 60;
+  return h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+}
+function downloadMB(v) { return v.toFixed(2) + 'MB'; }
 
 var DOWNLOAD_QUEUE = [
   {
     id: 'yeogisa', status: 'dlc',
     dlc: [
       { id: 'yeogisa-alice', status: 'done' },
-      {
-        id: 'yeogisa-bunny', status: 'progress', percent: 45, file: 'data06.v',
-        steps: [
-          { label: '파일 다운로드 중', size: '374.64MB / 599.04MB', left: '약 999:30:10 남음' },
-          { label: '게임 설치 중', size: '374.64MB / 599.04MB', left: '약 999:30:10 남음' },
-        ],
-      },
+      { id: 'yeogisa-bunny', status: 'progress', run: downloadNewRun() }, // 더미 진행 — 설치 준비 중부터
       { id: 'yeogisa-gangsi', status: 'waiting' },
       { id: 'yeogisa-voice', status: 'waiting' },
     ],
@@ -58,6 +78,30 @@ var DownloadItem = {
   props: { item: { type: Object, required: true } },
   computed: {
     game: function () { return gameInfo(this.item.id) || { name: this.item.id, thumb: '' }; },
+    run: function () { return this.item.run || downloadNewRun(); },
+    // 설치까지 95%, 무결성 검사로 나머지 5%
+    percent: function () {
+      var r = this.run, R = DOWNLOAD_RUN;
+      if (r.phase === 'prepare') return 0;
+      if (r.phase === 'verify') return Math.min(100, 95 + Math.floor(r.checked / R.files * 5));
+      return Math.floor(r.installed / R.total * 95);
+    },
+    fileName: function () { return 'data' + (this.run.file < 10 ? '0' : '') + this.run.file + '.v'; },
+    steps: function () {
+      var r = this.run, R = DOWNLOAD_RUN, total = downloadMB(R.total);
+      if (r.paused) return [{ label: '일시정지 됨', parts: [downloadMB(r.installed) + ' / ' + total] }];
+      var dlDone = r.downloaded >= R.total;
+      var line1 = dlDone
+        ? { label: '파일 다운로드 완료', parts: [total + ' / ' + total] }
+        : { label: '파일 다운로드 중', parts: [downloadMB(r.downloaded) + ' / ' + total, '약 ' + downloadClock((R.total - r.downloaded) / Math.max(r.speed, 1)) + ' 남음'] };
+      if (r.phase === 'verify') {
+        var mb = R.total * r.checked / R.files;
+        return [line1, { label: '게임 파일 확인 및 무결성 검사 중', help: true,
+          parts: [r.checked.toLocaleString() + '개 / 총' + R.files.toLocaleString() + '개 (' + downloadMB(mb) + ' /' + total + ')'] }];
+      }
+      return [line1, { label: '게임 설치 중', parts: [downloadMB(r.installed) + ' / ' + total,
+        '약 ' + downloadClock((R.total - r.installed) / Math.max(r.speed * R.installRate, 1)) + ' 남음'] }];
+    },
   },
   template:
     '<div class="download-item" :class="\'is-\' + item.status" data-name="component/list/download">' +
@@ -70,21 +114,35 @@ var DownloadItem = {
         '<img src="assets/library/check_circle_color.svg" width="16" height="16" alt="" />' +
         '<span>설치 완료</span>' +
       '</div>' +
-      // 진행 중 — 진행 바 420 + 일시정지
+      // 진행 중 — 진행 바 420. 단계(run.phase)마다 머리글 · 상세 · 버튼이 바뀐다
       '<div v-else-if="item.status === \'progress\'" class="download-item__status download-item__progress" data-name="status">' +
-        '<div class="download-progress" data-name="component/progressbar/line">' +
+        '<div class="download-progress" :class="{ \'is-paused\': run.paused, \'is-prepare\': run.phase === \'prepare\' }" data-name="component/progressbar/line">' +
           '<div class="download-progress__head">' +
-            '<span class="download-progress__percent">{{ item.percent }}%</span>' +
-            '<div class="download-progress__steps" data-name="상세">' +
-              '<p v-for="s in item.steps" :key="s.label" class="download-progress__step">' +
-                '<b>{{ s.label }}</b><span>{{ s.size }}</span><span>{{ s.left }}</span>' +
-              '</p>' +
-            '</div>' +
+            '<p v-if="run.phase === \'prepare\'" class="download-progress__step download-progress__prepare"><b>설치 준비 중</b></p>' +
+            '<template v-else>' +
+              '<span class="download-progress__percent">{{ percent }}%</span>' +
+              '<div class="download-progress__steps" data-name="상세">' +
+                '<p v-for="s in steps" :key="s.label" class="download-progress__step">' +
+                  '<b>{{ s.label }}</b>' +
+                  '<span v-for="(t, k) in s.parts" :key="k">{{ t }}</span>' +
+                  '<i v-if="s.help" class="ic-v2-state-help-circle-fill download-progress__help" aria-hidden="true"></i>' +
+                '</p>' +
+              '</div>' +
+            '</template>' +
           '</div>' +
-          '<div class="download-progress__bar"><span :style="{ width: item.percent + \'%\' }"></span></div>' +
-          '<p class="download-progress__file">설치 파일 : {{ item.file }}</p>' +
+          '<div class="download-progress__bar"><span :style="{ width: percent + \'%\' }"></span></div>' +
+          '<p class="download-progress__file">{{ run.phase === \'verify\' ? \'확인 파일\' : \'설치 파일\' }} : {{ fileName }}</p>' +
         '</div>' +
-        '<button class="download-icon-btn" type="button" aria-label="일시정지"><i class="ic-v2-media-av-pause-fill"></i></button>' +
+        '<div class="download-item__btns" data-name="btn">' +
+          '<template v-if="run.paused">' +
+            '<button class="download-icon-btn" type="button" aria-label="이어받기" @click="run.paused = false"><i class="ic-v2-object-download-line"></i></button>' +
+            '<button class="download-icon-btn" type="button" aria-label="취소"><i class="ic-v2-control-close-line"></i></button>' +
+          '</template>' +
+          '<template v-else>' +
+            '<button class="download-icon-btn" type="button" aria-label="일시정지" @click="run.paused = true"><i class="ic-v2-media-av-pause-fill"></i></button>' +
+            '<button v-if="run.phase === \'prepare\'" class="download-icon-btn" type="button" aria-label="취소"><i class="ic-v2-control-close-line"></i></button>' +
+          '</template>' +
+        '</div>' +
       '</div>' +
       // 본 게임 — DLC 설치 중
       '<div v-else-if="item.status === \'dlc\'" class="download-item__status download-item__dlc" data-name="status">' +
@@ -175,6 +233,38 @@ var DownloadMain = {
       l.avg = visible.reduce(function (s, v) { return s + v; }, 0) / visible.length;
       l.cpu = downloadWalk(l.cpu, 10, 28, 2.5);
       l.ram = downloadWalk(l.ram, 1.1, 1.6, 0.03);
+      this.stepRuns(20 + l.down * 40); // 수치의 "현재 다운로드 속도"(MB/s)
+    },
+    // 진행 행 더미 진행 — 1초에 한 번
+    stepRuns: function (speed) {
+      var R = DOWNLOAD_RUN;
+      this.queue.forEach(function (g) {
+        [g].concat(g.dlc || []).forEach(function (it) {
+          var r = it.run;
+          if (!r) return;
+          if (it.status === 'done') { // 설치 완료 → 잠깐 뒤 다시 처음부터
+            if (++r.ticks >= R.doneTicks) { it.run = downloadNewRun(); it.status = 'progress'; }
+            return;
+          }
+          if (r.paused) return;
+          r.speed = speed;
+          if (r.phase === 'prepare') {
+            if (++r.ticks >= R.prepareTicks) { r.phase = 'install'; r.ticks = 0; }
+            return;
+          }
+          if (r.phase === 'install') {
+            r.downloaded = Math.min(R.total, r.downloaded + speed);
+            r.installed = Math.min(r.downloaded, r.installed + speed * R.installRate);
+            r.file = 1 + Math.floor(r.installed / R.total * 11); // data01 ~ data12
+            if (r.installed >= R.total) { r.phase = 'verify'; r.file = 1; }
+            return;
+          }
+          // verify — 1초에 150~250개 확인
+          r.checked = Math.min(R.files, r.checked + 150 + Math.floor(Math.random() * 100));
+          r.file = 1 + Math.floor(r.checked / R.files * 11);
+          if (r.checked >= R.files) { it.status = 'done'; r.ticks = 0; }
+        });
+      });
     },
     drawGraph: function (p) {
       var G = DOWNLOAD_GRAPH, g = this.graph;
