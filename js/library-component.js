@@ -1082,10 +1082,10 @@ var LibraryMain = {
             '</button>' +
           '</div>' +
         '</div>' +
-        // 결과 없음 안내 박스 (Figma 클라이언트_v3.1 48960:383019 empty / basic) — 그림은 사용자 APNG 06_contents(320 → 160)
+        // 결과 없음 안내 박스 (Figma 클라이언트_v3.1 48960:383019 empty / basic) — 그림은 사용자 APNG 06_contents(320 → 120)
         '<div v-if="resultsActive && !filteredOwned.length && !hiddenEmpty" class="library-no-result" data-name="empty">' +
-          '<img class="library-no-result__img theme-img--dark" src="assets/library/06_contents_dark.png" width="160" height="160" alt="" />' +
-          '<img class="library-no-result__img theme-img--light" src="assets/library/06_contents_light.png" width="160" height="160" alt="" loading="lazy" />' +
+          '<img class="library-no-result__img theme-img--dark" src="assets/library/06_contents_dark.png" width="120" height="120" alt="" />' +
+          '<img class="library-no-result__img theme-img--light" src="assets/library/06_contents_light.png" width="120" height="120" alt="" loading="lazy" />' +
           '<div class="library-no-result__text">' +
             '<p class="library-no-result__title stds-title7 fw-medium">검색 결과가 없습니다.</p>' +
             '<p class="library-no-result__desc stds-text3">검색어의 단어 수를 줄이거나 필터 조건을 변경하세요.</p>' +
@@ -1102,10 +1102,10 @@ var LibraryMain = {
           // 시스템 버튼은 <button>이어야 hover · pressed가 걸린다 (:enabled) — 누르면 스토어 페이지로 (GNB와 같은 이동)
           '<button class="stds-button stds-button-primary stds-button-md library-no-owned__btn" type="button" @click="goStore">스토어 둘러보기<i class="ic-v2-control-arrow-right-circle-fill" aria-hidden="true"></i></button>' +
         '</div>' +
-        // 숨긴 게임이 없을 때 (Figma 클라이언트_v3.1 48960:383609) — 결과 없음 박스와 같은 크기 · 글자(사용자 11-09), 그림은 사용자 APNG 08_down_none(320 → 160)
+        // 숨긴 게임이 없을 때 (Figma 클라이언트_v3.1 48960:383609) — 결과 없음 박스와 같은 크기 · 글자(사용자 11-09), 그림은 사용자 APNG 08_down_none(320 → 120)
         '<div v-if="hiddenEmpty" class="library-no-result" data-name="empty">' +
-          '<img class="library-no-result__img theme-img--dark" src="assets/library/08_down_none_dark.png" width="160" height="160" alt="" />' +
-          '<img class="library-no-result__img theme-img--light" src="assets/library/08_down_none_light.png" width="160" height="160" alt="" loading="lazy" />' +
+          '<img class="library-no-result__img theme-img--dark" src="assets/library/08_down_none_dark.png" width="120" height="120" alt="" />' +
+          '<img class="library-no-result__img theme-img--light" src="assets/library/08_down_none_light.png" width="120" height="120" alt="" loading="lazy" />' +
           '<div class="library-no-result__text">' +
             '<p class="library-no-result__title stds-title7 fw-medium">숨겨진 게임이 없습니다.</p>' +
           '</div>' +

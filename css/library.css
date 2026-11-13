@@ -410,7 +410,7 @@
   background: var(--stds-sem-color-surface-variant-1);
   text-align: center;
 }
-.library-no-result__img { display: block; width: 16rem; height: 16rem; }
+.library-no-result__img { display: block; width: 12rem; height: 12rem; } /* APNG 원본 320 → 120 (사용자 11-13: 160은 공간에 비해 큼, 팝업과 같은 크기) */
 .library-no-result__text { display: flex; flex-direction: column; gap: 0.4rem; }
 .library-no-result p { margin: 0; }
 .library-no-result__title { color: var(--stds-sem-color-on-surface-elevation-2); }
