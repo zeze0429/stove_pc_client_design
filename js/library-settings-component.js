@@ -318,8 +318,9 @@ var LibrarySettingsDialog = {
               '</template>' +
             '</div>' +
             '<div v-else class="add-group-dialog__empty library-settings__empty" data-name="항목 없음">' +
-              // 임시 정지 이미지 — 그룹에 추가 팝업과 같은 APNG 자리 (리소스 받으면 같이 교체)
-              '<img src="assets/library/group_empty_placeholder.png" width="120" height="120" alt="" />' +
+              // 그룹에 추가 팝업과 같은 APNG(07_data_none, 320 → 120), 테마별 이미지
+              '<img class="theme-img--dark" src="assets/library/07_data_none_dark.png" width="120" height="120" alt="" />' +
+              '<img class="theme-img--light" src="assets/library/07_data_none_light.png" width="120" height="120" alt="" loading="lazy" />' +
               '<p class="stds-text4">그룹을 만들어 게임을 추가해 보세요.</p>' +
             '</div>' +
           '</div>' +
