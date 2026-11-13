@@ -7,12 +7,18 @@
  * DLC는 본 게임 아래 들여쓰기 + 연결선(트리).
  * 게임 이름 · 썸네일은 js/game-catalog.js (라이브러리 보유게임에도 같은 게임이 있다).
  *
+ * 진행 순서 (사용자 11-13 "나머지 DLC 설치 전에 기본 게임 먼저, 쭉 이어붙여"):
+ *   큐를 위에서부터 하나씩 — 기본 게임 → 그 DLC들(트리) → 다음 게임 … 한 번에 하나만 진행.
+ *   기본 게임과 트리의 DLC가 전부 설치되어야 '플레이 가능' 섹션(상단)으로 옮긴다 — 거기서는 트리 없이 1레벨 행.
+ *   (Figma 클라이언트_v3.1 "기본게임, DLC 플레이 정책 개선" 68141:884842)
+ *
  * 항목 상태(status):
  *   done      — 설치 완료 (체크 아이콘 + 파란 글자)
  *   progress  — 진행 중. run.phase: prepare(설치 준비 중) → install(설치 중) → verify(무결성 검사) → done,
  *               run.paused = 일시 정지 됨 (더미 진행은 DOWNLOAD_RUN · stepRuns)
  *   waiting   — 대기 중 (다운로드 · 취소 버튼)
- *   dlc       — 본 게임: DLC 설치 중 + "기본 게임 먼저 플레이"
+ *   dlc       — 본 게임: 자기 설치는 끝, 트리의 DLC 설치 중 + "기본 게임 먼저 플레이"
+ *   ready     — 플레이 가능 섹션 행: 용량 + 플레이(본 게임) / 기본 게임에서 플레이(DLC) + 제거
  */
 
 // ---- 진행 행 더미 데이터 (사용자 11-13 "프로그레스 바에도 그래프처럼 더미 데이터") ----
@@ -21,15 +27,17 @@
 // 그래프와 같은 1초 주기로 진행되고, 다운로드 속도는 그래프의 "현재 다운로드 속도"를 그대로 쓴다.
 // 설치 완료 뒤 잠깐 있다가 다시 설치 준비 중부터 반복(시연용).
 var DOWNLOAD_RUN = {
-  total: 599.04,     // MB
-  files: 1234,       // 무결성 검사 파일 수
   prepareTicks: 3,   // 설치 준비 중 유지(초)
   installRate: 0.7,  // 설치 속도 = 다운로드 속도 × 0.7 (받은 만큼만 설치)
-  doneTicks: 4,      // 설치 완료 표시 후 다시 시작까지(초)
+  moveTicks: 2,      // 묶음(기본 게임 + DLC) 마지막 설치 완료를 잠깐 보여 준 뒤 플레이 가능으로 옮기기까지(초)
+  resetTicks: 6,     // 큐가 다 비면 이만큼 있다가 처음부터 다시(시연용)
 };
 
-function downloadNewRun() {
-  return { phase: 'prepare', paused: false, ticks: 0, speed: 0, downloaded: 0, installed: 0, checked: 0, file: 1 };
+// 용량(MB)마다 진행 — 무결성 검사 파일 수는 용량에 비례(599.04MB = 1,234개, Figma 케이스 값)
+function downloadNewRun(size) {
+  size = size || 599.04;
+  return { phase: 'prepare', paused: false, ticks: 0, speed: 0, downloaded: 0, installed: 0, checked: 0, file: 1,
+    total: size, files: Math.max(40, Math.round(size * 1234 / 599.04)) };
 }
 
 // 999:30:10 형식 (시간은 자릿수 제한 없음)
@@ -40,19 +48,26 @@ function downloadClock(sec) {
 }
 function downloadMB(v) { return v.toFixed(2) + 'MB'; }
 
-var DOWNLOAD_QUEUE = [
-  {
-    id: 'yeogisa', status: 'dlc',
-    dlc: [
-      { id: 'yeogisa-alice', status: 'done' },
-      { id: 'yeogisa-bunny', status: 'progress', run: downloadNewRun() }, // 더미 진행 — 설치 준비 중부터
-      { id: 'yeogisa-gangsi', status: 'waiting' },
-      { id: 'yeogisa-voice', status: 'waiting' },
-    ],
-  },
-  { id: 'lovein-login', status: 'waiting', dlc: [{ id: 'lovein-login-asmr', status: 'waiting' }] },
-  { id: 'secret-curriculum', status: 'waiting' },
-];
+// 처음 상태 — 전부 대기, 맨 위 기본 게임부터 설치 준비 중. 용량(MB)은 더미
+function downloadInitialQueue() {
+  var q = [
+    {
+      id: 'yeogisa', size: 599.04,
+      dlc: [
+        { id: 'yeogisa-alice', size: 120.48 },
+        { id: 'yeogisa-bunny', size: 85.32 },
+        { id: 'yeogisa-gangsi', size: 64.1 },
+        { id: 'yeogisa-voice', size: 210.75 },
+      ],
+    },
+    { id: 'lovein-login', size: 732.16, dlc: [{ id: 'lovein-login-asmr', size: 156.2 }] },
+    { id: 'secret-curriculum', size: 488.64 },
+  ];
+  q.forEach(function (g) { [g].concat(g.dlc || []).forEach(function (it) { it.status = 'waiting'; }); });
+  q[0].status = 'progress';
+  q[0].run = downloadNewRun(q[0].size);
+  return q;
+}
 
 // 성능 그래프 더미 데이터 (사용자 11-13 "그래프 더미 데이터로 움직이게")
 // 1초마다 새 값이 오른쪽에 붙고 그래프가 왼쪽으로 흘러간다. 수치 5개도 같은 값으로 갱신.
@@ -78,17 +93,18 @@ var DownloadItem = {
   props: { item: { type: Object, required: true } },
   computed: {
     game: function () { return gameInfo(this.item.id) || { name: this.item.id, thumb: '' }; },
-    run: function () { return this.item.run || downloadNewRun(); },
+    run: function () { return this.item.run || downloadNewRun(this.item.size); },
+    sizeText: function () { var t = downloadMB(this.item.size || 0); return t + ' / ' + t; },
     // 설치까지 95%, 무결성 검사로 나머지 5%
     percent: function () {
-      var r = this.run, R = DOWNLOAD_RUN;
+      var r = this.run;
       if (r.phase === 'prepare') return 0;
-      if (r.phase === 'verify') return Math.min(100, 95 + Math.floor(r.checked / R.files * 5));
-      return Math.floor(r.installed / R.total * 95);
+      if (r.phase === 'verify') return Math.min(100, 95 + Math.floor(r.checked / r.files * 5));
+      return Math.floor(r.installed / r.total * 95);
     },
     fileName: function () { return 'data' + (this.run.file < 10 ? '0' : '') + this.run.file + '.v'; },
     steps: function () {
-      var r = this.run, R = DOWNLOAD_RUN, total = downloadMB(R.total);
+      var r = this.run, R = { total: r.total, files: r.files, installRate: DOWNLOAD_RUN.installRate }, total = downloadMB(r.total);
       if (r.paused) return [{ label: '일시정지 됨', parts: [downloadMB(r.installed) + ' / ' + total] }];
       var dlDone = r.downloaded >= R.total;
       var line1 = dlDone
@@ -152,6 +168,14 @@ var DownloadItem = {
         '</span>' +
         '<button class="stds-button stds-button-blue stds-button-sm" type="button"><i class="ic-v2-media-av-play-round-fill"></i>기본 게임 먼저 플레이</button>' +
       '</div>' +
+      // 플레이 가능 (Figma native_download_MD 플레이 가능 67359:360702) — 용량 + 플레이 / 기본 게임에서 플레이 + 제거
+      '<div v-else-if="item.status === \'ready\'" class="download-item__status download-item__ready" data-name="status">' +
+        '<span class="download-item__size">{{ sizeText }}</span>' +
+        '<div class="download-item__btns download-item__ready-btns" data-name="BTN">' +
+          '<button class="stds-button stds-button-blue stds-button-sm" type="button"><i class="ic-v2-media-av-play-round-fill"></i>{{ item.base ? \'기본 게임에서 플레이\' : \'플레이\' }}</button>' +
+          '<button class="download-icon-btn" type="button" aria-label="제거"><i class="ic-v2-control-close-line"></i></button>' +
+        '</div>' +
+      '</div>' +
       // 대기 중
       '<div v-else class="download-item__status download-item__waiting" data-name="status">' +
         '<span class="download-item__state">대기 중</span>' +
@@ -168,7 +192,8 @@ var DownloadMain = {
   components: { DownloadItem: DownloadItem },
   data: function () {
     return {
-      queue: DOWNLOAD_QUEUE,
+      queue: downloadInitialQueue(), // 설치 중 / 대기 — 기본 게임 + DLC 트리
+      ready: [],                     // 플레이 가능 — 1레벨 행(기본 게임 다음에 그 DLC들)
       live: { cpu: 14, disk: 0.4, down: 0.6, avg: 0.55, ram: 1.32 }, // 수치 표시용 최신 값
     };
   },
@@ -235,36 +260,59 @@ var DownloadMain = {
       l.ram = downloadWalk(l.ram, 1.1, 1.6, 0.03);
       this.stepRuns(20 + l.down * 40); // 수치의 "현재 다운로드 속도"(MB/s)
     },
-    // 진행 행 더미 진행 — 1초에 한 번
+    // 진행 행 더미 진행 — 1초에 한 번. 큐 순서대로 한 항목씩(기본 게임 → 그 DLC들 → 다음 게임)
     stepRuns: function (speed) {
-      var R = DOWNLOAD_RUN;
-      this.queue.forEach(function (g) {
-        [g].concat(g.dlc || []).forEach(function (it) {
-          var r = it.run;
-          if (!r) return;
-          if (it.status === 'done') { // 설치 완료 → 잠깐 뒤 다시 처음부터
-            if (++r.ticks >= R.doneTicks) { it.run = downloadNewRun(); it.status = 'progress'; }
-            return;
-          }
-          if (r.paused) return;
-          r.speed = speed;
-          if (r.phase === 'prepare') {
-            if (++r.ticks >= R.prepareTicks) { r.phase = 'install'; r.ticks = 0; }
-            return;
-          }
-          if (r.phase === 'install') {
-            r.downloaded = Math.min(R.total, r.downloaded + speed);
-            r.installed = Math.min(r.downloaded, r.installed + speed * R.installRate);
-            r.file = 1 + Math.floor(r.installed / R.total * 11); // data01 ~ data12
-            if (r.installed >= R.total) { r.phase = 'verify'; r.file = 1; }
-            return;
-          }
-          // verify — 1초에 150~250개 확인
-          r.checked = Math.min(R.files, r.checked + 150 + Math.floor(Math.random() * 100));
-          r.file = 1 + Math.floor(r.checked / R.files * 11);
-          if (r.checked >= R.files) { it.status = 'done'; r.ticks = 0; }
-        });
-      });
+      var R = DOWNLOAD_RUN, q = this.queue;
+      // 큐가 다 비었으면 잠깐 뒤 처음부터 (시연용)
+      if (!q.length) {
+        this._resetTicks = (this._resetTicks || 0) + 1;
+        if (this._resetTicks >= R.resetTicks) { this._resetTicks = 0; this.queue = downloadInitialQueue(); this.ready = []; }
+        return;
+      }
+      // 묶음이 다 설치됐으면 잠깐 보여 준 뒤 플레이 가능으로 — 1레벨로 풀어서(기본 게임, DLC 순)
+      var g0 = q[0];
+      if (g0.complete) {
+        if (++g0.complete > R.moveTicks) {
+          q.shift();
+          this.ready.push({ id: g0.id, size: g0.size, status: 'ready' });
+          (g0.dlc || []).forEach(function (d) { this.ready.push({ id: d.id, size: d.size, status: 'ready', base: g0.id }); }, this);
+        }
+        return;
+      }
+      // 지금 진행 중인 항목 — 없으면 다음 대기 항목을 시작
+      var flat = [];
+      q.forEach(function (g) { flat.push({ it: g, group: g }); (g.dlc || []).forEach(function (d) { flat.push({ it: d, group: g }); }); });
+      var cur = flat.filter(function (x) { return x.it.status === 'progress'; })[0];
+      if (!cur) {
+        cur = flat.filter(function (x) { return x.it.status === 'waiting'; })[0];
+        if (!cur) return;
+        cur.it.status = 'progress';
+        cur.it.run = downloadNewRun(cur.it.size);
+      }
+      var it = cur.it, g = cur.group, r = it.run;
+      if (r.paused) return; // 일시정지 중엔 뒤 항목도 기다린다
+      r.speed = speed;
+      if (r.phase === 'prepare') {
+        if (++r.ticks >= R.prepareTicks) { r.phase = 'install'; r.ticks = 0; }
+        return;
+      }
+      if (r.phase === 'install') {
+        r.downloaded = Math.min(r.total, r.downloaded + speed);
+        r.installed = Math.min(r.downloaded, r.installed + speed * R.installRate);
+        r.file = 1 + Math.floor(r.installed / r.total * 11); // data01 ~ data12
+        if (r.installed >= r.total) { r.phase = 'verify'; r.file = 1; }
+        return;
+      }
+      // verify — 1초에 150~250개 확인
+      r.checked = Math.min(r.files, r.checked + 150 + Math.floor(Math.random() * 100));
+      r.file = 1 + Math.floor(r.checked / r.files * 11);
+      if (r.checked < r.files) return;
+      // 설치 완료 — 기본 게임은 남은 DLC가 있으면 'DLC 설치 중'으로, 묶음이 다 끝나면 플레이 가능으로 옮길 준비
+      it.status = 'done';
+      var dlcs = g.dlc || [];
+      var allDlcDone = dlcs.every(function (d) { return d.status === 'done'; });
+      if (it === g && dlcs.length && !allDlcDone) g.status = 'dlc';
+      else if (allDlcDone) { g.status = 'done'; g.complete = 1; }
     },
     drawGraph: function (p) {
       var G = DOWNLOAD_GRAPH, g = this.graph;
@@ -284,6 +332,16 @@ var DownloadMain = {
   },
   template:
     '<div class="download" data-name="list">' +
+      // 플레이 가능 (상단) — 기본 게임 + DLC가 다 설치된 묶음만, 트리 없이 1레벨 (사용자 11-13)
+      '<section v-if="ready.length" class="download-section download-section--ready" data-name="플레이 가능">' +
+        '<div class="download-section__head" data-name="title">' +
+          '<h2 class="client-section-title">플레이 가능<span>{{ ready.length }}</span></h2>' +
+          '<button class="stds-button stds-button-tertiary stds-button-sm" type="button" @click="ready = []"><i class="ic-v2-control-close-line"></i>전체 제거</button>' +
+        '</div>' +
+        '<div class="download-list download-list--ready">' +
+          '<download-item v-for="d in ready" :key="d.id" :item="d"></download-item>' +
+        '</div>' +
+      '</section>' +
       '<section class="download-section" data-name="설치 중">' +
         '<h2 class="client-section-title">설치 중 / 대기<span>{{ total }}</span></h2>' +
         // 성능 그래프 (Figma 그래프 · gragh) — 더미 데이터로 계속 흘러간다(경로는 mounted · drawGraph가 그림), 색은 토큰

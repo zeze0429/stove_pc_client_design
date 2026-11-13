@@ -10,6 +10,12 @@
 }
 /* 섹션 제목은 라이브러리 첫 섹션 제목과 같은 자리 — 페이지 타이틀 아래 22 (빠른 실행 꺼짐 보유게임과 같은 2) */
 .download-section { margin-top: 0.2rem; }
+/* 플레이 가능(상단) ↔ 설치 중 / 대기 — 섹션 사이 40 (Figma 68141:884842) */
+.download-section + .download-section { margin-top: 4rem; }
+/* 섹션 제목 + 오른쪽 "전체 제거"(tertiary sm) — 버튼이 제목 줄 높이를 늘리지 않게 */
+.download-section__head { display: flex; align-items: center; justify-content: space-between; height: 2rem; }
+.download-section__head .stds-button { margin: -0.6rem 0; }
+.download-list.download-list--ready { margin-top: 1.6rem; } /* 제목 아래 16, 행 사이 12 — 트리 없이 1레벨 */
 
 /* ---- 성능 그래프 카드 (Figma 그래프) — 제목 아래 16, 높이 180, 모서리 20 ---- */
 .download-perf {
@@ -111,7 +117,8 @@
   background: var(--stds-sem-color-surface-variant-1);
 }
 .download-item.is-progress,
-.download-item.is-dlc { gap: 4rem; }
+.download-item.is-dlc,
+.download-item.is-ready { gap: 4rem; }
 .download-item__info { display: flex; flex: 1 1 0; align-items: center; gap: 1.6rem; min-width: 18rem; } /* 좁아져도 이름이 일부는 보이게 */
 .download-item__thumb {
   flex: 0 0 auto;
@@ -143,6 +150,14 @@
 .download-item__state { color: var(--stds-sem-color-on-surface-elevation-4); }
 .download-item__btns { display: flex; gap: 0.8rem; }
 .download-item__dlc { gap: 2rem; padding-right: 0.8rem; }
+/* 플레이 가능 행 — 용량(Text4-R 13/22 elevation-4) 20 버튼들(플레이 · 제거, 사이 20) */
+.download-item__ready { gap: 2rem; }
+.download-item__size {
+  color: var(--stds-sem-color-on-surface-elevation-4);
+  font-size: 1.3rem; line-height: 2.2rem; letter-spacing: -0.025em; white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.download-item__ready-btns { align-items: center; gap: 2rem; }
 .download-item__dlc-state { display: flex; align-items: center; gap: 0.8rem; color: var(--stds-sem-color-brand-blue); }
 .download-item__dots { fill: currentColor; }
 /* 점 3개가 왼쪽→오른쪽으로 차례로 밝아짐 (사용자 11-13). 시안 정지 프레임 = 0.5 · 1 · 0.3 */
