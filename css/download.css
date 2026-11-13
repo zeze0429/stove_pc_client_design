@@ -233,7 +233,7 @@
 /* 일시 정지 됨(8:3470) — 퍼센트는 회색 */
 .download-progress.is-paused .download-progress__percent { color: var(--stds-sem-color-on-surface-elevation-2); }
 .download-progress__steps { font-variant-numeric: tabular-nums; } /* 숫자가 매초 바뀌어도 덜 흔들리게 */
-.download-progress__help { position: relative; top: -0.05rem; flex: none; margin-left: -0.2rem; font-size: 1.2rem; color: var(--stds-sem-color-on-surface-elevation-3); } /* 수치와 2 (Figma info gap) */
+.download-progress__help { position: relative; top: -0.05rem; flex: none; margin-left: -0.2rem; font-size: 1.2rem; color: var(--stds-sem-color-on-surface-elevation-4); } /* 시스템 아이콘 ic-v2-state-help-circle-fill 12 (Figma 도움말 status=off · elevation-4), 수치와 2 */
 .download-progress__file {
   margin: 0;
   color: var(--stds-sem-color-on-surface-elevation-4);
