@@ -34,14 +34,24 @@ var DOWNLOAD_QUEUE = [
   { id: 'secret-curriculum', status: 'waiting' },
 ];
 
-// 성능 수치 (시안 값 그대로)
-var DOWNLOAD_STATS = [
-  { label: 'CPU 점유율', value: '10%' },
-  { label: '디스크 읽기/쓰기 속도', value: '400bytes' },
-  { label: '현재 다운로드 속도', value: '40bps' },
-  { label: '평균 다운로드 속도', value: '30bps' },
-  { label: 'RAM 점유량', value: '30bytes' },
-];
+// 성능 그래프 더미 데이터 (사용자 11-13 "그래프 더미 데이터로 움직이게")
+// 1초마다 새 값이 오른쪽에 붙고 그래프가 왼쪽으로 흘러간다. 수치 5개도 같은 값으로 갱신.
+// 범위는 자릿수가 바뀌지 않게 잡았다(수치 폭이 흔들리지 않게).
+var DOWNLOAD_GRAPH = {
+  width: 960, height: 116, // SVG viewBox (preserveAspectRatio none — 카드 폭에 맞춰 늘어남)
+  step: 40,                // 점 간격
+  tick: 1000,              // 새 값 주기(ms)
+  top: 14, bottom: 110,    // 다운로드 선이 오가는 높이
+  diskTop: 70,             // 디스크 선은 아래쪽에서 낮게
+};
+
+// 이전 값에서 조금씩 움직이는 무작위 값 (경계에서 튕김)
+function downloadWalk(prev, min, max, jump) {
+  var v = prev + (Math.random() - 0.5) * 2 * jump;
+  if (v < min) v = min + (min - v);
+  if (v > max) v = max - (v - max);
+  return Math.min(max, Math.max(min, v));
+}
 
 var DownloadItem = {
   name: 'DownloadItem',
@@ -99,24 +109,99 @@ var DownloadMain = {
   name: 'DownloadMain',
   components: { DownloadItem: DownloadItem },
   data: function () {
-    return { queue: DOWNLOAD_QUEUE, stats: DOWNLOAD_STATS };
+    return {
+      queue: DOWNLOAD_QUEUE,
+      live: { cpu: 14, disk: 0.4, down: 0.6, avg: 0.55, ram: 1.32 }, // 수치 표시용 최신 값
+    };
   },
   computed: {
     // 설치 중 / 대기 개수 — 본 게임 + DLC 전부
     total: function () {
       return this.queue.reduce(function (n, g) { return n + 1 + (g.dlc ? g.dlc.length : 0); }, 0);
     },
+    // 다운로드 0~1 → 20~60MB/s, 디스크 0~1 → 120~600MB/s
+    stats: function () {
+      var l = this.live;
+      return [
+        { label: 'CPU 점유율', value: Math.round(l.cpu) + '%' },
+        { label: '디스크 읽기/쓰기 속도', value: (120 + l.disk * 480).toFixed(1) + 'MB/s' },
+        { label: '현재 다운로드 속도', value: (20 + l.down * 40).toFixed(1) + 'MB/s' },
+        { label: '평균 다운로드 속도', value: (20 + l.avg * 40).toFixed(1) + 'MB/s' },
+        { label: 'RAM 점유량', value: l.ram.toFixed(2) + 'GB' },
+      ];
+    },
+  },
+  mounted: function () {
+    var G = DOWNLOAD_GRAPH;
+    var n = Math.ceil(G.width / G.step) + 2; // 흘러가는 동안 양 끝이 비지 않게 한 칸 더
+    var down = [], disk = [], d = 0.6, k = 0.4;
+    for (var i = 0; i < n; i++) {
+      d = downloadWalk(d, 0, 1, 0.28); k = downloadWalk(k, 0, 1, 0.15);
+      down.push(d); disk.push(k);
+    }
+    this.graph = { down: down, disk: disk, last: 0, raf: 0 };
+    this.reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.pushStats();
+    this.drawGraph(0);
+    this.graph.raf = requestAnimationFrame(this.frame);
+  },
+  beforeUnmount: function () {
+    if (this.graph) cancelAnimationFrame(this.graph.raf);
+  },
+  methods: {
+    // 매 프레임: tick마다 새 값 추가, 그 사이는 한 칸 간격만큼 왼쪽으로 부드럽게 이동
+    frame: function (now) {
+      var g = this.graph, G = DOWNLOAD_GRAPH;
+      if (!g.last) g.last = now;
+      var p = (now - g.last) / G.tick;
+      if (p > 3) { p = 1; g.last = now - G.tick; } // 탭이 오래 숨겨졌다 돌아오면 한 칸만
+      if (p >= 1) {
+        g.down.shift(); g.disk.shift();
+        g.down.push(downloadWalk(g.down[g.down.length - 1], 0, 1, 0.28));
+        g.disk.push(downloadWalk(g.disk[g.disk.length - 1], 0, 1, 0.15));
+        g.last += G.tick;
+        p -= 1;
+        this.pushStats();
+      }
+      this.drawGraph(this.reduceMotion ? 0 : p);
+      g.raf = requestAnimationFrame(this.frame);
+    },
+    pushStats: function () {
+      var g = this.graph, l = this.live;
+      var last = g.down.length - 2; // 오른쪽 끝(화면에 보이는 마지막 점)
+      var visible = g.down.slice(1, last + 1);
+      l.down = g.down[last];
+      l.disk = g.disk[last];
+      l.avg = visible.reduce(function (s, v) { return s + v; }, 0) / visible.length;
+      l.cpu = downloadWalk(l.cpu, 10, 28, 2.5);
+      l.ram = downloadWalk(l.ram, 1.1, 1.6, 0.03);
+    },
+    drawGraph: function (p) {
+      var G = DOWNLOAD_GRAPH, g = this.graph;
+      var x0 = -(1 + p) * G.step; // 첫 점은 화면 왼쪽 밖
+      function pts(arr, top) {
+        return arr.map(function (v, i) {
+          return (x0 + i * G.step).toFixed(2) + ' ' + (G.bottom - v * (G.bottom - top)).toFixed(2);
+        });
+      }
+      var down = pts(g.down, G.top);
+      var line = 'M' + down.join('L');
+      var lastX = (x0 + (g.down.length - 1) * G.step).toFixed(2);
+      this.$refs.lineDown.setAttribute('d', line);
+      this.$refs.area.setAttribute('d', line + 'L' + lastX + ' ' + G.height + 'L' + x0.toFixed(2) + ' ' + G.height + 'Z');
+      this.$refs.lineDisk.setAttribute('d', 'M' + pts(g.disk, G.diskTop).join('L'));
+    },
   },
   template:
     '<div class="download" data-name="list">' +
       '<section class="download-section" data-name="설치 중">' +
         '<h2 class="client-section-title">설치 중 / 대기<span>{{ total }}</span></h2>' +
-        // 성능 그래프 (Figma 그래프 · gragh) — 그래프 선은 시안 SVG 경로, 색은 토큰
+        // 성능 그래프 (Figma 그래프 · gragh) — 더미 데이터로 계속 흘러간다(경로는 mounted · drawGraph가 그림), 색은 토큰
         '<div class="download-perf" data-name="그래프">' +
           '<svg class="download-perf__graph" viewBox="0 0 960 116" preserveAspectRatio="none" aria-hidden="true">' +
-            '<path class="download-perf__area" d="M884.89 14L960 81.9044V116H0V51.1624L24.7933 77.2465L80.3912 87.8358L138.843 77.2465L174.279 68.4897L214.215 51.1624L247.934 68.4897L300.496 75.197L390.744 40.388L478.016 75.197L534.572 92.9105L570.248 75.197L616.364 92.9105L672.469 43.1791L766.944 102.045L835.041 48.7403L884.89 14Z"/>' +
-            '<path class="download-perf__line download-perf__line--download" d="M960 81.9044L884.89 14L835.041 48.7403L766.944 102.045L672.469 43.1791L616.364 92.9105L570.248 75.197L534.572 92.9105L478.017 75.197L390.744 40.388L300.496 75.197L247.934 68.4897L214.215 51.1624L174.279 68.4897L138.843 77.2465L80.3912 87.8358L24.7934 77.2465L0 51.1624"/>' +
-            '<path class="download-perf__line download-perf__line--disk" d="M0 102L202.274 84.5L398.586 91.5L533.894 84.5L636.636 74.5L822.398 84.5L960 91.5"/>' +
+            '<path ref="area" class="download-perf__area"/>' +
+            '<path ref="lineDown" class="download-perf__line download-perf__line--download"/>' +
+            '<path ref="lineDisk" class="download-perf__line download-perf__line--disk"/>' +
           '</svg>' +
           '<div class="download-perf__info" data-name="info">' +
             '<div class="download-perf__title" data-name="title">' +

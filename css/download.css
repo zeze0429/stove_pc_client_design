@@ -49,8 +49,9 @@
   color: var(--stds-sem-color-on-surface-elevation-4);
   font-size: 1.1rem; line-height: 1.8rem; letter-spacing: -0.02em;
 }
-.download-perf__stats dd { /* Title8-B 14/20 */
+.download-perf__stats dd { /* Title8-B 14/20 — 숫자 폭 고정(값이 바뀌어도 흔들리지 않게) */
   margin: 0;
+  font-variant-numeric: tabular-nums;
   color: var(--stds-sem-color-on-surface-elevation-2);
   font-size: 1.4rem; font-weight: 700; line-height: 2rem; letter-spacing: -0.03em;
 }
