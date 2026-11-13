@@ -305,6 +305,7 @@ var LIBRARY_DRAG_LAYER_GAP = 5; // 여러 게임을 끌 때 뒤에 겹쳐 보이
 
 var LIBRARY_PANEL_LOAD_STEP = 10; // 한 번에 불러오는 행 수 (실서비스 200, 시안은 한 화면에 스켈레톤이 보이게 10 — 사용자 11-03)
 var LIBRARY_PANEL_LOAD_MS = 4000; // 다음 묶음까지 걸리는 시간 (데모용 — 스켈레톤을 충분히 보게 길게, 사용자 11-03)
+var LIBRARY_PANEL_SPINNER_MS = 3000; // 로딩 서클을 보여 주는 시간 — 지나면 목록 전체가 한 번에 (데모용, 사용자 11-13)
 
 var LibraryPanel = {
   components: { 'group-name-input': LibraryGroupNameInput, 'create-group-dialog': LibraryCreateGroupDialog, 'library-filter-layer': LibraryFilterLayer },
@@ -333,6 +334,7 @@ var LibraryPanel = {
       menuBlur: protoSettingsRead().containerBlur, // 보기 옵션 "컨테이너 블러" — 메뉴 바탕을 반투명 + 배경 블러로 (테스트)
       // 패널 스켈레톤 (보기 옵션) — 화면 순서대로 앞에서부터 이만큼만 불러온 상태, 나머지 행은 스켈레톤
       loadedRows: Infinity,
+      panelLoading: false, // 보기 옵션 "패널 로딩 서클" — 도는 동안 목록 대신 로딩 서클
       filter: libraryFilterDefault(), // 필터 레이어 (js/library-filter-component.js) — 패널은 정렬에 그룹 · 게임 둘 다
       filterOpen: false,
       // 검색 (Figma 10 검색 8228:227633) — 검색 버튼을 누르면 버튼 그룹 아래 입력칸. 확인하면 검색어가 칩으로 (필터 결과와 같은 자리)
@@ -515,6 +517,28 @@ var LibraryPanel = {
           protoSettingsWrite({ libraryPanelSkeleton: false });
         }
       }, LIBRARY_PANEL_LOAD_MS);
+    },
+    // 로딩 서클 — 일정 시간 돌다가 목록 전체를 한 번에 보여 준다 (스켈레톤과 다른 방식, 사용자 11-13)
+    startSpinnerLoad: function () {
+      clearTimeout(this._spinnerTimer);
+      this.panelLoading = true;
+      var vm = this;
+      this._spinnerTimer = setTimeout(function () {
+        vm.panelLoading = false;
+        vm.$nextTick(vm.updateThumb);
+        // 끝나면 스위치도 끈다 — 스켈레톤과 같은 규칙, 다시 켜면 처음부터
+        protoSettingsWrite({ libraryPanelSpinner: false });
+      }, LIBRARY_PANEL_SPINNER_MS);
+    },
+    applySpinnerSetting: function (s) {
+      if (s.libraryPanelSpinner && s.libraryPanelSpinnerAt !== this._spinnerAt) {
+        this._spinnerAt = s.libraryPanelSpinnerAt;
+        this.startSpinnerLoad();
+      } else if (!s.libraryPanelSpinner) {
+        this._spinnerAt = null;
+        clearTimeout(this._spinnerTimer);
+        this.panelLoading = false;
+      }
     },
     applySkeletonSetting: function (s) {
       if (s.libraryPanelSkeleton && s.libraryPanelSkeletonAt !== this._skeletonAt) {
@@ -1395,7 +1419,8 @@ var LibraryPanel = {
     var vm = this;
     var ps = protoSettingsRead();
     if (ps.libraryPanelSkeleton) { this._skeletonAt = ps.libraryPanelSkeletonAt; this.startSkeletonLoad(); }
-    protoSettingsSubscribe(function (s) { vm.applySkeletonSetting(s); vm.menuBlur = s.containerBlur; });
+    if (ps.libraryPanelSpinner) { this._spinnerAt = ps.libraryPanelSpinnerAt; this.startSpinnerLoad(); }
+    protoSettingsSubscribe(function (s) { vm.applySkeletonSetting(s); vm.applySpinnerSetting(s); vm.menuBlur = s.containerBlur; });
     window.addEventListener('library-game-menu', this.onCardGameMenu);
     // 메뉴(그룹 · 게임)가 떠 있는 동안 바닥 화면 잠금 — 공통 룰 (contextMenuLock, gnb-component.js)
     this.$watch(function () { return !!(this.menu || this.gameMenu); }, function (v) { contextMenuLock('library', v); }, { flush: 'sync' });
@@ -1406,6 +1431,7 @@ var LibraryPanel = {
     this.cancelLongPress();
     this.endDrag(false);
     clearInterval(this._skeletonTimer);
+    clearTimeout(this._spinnerTimer);
     document.removeEventListener('click', this._onDocClick);
     document.removeEventListener('mouseup', this._onRelease);
     document.removeEventListener('mousemove', this.onDocMouseMove);
@@ -1509,14 +1535,18 @@ var LibraryPanel = {
           '<div ref="hoverIndicator" class="gnb-hover-indicator" aria-hidden="true"></div>' +
 
           // 결과 없음 (Figma 2-2-2 검색결과 없음 · 0907 문구 "결과가 없습니다.")
-          '<div v-if="resultsActive && !showList && !creating" class="library-panel__no-result" data-name="component/game_group/list_group">' +
+          // 로딩 서클 (보기 옵션) — 공통 STDS Circular Progress sm 40, 목록 자리 가운데
+          '<div v-if="panelLoading" class="library-panel__loading" role="status" aria-label="불러오는 중" data-name="Circular Progress">' +
+            '<div class="stds-circular-progress stds-circular-progress-sm"></div>' +
+          '</div>' +
+          '<div v-if="resultsActive && !showList && !creating && !panelLoading" class="library-panel__no-result" data-name="component/game_group/list_group">' +
             '<i class="ic-v2-state-warning-circle-fill" aria-hidden="true"></i>' +
             '<div class="stds-text4">' +
               '<p class="library-panel__no-result-title fw-medium">결과가 없습니다.</p>' +
               '<p class="library-panel__no-result-desc">검색어의 단어 수를 줄이거나<br />필터 조건을 변경하세요.</p>' +
             '</div>' +
           '</div>' +
-          '<div v-if="showList" class="library-panel__list" data-name="게임그룹">' +
+          '<div v-if="showList && !panelLoading" class="library-panel__list" data-name="게임그룹">' +
             // 사용자가 만든 그룹
             // 그룹 + 그룹 없는 게임을 저장된 순서대로 (그룹 없는 게임도 롱프레스로 옮길 수 있다, 사용자 11-09)
             '<template v-for="group in shownEntries" :key="group.id">' +

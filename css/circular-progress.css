@@ -1,0 +1,53 @@
+/* =============================================================
+   STDS Circular Progress — 공통 컴포넌트
+   구조 · 이름: 사내 Storybook SCircularProgress (stds-dev.onstove.com, Components/Circular Progress)
+     <div class="stds-circular-progress stds-circular-progress-{sm|lg}"></div>, 회전 1s linear 무한
+   값: Figma STDS_StoveUI Progress > Circular Progress (1047:909)
+     - 크기 sm 40 · 두께 4 / lg 80 · 두께 8
+     - 트랙 background-variant-1, 돌아가는 호 brand-primary — 끝이 둥근 호(약 126°)
+   Storybook은 트랙이 고정 회색(240)이라 다크에서 안 맞아 Figma 시멘틱으로 씀.
+   호는 conic-gradient로 그리고, 둥근 끝은 ::before · ::after 점(Storybook 방식)으로 덮는다.
+   ============================================================= */
+
+.stds-circular-progress {
+  --circular-progress-size: 4rem;
+  --circular-progress-thickness: 0.4rem;
+  --circular-progress-arc: 126deg;
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: var(--circular-progress-size);
+  height: var(--circular-progress-size);
+  border-radius: var(--stds-glob-border-radius-full);
+  background: conic-gradient(
+    from calc(var(--circular-progress-arc) / -2),
+    var(--stds-sem-color-brand-primary) 0 var(--circular-progress-arc),
+    var(--stds-sem-color-background-variant-1) var(--circular-progress-arc) 360deg
+  );
+  /* 가운데를 비워 링으로 */
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--circular-progress-thickness)), #000 calc(100% - var(--circular-progress-thickness) + 0.5px));
+          mask: radial-gradient(farthest-side, transparent calc(100% - var(--circular-progress-thickness)), #000 calc(100% - var(--circular-progress-thickness) + 0.5px));
+  animation: stds-circular-progress-spin 1s linear infinite;
+}
+/* 호 양 끝 둥근 마개 — 링 가운데 반지름 위, 위쪽 기준 ±63° */
+.stds-circular-progress::before,
+.stds-circular-progress::after {
+  content: '';
+  position: absolute;
+  top: calc(50% - (50% - var(--circular-progress-thickness) / 2) * 0.454 - var(--circular-progress-thickness) / 2);
+  width: var(--circular-progress-thickness);
+  height: var(--circular-progress-thickness);
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-sem-color-brand-primary);
+}
+.stds-circular-progress::before { left: calc(50% - (50% - var(--circular-progress-thickness) / 2) * 0.891 - var(--circular-progress-thickness) / 2); }
+.stds-circular-progress::after { left: calc(50% + (50% - var(--circular-progress-thickness) / 2) * 0.891 - var(--circular-progress-thickness) / 2); }
+
+.stds-circular-progress-sm { --circular-progress-size: 4rem; --circular-progress-thickness: 0.4rem; }
+.stds-circular-progress-lg { --circular-progress-size: 8rem; --circular-progress-thickness: 0.8rem; }
+
+@keyframes stds-circular-progress-spin { to { transform: rotate(360deg); } }
+/* OS 애니메이션 효과 끔 — 빠른 회전 대신 느리게 (멈추면 로딩 중인지 알 수 없어서) */
+@media (prefers-reduced-motion: reduce) {
+  .stds-circular-progress { animation-duration: 3s; }
+}

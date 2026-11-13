@@ -178,6 +178,7 @@ html, body {
   height: 24px;
 }
 .proto-panel__row + .proto-panel__row { margin-top: 12px; }
+.proto-panel__row[hidden] { display: none; } /* 숨긴 옵션 — .proto-panel__row의 display보다 우선 */
 .proto-panel__row--theme { height: 32px; }
 
 .proto-panel__label {

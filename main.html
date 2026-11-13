@@ -9,9 +9,9 @@
   <link rel="stylesheet" href="css/typography.css?v=12" />
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=2" />
   <link rel="stylesheet" href="css/button.css?v=5" />
-  <link rel="stylesheet" href="css/desktop.css?v=18" />
+  <link rel="stylesheet" href="css/desktop.css?v=19" />
   <link rel="stylesheet" href="css/notice.css?v=16" />
-  <script src="js/proto-settings.js?v=30"></script>
+  <script src="js/proto-settings.js?v=31"></script>
   <script>
     // 업데이트 버튼·공지사항·다운로드 관리·스튜디오 테스트·메뉴 강조·PR 배너 종류는 저장해 두지 않는다 —
     // 미리보기에 새로 들어올 때마다 아래 기본 상태로 시작한다(오늘의 1등 뱃지만 켜짐,
@@ -229,10 +229,15 @@
           </span>
         </div>
         <div class="proto-panel__row">
+          <span class="proto-panel__label">패널 로딩 서클</span>
+          <button class="proto-switch" type="button" role="switch" data-proto-key="libraryPanelSpinner" aria-label="패널 로딩 서클"></button>
+        </div>
+        <div class="proto-panel__row">
           <span class="proto-panel__label">패널 스켈레톤 (10개씩)</span>
           <button class="proto-switch" type="button" role="switch" data-proto-key="libraryPanelSkeleton" aria-label="패널 스켈레톤"></button>
         </div>
-        <div class="proto-panel__row">
+        <!-- 컨테이너 블러 — 지금은 미노출(사용자 11-13 "나중에 꺼내달라고 할 때"). 다시 보이려면 hidden만 지우면 된다 -->
+        <div class="proto-panel__row" hidden>
           <span class="proto-panel__label">컨테이너 블러</span>
           <button class="proto-switch" type="button" role="switch" data-proto-key="containerBlur" aria-label="컨테이너 블러"></button>
         </div>
@@ -321,6 +326,8 @@
       panel.querySelector('[data-proto-theme]').addEventListener('click', function () {
         protoSettingsWrite({ theme: protoSettingsRead().theme === 'light' ? 'dark' : 'light' });
       });
+      // 숨긴 옵션(컨테이너 블러)은 꺼진 상태로 — 예전에 켜 둔 값이 남아 있으면 끌 방법이 없어서
+      if (protoSettingsRead().containerBlur) protoSettingsWrite({ containerBlur: false });
       panel.querySelectorAll('.proto-switch').forEach(function (el) {
         el.addEventListener('click', function () {
           var patch = {};
@@ -328,7 +335,9 @@
           // 다운로드 관리를 켤 때마다 GNB 진행 애니메이션을 처음부터 시작
           if (el.dataset.protoKey === 'download' && patch.download) patch.downloadStartedAt = Date.now();
           // 패널 스켈레톤을 켤 때마다 목록을 처음부터 다시 불러온다
-          if (el.dataset.protoKey === 'libraryPanelSkeleton' && patch.libraryPanelSkeleton) patch.libraryPanelSkeletonAt = Date.now();
+          if (el.dataset.protoKey === 'libraryPanelSkeleton' && patch.libraryPanelSkeleton) { patch.libraryPanelSkeletonAt = Date.now(); patch.libraryPanelSpinner = false; }
+          // 패널 로딩 서클도 켤 때마다 처음부터 — 스켈레톤과 둘 중 하나만
+          if (el.dataset.protoKey === 'libraryPanelSpinner' && patch.libraryPanelSpinner) { patch.libraryPanelSpinnerAt = Date.now(); patch.libraryPanelSkeleton = false; }
           protoSettingsWrite(patch);
         });
       });

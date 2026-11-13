@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="css/button.css?v=5" />
   <link rel="stylesheet" href="css/search-field.css?v=3" />
   <link rel="stylesheet" href="css/checkbox.css?v=4" />
+  <link rel="stylesheet" href="css/circular-progress.css?v=1" />
   <style>
     /* 미리보기 페이지 전용 배치 — 컴포넌트 스타일은 각 css 파일에 있다 */
     body {
@@ -160,6 +161,14 @@
               '</tr>' +
               '<tr><th>top</th><td colspan="3"><stds-checkbox align="top" :model-value="true" style="width: 16rem">두 줄로 넘어가는 긴 라벨 텍스트 예시입니다</stds-checkbox></td>' +
                 '<td colspan="6"><stds-checkbox v-model="cbLive">직접 눌러 보세요 ({{ cbLive ? \'선택\' : \'미선택\' }})</stds-checkbox></td></tr>' +
+            '</tbody></table>' +
+          '</section>' +
+
+          '<section class="cp-section">' +
+            '<h2 class="stds-title6 fw-bold">Circular Progress · Size</h2>' +
+            '<p class="stds-text3">Storybook SCircularProgress (sm · lg) · Figma STDS_StoveUI Circular Progress (1047:909) — 트랙 background-variant-1, 호 brand-primary</p>' +
+            '<table class="cp-table stds-text4"><thead><tr><th>sm 40</th><th>lg 80</th></tr></thead><tbody>' +
+              '<tr><td><div class="stds-circular-progress stds-circular-progress-sm"></div></td><td><div class="stds-circular-progress stds-circular-progress-lg"></div></td></tr>' +
             '</tbody></table>' +
           '</section>' +
         '</div>',

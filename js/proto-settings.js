@@ -32,6 +32,8 @@ var PROTO_SETTINGS_DEFAULTS = {
   libraryNoOwned: false, // 라이브러리 설정 — 보유게임 없음 화면 (빠른 실행 · 보유게임 · 패널 게임 0개 + 추천 목록)
   libraryQuick: true, // 라이브러리 설정 — 빠른 실행 영역 노출 (사용자 설정으로 숨길 수 있음)
   libraryQuickAd: true, // 빠른 실행 두 번째 자리 게임 광고 카드
+  libraryPanelSpinner: false, // 우측패널 로딩 서클 — 일정 시간 돈 뒤 목록 전체 노출 (스켈레톤 대신 비교용, 사용자 11-13)
+  libraryPanelSpinnerAt: 0, // 켠 시각 — 켤 때마다 처음부터
   libraryPanelSkeleton: false, // 우측패널 목록을 10개씩 나눠 불러오기 — 아직 안 온 행은 스켈레톤 (SGVN 로딩 개선 시안)
   libraryPanelSkeletonAt: 0, // 켠 시각 — 켤 때마다 처음부터 다시 불러온다
   containerBlur: false, // 컨테이너(우클릭 메뉴 · 필터 레이어) 바탕을 반투명 + 배경 블러로 — 테스트용 비교
