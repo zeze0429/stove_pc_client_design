@@ -363,7 +363,7 @@ var DownloadMain = {
       '<section v-if="ready.length" class="download-section download-section--ready" data-name="플레이 가능">' +
         '<div class="download-section__head" data-name="title">' +
           '<h2 class="client-section-title">플레이 가능<span>{{ ready.length }}</span></h2>' +
-          '<button class="stds-button stds-button-tertiary stds-button-sm" type="button" @click="ready = []"><i class="ic-v2-control-close-line"></i>전체 제거</button>' +
+          '<button class="stds-button stds-button-tertiary stds-button-sm library-tool-btn" type="button" @click="ready = []"><i class="ic-v2-control-close-line"></i>전체 제거</button>' +
         '</div>' +
         '<div class="download-list download-list--ready">' +
           '<download-item v-for="d in ready" :key="d.id" :item="d"></download-item>' +
