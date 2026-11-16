@@ -570,18 +570,19 @@ var GnbComponent = {
       var info = sim.info();
       var top = this.dlLayers.filter(function (l) { return l.phase !== 'out' && l.phase !== 'fade'; }).slice(-1)[0];
       var want = null, hold = GNB_DOWNLOAD_STEP;
+      if (info.doneCount > this._dlSeen) {                 // 항목이 끝났다 — 완료 체크 (마지막 항목도 먼저 체크, 사용자 11-16)
+        this._dlSeen = info.doneCount;
+        want = { kind: 'check', value: null };
+        // 실패 항목이 남은 채 끝나면 체크는 중간 체크 길이로 보여 주고 다음에 에러(!)로 남긴다
+        if (info.finished && !info.errorCount) { this._dlFinalShown = true; hold = GNB_DOWNLOAD_FINAL_CHECK; } else hold = GNB_DOWNLOAD_CHECK;
+      }
       // 실패한 항목이 남은 채로 끝나면 마지막은 에러(!)로 남는다 (사용자 11-16)
-      if (info.finished && info.errorCount) { want = { kind: 'error', value: null }; this._dlFinalShown = true; this._dlSeenErr = info.errorCount; }
+      else if (info.finished && info.errorCount) { want = { kind: 'error', value: null }; this._dlFinalShown = true; this._dlSeenErr = info.errorCount; }
       else if (info.errorCount > this._dlSeenErr) {       // 에러 — 잠깐 ! 뒤 다시 진행 표시 (사용자 11-16)
         this._dlSeenErr = info.errorCount;
         want = { kind: 'error', value: null }; hold = GNB_DOWNLOAD_STEP * 2;
       }
-      else if (this._dlFinalShown) want = null;
-      else if (info.doneCount > this._dlSeen) {          // 항목이 끝났다 — 완료 체크
-        this._dlSeen = info.doneCount;
-        want = { kind: 'check', value: null };
-        if (info.finished) { this._dlFinalShown = true; hold = GNB_DOWNLOAD_FINAL_CHECK; } else hold = GNB_DOWNLOAD_CHECK;
-      } else if (!info.installing) want = { kind: 'count', value: info.remaining };
+      else if (this._dlFinalShown) want = null; else if (!info.installing) want = { kind: 'count', value: info.remaining };
       else if (top && top.kind === 'pct') want = { kind: 'count', value: info.remaining }; // 설치 중 — 진행률 ↔ 남은 개수
       else want = { kind: 'pct', value: info.pct };
       var same = top && want && top.kind === want.kind && top.value === want.value;
@@ -592,7 +593,7 @@ var GnbComponent = {
       if (want) {
         this._dlKey = (this._dlKey || 0) + 1;
         this.dlLayers.push({ key: this._dlKey, kind: want.kind, value: want.value, phase: instant ? 'static' : 'in' });
-        if (want.kind === 'check') this.showDownloadPulse(instant ? 0 : GNB_DOWNLOAD_SLIDE, !info.finished);
+        if (want.kind === 'check') this.showDownloadPulse(instant ? 0 : GNB_DOWNLOAD_SLIDE, hold !== GNB_DOWNLOAD_FINAL_CHECK);
         // 머무는 시간은 걸음 경계(2초)에 맞춰 올림 — 중간 체크 5초 → 6초. 큐가 끝나 걸음이 멈춘 뒤를 위해 타이머도 둔다
         var stepMs = DOWNLOAD_RUN.stepTicks * DOWNLOAD_RUN.tick;
         this._dlHoldUntil = sim.startedAt + Math.ceil((now + hold - 100 - sim.startedAt) / stepMs) * stepMs;
