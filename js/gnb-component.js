@@ -578,9 +578,9 @@ var GnbComponent = {
       }
       // 실패한 항목이 남은 채로 끝나면 마지막은 에러(!)로 남는다 (사용자 11-16)
       else if (info.finished && info.errorCount) { want = { kind: 'error', value: null }; this._dlFinalShown = true; this._dlSeenErr = info.errorCount; }
-      else if (info.errorCount > this._dlSeenErr) {       // 에러 — 잠깐 ! 뒤 다시 진행 표시 (사용자 11-16)
+      else if (info.errorCount > this._dlSeenErr) {       // 에러 — 잠깐(2초) ! 뒤 다시 진행 표시 (사용자 11-16)
         this._dlSeenErr = info.errorCount;
-        want = { kind: 'error', value: null }; hold = GNB_DOWNLOAD_STEP * 2;
+        want = { kind: 'error', value: null }; hold = GNB_DOWNLOAD_STEP; // 2초 — 다음 항목이 설치되는데 오래 떠 있으면 헷갈려서 (사용자 11-16)
       }
       else if (this._dlFinalShown) want = null; else if (!info.installing) want = { kind: 'count', value: info.remaining };
       else if (top && top.kind === 'pct') want = { kind: 'count', value: info.remaining }; // 설치 중 — 진행률 ↔ 남은 개수
