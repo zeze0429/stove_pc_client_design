@@ -133,7 +133,7 @@ function DownloadSim(startedAt, errorAt) {
   var state = {
     queue: downloadInitialQueue(), // 설치 중 / 대기 — 기본 게임 + DLC 트리
     ready: [],                     // 플레이 가능 — 1레벨 행(기본 게임 다음에 그 DLC들)
-    live: { cpu: 14, disk: 0.4, down: 0.6, avg: 0.55, ram: 1.32 }, // 그래프 수치
+    live: { cpu: 3, disk: 0.4, down: 0.6, avg: 0.55, ram: 330 }, // 그래프 수치 (CPU %, RAM MB)
     tick: 0,
     lastDoneTick: null,            // 항목 하나가 끝난 틱 (사이드바 완료 체크)
     finishTick: null,              // 마지막 항목이 끝난 틱
@@ -190,8 +190,8 @@ DownloadSim.prototype = {
     l.down = g.down[last];
     l.disk = g.disk[last];
     l.avg = visible.reduce(function (s, v) { return s + v; }, 0) / visible.length;
-    l.cpu = downloadWalk(rng, l.cpu, 10, 28, 2.5);
-    l.ram = downloadWalk(rng, l.ram, 1.1, 1.6, 0.03);
+    l.cpu = downloadWalk(rng, l.cpu, 1, 6, 1);          // 사용자 11-16 참고 이미지: 3%
+    l.ram = downloadWalk(rng, l.ram, 300, 360, 3);      // 330.55MB
   },
   // 한 걸음 — 큐 순서대로 한 항목씩(기본 게임 → 그 DLC들 → 다음 게임)
   stepRuns: function (speed) {

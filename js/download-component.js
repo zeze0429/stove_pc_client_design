@@ -181,16 +181,18 @@ var DownloadMain = {
     total: function () {
       return this.queue.reduce(function (n, g) { return n + 1 + (g.dlc ? g.dlc.length : 0); }, 0);
     },
-    // 다운로드 0~1 → 20~60MB/s, 디스크 0~1 → 120~600MB/s
+    // 더미 수치 — 사용자 11-16 참고 이미지(CPU 3% · 디스크 4.61 · 현재 2.28 · 평균 1.08MB/s · RAM 330.55MB) 범위에서 움직임
+    // 디스크 0~1 → 3.00~6.50MB/s, 현재 다운로드 0~1 → 1.20~3.40MB/s, 평균 0~1 → 0.90~1.30MB/s
+    // (화면 수치만 — 설치 진행 속도는 시뮬레이션 내부 값 그대로)
     stats: function () {
       if (!this.sim) return [];
       var l = this.sim.state.live;
       return [
         { label: 'CPU 점유율', value: Math.round(l.cpu) + '%' },
-        { label: '디스크 읽기/쓰기 속도', value: (120 + l.disk * 480).toFixed(1) + 'MB/s' },
-        { label: '현재 다운로드 속도', value: (20 + l.down * 40).toFixed(1) + 'MB/s' },
-        { label: '평균 다운로드 속도', value: (20 + l.avg * 40).toFixed(1) + 'MB/s' },
-        { label: 'RAM 점유량', value: l.ram.toFixed(2) + 'GB' },
+        { label: '디스크 읽기/쓰기 속도', value: (3 + l.disk * 3.5).toFixed(2) + 'MB/s' },
+        { label: '현재 다운로드 속도', value: (1.2 + l.down * 2.2).toFixed(2) + 'MB/s' },
+        { label: '평균 다운로드 속도', value: (0.9 + l.avg * 0.4).toFixed(2) + 'MB/s' },
+        { label: 'RAM 점유량', value: l.ram.toFixed(2) + 'MB' },
       ];
     },
   },
