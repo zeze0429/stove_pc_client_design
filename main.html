@@ -232,7 +232,8 @@
           <span class="proto-panel__label">패널 로딩 서클</span>
           <button class="proto-switch" type="button" role="switch" data-proto-key="libraryPanelSpinner" aria-label="패널 로딩 서클"></button>
         </div>
-        <div class="proto-panel__row">
+        <!-- 패널 스켈레톤 — 지금은 미노출(사용자 11-16 "필요하면 나중에 요청"). 다시 보이려면 hidden만 지우면 된다 -->
+        <div class="proto-panel__row" hidden>
           <span class="proto-panel__label">패널 스켈레톤 (10개씩)</span>
           <button class="proto-switch" type="button" role="switch" data-proto-key="libraryPanelSkeleton" aria-label="패널 스켈레톤"></button>
         </div>
@@ -326,8 +327,9 @@
       panel.querySelector('[data-proto-theme]').addEventListener('click', function () {
         protoSettingsWrite({ theme: protoSettingsRead().theme === 'light' ? 'dark' : 'light' });
       });
-      // 숨긴 옵션(컨테이너 블러)은 꺼진 상태로 — 예전에 켜 둔 값이 남아 있으면 끌 방법이 없어서
+      // 숨긴 옵션(컨테이너 블러 · 패널 스켈레톤)은 꺼진 상태로 — 예전에 켜 둔 값이 남아 있으면 끌 방법이 없어서
       if (protoSettingsRead().containerBlur) protoSettingsWrite({ containerBlur: false });
+      if (protoSettingsRead().libraryPanelSkeleton) protoSettingsWrite({ libraryPanelSkeleton: false });
       panel.querySelectorAll('.proto-switch').forEach(function (el) {
         el.addEventListener('click', function () {
           var patch = {};
