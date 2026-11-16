@@ -138,7 +138,7 @@ var GNB_BADGE_ICON = {
 var GNB_DOWNLOAD_STEP = 2000;        // 단계마다 머무는 시간
 var GNB_DOWNLOAD_CHECK = 4000;       // 중간 완료 체크 — 링 펄스 1.4초 x 2 + 들어오는 시간 (사용자 11-16: 3번 → 2번)
 var GNB_DOWNLOAD_FINAL_CHECK = 8000; // 마지막 완료 체크는 더 오래
-var GNB_DOWNLOAD_SLIDE = 500;        // css/gnb.css .download-queue__layer 애니메이션 길이
+var GNB_DOWNLOAD_SLIDE = 700;        // css/gnb.css .download-queue__layer 애니메이션 길이
 
 // 뱃지에 마우스를 올리면 뜨는 툴팁 문구
 var GNB_BADGE_TOOLTIP = {

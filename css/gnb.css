@@ -230,8 +230,8 @@ body { margin: 0; }
 /* 다운로드 진행 애니메이션 (Figma Make 레퍼런스 실측, js/gnb-component.js
    GNB_DOWNLOAD_QUEUE). 높이 20 · 최소 폭 32 칸 안에 레이어를 겹쳐 두고,
    새 단계는 아래에서 올라오며 나타나고 이전 단계는 위로 빠지며 사라진다
-   (500ms — 레퍼런스 380ms보다 조금 느리게). 칸 밖으로 움직이는 동안도
-   보여야 해서 overflow는 visible.
+   (들어옴 700ms · 나감 500ms, 위아래 6px만 — 선택 영역(행 32) 밖으로 안 넘어가게, 사용자 11-16).
+   overflow는 visible.
    들어오는 쪽은 fill을 backwards로 — 끝난 뒤 transform이 남지 않아야 한다. */
 .download-queue {
   position: relative;
@@ -248,8 +248,8 @@ body { margin: 0; }
   justify-content: flex-end;
 }
 .download-queue__layer .badge-download { margin-left: 0; }
-.download-queue__layer.is-in { animation: download-queue-in 500ms cubic-bezier(0.4, 0, 0.2, 1) backwards; }
-.download-queue__layer.is-out { animation: download-queue-out 250ms cubic-bezier(0.4, 0, 0.2, 1) forwards; } /* 행(32) 위 여백 6 안에서 사라지게 — 사용자 11-16 "선택 영역 넘어간다" */
+.download-queue__layer.is-in { animation: download-queue-in 700ms cubic-bezier(0.4, 0, 0.2, 1) backwards; } /* 행 아래 여백 6 안에서 올라옴, 느리게 — 사용자 11-16 */
+.download-queue__layer.is-out { animation: download-queue-out 500ms cubic-bezier(0.4, 0, 0.2, 1) forwards; } /* 행(32) 위 여백 6 안에서 사라지게 — 사용자 11-16 "선택 영역 넘어간다" */
 /* 마지막 완료 체크 — 위치는 그대로, 투명도만 */
 .download-queue__layer.is-fade { animation: download-queue-fade 500ms cubic-bezier(0.4, 0, 0.2, 1) forwards; }
 @keyframes download-queue-fade {
@@ -257,7 +257,7 @@ body { margin: 0; }
   to   { opacity: 0; }
 }
 @keyframes download-queue-in {
-  from { opacity: 0; transform: translateY(100%); }
+  from { opacity: 0; transform: translateY(30%); } /* 20의 30% = 6px */
   to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes download-queue-out {
