@@ -6,9 +6,9 @@
  * - 다운로드 관리에 들어오면(새로고침 포함) 시작 시각을 지금으로 — 처음부터 (download-component.js).
  * - 1초(tick)마다 그래프 값 하나 + 설치 한 걸음. 큐가 다 비면 멈춘다(반복 없음).
  * - 일시정지 · 완료 후 실행 · 전체 제거 · 다시 시도는 그 페이지 안에서만 반영된다(다른 페이지는 다시 계산하므로 모름).
- * - 보기 옵션 '에러'(proto.downloadError)를 켜면 실패 케이스 (Figma 클라이언트_v3.1 플로우 '실패', 68118:725212 · 725615 · 68123:726115):
- *     여기사 아가씨 — 기본 게임 설치 후 DLC 앨리스가 설치 중 실패 → 다음 DLC 진행, 묶음은 설치 중 영역에 남음(사용자 11-16)
- *     러브인 로그인 — 기본 게임이 설치 중 실패 → 그 DLC도 에러로, 묶음은 맨 아래로 내리고 다음 대기열 진행
+ * - 보기 옵션 '에러'(proto.downloadError)를 켜면 실패 케이스 (Figma 클라이언트_v3.1 플로우 '실패', 68118:725212 · 68123:726115):
+ *     여기사 아가씨 기본 게임이 설치 중 실패 → 그 DLC도 '기본 게임 먼저' 에러로, 묶음은 맨 아래로 내리고 다음 대기열 진행
+ *   (DLC 하나만 실패하는 경우 — 다음 DLC 진행, 묶음은 설치 중에 남음 — 도 처리는 되어 있음: failAt을 DLC에 주면 됨)
  *   에러 행: 메시지(빨강) + 실패 시각 + 다시 시도 · 취소
  *
  * 케이스 참고: Figma 클라이언트-Library-0.3.1 component/list/download 8:3463
@@ -95,10 +95,8 @@ function downloadInitialQueue(error) {
     { id: 'secret-curriculum', size: 488.64 },
   ];
   q.forEach(function (g) { [g].concat(g.dlc || []).forEach(function (it) { it.status = 'waiting'; }); });
-  if (error) {
-    q[0].dlc[0].failAt = 0.45; // 여기사 아가씨: 앨리스 — 설치 45% 즈음 실패
-    q[1].failAt = 0.45;        // 러브인 로그인: 기본 게임 — 설치 45% 즈음 실패 (시안 45%)
-  }
+  // 에러 체크 = 이 케이스를 보려는 것 — 맨 위 기본 게임이 설치 중 45% 즈음 실패 (사용자 11-16, 시안 45%)
+  if (error) q[0].failAt = 0.45;
   q[0].status = 'progress';
   q[0].run = downloadNewRun(q[0].size);
   return q;
