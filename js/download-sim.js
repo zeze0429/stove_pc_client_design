@@ -264,7 +264,9 @@ DownloadSim.prototype = {
   // 설치 중 실패 — 기본 게임이면 그 DLC도 '기본 게임 먼저' 에러로 바꾸고 묶음을 맨 아래로 (다음 대기열 진행)
   fail: function (it, g) {
     var s = this.state, at = downloadStamp(this.startedAt + s.tick * DOWNLOAD_RUN.tick);
-    it.status = 'error'; it.errorKind = it === g ? 'temp' : 'base'; it.errorAt = at;
+    // 자기 설치가 실패하면 기본 게임 · DLC 모두 '일시적으로 문제가…' (temp).
+    // '기본 게임 설치가 완료되어야 DLC 설치가 가능합니다'(base)는 기본 게임이 설치 안 됐을 때 그 DLC에만 (사용자 11-16)
+    it.status = 'error'; it.errorKind = 'temp'; it.errorAt = at;
     if (it === g) {
       (g.dlc || []).forEach(function (d) {
         if (d.status === 'waiting') { d.status = 'error'; d.errorKind = 'base'; d.errorAt = at; }
