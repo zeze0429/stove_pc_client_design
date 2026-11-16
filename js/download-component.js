@@ -41,9 +41,17 @@ var DownloadItem = {
   computed: {
     game: function () { return gameInfo(this.item.id) || { name: this.item.id, thumb: '' }; },
     run: function () { return this.item.run || downloadNewRun(this.item.size); },
-    // 기본 게임 'DLC 설치 중' 표시는 실제로 받을 DLC가 남아 있을 때만 (실패한 DLC만 남으면 버튼만)
+    // 기본 게임 'DLC 설치 중'은 첫 DLC 설치가 시작된 뒤부터 남은 DLC가 끝날 때까지 — 그 전(전부 대기)엔 '설치 완료' (사용자 11-16)
+    // DLC 사이(앞 DLC 완료 ~ 다음 DLC 시작)에도 'DLC 설치 중'을 유지해서 깜박이지 않게
     dlcInstalling: function () {
-      return (this.item.dlc || []).some(function (d) { return d.status === 'waiting' || d.status === 'progress'; });
+      var dlc = this.item.dlc || [];
+      var started = dlc.some(function (d) { return d.status !== 'waiting'; });
+      var left = dlc.some(function (d) { return d.status === 'waiting' || d.status === 'progress'; });
+      return started && left;
+    },
+    // 설치 완료 표시 — 다 끝났거나, 기본 게임은 끝났는데 아직 설치 중인 DLC가 없을 때
+    showDone: function () {
+      return this.item.status === 'done' || (this.item.status === 'dlc' && !this.dlcInstalling);
     },
     sizeText: function () { var t = downloadMB(this.item.size || 0); return t + ' / ' + t; },
     percent: function () { return downloadPercent(this.run); }, // 설치까지 95%, 무결성 검사로 나머지 5%
@@ -71,7 +79,7 @@ var DownloadItem = {
         '<p class="download-item__name">{{ game.name }}</p>' +
       '</div>' +
       // 설치 완료
-      '<div v-if="item.status === \'done\'" class="download-item__status download-item__done" data-name="진행상태">' +
+      '<div v-if="showDone" class="download-item__status download-item__done" data-name="진행상태">' +
         '<img src="assets/library/check_circle_color.svg" width="16" height="16" alt="" />' +
         '<span>설치 완료</span>' +
       '</div>' +
@@ -114,7 +122,7 @@ var DownloadItem = {
       '</div>' +
       // 본 게임 — DLC 설치 중
       '<div v-else-if="item.status === \'dlc\'" class="download-item__status download-item__dlc" data-name="status">' +
-        '<span v-if="dlcInstalling" class="download-item__dlc-state" data-name="DLC 설치 중">' +
+        '<span class="download-item__dlc-state" data-name="DLC 설치 중">' +
           '<svg class="download-item__dots" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="2" cy="8" r="2"/><circle cx="8" cy="8" r="2"/><circle cx="14" cy="8" r="2"/></svg>' +
           'DLC 설치 중' +
         '</span>' +
