@@ -26,7 +26,7 @@
   border-radius: var(--stds-glob-border-radius-3xl);
   background: var(--stds-sem-color-background-variant-3); /* Figma는 글로벌 gray940 → 같은 값 시멘틱(사용자 정의, 다크 gray940 / 라이트 gray100) */
 }
-.download-perf__graph { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 11.6rem; }
+.download-perf__graph { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 8rem; } /* 범례 아래(위에서 100 = 24 + 제목 24 + 12 + 범례 40)부터 — 겹치지 않게 (사용자 11-16) */
 .download-perf__area { fill: var(--stds-sem-color-brand-blue); opacity: 0.2; }
 .download-perf__line { fill: none; vector-effect: non-scaling-stroke; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; }
 .download-perf__line--download { stroke: var(--stds-sem-color-brand-blue); }
