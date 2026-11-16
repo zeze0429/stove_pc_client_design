@@ -128,13 +128,13 @@
   border-radius: 1rem; /* Figma 10 — 맞는 radius 토큰 없음(lg 8 · xl 12) */
   object-fit: cover;
 }
-.download-item__name { /* Title7-B 16/24 */
+.download-item__name { /* Title8-B 14/20 (사용자 11-16, 시안 Title7-B 16/24에서 줄임) */
   flex: 1 1 0;
   min-width: 0;
   margin: 0;
   overflow: hidden;
   color: var(--stds-sem-color-on-surface-elevation-1);
-  font-size: 1.6rem; font-weight: 700; line-height: 2.4rem; letter-spacing: -0.03em;
+  font-size: 1.4rem; font-weight: 700; line-height: 2rem; letter-spacing: -0.03em;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
