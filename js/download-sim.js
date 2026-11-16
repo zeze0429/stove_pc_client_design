@@ -5,7 +5,11 @@
  *   시작부터 지난 초만큼 다시 돌리면 같은 상태가 된다(페이지를 옮겨도 사이드바가 이어서 진행).
  * - 다운로드 관리에 들어오면(새로고침 포함) 시작 시각을 지금으로 — 처음부터 (download-component.js).
  * - 1초(tick)마다 그래프 값 하나 + 설치 한 걸음. 큐가 다 비면 멈춘다(반복 없음).
- * - 일시정지 · 완료 후 실행 · 전체 제거는 그 페이지 안에서만 반영된다(다른 페이지는 다시 계산하므로 모름).
+ * - 일시정지 · 완료 후 실행 · 전체 제거 · 다시 시도는 그 페이지 안에서만 반영된다(다른 페이지는 다시 계산하므로 모름).
+ * - 보기 옵션 '에러'(proto.downloadError)를 켜면 실패 케이스 (Figma 클라이언트_v3.1 플로우 '실패', 68118:725212 · 725615 · 68123:726115):
+ *     여기사 아가씨 — 기본 게임 설치 후 DLC 앨리스가 설치 중 실패 → 다음 DLC 진행, 묶음은 설치 중 영역에 남음(사용자 11-16)
+ *     러브인 로그인 — 기본 게임이 설치 중 실패 → 그 DLC도 에러로, 묶음은 맨 아래로 내리고 다음 대기열 진행
+ *   에러 행: 메시지(빨강) + 실패 시각 + 다시 시도 · 취소
  *
  * 케이스 참고: Figma 클라이언트-Library-0.3.1 component/list/download 8:3463
  *   설치 준비 중(8:3473) → 설치 중(8:3467) → 무결성검사(2952:17031) → 설치 완료, 일시 정지 됨(8:3470)
@@ -76,7 +80,7 @@ function downloadBurst(r, rng) {
 }
 
 // 처음 상태 — 전부 대기, 맨 위 기본 게임부터 설치 준비 중. 용량(MB)은 더미
-function downloadInitialQueue() {
+function downloadInitialQueue(error) {
   var q = [
     {
       id: 'yeogisa', size: 599.04,
@@ -91,9 +95,19 @@ function downloadInitialQueue() {
     { id: 'secret-curriculum', size: 488.64 },
   ];
   q.forEach(function (g) { [g].concat(g.dlc || []).forEach(function (it) { it.status = 'waiting'; }); });
+  if (error) {
+    q[0].dlc[0].failAt = 0.45; // 여기사 아가씨: 앨리스 — 설치 45% 즈음 실패
+    q[1].failAt = 0.45;        // 러브인 로그인: 기본 게임 — 설치 45% 즈음 실패 (시안 45%)
+  }
   q[0].status = 'progress';
   q[0].run = downloadNewRun(q[0].size);
   return q;
+}
+
+// 실패 시각 — 2023.07.12 12:00 형식 (Figma 케이스)
+function downloadStamp(ms) {
+  var d = new Date(ms), p = function (n) { return (n < 10 ? '0' : '') + n; };
+  return d.getFullYear() + '.' + p(d.getMonth() + 1) + '.' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
 }
 
 // 큐를 위에서부터 한 줄로 — [{ it, group }]
@@ -103,9 +117,10 @@ function downloadFlat(q) {
   return flat;
 }
 
-function DownloadSim(startedAt) {
+function DownloadSim(startedAt, error) {
   var G = DOWNLOAD_GRAPH;
   this.startedAt = startedAt;
+  this.error = !!error;
   this.rng = downloadRng(startedAt % 2147483647);
   this.listeners = [];
   var rng = this.rng;
@@ -117,7 +132,7 @@ function DownloadSim(startedAt) {
   }
   this.graph = { down: down, disk: disk };
   var state = {
-    queue: downloadInitialQueue(), // 설치 중 / 대기 — 기본 게임 + DLC 트리
+    queue: downloadInitialQueue(this.error), // 설치 중 / 대기 — 기본 게임 + DLC 트리
     ready: [],                     // 플레이 가능 — 1레벨 행(기본 게임 다음에 그 DLC들)
     live: { cpu: 14, disk: 0.4, down: 0.6, avg: 0.55, ram: 1.32 }, // 그래프 수치
     tick: 0,
@@ -138,7 +153,11 @@ DownloadSim.prototype = {
     while (this.state.tick < target && !this.isOver()) { this.step(); changed = true; }
     return changed;
   },
-  isOver: function () { return !this.state.queue.length; },
+  // 더 진행할 게 없으면 걸음을 멈춘다 — 큐가 비었거나, 다 끝났고(실패 항목만 남음) 옮길 묶음도 없을 때
+  isOver: function () {
+    var s = this.state;
+    return !s.queue.length || (s.finishTick != null && !s.queue.some(function (g) { return g.complete; }));
+  },
   schedule: function () {
     clearTimeout(this.timer);
     if (this.isOver()) return;
@@ -179,10 +198,10 @@ DownloadSim.prototype = {
     var R = DOWNLOAD_RUN, s = this.state, q = s.queue, rng = this.rng;
     if (!q.length) return;
     // 묶음이 다 설치됐으면 잠깐 보여 준 뒤 플레이 가능으로 — 1레벨로 풀어서(기본 게임, DLC 순)
-    var g0 = q[0];
-    if (g0.complete) {
+    var g0 = q.filter(function (x) { return x.complete; })[0]; // 맨 위가 아니어도(위에 실패 묶음이 남아 있어도)
+    if (g0) {
       if (++g0.complete > R.moveSteps) {
-        q.shift();
+        q.splice(q.indexOf(g0), 1);
         s.ready.push({ id: g0.id, size: g0.size, status: 'ready' });
         (g0.dlc || []).forEach(function (d) { s.ready.push({ id: d.id, size: d.size, status: 'ready', base: g0.id }); });
       }
@@ -217,6 +236,7 @@ DownloadSim.prototype = {
         r.installed = Math.min(r.total, r.installed + add);
         r.downloaded = Math.min(r.total, Math.max(r.downloaded, r.installed + add * 0.4));
       }
+      if (it.failAt && r.installed / r.total >= it.failAt) { this.fail(it, g); return; }
       r.file = 1 + Math.floor(r.installed / r.total * 11); // data01 ~ data12
       if (r.installed >= r.total) { r.phase = 'verify'; r.file = 1; }
       return;
@@ -228,11 +248,44 @@ DownloadSim.prototype = {
     // 설치 완료 — 기본 게임은 남은 DLC가 있으면 'DLC 설치 중'으로, 묶음이 다 끝나면 플레이 가능으로 옮길 준비
     it.status = 'done';
     s.lastDoneTick = s.tick;
+    this.settle(g);
+  },
+  // 항목 하나가 끝나거나 실패한 뒤 묶음 상태 정리
+  settle: function (g) {
+    var s = this.state;
     var dlcs = g.dlc || [];
+    var baseOk = g.status === 'done' || g.status === 'dlc';
     var allDlcDone = dlcs.every(function (d) { return d.status === 'done'; });
-    if (it === g && dlcs.length && !allDlcDone) g.status = 'dlc';
-    else if (allDlcDone) { g.status = 'done'; g.complete = 1; }
-    if (!flat.some(function (x) { return x.it.status === 'waiting' || x.it.status === 'progress'; })) s.finishTick = s.tick;
+    if (baseOk && dlcs.length && !allDlcDone) g.status = 'dlc';        // 기본 게임은 끝 — DLC가 남았거나 실패한 게 있음(묶음 그대로 남김)
+    else if (baseOk && allDlcDone) { g.status = 'done'; g.complete = 1; } // 다 설치됨 — 플레이 가능으로
+    var busy = downloadFlat(s.queue).some(function (x) { return x.it.status === 'waiting' || x.it.status === 'progress'; });
+    if (!busy) s.finishTick = s.tick;
+  },
+  // 설치 중 실패 — 기본 게임이면 그 DLC도 '기본 게임 먼저' 에러로 바꾸고 묶음을 맨 아래로 (다음 대기열 진행)
+  fail: function (it, g) {
+    var s = this.state, at = downloadStamp(this.startedAt + s.tick * DOWNLOAD_RUN.tick);
+    it.status = 'error'; it.errorKind = it === g ? 'temp' : 'base'; it.errorAt = at;
+    if (it === g) {
+      (g.dlc || []).forEach(function (d) {
+        if (d.status === 'waiting') { d.status = 'error'; d.errorKind = 'base'; d.errorAt = at; }
+      });
+      var i = s.queue.indexOf(g);
+      if (i > -1 && i < s.queue.length - 1) { s.queue.splice(i, 1); s.queue.push(g); }
+    }
+    this.settle(g);
+  },
+  // 다시 시도 — 에러 항목을 대기로(기본 게임이면 그 DLC 에러도). 이 페이지에서만 반영
+  retry: function (it) {
+    var s = this.state, g = s.queue.filter(function (x) { return x === it || (x.dlc || []).indexOf(it) > -1; })[0];
+    if (!g || it.status !== 'error') return;
+    var reset = function (x) { x.status = 'waiting'; delete x.failAt; delete x.errorKind; delete x.errorAt; delete x.run; };
+    if (it === g) (g.dlc || []).forEach(function (d) { if (d.status === 'error' && d.errorKind === 'base') reset(d); });
+    reset(it);
+    if (it !== g && g.status === 'dlc') { /* 기본 게임은 그대로 'DLC 설치 중' */ }
+    s.finishTick = null;
+    // 멈춰 있던 동안의 시간을 한꺼번에 따라잡지 않게 시작 시각을 당긴다 — 지금부터 다시 1초씩
+    this.startedAt = Date.now() - s.tick * DOWNLOAD_RUN.tick;
+    this.schedule();
   },
 
   // 사이드바용 지금 상태 — 표시 순서 · 속도는 사이드바가 따로 정한다(다운로드 페이지 속도와 별개, 사용자 11-16)
@@ -245,17 +298,18 @@ DownloadSim.prototype = {
       pct: cur ? downloadPercent(cur.it.run) : 0,
       // 끝난 항목 수 — 'dlc'는 자기 설치가 끝난 기본 게임. 사이드바가 체크를 몇 번 보여 줬는지 비교용
       doneCount: flat.filter(function (x) { return x.it.status === 'done' || x.it.status === 'dlc'; }).length + s.ready.length,
+      errorCount: flat.filter(function (x) { return x.it.status === 'error'; }).length,
       finished: s.finishTick != null,
     };
   },
 };
 
 // 한 페이지에서는 같은 시작 시각이면 같은 인스턴스를 같이 쓴다 — 다운로드 페이지에서 일시정지하면 사이드바도 멈춘다
-function downloadSimFor(startedAt) {
+function downloadSimFor(startedAt, error) {
   if (!startedAt) return null;
   var cur = window.__downloadSim;
-  if (cur && cur.startedAt === startedAt) return cur;
+  if (cur && cur.startedAt === startedAt && cur.error === !!error) return cur;
   if (cur) cur.stop();
-  window.__downloadSim = new DownloadSim(startedAt);
+  window.__downloadSim = new DownloadSim(startedAt, error);
   return window.__downloadSim;
 }

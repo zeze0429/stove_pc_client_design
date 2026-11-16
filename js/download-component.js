@@ -33,6 +33,7 @@ function downloadMB(v) { return v.toFixed(2) + 'MB'; }
 
 var DownloadItem = {
   name: 'DownloadItem',
+  emits: ['retry'],
   props: {
     item: { type: Object, required: true },
     top: { type: Boolean, default: false }, // 1뎁스(기본 게임) 행 — 진행 중이면 "완료 후 실행" 토글이 붙는다
@@ -40,6 +41,10 @@ var DownloadItem = {
   computed: {
     game: function () { return gameInfo(this.item.id) || { name: this.item.id, thumb: '' }; },
     run: function () { return this.item.run || downloadNewRun(this.item.size); },
+    // 기본 게임 'DLC 설치 중' 표시는 실제로 받을 DLC가 남아 있을 때만 (실패한 DLC만 남으면 버튼만)
+    dlcInstalling: function () {
+      return (this.item.dlc || []).some(function (d) { return d.status === 'waiting' || d.status === 'progress'; });
+    },
     sizeText: function () { var t = downloadMB(this.item.size || 0); return t + ' / ' + t; },
     percent: function () { return downloadPercent(this.run); }, // 설치까지 95%, 무결성 검사로 나머지 5%
     fileName: function () { return 'data' + (this.run.file < 10 ? '0' : '') + this.run.file + '.v'; },
@@ -109,7 +114,7 @@ var DownloadItem = {
       '</div>' +
       // 본 게임 — DLC 설치 중
       '<div v-else-if="item.status === \'dlc\'" class="download-item__status download-item__dlc" data-name="status">' +
-        '<span class="download-item__dlc-state" data-name="DLC 설치 중">' +
+        '<span v-if="dlcInstalling" class="download-item__dlc-state" data-name="DLC 설치 중">' +
           '<svg class="download-item__dots" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="2" cy="8" r="2"/><circle cx="8" cy="8" r="2"/><circle cx="14" cy="8" r="2"/></svg>' +
           'DLC 설치 중' +
         '</span>' +
@@ -121,6 +126,18 @@ var DownloadItem = {
             '<span class="download-item__play-tip-tail"></span>' +
           '</span>' +
         '</span>' +
+      '</div>' +
+      // 에러 (Figma 클라이언트-Library 0.3.1 에러 메세지 노출 8:3476 · 플로우 '실패') — 메시지(빨강) + 실패 시각, 다시 시도 · 취소
+      '<div v-else-if="item.status === \'error\'" class="download-item__status download-item__error" data-name="status">' +
+        '<div class="download-item__error-text" data-name="text">' +
+          '<p v-if="item.errorKind === \'temp\'" class="download-item__error-msg">일시적으로 문제가 발생했습니다.<br />다시 시도해 주세요.</p>' +
+          '<p v-else class="download-item__error-msg">기본 게임 설치가 완료되어야 DLC 설치가 가능합니다.</p>' +
+          '<p class="download-item__error-date">{{ item.errorAt }}</p>' +
+        '</div>' +
+        '<div class="download-item__btns" data-name="btn">' +
+          '<button class="download-icon-btn" type="button" aria-label="다시 시도" @click="$emit(\'retry\', item)"><i class="ic-v2-control-refresh-line"></i></button>' +
+          '<button class="download-icon-btn" type="button" aria-label="취소"><i class="ic-v2-control-close-line"></i></button>' +
+        '</div>' +
       '</div>' +
       // 플레이 가능 (Figma native_download_MD 플레이 가능 67359:360702) — 용량 + 플레이 / 기본 게임에서 플레이 + 제거
       '<div v-else-if="item.status === \'ready\'" class="download-item__status download-item__ready" data-name="status">' +
@@ -170,11 +187,16 @@ var DownloadMain = {
   created: function () {
     // 다운로드 관리에 들어오면(새로고침 포함) 처음부터 — 사이드바 다운로드 표시도 같이 처음부터 (사용자 11-16)
     var s = protoSettingsWrite({ download: true, downloadStartedAt: Date.now() });
-    this.sim = Vue.markRaw(downloadSimFor(s.downloadStartedAt));
+    this.sim = Vue.markRaw(downloadSimFor(s.downloadStartedAt, s.downloadError));
+    this._started = s.downloadStartedAt; this._error = !!s.downloadError;
     var vm = this;
-    // 보기 옵션 "다운로드 관리"를 다시 켜면(시작 시각이 바뀌면) 그 시각으로 다시
+    // 보기 옵션 "다운로드 관리"를 다시 켜거나 '에러'를 바꾸면 그 설정으로 다시
     protoSettingsSubscribe(function (ps) {
-      if (ps.downloadStartedAt && ps.downloadStartedAt !== vm.sim.startedAt) vm.sim = Vue.markRaw(downloadSimFor(ps.downloadStartedAt));
+      if (!ps.downloadStartedAt) return;
+      if (ps.downloadStartedAt !== vm._started || !!ps.downloadError !== vm._error) {
+        vm._started = ps.downloadStartedAt; vm._error = !!ps.downloadError;
+        vm.sim = Vue.markRaw(downloadSimFor(ps.downloadStartedAt, ps.downloadError));
+      }
     });
   },
   mounted: function () {
@@ -194,6 +216,7 @@ var DownloadMain = {
     // 테스트 · 확인용 — 한 걸음 바로 진행
     stepRuns: function () { this.sim.step(); },
     clearReady: function () { this.sim.state.ready.splice(0); },
+    retry: function (item) { this.sim.retry(item); },
     drawGraph: function (p) {
       var G = DOWNLOAD_GRAPH, g = this.sim.graph;
       var x0 = -(1 + p) * G.step; // 첫 점은 화면 왼쪽 밖
@@ -256,9 +279,9 @@ var DownloadMain = {
         // 다운로드 목록 — 본 게임 하나 + 그 DLC(들여쓰기 · 연결선)가 한 묶음, 묶음 사이 12
         '<div v-if="queue.length" class="download-list">' +
           '<div v-for="g in queue" :key="g.id" class="download-group">' +
-            '<download-item :item="g" top></download-item>' +
+            '<download-item :item="g" top @retry="retry"></download-item>' +
             '<div v-if="g.dlc && g.dlc.length" class="download-group__dlc">' +
-              '<download-item v-for="d in g.dlc" :key="d.id" :item="d"></download-item>' +
+              '<download-item v-for="d in g.dlc" :key="d.id" :item="d" @retry="retry"></download-item>' +
             '</div>' +
           '</div>' +
         '</div>' +

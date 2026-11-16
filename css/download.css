@@ -159,6 +159,13 @@
   font-variant-numeric: tabular-nums;
 }
 .download-item__ready-btns { align-items: center; gap: 2rem; }
+/* 에러 행 (Figma 에러 메세지 노출 8:3476) — 글자 묶음(오른쪽 정렬, 사이 4) 20 버튼(다시 시도 · 취소, 사이 8).
+   메시지 10/15 Bold error, 실패 시각 10/15 Regular elevation-4 */
+.download-item__error { gap: 2rem; }
+.download-item__error-text { display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem; text-align: right; white-space: nowrap; }
+.download-item__error-text p { margin: 0; font-size: 1rem; line-height: 1.5rem; }
+.download-item__error-msg { color: var(--stds-sem-color-error); font-weight: 700; letter-spacing: -0.02em; }
+.download-item__error-date { color: var(--stds-sem-color-on-surface-elevation-4); letter-spacing: -0.025em; }
 /* 1뎁스 진행 행 — status 640 고정, 진행 바 420은 왼쪽 · 토글과 버튼은 오른쪽 끝 (Figma 8:3467) */
 .download-item__progress.is-top { flex: 0 1 64rem; justify-content: space-between; gap: 2rem; }
 .download-item__progress.is-top .download-item__btns { align-items: center; }

@@ -547,9 +547,10 @@ var GnbComponent = {
       this.dlPulse = null;
       var started = this.proto.downloadStartedAt;
       if (!this.proto.download || !started || typeof downloadSimFor !== 'function') { this.dlLayers = []; return; }
-      this._dlSim = downloadSimFor(started);
+      this._dlSim = downloadSimFor(started, this.proto.downloadError);
       var info = this._dlSim.info();
       this._dlSeen = info.doneCount;           // 들어오기 전에 끝난 항목은 체크를 다시 보여 주지 않는다
+      this._dlSeenErr = info.errorCount;       // 에러도 마찬가지
       this._dlFinalShown = info.finished;      // 이미 다 끝났으면 아무것도 안 띄움
       this._dlHoldUntil = 0;
       var self = this;
@@ -569,7 +570,13 @@ var GnbComponent = {
       var info = sim.info();
       var top = this.dlLayers.filter(function (l) { return l.phase !== 'out' && l.phase !== 'fade'; }).slice(-1)[0];
       var want = null, hold = GNB_DOWNLOAD_STEP;
-      if (this._dlFinalShown) want = null;
+      // 실패한 항목이 남은 채로 끝나면 마지막은 에러(!)로 남는다 (사용자 11-16)
+      if (info.finished && info.errorCount) { want = { kind: 'error', value: null }; this._dlFinalShown = true; this._dlSeenErr = info.errorCount; }
+      else if (info.errorCount > this._dlSeenErr) {       // 에러 — 잠깐 ! 뒤 다시 진행 표시 (사용자 11-16)
+        this._dlSeenErr = info.errorCount;
+        want = { kind: 'error', value: null }; hold = GNB_DOWNLOAD_STEP * 2;
+      }
+      else if (this._dlFinalShown) want = null;
       else if (info.doneCount > this._dlSeen) {          // 항목이 끝났다 — 완료 체크
         this._dlSeen = info.doneCount;
         want = { kind: 'check', value: null };
@@ -968,7 +975,7 @@ var GnbComponent = {
     // 보기 옵션이 바뀌면 메뉴/목록 높이가 달라지므로 인디케이터·스크롤바를 다시 맞춘다
     this.syncDownloadQueue();
     protoSettingsSubscribe(function (s) {
-      var dlChanged = s.download !== self.proto.download || s.downloadStartedAt !== self.proto.downloadStartedAt;
+      var dlChanged = s.download !== self.proto.download || s.downloadStartedAt !== self.proto.downloadStartedAt || s.downloadError !== self.proto.downloadError;
       self.proto = s;
       if (dlChanged) self.syncDownloadQueue();
       self.$nextTick(function () {
@@ -1028,13 +1035,12 @@ var GnbComponent = {
               '<span v-if="item.id === \'lounge\' && proto.menuBadge" class="badge-menu-img" data-name="img_badge_lounge">' +
                 '<img src="assets/gnb-badge/badge-lounge-today1@2x.png" alt="오늘의 1등" />' +
               '</span>' +
-              // 다운로드 관리 — 진행 중이면 파란 개수, 실패가 있으면 빨간 느낌표
-              // 다운로드 관리: 에러면 빨간 "!" 고정, 아니면 진행 애니메이션 레이어
-              '<span v-if="item.id === \'download\' && proto.download && proto.downloadError" ' +
-                'class="badge-download badge-download--error">!</span>' +
-              '<span v-else-if="item.id === \'download\' && proto.download" class="download-queue">' +
+              // 다운로드 관리 — 남은 개수(파랑) · 진행률 · 완료 체크 · 에러(빨간 !) 레이어. 데이터는 js/download-sim.js
+              // 에러는 난 순간 잠깐, 실패 항목이 남은 채 끝나면 마지막에 계속 (사용자 11-16)
+              '<span v-if="item.id === \'download\' && proto.download" class="download-queue">' +
                 '<span v-for="layer in dlLayers" :key="layer.key" class="download-queue__layer" :class="\'is-\' + layer.phase">' +
                   '<span v-if="layer.kind === \'count\'" class="badge-download">{{ layer.value }}</span>' +
+                  '<span v-else-if="layer.kind === \'error\'" class="badge-download badge-download--error" aria-label="다운로드 오류">!</span>' +
                   '<span v-else-if="layer.kind === \'pct\'" class="download-queue__pct">{{ layer.value }}%</span>' +
                   '<span v-else class="download-queue__check" aria-label="다운로드 완료">' +
                     '<span class="download-queue__check-circle">' +

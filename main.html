@@ -346,6 +346,8 @@
           var patch = {};
           patch[el.dataset.protoKey] = el.checked;
           // PR 배너는 하나만 — 일반배너를 켜면 전략배너가 꺼지고, 반대도 같다
+          // 다운로드 '에러'를 바꾸면 다운로드 진행을 처음부터 — 실패 케이스를 처음부터 보이게 (사용자 11-16)
+          if (el.dataset.protoKey === 'downloadError' && protoSettingsRead().download) patch.downloadStartedAt = Date.now();
           if (el.checked && el.dataset.protoKey === 'prBasic') patch.prStrategic = false;
           if (el.checked && el.dataset.protoKey === 'prStrategic') patch.prBasic = false;
           protoSettingsWrite(patch);
