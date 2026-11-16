@@ -87,7 +87,7 @@
 .download-list { display: flex; flex-direction: column; gap: 1.2rem; margin-top: 2rem; }
 .download-group { display: flex; flex-direction: column; gap: 1.2rem; }
 
-/* DLC — 본 게임 아래 왼쪽 52 들여쓰기, 연결선은 x36에서 2px(neutral-variant-2), 마지막은 모서리 8로 꺾임.
+/* DLC — 본 게임 아래 왼쪽 52 들여쓰기, 연결선은 x36에서 2px(inverse-elevation-3, 사용자 11-16), 마지막은 모서리 8로 꺾임.
    선은 각 DLC 행이 그린다: 위쪽(본 게임 아래 · 이전 DLC 가운데)부터 자기 가운데까지 세로 + 가운데에서 행 왼쪽까지 가로 */
 .download-group__dlc { display: flex; flex-direction: column; gap: 1.2rem; padding-left: 5.2rem; }
 .download-group__dlc > .download-item::before {
@@ -97,8 +97,8 @@
   top: calc(-1.2rem - 4.5rem); /* 이전 DLC 행 가운데부터 */
   width: 1.6rem;
   height: calc(1.2rem + 4.5rem + 4.5rem + 0.1rem);
-  border-left: 0.2rem solid var(--stds-sem-color-neutral-variant-2);
-  border-bottom: 0.2rem solid var(--stds-sem-color-neutral-variant-2);
+  border-left: 0.2rem solid var(--stds-sem-color-inverse-elevation-3);
+  border-bottom: 0.2rem solid var(--stds-sem-color-inverse-elevation-3);
   box-sizing: border-box;
   pointer-events: none;
 }
