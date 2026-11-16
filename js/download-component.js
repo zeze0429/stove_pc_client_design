@@ -25,14 +25,13 @@
 // 케이스 참고: Figma 클라이언트-Library-0.3.1 component/list/download 8:3463
 //   설치 준비 중(8:3473) → 설치 중(8:3467) → 무결성검사(2952:17031) → 설치 완료, 일시 정지 됨(8:3470)
 // 그래프와 같은 1초 주기로 진행되고, 다운로드 속도는 그래프의 "현재 다운로드 속도"를 그대로 쓴다.
-// 설치 완료 뒤 잠깐 있다가 다시 설치 준비 중부터 반복(시연용).
+// 큐를 한 번만 진행하고 끝(빈 상태). 다시 보려면 새로고침 또는 다운로드 관리 재진입.
 var DOWNLOAD_RUN = {
   prepareTicks: 2,   // 설치 준비 중 유지(초)
   speedScale: 3,     // 진행은 그래프 속도의 3배로 — 시연이 오래 걸리지 않게 러프하게 (사용자 11-13)
   installRate: 0.7,  // 설치 속도 = 다운로드 속도 × 0.7 (받은 만큼만 설치)
   verifyRate: 450,   // 무결성 검사 1초에 약 450개(±100) — 용량에 비례한 파일 수라 큰 게임은 길고 DLC는 짧게
   moveTicks: 2,      // 묶음(기본 게임 + DLC) 마지막 설치 완료를 잠깐 보여 준 뒤 플레이 가능으로 옮기기까지(초)
-  resetTicks: 8,     // 큐가 다 비면(빈 상태) 이만큼 보여 주고 처음부터 다시(시연용)
 };
 
 // 용량(MB)마다 진행 — 무결성 검사 파일 수는 용량에 비례(599.04MB = 1,234개, Figma 케이스 값)
@@ -284,12 +283,8 @@ var DownloadMain = {
     // 진행 행 더미 진행 — 1초에 한 번. 큐 순서대로 한 항목씩(기본 게임 → 그 DLC들 → 다음 게임)
     stepRuns: function (speed) {
       var R = DOWNLOAD_RUN, q = this.queue;
-      // 큐가 다 비었으면 잠깐 뒤 처음부터 (시연용)
-      if (!q.length) {
-        this._resetTicks = (this._resetTicks || 0) + 1;
-        if (this._resetTicks >= R.resetTicks) { this._resetTicks = 0; this.queue = downloadInitialQueue(); this.ready = []; }
-        return;
-      }
+      // 큐가 다 비면 끝 — 반복하지 않는다. 다시 보려면 새로고침하거나 다운로드 관리에 다시 들어온다 (사용자 11-16)
+      if (!q.length) return;
       // 묶음이 다 설치됐으면 잠깐 보여 준 뒤 플레이 가능으로 — 1레벨로 풀어서(기본 게임, DLC 순)
       var g0 = q[0];
       if (g0.complete) {
