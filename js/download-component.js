@@ -49,10 +49,8 @@ var DownloadItem = {
       var left = dlc.some(function (d) { return d.status === 'waiting' || d.status === 'progress'; });
       return started && left;
     },
-    // 설치 완료 표시 — 다 끝났거나, 기본 게임은 끝났는데 아직 설치 중인 DLC가 없을 때
-    showDone: function () {
-      return this.item.status === 'done' || (this.item.status === 'dlc' && !this.dlcInstalling);
-    },
+    // 설치 완료 표시 — 묶음이 다 끝났을 때 (기본 게임만 끝난 'dlc'는 아래 DLC 상태 칸에서 설치 완료 + 버튼)
+    showDone: function () { return this.item.status === 'done'; },
     sizeText: function () { var t = downloadMB(this.item.size || 0); return t + ' / ' + t; },
     percent: function () { return downloadPercent(this.run); }, // 설치까지 95%, 무결성 검사로 나머지 5%
     fileName: function () { return 'data' + (this.run.file < 10 ? '0' : '') + this.run.file + '.v'; },
@@ -120,9 +118,13 @@ var DownloadItem = {
           '</template>' +
         '</div>' +
       '</div>' +
-      // 본 게임 — DLC 설치 중
+      // 본 게임 — 자기 설치는 끝: DLC 설치 시작 전엔 '설치 완료', 시작 뒤엔 'DLC 설치 중' + 둘 다 '기본 게임 먼저 플레이' (사용자 11-16)
       '<div v-else-if="item.status === \'dlc\'" class="download-item__status download-item__dlc" data-name="status">' +
-        '<span class="download-item__dlc-state" data-name="DLC 설치 중">' +
+        '<span v-if="!dlcInstalling" class="download-item__done" data-name="진행상태">' +
+          '<img src="assets/library/check_circle_color.svg" width="16" height="16" alt="" />' +
+          '<span>설치 완료</span>' +
+        '</span>' +
+        '<span v-else class="download-item__dlc-state" data-name="DLC 설치 중">' +
           '<svg class="download-item__dots" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="2" cy="8" r="2"/><circle cx="8" cy="8" r="2"/><circle cx="14" cy="8" r="2"/></svg>' +
           'DLC 설치 중' +
         '</span>' +

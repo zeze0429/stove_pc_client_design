@@ -151,6 +151,8 @@
 .download-item__state { color: var(--stds-sem-color-on-surface-elevation-4); }
 .download-item__btns { display: flex; gap: 0.8rem; }
 .download-item__dlc { gap: 2rem; padding-right: 0.8rem; }
+/* 기본 게임 'DLC 설치 시작 전' — 설치 완료 + 버튼. 버튼과 사이는 DLC 설치 중과 같은 20 (설치 완료 뒤 8은 버튼이 없을 때만) */
+.download-item__dlc > .download-item__done { display: flex; align-items: center; padding-right: 0; }
 /* 플레이 가능 행 — 용량(Text4-R 13/22 elevation-4) 20 버튼들(플레이 · 제거, 사이 20) */
 .download-item__ready { gap: 2rem; }
 .download-item__size {
