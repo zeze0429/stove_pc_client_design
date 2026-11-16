@@ -303,6 +303,8 @@ body { margin: 0; }
   pointer-events: none;
   animation: download-check-pulse 1400ms ease-out 3 both;
 }
+/* 중간 완료 체크는 2번만 (사용자 11-16 — DLC 진행률이 체크에 가려 안 보여서). 마지막 체크는 3번 그대로 */
+.download-queue__pulse.is-mid { animation-iteration-count: 2; }
 @keyframes download-check-pulse {
   0%   { opacity: 0.7; transform: scale(1); }
   70%  { opacity: 0; transform: scale(3.2); }

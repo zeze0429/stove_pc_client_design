@@ -136,7 +136,7 @@ var GNB_BADGE_ICON = {
 // 속도는 다운로드 페이지와 별개로 예전 그대로 (사용자 11-16): 한 단계 2초, 중간 체크 5초, 마지막 체크 8초.
 // 설치 중엔 진행률 ↔ 남은 개수를 2초마다 번갈아.
 var GNB_DOWNLOAD_STEP = 2000;        // 단계마다 머무는 시간
-var GNB_DOWNLOAD_CHECK = 5000;       // 중간 완료 체크 — 링 펄스 1.4초 x 3 + 들어오는 시간
+var GNB_DOWNLOAD_CHECK = 4000;       // 중간 완료 체크 — 링 펄스 1.4초 x 2 + 들어오는 시간 (사용자 11-16: 3번 → 2번)
 var GNB_DOWNLOAD_FINAL_CHECK = 8000; // 마지막 완료 체크는 더 오래
 var GNB_DOWNLOAD_SLIDE = 500;        // css/gnb.css .download-queue__layer 애니메이션 길이
 
@@ -585,7 +585,7 @@ var GnbComponent = {
       if (want) {
         this._dlKey = (this._dlKey || 0) + 1;
         this.dlLayers.push({ key: this._dlKey, kind: want.kind, value: want.value, phase: instant ? 'static' : 'in' });
-        if (want.kind === 'check') this.showDownloadPulse(instant ? 0 : GNB_DOWNLOAD_SLIDE);
+        if (want.kind === 'check') this.showDownloadPulse(instant ? 0 : GNB_DOWNLOAD_SLIDE, !info.finished);
         // 머무는 시간은 걸음 경계(2초)에 맞춰 올림 — 중간 체크 5초 → 6초. 큐가 끝나 걸음이 멈춘 뒤를 위해 타이머도 둔다
         var stepMs = DOWNLOAD_RUN.stepTicks * DOWNLOAD_RUN.tick;
         this._dlHoldUntil = sim.startedAt + Math.ceil((now + hold - 100 - sim.startedAt) / stepMs) * stepMs;
@@ -599,14 +599,14 @@ var GnbComponent = {
       }, GNB_DOWNLOAD_SLIDE + 40));
     },
     // 체크가 다 올라온 뒤(delay) 그 자리에 링을 띄운다 — 위치는 체크 원의 화면 좌표
-    showDownloadPulse: function (delay) {
+    showDownloadPulse: function (delay, mid) {
       var self = this;
       this._dlTimers.push(setTimeout(function () {
         var circle = self.$el.querySelector('.download-queue__check-circle');
         if (!circle) return;
         var r = circle.getBoundingClientRect();
         self._dlKey += 1;
-        self.dlPulse = { key: self._dlKey, left: r.left, top: r.top };
+        self.dlPulse = { key: self._dlKey, left: r.left, top: r.top, mid: !!mid };
       }, delay));
     },
     // 보기 옵션 "즐겨찾기"를 끄면 즐겨찾기가 하나도 없는 상태 — 그룹 제목만 남는다
@@ -1091,7 +1091,7 @@ var GnbComponent = {
         '</section>' +
       '</div>' +
 
-      '<span v-if="dlPulse" :key="dlPulse.key" class="download-queue__pulse" aria-hidden="true" ' +
+      '<span v-if="dlPulse" :key="dlPulse.key" class="download-queue__pulse" :class="{ \'is-mid\': dlPulse.mid }" aria-hidden="true" ' +
         ':style="{ left: dlPulse.left + \'px\', top: dlPulse.top + \'px\' }"></span>' +
       '<div ref="track" class="gnb-scrollbar" :class="{ \'is-visible\': showScrollbar }" @wheel.prevent="$refs.scrollEl.scrollTop += $event.deltaY" aria-hidden="true">' +
         '<div class="gnb-scrollbar__thumb" :style="thumbStyle"></div>' +
