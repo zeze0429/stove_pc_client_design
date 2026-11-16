@@ -129,36 +129,11 @@ var GNB_BADGE_ICON = {
   multiplay: 'assets/gnb-badge/img_badge_free%20game.png',
 };
 
-// 다운로드 관리 진행 애니메이션 (Figma Make 레퍼런스 quartz-unique-70171087.figma.site
-// 실측) — 보기 옵션 "다운로드 관리"를 켜면 대기열 3개를 차례로 받는다.
-// 항목마다: 남은 개수 뱃지 → 진행률(%)들 → 완료 체크(+ 퍼지는 링).
-// 레퍼런스보다 조금 느리게, 마지막 체크는 더 오래 머문 뒤 빈 상태로 끝난다.
-var GNB_DOWNLOAD_QUEUE = [
-  { count: 3, pcts: [12, 34, 87, 98] },
-  { count: 2, pcts: [7, 64, 99] },
-  { count: 1, pcts: [15, 72, 99] },
-];
-var GNB_DOWNLOAD_STEP = 2000;        // 단계마다 머무는 시간
-var GNB_DOWNLOAD_CHECK = 5000;       // 중간 완료 체크 — 링 펄스 1.4초 x 3 + 들어오는 시간
-var GNB_DOWNLOAD_FINAL_CHECK = 8000; // 마지막 완료 체크는 더 오래
+// 다운로드 관리 진행 표시 — 남은 개수 뱃지 → 진행률(%) → 완료 체크(+ 퍼지는 링). 모양 · 움직임은
+// Figma Make 레퍼런스(quartz-unique-70171087.figma.site) 실측 그대로.
+// 데이터는 다운로드 관리 페이지와 같은 js/download-sim.js (사용자 11-16, 항목 단위):
+// 뱃지 = 아직 설치 안 된 항목 수, % = 지금 설치 중인 항목, 항목이 끝날 때마다 체크, 다 끝나면 마지막 체크 뒤 사라짐.
 var GNB_DOWNLOAD_SLIDE = 500;        // css/gnb.css .download-queue__layer 애니메이션 길이
-
-// 시퀀스를 시간축으로 펼친다 — [{ at, kind, value }], 끝 시각은 end
-function gnbDownloadTimeline() {
-  var steps = [];
-  var t = 0;
-  GNB_DOWNLOAD_QUEUE.forEach(function (job, i) {
-    steps.push({ at: t, kind: 'count', value: job.count });
-    t += GNB_DOWNLOAD_STEP;
-    job.pcts.forEach(function (pct) {
-      steps.push({ at: t, kind: 'pct', value: pct });
-      t += GNB_DOWNLOAD_STEP;
-    });
-    steps.push({ at: t, kind: 'check', value: null });
-    t += i === GNB_DOWNLOAD_QUEUE.length - 1 ? GNB_DOWNLOAD_FINAL_CHECK : GNB_DOWNLOAD_CHECK;
-  });
-  return { steps: steps, end: t };
-}
 
 // 뱃지에 마우스를 올리면 뜨는 툴팁 문구
 var GNB_BADGE_TOOLTIP = {
@@ -558,26 +533,49 @@ var GnbComponent = {
     hideBadgeTip: function () {
       this.badgeTip = null;
     },
-    // 다운로드 진행 애니메이션 — 켠 시각(proto.downloadStartedAt)부터 지난 시간으로
-    // 지금 단계를 정한다. 그래서 페이지를 옮겨 GNB가 새로 떠도 처음부터 다시
-    // 돌지 않고 이어서 진행된다.
+    // 다운로드 진행 표시 — 켠 시각(proto.downloadStartedAt)을 시작으로 한 download-sim 상태를 1초마다 따라간다.
+    // 페이지를 옮겨 GNB가 새로 떠도 시작부터 지난 만큼 다시 계산하니 처음부터 다시 돌지 않고 이어진다.
     syncDownloadQueue: function () {
-      clearTimeout(this._dlTimer);
       this._dlTimers = (this._dlTimers || []).filter(function (id) { clearTimeout(id); return false; });
-      var started = this.proto.downloadStartedAt;
+      if (this._dlSim) { this._dlSim.unsubscribe(this._onDlTick); this._dlSim = null; }
       this.dlPulse = null;
-      if (!this.proto.download || !started) { this.dlLayers = []; return; }
-      var line = gnbDownloadTimeline();
-      var elapsed = Date.now() - started;
-      if (elapsed >= line.end) { this.dlLayers = []; return; }
-      var i = 0;
-      while (i + 1 < line.steps.length && line.steps[i + 1].at <= elapsed) i++;
-      var cur = line.steps[i];
-      this._dlKey = (this._dlKey || 0) + 1;
-      this.dlLayers = [{ key: this._dlKey, kind: cur.kind, value: cur.value,
-        phase: elapsed - cur.at < GNB_DOWNLOAD_SLIDE ? 'in' : 'static' }];
-      if (cur.kind === 'check') this.showDownloadPulse(Math.max(0, cur.at + GNB_DOWNLOAD_SLIDE - elapsed));
-      this.scheduleDownloadStep(i + 1, line, started);
+      var started = this.proto.downloadStartedAt;
+      if (!this.proto.download || !started || typeof downloadSimFor !== 'function') { this.dlLayers = []; return; }
+      this._dlSim = downloadSimFor(started);
+      var self = this;
+      this._onDlTick = function () { self.applyDownloadBadge(false); };
+      this._dlSim.subscribe(this._onDlTick);
+      this.dlLayers = [];
+      this.applyDownloadBadge(true);
+    },
+    // 지금 표시해야 할 것과 다르면 바꾼다 — 지금 레이어는 위로 빠지고 새 것이 아래에서 올라온다.
+    // 표시할 게 없어지면(마지막 체크 뒤) 제자리에서 투명도만 줄이며 사라진다.
+    applyDownloadBadge: function (instant) {
+      var sim = this._dlSim;
+      if (!sim) return;
+      var want = sim.badge();
+      var top = this.dlLayers.filter(function (l) { return l.phase !== 'out' && l.phase !== 'fade'; }).slice(-1)[0];
+      var same = top && want && top.kind === want.kind && top.value === want.value;
+      if (!same) {
+        var self = this;
+        var leaving = want ? 'out' : 'fade';
+        this.dlLayers.forEach(function (l) { l.phase = leaving; });
+        this.dlPulse = null;
+        if (want) {
+          this._dlKey = (this._dlKey || 0) + 1;
+          this.dlLayers.push({ key: this._dlKey, kind: want.kind, value: want.value, phase: instant ? 'static' : 'in' });
+          if (want.kind === 'check') this.showDownloadPulse(instant ? 0 : GNB_DOWNLOAD_SLIDE);
+        }
+        this._dlTimers.push(setTimeout(function () {
+          self.dlLayers = self.dlLayers.filter(function (l) { return l.phase !== leaving; });
+        }, GNB_DOWNLOAD_SLIDE + 40));
+      }
+      // 큐가 끝나면 걸음이 멈추니, 마지막 체크가 사라질 시각은 따로 잡는다
+      if (want && want.final) {
+        var self2 = this;
+        var endAt = sim.startedAt + (sim.state.finishTick + DOWNLOAD_RUN.finalShow) * DOWNLOAD_RUN.tick;
+        this._dlTimers.push(setTimeout(function () { self2.applyDownloadBadge(false); }, Math.max(0, endAt - Date.now()) + 20));
+      }
     },
     // 체크가 다 올라온 뒤(delay) 그 자리에 링을 띄운다 — 위치는 체크 원의 화면 좌표
     showDownloadPulse: function (delay) {
@@ -589,27 +587,6 @@ var GnbComponent = {
         self._dlKey += 1;
         self.dlPulse = { key: self._dlKey, left: r.left, top: r.top };
       }, delay));
-    },
-    scheduleDownloadStep: function (i, line, started) {
-      var self = this;
-      var at = i < line.steps.length ? line.steps[i].at : line.end;
-      this._dlTimer = setTimeout(function () {
-        // 지금 레이어는 위로 빠지고, 다음 단계가 아래에서 올라온다.
-        // 마지막 완료 체크는 다음이 없으니 제자리에서 투명도만 줄이며 사라진다.
-        var leaving = i < line.steps.length ? 'out' : 'fade';
-        self.dlLayers.forEach(function (l) { l.phase = leaving; });
-        self.dlPulse = null;
-        if (i < line.steps.length) {
-          var next = line.steps[i];
-          self._dlKey += 1;
-          self.dlLayers.push({ key: self._dlKey, kind: next.kind, value: next.value, phase: 'in' });
-          if (next.kind === 'check') self.showDownloadPulse(GNB_DOWNLOAD_SLIDE);
-          self.scheduleDownloadStep(i + 1, line, started);
-        }
-        self._dlTimers.push(setTimeout(function () {
-          self.dlLayers = self.dlLayers.filter(function (l) { return l.phase !== leaving; });
-        }, GNB_DOWNLOAD_SLIDE + 40));
-      }, Math.max(0, started + at - Date.now()));
     },
     // 보기 옵션 "즐겨찾기"를 끄면 즐겨찾기가 하나도 없는 상태 — 그룹 제목만 남는다
     groupGames: function (group) {
@@ -988,8 +965,8 @@ var GnbComponent = {
   },
   unmounted: function () {
     document.removeEventListener('mouseup', this._onPressRelease);
-    clearTimeout(this._dlTimer);
     (this._dlTimers || []).forEach(function (id) { clearTimeout(id); });
+    if (this._dlSim) this._dlSim.unsubscribe(this._onDlTick);
     var scrollEl = this.$refs.scrollEl;
     if (scrollEl) scrollEl.removeEventListener('scroll', this.handleGnbScroll);
     document.removeEventListener('mousemove', this.handleDocumentMouseMove);
