@@ -282,7 +282,8 @@
   background: var(--stds-sem-color-neutral-variant-2); /* Track — Figma #333333 = 다크 neutral-variant-2 */
 }
 /* 채움 (Figma 설치 진행 프로그레스 바 68154:332928) — 색은 치환되는 건 시멘틱, 없으면 헥스 (사용자 11-13)
-   설치 진행 = #1358FF(54.688%까지) → #32B0FF 그라데이션(맞는 토큰 없음) + 사선 무늬가 오른쪽으로 계속 흐름.
+   설치 진행 = #3772FF → #09B9FF 그라데이션(맞는 토큰 없음) + 사선 무늬가 오른쪽으로 계속 흐름.
+   ※ 인스턴스 겉면 #1358FF(54.688%) → #32B0FF는 안쪽 bar 프레임에 가려 안 보임 — 보이는 건 안쪽 값(사용자 11-16 "바 컬러가 강하다")
    무늬: 시안 cell 10×4 + 간격 2 = 12px 주기, 흰 15% 평행사변형 — 이미지 대신 코드(SVG 타일)로 그림 */
 .download-progress__bar > span {
   position: absolute;
@@ -290,7 +291,7 @@
   border-radius: 0 var(--stds-glob-border-radius-sm) var(--stds-glob-border-radius-sm) 0;
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='4'%3E%3Cpath d='M4 0H10L6 4H0Z' fill='%23fff' fill-opacity='.15'/%3E%3C/svg%3E"),
-    linear-gradient(90deg, #1358ff 54.688%, #32b0ff);
+    linear-gradient(90deg, #3772ff, #09b9ff);
   background-size: 1.2rem 0.4rem, 100% 100%;
   background-repeat: repeat-x, no-repeat;
   animation: download-progress-flow 0.6s linear infinite;
