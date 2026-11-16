@@ -20,6 +20,7 @@ var DOWNLOAD_RUN = {
   verifyRate: 450,   // 무결성 검사 1초에 약 450개(±100) — 용량에 비례한 파일 수라 큰 게임은 길고 DLC는 짧게
   moveTicks: 2,      // 묶음(기본 게임 + DLC) 마지막 설치 완료를 잠깐 보여 준 뒤 플레이 가능으로 옮기기까지(초)
   doneShow: 2,       // 사이드바 — 항목 하나 끝나면 완료 체크(초)
+  swapShow: 2,       // 사이드바 — 설치 중엔 진행률 · 남은 개수를 이 간격(초)으로 번갈아 (사용자 11-16, 레퍼런스 단계 간격 2초)
   finalShow: 8,      // 사이드바 — 전부 끝나면 마지막 완료 체크(초), 그 뒤 사라짐
 };
 
@@ -202,7 +203,7 @@ DownloadSim.prototype = {
     speed *= R.speedScale;
     r.speed = r.speed ? r.speed * 0.7 + speed * 0.3 : speed; // 남은 시간은 평균 속도로 — 멈칫해도 안 튀게
     if (r.phase === 'prepare') {
-      if (++r.ticks >= R.prepareTicks) { r.phase = 'install'; r.ticks = 0; }
+      if (++r.ticks >= R.prepareTicks) { r.phase = 'install'; r.ticks = 0; r.installTick = s.tick; }
       return;
     }
     var burst = downloadBurst(r, rng);
@@ -237,6 +238,9 @@ DownloadSim.prototype = {
     var cur = flat.filter(function (x) { return x.it.status === 'progress'; })[0];
     var remaining = flat.filter(function (x) { return x.it.status === 'waiting' || x.it.status === 'progress'; }).length;
     if (!cur || cur.it.run.phase === 'prepare') return { kind: 'count', value: remaining };
+    // 설치 중 — 진행률 → 남은 개수 → 진행률 … 번갈아
+    var k = Math.floor((s.tick - (cur.it.run.installTick || 0)) / R.swapShow);
+    if (k % 2 === 1) return { kind: 'count', value: remaining };
     return { kind: 'pct', value: downloadPercent(cur.it.run) };
   },
   // 큐가 끝나 걸음이 멈춘 뒤에도 마지막 체크가 사라질 시각을 재려고 실제 지난 초를 쓴다
