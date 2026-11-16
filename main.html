@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/button.css?v=5" />
   <link rel="stylesheet" href="css/desktop.css?v=19" />
   <link rel="stylesheet" href="css/notice.css?v=16" />
-  <script src="js/proto-settings.js?v=31"></script>
+  <script src="js/proto-settings.js?v=32"></script>
   <script>
     // 업데이트 버튼·공지사항·다운로드 관리·스튜디오 테스트·메뉴 강조·PR 배너 종류는 저장해 두지 않는다 —
     // 미리보기에 새로 들어올 때마다 아래 기본 상태로 시작한다(오늘의 1등 뱃지만 켜짐,
@@ -23,7 +23,7 @@
       studio: false,
       menuNew: false, menuBadge: true, // 오늘의 1등 뱃지만 켜진 상태로 시작
       notice: false, noticeUrgent: false,
-      download: false, downloadError: false, downloadStartedAt: 0,
+      download: false, downloadError: false, downloadErrorAt: 0, downloadStartedAt: 0,
       prBasic: false, prStrategic: true, // PR 배너는 전략배너로 시작 (일반배너 단 수는 기억)
     });
   </script>
@@ -346,8 +346,8 @@
           var patch = {};
           patch[el.dataset.protoKey] = el.checked;
           // PR 배너는 하나만 — 일반배너를 켜면 전략배너가 꺼지고, 반대도 같다
-          // 다운로드 '에러'를 바꾸면 다운로드 진행을 처음부터 — 실패 케이스를 처음부터 보이게 (사용자 11-16)
-          if (el.dataset.protoKey === 'downloadError' && protoSettingsRead().download) patch.downloadStartedAt = Date.now();
+          // 다운로드 '에러'를 체크하면 그 순간 설치 중이던 항목이 바로 실패 — 처음부터 다시 하지 않음 (사용자 11-16)
+          if (el.dataset.protoKey === 'downloadError') patch.downloadErrorAt = el.checked ? Date.now() : 0;
           if (el.checked && el.dataset.protoKey === 'prBasic') patch.prStrategic = false;
           if (el.checked && el.dataset.protoKey === 'prStrategic') patch.prBasic = false;
           protoSettingsWrite(patch);

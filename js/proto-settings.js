@@ -25,6 +25,7 @@ var PROTO_SETTINGS_DEFAULTS = {
   download: false,
   downloadStartedAt: 0, // 다운로드 관리를 켠 시각 — GNB 진행 애니메이션이 여기서부터 이어진다
   downloadError: false,
+  downloadErrorAt: 0, // 에러를 체크한 시각 — 그 순간 설치 중이던 항목이 실패 (js/download-sim.js)
   studio: false,
   ad: true,
   favorites: true,

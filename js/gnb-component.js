@@ -547,7 +547,7 @@ var GnbComponent = {
       this.dlPulse = null;
       var started = this.proto.downloadStartedAt;
       if (!this.proto.download || !started || typeof downloadSimFor !== 'function') { this.dlLayers = []; return; }
-      this._dlSim = downloadSimFor(started, this.proto.downloadError);
+      this._dlSim = downloadSimFor(started, downloadErrorAt(this.proto));
       var info = this._dlSim.info();
       this._dlSeen = info.doneCount;           // 들어오기 전에 끝난 항목은 체크를 다시 보여 주지 않는다
       this._dlSeenErr = info.errorCount;       // 에러도 마찬가지
@@ -976,7 +976,7 @@ var GnbComponent = {
     // 보기 옵션이 바뀌면 메뉴/목록 높이가 달라지므로 인디케이터·스크롤바를 다시 맞춘다
     this.syncDownloadQueue();
     protoSettingsSubscribe(function (s) {
-      var dlChanged = s.download !== self.proto.download || s.downloadStartedAt !== self.proto.downloadStartedAt || s.downloadError !== self.proto.downloadError;
+      var dlChanged = s.download !== self.proto.download || s.downloadStartedAt !== self.proto.downloadStartedAt || s.downloadError !== self.proto.downloadError || s.downloadErrorAt !== self.proto.downloadErrorAt;
       self.proto = s;
       if (dlChanged) self.syncDownloadQueue();
       self.$nextTick(function () {

@@ -6,9 +6,10 @@
  * - 다운로드 관리에 들어오면(새로고침 포함) 시작 시각을 지금으로 — 처음부터 (download-component.js).
  * - 1초(tick)마다 그래프 값 하나 + 설치 한 걸음. 큐가 다 비면 멈춘다(반복 없음).
  * - 일시정지 · 완료 후 실행 · 전체 제거 · 다시 시도는 그 페이지 안에서만 반영된다(다른 페이지는 다시 계산하므로 모름).
- * - 보기 옵션 '에러'(proto.downloadError)를 켜면 실패 케이스 (Figma 클라이언트_v3.1 플로우 '실패', 68118:725212 · 68123:726115):
- *     여기사 아가씨 기본 게임이 설치 중 실패 → 그 DLC도 '기본 게임 먼저' 에러로, 묶음은 맨 아래로 내리고 다음 대기열 진행
- *   (DLC 하나만 실패하는 경우 — 다음 DLC 진행, 묶음은 설치 중에 남음 — 도 처리는 되어 있음: failAt을 DLC에 주면 됨)
+ * - 보기 옵션 '에러'를 체크하면 그 순간(proto.downloadErrorAt) 설치 중이던 항목이 바로 실패 — 처음부터 다시 하지 않음 (사용자 11-16)
+ *   (Figma 클라이언트_v3.1 플로우 '실패', 68118:725212 · 725615 · 68123:726115)
+ *     기본 게임이 실패 → 그 DLC도 '기본 게임 먼저' 에러로, 묶음은 맨 아래로 내리고 다음 대기열 진행
+ *     DLC가 실패 → 다음 DLC 진행, 묶음은 설치 중 영역에 남음
  *   에러 행: 메시지(빨강) + 실패 시각 + 다시 시도 · 취소
  *
  * 케이스 참고: Figma 클라이언트-Library-0.3.1 component/list/download 8:3463
@@ -80,7 +81,7 @@ function downloadBurst(r, rng) {
 }
 
 // 처음 상태 — 전부 대기, 맨 위 기본 게임부터 설치 준비 중. 용량(MB)은 더미
-function downloadInitialQueue(error) {
+function downloadInitialQueue() {
   var q = [
     {
       id: 'yeogisa', size: 599.04,
@@ -95,8 +96,6 @@ function downloadInitialQueue(error) {
     { id: 'secret-curriculum', size: 488.64 },
   ];
   q.forEach(function (g) { [g].concat(g.dlc || []).forEach(function (it) { it.status = 'waiting'; }); });
-  // 에러 체크 = 이 케이스를 보려는 것 — 맨 위 기본 게임이 설치 중 45% 즈음 실패 (사용자 11-16, 시안 45%)
-  if (error) q[0].failAt = 0.45;
   q[0].status = 'progress';
   q[0].run = downloadNewRun(q[0].size);
   return q;
@@ -115,10 +114,12 @@ function downloadFlat(q) {
   return flat;
 }
 
-function DownloadSim(startedAt, error) {
+function DownloadSim(startedAt, errorAt) {
   var G = DOWNLOAD_GRAPH;
   this.startedAt = startedAt;
-  this.error = !!error;
+  // 에러를 체크한 순간 — 그 뒤 첫 틱에 설치 중이던 항목을 실패시킨다(시작 전에 체크돼 있었으면 첫 틱에)
+  this.errorAt = errorAt || 0;
+  this.errorTick = this.errorAt ? Math.max(1, Math.ceil((this.errorAt - startedAt) / DOWNLOAD_RUN.tick)) : null;
   this.rng = downloadRng(startedAt % 2147483647);
   this.listeners = [];
   var rng = this.rng;
@@ -130,7 +131,7 @@ function DownloadSim(startedAt, error) {
   }
   this.graph = { down: down, disk: disk };
   var state = {
-    queue: downloadInitialQueue(this.error), // 설치 중 / 대기 — 기본 게임 + DLC 트리
+    queue: downloadInitialQueue(), // 설치 중 / 대기 — 기본 게임 + DLC 트리
     ready: [],                     // 플레이 가능 — 1레벨 행(기본 게임 다음에 그 DLC들)
     live: { cpu: 14, disk: 0.4, down: 0.6, avg: 0.55, ram: 1.32 }, // 그래프 수치
     tick: 0,
@@ -179,6 +180,7 @@ DownloadSim.prototype = {
     g.disk.push(downloadWalk(rng, g.disk[g.disk.length - 1], 0, 1, 0.15));
     this.state.tick += 1;
     this.pushStats();
+    if (this.errorTick != null && this.state.tick === this.errorTick) this.failCurrent();
     if (this.state.tick % DOWNLOAD_RUN.stepTicks === 0) this.stepRuns(20 + this.state.live.down * 40); // 수치의 "현재 다운로드 속도"(MB/s)
   },
   pushStats: function () {
@@ -234,7 +236,6 @@ DownloadSim.prototype = {
         r.installed = Math.min(r.total, r.installed + add);
         r.downloaded = Math.min(r.total, Math.max(r.downloaded, r.installed + add * 0.4));
       }
-      if (it.failAt && r.installed / r.total >= it.failAt) { this.fail(it, g); return; }
       r.file = 1 + Math.floor(r.installed / r.total * 11); // data01 ~ data12
       if (r.installed >= r.total) { r.phase = 'verify'; r.file = 1; }
       return;
@@ -274,11 +275,17 @@ DownloadSim.prototype = {
     }
     this.settle(g);
   },
+  // 에러 체크 순간 — 지금 설치 중인 항목(설치 준비 중 포함)을 바로 실패. 진행 중인 게 없으면 다음 대기 항목을
+  failCurrent: function () {
+    var flat = downloadFlat(this.state.queue);
+    var x = flat.filter(function (f) { return f.it.status === 'progress'; })[0] || flat.filter(function (f) { return f.it.status === 'waiting'; })[0];
+    if (x) this.fail(x.it, x.group);
+  },
   // 다시 시도 — 에러 항목을 대기로(기본 게임이면 그 DLC 에러도). 이 페이지에서만 반영
   retry: function (it) {
     var s = this.state, g = s.queue.filter(function (x) { return x === it || (x.dlc || []).indexOf(it) > -1; })[0];
     if (!g || it.status !== 'error') return;
-    var reset = function (x) { x.status = 'waiting'; delete x.failAt; delete x.errorKind; delete x.errorAt; delete x.run; };
+    var reset = function (x) { x.status = 'waiting'; delete x.errorKind; delete x.errorAt; delete x.run; };
     if (it === g) (g.dlc || []).forEach(function (d) { if (d.status === 'error' && d.errorKind === 'base') reset(d); });
     reset(it);
     if (it !== g && g.status === 'dlc') { /* 기본 게임은 그대로 'DLC 설치 중' */ }
@@ -305,11 +312,16 @@ DownloadSim.prototype = {
 };
 
 // 한 페이지에서는 같은 시작 시각이면 같은 인스턴스를 같이 쓴다 — 다운로드 페이지에서 일시정지하면 사이드바도 멈춘다
-function downloadSimFor(startedAt, error) {
+function downloadSimFor(startedAt, errorAt) {
   if (!startedAt) return null;
   var cur = window.__downloadSim;
-  if (cur && cur.startedAt === startedAt && cur.error === !!error) return cur;
+  if (cur && cur.startedAt === startedAt && cur.errorAt === (errorAt || 0)) return cur;
   if (cur) cur.stop();
-  window.__downloadSim = new DownloadSim(startedAt, error);
+  window.__downloadSim = new DownloadSim(startedAt, errorAt);
   return window.__downloadSim;
+}
+
+// 보기 옵션에서 에러 시각 — 에러를 끄면 0(에러 없음). 예전에 저장된 값처럼 시각이 없으면 1(시작하자마자 실패)
+function downloadErrorAt(ps) {
+  return ps && ps.downloadError ? (ps.downloadErrorAt || 1) : 0;
 }

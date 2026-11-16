@@ -187,15 +187,15 @@ var DownloadMain = {
   created: function () {
     // 다운로드 관리에 들어오면(새로고침 포함) 처음부터 — 사이드바 다운로드 표시도 같이 처음부터 (사용자 11-16)
     var s = protoSettingsWrite({ download: true, downloadStartedAt: Date.now() });
-    this.sim = Vue.markRaw(downloadSimFor(s.downloadStartedAt, s.downloadError));
-    this._started = s.downloadStartedAt; this._error = !!s.downloadError;
+    this.sim = Vue.markRaw(downloadSimFor(s.downloadStartedAt, downloadErrorAt(s)));
+    this._started = s.downloadStartedAt; this._errorAt = downloadErrorAt(s);
     var vm = this;
     // 보기 옵션 "다운로드 관리"를 다시 켜거나 '에러'를 바꾸면 그 설정으로 다시
     protoSettingsSubscribe(function (ps) {
       if (!ps.downloadStartedAt) return;
-      if (ps.downloadStartedAt !== vm._started || !!ps.downloadError !== vm._error) {
-        vm._started = ps.downloadStartedAt; vm._error = !!ps.downloadError;
-        vm.sim = Vue.markRaw(downloadSimFor(ps.downloadStartedAt, ps.downloadError));
+      if (ps.downloadStartedAt !== vm._started || downloadErrorAt(ps) !== vm._errorAt) {
+        vm._started = ps.downloadStartedAt; vm._errorAt = downloadErrorAt(ps);
+        vm.sim = Vue.markRaw(downloadSimFor(ps.downloadStartedAt, vm._errorAt));
       }
     });
   },
