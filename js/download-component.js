@@ -186,7 +186,14 @@ var DownloadItem = {
           '<svg class="download-item__dots" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="2" cy="8" r="2"/><circle cx="8" cy="8" r="2"/><circle cx="14" cy="8" r="2"/></svg>' +
           'DLC 설치 중' +
         '</span>' +
-        '<button class="stds-button stds-button-blue stds-button-sm" type="button"><i class="ic-v2-media-av-play-round-fill"></i>기본 게임 먼저 플레이</button>' +
+        // 호버하면 위로 툴팁 (Figma Tooltip/iconbtn diraction=bottom-center 68088:379870 — 버튼 위 4, 가운데)
+        '<span class="download-item__play">' +
+          '<button class="stds-button stds-button-blue stds-button-sm" type="button"><i class="ic-v2-media-av-play-round-fill"></i>기본 게임 먼저 플레이</button>' +
+          '<span class="download-item__play-tip stds-cap1 fw-medium" role="tooltip" data-name="Tooltip/iconbtn">' +
+            '<span class="download-item__play-tip-body">DLC가 포함된 상태로 게임 플레이를 하려면<br />DLC 설치를 완료한 후 실행하는 것을 추천해요.</span>' +
+            '<span class="download-item__play-tip-tail"></span>' +
+          '</span>' +
+        '</span>' +
       '</div>' +
       // 플레이 가능 (Figma native_download_MD 플레이 가능 67359:360702) — 용량 + 플레이 / 기본 게임에서 플레이 + 제거
       '<div v-else-if="item.status === \'ready\'" class="download-item__status download-item__ready" data-name="status">' +
