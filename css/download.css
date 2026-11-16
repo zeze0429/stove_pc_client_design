@@ -146,7 +146,7 @@
 .download-item__state {
   font-size: 1.3rem; font-weight: 500; line-height: 2.2rem; letter-spacing: -0.025em; white-space: nowrap;
 }
-.download-item__done { gap: 0.4rem; padding-right: 0.4rem; color: var(--stds-sem-color-brand-blue); }
+.download-item__done { gap: 0.4rem; padding-right: 0.8rem; color: var(--stds-sem-color-brand-blue); } /* 공통 여백 20 + 8 (Figma 메모 "완료 텍스트 : 20+8", 사용자 11-16) */
 .download-item__waiting { gap: 2rem; }
 .download-item__state { color: var(--stds-sem-color-on-surface-elevation-4); }
 .download-item__btns { display: flex; gap: 0.8rem; }
