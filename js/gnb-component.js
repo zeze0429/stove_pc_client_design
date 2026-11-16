@@ -553,7 +553,8 @@ var GnbComponent = {
       this._dlFinalShown = info.finished;      // 이미 다 끝났으면 아무것도 안 띄움
       this._dlHoldUntil = 0;
       var self = this;
-      this._onDlTick = function () { self.applyDownloadBadge(false); };
+      // 다운로드 페이지 숫자가 바뀌는 순간(설치 한 걸음 = 2틱)에만 바꾼다 — 사이드바 진행률 = 페이지 진행률 (사용자 11-16)
+      this._onDlTick = function (sim) { if (sim.state.tick % DOWNLOAD_RUN.stepTicks === 0) self.applyDownloadBadge(false); };
       this._dlSim.subscribe(this._onDlTick);
       this.dlLayers = [];
       this.applyDownloadBadge(true);
@@ -564,7 +565,7 @@ var GnbComponent = {
       var sim = this._dlSim, self = this;
       if (!sim) return;
       var now = Date.now();
-      if (now < this._dlHoldUntil) return; // 머무는 동안은 그대로 — 끝나는 시각에 다시 불린다
+      if (now < this._dlHoldUntil - 100) return; // 머무는 동안은 그대로 — 끝나는 걸음 경계에서 다시 불린다
       var info = sim.info();
       var top = this.dlLayers.filter(function (l) { return l.phase !== 'out' && l.phase !== 'fade'; }).slice(-1)[0];
       var want = null, hold = GNB_DOWNLOAD_STEP;
@@ -585,9 +586,13 @@ var GnbComponent = {
         this._dlKey = (this._dlKey || 0) + 1;
         this.dlLayers.push({ key: this._dlKey, kind: want.kind, value: want.value, phase: instant ? 'static' : 'in' });
         if (want.kind === 'check') this.showDownloadPulse(instant ? 0 : GNB_DOWNLOAD_SLIDE);
-        this._dlHoldUntil = now + hold;
+        // 머무는 시간은 걸음 경계(2초)에 맞춰 올림 — 중간 체크 5초 → 6초. 큐가 끝나 걸음이 멈춘 뒤를 위해 타이머도 둔다
+        var stepMs = DOWNLOAD_RUN.stepTicks * DOWNLOAD_RUN.tick;
+        this._dlHoldUntil = sim.startedAt + Math.ceil((now + hold - 100 - sim.startedAt) / stepMs) * stepMs;
         clearTimeout(this._dlHoldTimer);
-        this._dlHoldTimer = setTimeout(function () { self.applyDownloadBadge(false); }, hold + 20);
+        if (sim.isOver() || info.finished) {
+          this._dlHoldTimer = setTimeout(function () { self.applyDownloadBadge(false); }, this._dlHoldUntil - now + 20);
+        }
       }
       this._dlTimers.push(setTimeout(function () {
         self.dlLayers = self.dlLayers.filter(function (l) { return l.phase !== 'out' && l.phase !== 'fade'; });

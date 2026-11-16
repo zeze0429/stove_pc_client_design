@@ -194,8 +194,8 @@ DownloadSim.prototype = {
       cur = flat.filter(function (x) { return x.it.status === 'waiting'; })[0];
       if (!cur) return;
       cur.it.status = 'progress';
-      // DLC 용량은 매번 무작위(180~720MB) — 작은 고정값이면 시작하자마자 95%로 튀어서 어색함 (사용자 11-13)
-      if (cur.it !== cur.group) cur.it.size = Math.round((180 + rng() * 540) * 100) / 100;
+      // DLC 용량은 매번 무작위 150~300MB — 기본 게임보다 작고 단계도 간단하게 (사용자 11-16; 11-13엔 180~720)
+      if (cur.it !== cur.group) cur.it.size = Math.round((150 + rng() * 150) * 100) / 100;
       cur.it.run = downloadNewRun(cur.it.size);
     }
     var it = cur.it, g = cur.group, r = it.run;
@@ -208,9 +208,15 @@ DownloadSim.prototype = {
     }
     var stepSec = R.stepTicks * R.tick / 1000;               // 한 걸음 = 2초 분량
     if (r.phase === 'install') {
-      var burst = downloadBurst(r, rng);
-      r.downloaded = Math.min(r.total, r.downloaded + speed * stepSec * burst);
-      r.installed = Math.min(r.downloaded, r.installed + speed * stepSec * R.installRate * burst);
+      if (it === g) { // 기본 게임 — 그래프 속도대로, 가끔 멈칫 ('갔다가 툭 끊기게')
+        var burst = downloadBurst(r, rng);
+        r.downloaded = Math.min(r.total, r.downloaded + speed * stepSec * burst);
+        r.installed = Math.min(r.downloaded, r.installed + speed * stepSec * R.installRate * burst);
+      } else {        // DLC — 멈칫 없이 한 걸음에 용량의 38~60%씩, 설치 2~3걸음 (한 번에 95%로 튀지 않게)
+        var add = r.total * (0.38 + rng() * 0.22);
+        r.installed = Math.min(r.total, r.installed + add);
+        r.downloaded = Math.min(r.total, Math.max(r.downloaded, r.installed + add * 0.4));
+      }
       r.file = 1 + Math.floor(r.installed / r.total * 11); // data01 ~ data12
       if (r.installed >= r.total) { r.phase = 'verify'; r.file = 1; }
       return;
