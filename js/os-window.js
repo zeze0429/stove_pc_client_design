@@ -9,6 +9,8 @@
  *   드래그하는 동안에는 배율을 고정 — 놓으면 다시 맞춘다.
  * - 최대화(유틸리티 바 버튼 → frameMax): 작업표시줄 위 화면 전체를 채운다(모서리 · 그림자 · 테두리 드래그 없음).
  *   복원하면 저장해 둔 frameW × frameH로 돌아간다. 사이즈를 고르거나 끌면 최대화는 풀린다.
+ * - 최소화(유틸리티 바 버튼 → postMessage): 창이 작업표시줄 STOVE 아이콘 쪽으로 줄어들며 사라지고,
+ *   아이콘을 누르면 다시 올라온다. 저장하지 않음 — 새로고침하면 창이 떠 있는 상태로 시작.
  */
 (function () {
   var MIN_W = 1280, MIN_H = 800;
@@ -150,6 +152,48 @@
     el.addEventListener('change', commit);
     el.addEventListener('keydown', function (e) { if (e.key === 'Enter') { commit(); el.blur(); } });
   });
+
+  // ---- 최소화 · 다시 띄우기 ----
+  var appBtn = document.querySelector('[data-os-app]');
+  var frame = win.querySelector('.os-content');
+  var minimized = false, restoreTimer = null;
+  var MIN_ANIM = 200, RESTORE_ANIM = 250; // css/desktop.css 키프레임과 같은 값
+
+  // 창 가운데 → 작업표시줄 아이콘 가운데까지 거리 (줄어들며 그쪽으로 내려간다)
+  function aimAtTaskbar() {
+    if (!appBtn) return;
+    // 창 가운데는 transform(배율 · 최소화 애니메이션)과 상관없는 배치 위치로 — 줄어든 채로 재면 0이 된다
+    var a = appBtn.getBoundingClientRect(), d = desktop.getBoundingClientRect();
+    var cx = d.left + win.offsetLeft + win.offsetWidth / 2, cy = d.top + win.offsetTop + win.offsetHeight / 2;
+    win.style.setProperty('--os-min-x', Math.round(a.left + a.width / 2 - cx) + 'px');
+    win.style.setProperty('--os-min-y', Math.round(a.top + a.height / 2 - cy) + 'px');
+  }
+
+  function minimize() {
+    if (minimized) return;
+    minimized = true;
+    clearTimeout(restoreTimer);
+    desktop.classList.remove('is-restoring');
+    aimAtTaskbar();
+    desktop.classList.add('is-minimized');
+    if (appBtn) appBtn.classList.remove('is-active');
+  }
+
+  function restore() {
+    if (!minimized) return;
+    minimized = false;
+    aimAtTaskbar();
+    desktop.classList.remove('is-minimized');
+    desktop.classList.add('is-restoring');
+    if (appBtn) appBtn.classList.add('is-active');
+    restoreTimer = setTimeout(function () { desktop.classList.remove('is-restoring'); }, RESTORE_ANIM);
+  }
+
+  window.addEventListener('message', function (e) {
+    if (e.origin !== location.origin || !frame || e.source !== frame.contentWindow) return;
+    if (e.data && e.data.type === 'stove-window' && e.data.action === 'minimize') minimize();
+  });
+  if (appBtn) appBtn.addEventListener('click', restore);
 
   window.addEventListener('resize', function () {
     if (drag) return;

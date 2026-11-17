@@ -113,6 +113,11 @@ var UtilityBarComponent = {
     goBack: function () { if (this.canGoBack) history.back(); },
     goForward: function () { if (this.canGoForward) history.forward(); },
     reload: function () { location.reload(); },
+    // 최소화 — 데스크톱 미리보기(main.html)에 알려 창을 작업표시줄로 내린다(js/os-window.js).
+    // 미리보기 밖에서 페이지만 열었을 때는 아무 일도 없다.
+    minimize: function () {
+      if (window.parent !== window) window.parent.postMessage({ type: 'stove-window', action: 'minimize' }, location.origin);
+    },
     toggleMaximize: function () {
       this.maximized = !this.maximized;
       protoSettingsWrite({ frameMax: this.maximized });
@@ -192,7 +197,7 @@ var UtilityBarComponent = {
         '<span class="utility-bar__divider" aria-hidden="true"></span>' +
 
         '<div class="utility-bar__group utility-bar__window" data-name="btn">' +
-          '<button class="utility-bar-icon-btn" type="button" aria-label="최소화">' +
+          '<button class="utility-bar-icon-btn" type="button" aria-label="최소화" @click="minimize">' +
             '<i class="ic-v2-control-minimize-line"></i>' + utilityBarTooltip('최소화') +
           '</button>' +
           '<button class="utility-bar-icon-btn" type="button" @click="toggleMaximize" ' +
