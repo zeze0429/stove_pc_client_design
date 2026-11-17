@@ -192,7 +192,8 @@ html, body {
   z-index: 70; /* 데모 버튼(알림 추가, 60) 위 */
   box-sizing: border-box;
   width: 260px;
-  padding: 48px 24px 24px;
+  display: flex;
+  flex-direction: column;
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: var(--stds-glob-border-radius-xl);
   background: rgba(255, 255, 255, 0.8);
@@ -200,32 +201,47 @@ html, body {
   -webkit-backdrop-filter: blur(64px);
   color: #101828;
   font-family: "Spoqa Han Sans Neo", stds-font-kr, system-ui, sans-serif;
-  /* 최대 700 — 넘치면 패널 안에서 스크롤 (사용자 11-17). 화면이 낮으면 작업표시줄 위 화면 안까지만 */
+  /* 최대 700 — 넘치면 본문만 스크롤, 타이틀은 위에 고정 (사용자 11-17 · 11-18). 화면이 낮으면 작업표시줄 위 화면 안까지만 */
   max-height: min(700px, calc(100vh - 64px));
+  overflow: hidden;
+}
+.proto-panel__head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 20px 24px 12px;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.12s;
+}
+.proto-panel__head.is-scrolled { border-bottom-color: rgba(0, 0, 0, 0.1); } /* 본문이 밑으로 지나갈 때만 */
+.proto-panel__heading { margin: 0; } /* 크기 · 굵기는 stds-title7 fw-bold (레이어 다이얼로그 타이틀과 같음) */
+.proto-panel__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 8px 24px 24px;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
 }
 .proto-panel[hidden] { display: none; }
 
+/* 닫기 — 레이어 다이얼로그 닫기와 같게: 아이콘 24, 배경 없이 hover 50% · press 70% (css/layer-dialog.css) */
 .proto-panel__close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 28px;
-  height: 28px;
+  flex: none;
   display: grid;
   place-items: center;
   padding: 0;
   border: 0;
-  border-radius: var(--stds-glob-border-radius-full);
   background: transparent;
   color: #1f1f1f;
   cursor: pointer;
-  transition: background 0.12s;
+  transition: opacity 0.15s;
 }
-.proto-panel__close:hover { background: rgba(0, 0, 0, 0.08); }
-.proto-panel__close svg { width: 16px; height: 16px; display: block; }
+.proto-panel__close i { font-size: 2.4rem; }
+.proto-panel__close:hover { opacity: 0.5; }
+.proto-panel__close:active { opacity: 0.7; }
 
 .proto-panel__title {
   margin: 0 0 12px;

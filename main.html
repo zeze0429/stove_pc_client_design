@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=2" />
   <link rel="stylesheet" href="css/button.css?v=5" />
   <link rel="stylesheet" href="css/radio.css?v=1" />
-  <link rel="stylesheet" href="css/desktop.css?v=23" />
+  <link rel="stylesheet" href="css/desktop.css?v=25" />
   <link rel="stylesheet" href="css/notice.css?v=16" />
   <script src="js/proto-settings.js?v=35"></script>
   <script>
@@ -104,10 +104,14 @@
 
     <!-- 프로토타입 보기 옵션 패널 — 시작 버튼으로 연다 (Figma Make 레퍼런스 패널 그대로).
          값은 js/proto-settings.js로 저장되고 iframe 안 클라이언트가 실시간으로 받는다. -->
-    <div class="proto-panel" id="protoPanel" role="dialog" aria-label="보기 옵션" hidden>
-      <button class="proto-panel__close" type="button" data-proto-close aria-label="닫기">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
-      </button>
+    <div class="proto-panel" id="protoPanel" role="dialog" aria-labelledby="protoPanelTitle" hidden>
+      <!-- 타이틀 영역 — 스크롤에서 빠져 위에 고정, 아래 본문만 스크롤 (사용자 11-18) -->
+      <div class="proto-panel__head" data-proto-head>
+        <!-- 타이틀 · 닫기는 우리 레이어 다이얼로그와 같게 (js/layer-dialog-component.js: stds-title7 fw-bold + ic-v2-control-close-line) -->
+        <h1 class="proto-panel__heading stds-title7 fw-bold" id="protoPanelTitle">테스트 설정</h1>
+        <button class="proto-panel__close" type="button" data-proto-close aria-label="닫기"><i class="ic-v2-control-close-line"></i></button>
+      </div>
+      <div class="proto-panel__body" data-proto-body>
 
       <h2 class="proto-panel__title">모드지정</h2>
       <div class="proto-panel__row proto-panel__row--theme">
@@ -288,6 +292,7 @@
           <button class="proto-switch" type="button" role="switch" data-proto-key="rightPanel" aria-label="우측패널"></button>
         </div>
       </div>
+      </div><!-- /.proto-panel__body -->
     </div>
 
     <!-- 데스크탑 알림 스택 (Figma: layout/desktop notice · node 66683:7471) -->
@@ -353,6 +358,9 @@
 
       startBtn.addEventListener('click', function () { setOpen(panel.hidden); });
       panel.querySelector('[data-proto-close]').addEventListener('click', function () { setOpen(false); });
+      // 본문이 타이틀 밑으로 지나가기 시작하면 타이틀 아래 구분선
+      var body = panel.querySelector('[data-proto-body]'), head = panel.querySelector('[data-proto-head]');
+      body.addEventListener('scroll', function () { head.classList.toggle('is-scrolled', body.scrollTop > 0); }, { passive: true });
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && !panel.hidden) setOpen(false);
       });
