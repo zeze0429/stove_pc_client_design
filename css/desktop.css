@@ -186,6 +186,11 @@ html, body {
   -webkit-backdrop-filter: blur(64px);
   color: #101828;
   font-family: "Spoqa Han Sans Neo", stds-font-kr, system-ui, sans-serif;
+  /* 최대 700 — 넘치면 패널 안에서 스크롤 (사용자 11-17). 화면이 낮으면 작업표시줄 위 화면 안까지만 */
+  max-height: min(700px, calc(100vh - 64px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
 }
 .proto-panel[hidden] { display: none; }
 
@@ -249,14 +254,15 @@ html, body {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* 사이즈 지정 — 다크 / 라이트 아래: 라디오 3줄(최소 1280 × 800 · 1920 × 1000 · 사용자 지정),
-   사용자 지정이면 그 밑에 [너비] × [높이] 한 줄 (사용자 11-17) */
-.proto-frame-options { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin-top: 8px; }
-.proto-frame-options .proto-check { margin-right: 0; font-size: 11px; line-height: 16px; }
-/* 라디오 — 보조 체크박스와 같은 상자를 둥글게, 고르면 가운데 점 */
-.proto-check__box--radio { border-radius: 50%; }
-.proto-check__box--radio::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #fc4420; opacity: 0; }
-.proto-check input:checked + .proto-check__box--radio::after { opacity: 1; }
+/* 사이즈 지정 — 모드지정 아래 섹션: 라디오 3줄(최소 1280 × 800 · 1920 × 1000 · 사용자 지정),
+   사용자 지정이면 그 밑에 [너비] × [높이] 한 줄 (사용자 11-17).
+   라디오는 시스템(css/radio.css sm 16) — 패널이 밝은 바탕이라 색만 라이트 모드 값으로 */
+.proto-frame-options { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.proto-panel .stds-radio {
+  --stds-radio-background: var(--stds-glob-color-white);   /* 라이트 neutral-variant-3 */
+  --stds-radio-border: var(--stds-glob-color-gray150);     /* 라이트 border */
+}
+.proto-panel .stds-radio-label { margin-left: 8px; font-size: 11px; font-weight: 500; line-height: 16px; color: #364153; }
 .proto-frame[hidden] { display: none; }
 .proto-frame { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 12px; font-weight: 500; color: #364153; }
 .proto-frame input {

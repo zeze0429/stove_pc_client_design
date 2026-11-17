@@ -1,0 +1,84 @@
+/* =============================================================
+   STDS Radio
+   -------------------------------------------------------------
+   구조·이름은 사내 Storybook(Components/Radio · SRadio)을, 값은 Figma STDS_StoveUI
+   Radio(1142:18287) · Radio Variants(1142:18793)를 따른다 — 둘 값 같음 (사용자 11-17).
+     <div class="stds-radio-container">
+       <input class="stds-radio stds-radio-md" type="radio" id="a" name="g" value="a" />
+       <label class="stds-radio-label" for="a">텍스트</label>
+     </div>
+   사이즈: sm 16 · 점 8 / md 20 · 점 10(기본) / lg 24 · 점 12 (Figma h16 · h20 · h24)
+     Storybook은 Tailwind 유틸(h-16 w-16 after:h-8 …)로 주는 것을 체크박스와 같이 stds-radio-{size}로.
+   상태: 선택 안 됨 = neutral-variant-3 바탕 + border 1 / 선택 = brand-primary + 가운데 흰 점
+         비활성 = disabled-variant-3 (+ border) / 비활성 선택 = disabled-variant-2 + 점 disabled-variant-4
+   호버·프레스 상태는 시스템에 없음.
+   색은 컴포넌트 변수로 — 밝은 바탕 위(데스크톱 보기 옵션 패널)에서 라이트 값으로 바꿔 쓸 수 있게.
+   ============================================================= */
+
+.stds-radio-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.stds-radio {
+  --stds-radio-size: 2rem;
+  --stds-radio-dot: 1rem;
+  position: relative;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: var(--stds-radio-size);
+  height: var(--stds-radio-size);
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  border: 1px solid var(--stds-radio-border, var(--stds-sem-color-border));
+  border-radius: 9999px;
+  background: var(--stds-radio-background, var(--stds-sem-color-neutral-variant-3));
+}
+.stds-radio::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--stds-radio-dot);
+  height: var(--stds-radio-dot);
+  border-radius: 9999px;
+  transform: translate(-50%, -50%);
+}
+.stds-radio:checked {
+  border-color: var(--stds-sem-color-brand-primary);
+  background: var(--stds-sem-color-brand-primary);
+}
+.stds-radio:checked::after { background: var(--stds-glob-color-white); }
+
+.stds-radio:disabled {
+  cursor: default;
+  border-color: var(--stds-radio-border, var(--stds-sem-color-border));
+  background: var(--stds-radio-disabled-background, var(--stds-sem-color-disabled-variant-3));
+}
+.stds-radio:checked:disabled {
+  border-color: var(--stds-sem-color-disabled-variant-2);
+  background: var(--stds-sem-color-disabled-variant-2);
+}
+.stds-radio:checked:disabled::after { background: var(--stds-sem-color-disabled-variant-4); }
+
+.stds-radio:focus-visible { outline: 2px solid var(--stds-sem-color-brand-primary); outline-offset: 2px; }
+
+/* 사이즈 */
+.stds-radio-sm { --stds-radio-size: 1.6rem; --stds-radio-dot: 0.8rem; }
+.stds-radio-md { --stds-radio-size: 2rem; --stds-radio-dot: 1rem; }
+.stds-radio-lg { --stds-radio-size: 2.4rem; --stds-radio-dot: 1.2rem; }
+
+/* 라벨 — Storybook text3 14(sm · md) / text1 16(lg), 간격 8 */
+.stds-radio-label {
+  margin-left: 0.8rem;
+  cursor: pointer;
+  font-size: 1.4rem;
+  font-weight: 400;
+  line-height: 2rem;
+  color: var(--stds-radio-label-color, var(--stds-sem-color-on-surface-elevation-2));
+}
+.stds-radio-lg + .stds-radio-label { font-size: 1.6rem; line-height: 2.4rem; }
+.stds-radio:disabled + .stds-radio-label { cursor: default; }

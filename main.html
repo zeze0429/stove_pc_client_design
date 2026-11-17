@@ -9,7 +9,8 @@
   <link rel="stylesheet" href="css/typography.css?v=12" />
   <link rel="stylesheet" href="css/stds-font-icon.embedded.css?v=2" />
   <link rel="stylesheet" href="css/button.css?v=5" />
-  <link rel="stylesheet" href="css/desktop.css?v=20" />
+  <link rel="stylesheet" href="css/radio.css?v=1" />
+  <link rel="stylesheet" href="css/desktop.css?v=21" />
   <link rel="stylesheet" href="css/notice.css?v=16" />
   <script src="js/proto-settings.js?v=33"></script>
   <script>
@@ -115,27 +116,25 @@
           <svg class="proto-theme__sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
         </button>
       </div>
+      <hr class="proto-panel__divider" />
+
       <!-- 사이즈 지정 — 클라이언트 창 크기. 최소 1280 × 800(기본) / 1920 × 1000 / 사용자 지정(고르면 입력칸).
-           창 테두리·모서리를 끌어도 같이 바뀌고, 두 크기와 다르면 사용자 지정으로 (js/os-window.js, 사용자 11-17) -->
-      <div class="proto-panel__row">
-        <span class="proto-panel__label">사이즈 지정</span>
-      </div>
+           창 테두리·모서리를 끌어도 같이 바뀌고, 두 크기와 다르면 사용자 지정으로 (js/os-window.js, 사용자 11-17).
+           라디오는 시스템 컴포넌트 css/radio.css (sm) -->
+      <h2 class="proto-panel__title">사이즈 지정</h2>
       <div class="proto-frame-options">
-        <label class="proto-check">
-          <input type="radio" name="protoFrameMode" value="min" />
-          <span class="proto-check__box proto-check__box--radio"></span>
-          1280 × 800 (최소)
-        </label>
-        <label class="proto-check">
-          <input type="radio" name="protoFrameMode" value="fhd" />
-          <span class="proto-check__box proto-check__box--radio"></span>
-          1920 × 1000
-        </label>
-        <label class="proto-check">
-          <input type="radio" name="protoFrameMode" value="custom" />
-          <span class="proto-check__box proto-check__box--radio"></span>
-          사용자 지정
-        </label>
+        <div class="stds-radio-container">
+          <input class="stds-radio stds-radio-sm" type="radio" id="protoFrameMin" name="protoFrameMode" value="min" />
+          <label class="stds-radio-label" for="protoFrameMin">1280 × 800 (최소)</label>
+        </div>
+        <div class="stds-radio-container">
+          <input class="stds-radio stds-radio-sm" type="radio" id="protoFrameFhd" name="protoFrameMode" value="fhd" />
+          <label class="stds-radio-label" for="protoFrameFhd">1920 × 1000</label>
+        </div>
+        <div class="stds-radio-container">
+          <input class="stds-radio stds-radio-sm" type="radio" id="protoFrameCustom" name="protoFrameMode" value="custom" />
+          <label class="stds-radio-label" for="protoFrameCustom">사용자 지정</label>
+        </div>
       </div>
       <div class="proto-frame" hidden>
         <input type="number" inputmode="numeric" min="1280" step="1" data-proto-frame="w" aria-label="창 너비" />
@@ -422,7 +421,7 @@
     })();
   </script>
 
-  <script src="js/os-window.js?v=1"></script>
+  <script src="js/os-window.js?v=2"></script>
 
   <script>
     // 데스크탑 알림(토스트) — 등장/스택/닫기 인터랙션 프로토타입
