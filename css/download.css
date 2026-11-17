@@ -6,7 +6,7 @@
 
 .download {
   flex: 0 0 auto; /* .main은 세로 flex — 줄어들지 않게 */
-  padding: 0 4rem 10rem;
+  padding: 0 var(--page-gutter) 10rem; /* 좌우 = 콘텐츠 그리드 여백 (css/dashboard.css) */
 }
 /* 섹션 제목은 라이브러리 첫 섹션 제목과 같은 자리 — 페이지 타이틀 아래 22 (빠른 실행 꺼짐 보유게임과 같은 2) */
 .download-section { margin-top: 0.2rem; }

@@ -6,7 +6,7 @@
    ============================================================= */
 .store-rest {
   flex: 0 0 auto; /* .main은 세로 flex — 줄어들지 않게 */
-  padding: 0 4rem;
+  padding: 0 var(--page-gutter); /* 좌우 = 콘텐츠 그리드 여백 (css/dashboard.css) */
 }
 .store-rest-section { padding-top: 3.6rem; }
 .store-rest-title {

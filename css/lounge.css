@@ -9,6 +9,8 @@
   display: flex;
   align-items: flex-start;
   color: var(--stds-sem-color-on-surface-elevation-1);
+  /* 라운지 웹은 3단 고정 폭(콘텐츠 영역 1040 기준 실측) — 창이 넓어지면 그 1040 틀을 가운데로 (콘텐츠 그리드, 사용자 11-17) */
+  padding-inline: max(0px, (100cqw - 104rem) / 2);
 }
 
 /* 불꽃 아이콘 — 아래(분홍)→위(주황) 그라데이션 글자 */

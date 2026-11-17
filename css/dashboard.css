@@ -28,6 +28,25 @@ ul { list-style: none; margin: 0; padding: 0; }
   grid-template-rows: minmax(0, 1fr);
   height: calc(100vh - var(--proto-pr-height)); /* PR영역이 켜지면 그만큼 줄어든다 */
   overflow: hidden;
+  container: app / inline-size; /* 그리드 가이드 단 수가 창 폭을 따른다 */
+}
+
+/* ---- 콘텐츠 그리드 (사용자 11-17) ------------------------------------
+   STDS Foundations/Grid(Storybook) — 클라이언트는 MD · LG만: 여백 40에 유동, 콘텐츠 최대 1300(여백 뺀 폭)이면
+   고정되고 남는 공간은 좌우 여백으로. 구간은 사이드바 · 우측패널을 뺀 콘텐츠 영역(.main) 폭 기준.
+   우측패널 페이지(클라이언트 전용): 1920 창에서 콘텐츠 1020 + 좌우 190(다른 페이지 1920 왼쪽 여백과 같음).
+     좁아지면 1020 유지하며 여백만 40까지 → 그 아래는 유동 / 넓어지면 여백 190 유지하며 1300까지 → 그 위는 여백만.
+   --page-a = 콘텐츠 영역 폭(.main은 100cqw), --page-content = 여백 뺀 콘텐츠 폭, --page-gutter = 좌우 여백 한쪽.
+   페이지 최상위 블록은 좌우 여백을 var(--page-gutter)로 둔다. */
+.app > .main {
+  container: page / inline-size;
+  --page-a: 100cqw;
+  --page-content: min(var(--page-a) - 8rem, 130rem);
+  --page-gutter: calc((var(--page-a) - var(--page-content)) / 2);
+}
+.proto-right-panel-on .app--client > .main,
+.app--panel-always > .main {
+  --page-content: min(var(--page-a) - 8rem, 130rem, max(102rem, var(--page-a) - 38rem));
 }
 
 /* ---- 시안 확인용 12컬럼 그리드 (보기 옵션 "그리드") ---------
@@ -43,7 +62,10 @@ ul { list-style: none; margin: 0; padding: 0; }
   z-index: 300;
   grid-template-columns: repeat(12, 1fr);
   gap: 2rem;
-  padding: 0 4rem;
+  /* 여백은 콘텐츠 그리드와 같은 식 — 여기서 콘텐츠 영역 폭은 앱 폭 - 사이드바 (absolute라 %가 .app 기준) */
+  --page-a: calc(100% - 24rem);
+  --page-content: min(var(--page-a) - 8rem, 130rem);
+  padding: 0 calc((var(--page-a) - var(--page-content)) / 2);
   pointer-events: none;
 }
 .proto-grid-on .proto-grid { display: grid; }
@@ -218,14 +240,29 @@ ul { list-style: none; margin: 0; padding: 0; }
 /* 콘텐츠 오버레이 스크롤바는 패널 왼쪽 끝 안쪽에 */
 .proto-right-panel-on .app--client .page-scrollbar,
 .app--panel-always .page-scrollbar { right: calc(var(--client-panel-w) + 0.8rem); }
-/* 그리드 가이드도 패널을 뺀 콘텐츠 영역 기준 — 5단, 좌우 여백 40 · 거터 20은 그대로 */
+/* 그리드 가이드도 패널을 뺀 콘텐츠 영역 기준 — 라이브러리 보유게임 단 수와 같게 5 · 6 · 7단
+   (콘텐츠 영역 1400 미만 · 1400~1679 · 1680~ = 창 1920 · 2200 경계, Figma 2026_웹전환 12300:6658), 거터 20 */
 .proto-right-panel-on .app--client .proto-grid,
 .app--panel-always .proto-grid {
   right: var(--client-panel-w);
-  grid-template-columns: repeat(5, 1fr);
+  --page-a: calc(100% - 24rem - var(--client-panel-w));
+  --page-content: min(var(--page-a) - 8rem, 130rem, max(102rem, var(--page-a) - 38rem));
+  grid-template-columns: repeat(var(--page-cols, 5), 1fr);
 }
 .proto-right-panel-on .app--client .proto-grid span:nth-child(n + 6),
 .app--panel-always .proto-grid span:nth-child(n + 6) { display: none; }
+@container app (min-width: 1920px) {
+  .proto-right-panel-on .app--client .proto-grid,
+  .app--panel-always .proto-grid { --page-cols: 6; }
+  .proto-right-panel-on .app--client .proto-grid span:nth-child(6),
+  .app--panel-always .proto-grid span:nth-child(6) { display: block; }
+}
+@container app (min-width: 2200px) {
+  .proto-right-panel-on .app--client .proto-grid,
+  .app--panel-always .proto-grid { --page-cols: 7; }
+  .proto-right-panel-on .app--client .proto-grid span:nth-child(7),
+  .app--panel-always .proto-grid span:nth-child(7) { display: block; }
+}
 
 /* ---- 클라이언트 페이지 타이틀 (라이브러리 · 다운로드 관리 · 스튜디오 테스트 공통) ----
    Figma 2026_웹전환 11769:156966 page_title — 좌우 40, 높이 40.
@@ -238,7 +275,7 @@ ul { list-style: none; margin: 0; padding: 0; }
   align-items: center;
   height: 4rem;
   /* 위 34 — 타이틀 윗변을 사이드바 첫 메뉴 "스토어" 글자 줄 · 우측패널 "나의 게임 그룹"과 같은 y82에 (사용자 요청 24 → 34, 11-03) */
-  margin: 3.4rem 4rem 2rem;
+  margin: 3.4rem var(--page-gutter) 2rem; /* 좌우는 콘텐츠 그리드 여백 (MD 40 ~) */
 }
 .client-page-title__text {
   margin: 0;

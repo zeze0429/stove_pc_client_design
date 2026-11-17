@@ -17,7 +17,7 @@
   top: 0;
   z-index: 30;
   flex: 0 0 auto; /* .main은 세로 flex — 줄어들지 않게 */
-  padding: 0.8rem 4rem;
+  padding: 0.8rem var(--page-gutter); /* 좌우 = 콘텐츠 그리드 여백 (css/dashboard.css) */
   transition: transform 0.25s ease, opacity 0.25s ease;
 }
 .store-nav.is-hidden {

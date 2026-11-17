@@ -13,7 +13,13 @@
 
 // 빠른 실행 — 보유게임 중 플레이한 정식 게임을 최근 플레이 순으로 최대 20개 (별도 목록 없음)
 var LIBRARY_QUICK_COUNT = 20;
-var LIBRARY_QUICK_STEP = 4; // 화살표 한 번에 넘기는 카드 수 (레퍼런스: 4장 = 560)
+// 한 페이지(화살표 한 번)에 보이는 카드 수 — 폭에 맞춰 바뀐다 (사용자 11-17, Figma 2026_웹전환 12300:6658):
+// 접힌 카드 120 · 펼친 카드 기본 260 · 간격 20 → 기본형이 하나 더 들어갈 때마다 한 장씩 늘어난다(680 4장 · 1020 6장 · 1300 8장).
+// 남는 폭은 펼친(activated) 카드만 채우고 접힌 카드는 120 고정.
+var LIBRARY_QUICK_CARD = 120, LIBRARY_QUICK_CARD_OPEN = 260, LIBRARY_QUICK_GAP = 20;
+function libraryQuickPerPage(width) {
+  return Math.max(1, 1 + Math.floor((width - LIBRARY_QUICK_CARD_OPEN + 0.5) / (LIBRARY_QUICK_CARD + LIBRARY_QUICK_GAP)));
+}
 
 // 빠른 실행 게임 광고 (Figma 2026_웹전환 11856:623971) — 두 번째 자리에 끼워 넣는 카드.
 // 게임 개수(최대 20, 타이틀 옆 숫자)에는 포함하지 않는다. 카드 모양은 게임 카드와 같고
@@ -383,6 +389,7 @@ var LibraryMain = {
       ownedAll: LIBRARY_OWNED.map(libraryGame), // 숨긴 게임 포함 전체 — 화면에는 owned(숨긴 게임 뺀 것)
       quickPage: 0,
       quickActive: 0, // 넓게 펼쳐진 카드 — 마우스를 올린 카드, 없으면 지금 페이지 첫 카드
+      quickPer: 4, // 한 페이지 카드 수 — 빠른 실행 폭에 맞춰 (libraryQuickPerPage)
       view: 'grid',
       query: '', // 검색 필드에 친 글자 — 엔터 · 검색 버튼을 누르면 queries에 올린다(글자는 남김)
       queries: [], // 확인한 검색어 칩 (여러 개면 모두 맞는 게임만)
@@ -406,7 +413,11 @@ var LibraryMain = {
   mounted: function () {
     var vm = this;
     protoSettingsSubscribe(function (s) { vm.quickAd = s.libraryQuickAd; });
-    this._onResize = function () { vm.snapFloating(); vm.checkHeadStuck(); vm.updateOwnedMinHeight(); };
+    this._onResize = function () { vm.snapFloating(); vm.checkHeadStuck(); vm.updateOwnedMinHeight(); vm.updateQuickPer(); };
+    // 빠른 실행 폭이 바뀌면(창 크기 · 우측패널 켜고 끄기) 한 페이지 카드 수를 다시 — 창 크기는 resize, 패널은 ResizeObserver
+    this._quickRO = window.ResizeObserver && new ResizeObserver(function () { vm.updateQuickPer(); });
+    if (this._quickRO && this.$refs.root) this._quickRO.observe(this.$refs.root);
+    this.updateQuickPer();
     window.addEventListener('resize', this._onResize);
     this._scrollBox = this.$refs.owned && this.$refs.owned.closest('.main');
     this._onScroll = this.checkHeadStuck.bind(this);
@@ -427,6 +438,7 @@ var LibraryMain = {
     document.removeEventListener('keydown', this._onCardDragKey);
     this.endCardDrag(false);
     window.removeEventListener('resize', this._onResize);
+    if (this._quickRO) this._quickRO.disconnect();
     if (this._scrollBox) this._scrollBox.removeEventListener('scroll', this._onScroll);
   },
   watch: {
@@ -515,13 +527,13 @@ var LibraryMain = {
       }
       return cards;
     },
-    quickStep: function () { return LIBRARY_QUICK_STEP; },
-    quickPages: function () { return Math.ceil(this.quickCards.length / LIBRARY_QUICK_STEP); },
-    // 4장씩 묶은 페이지 — 각 카드에 전체 순번(index)을 붙여 둔다
+    quickStep: function () { return this.quickPer; },
+    quickPages: function () { return Math.ceil(this.quickCards.length / this.quickPer); },
+    // 한 페이지 장수(quickPer)씩 묶은 페이지 — 각 카드에 전체 순번(index)을 붙여 둔다
     quickPageList: function () {
-      var pages = [];
+      var pages = [], per = this.quickPer;
       this.quickCards.forEach(function (g, i) {
-        var p = Math.floor(i / LIBRARY_QUICK_STEP);
+        var p = Math.floor(i / per);
         (pages[p] = pages[p] || []).push(Object.assign({ index: i }, g));
       });
       return pages;
@@ -607,12 +619,23 @@ var LibraryMain = {
     },
   },
   methods: {
+    // 빠른 실행 폭 = 라이브러리 콘텐츠 폭(.library 좌우 여백 뺀 폭) — 빠른 실행은 조건부라 항상 있는 루트로 잰다.
+    // 장수가 바뀌면 펼친 카드가 있는 페이지를 계속 보여 준다
+    updateQuickPer: function () {
+      var root = this.$refs.root;
+      if (!root) return;
+      var cs = getComputedStyle(root);
+      var per = libraryQuickPerPage(root.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight));
+      if (per === this.quickPer) return;
+      this.quickPer = per;
+      this.quickPage = Math.floor(this.quickActive / per);
+    },
     goQuick: function (delta) {
       // 카드가 없을 때(보유게임 없음) 페이지 수 0 → -1로 내려가지 않게 0 아래로는 안 간다
       var next = Math.max(Math.min(this.quickPage + delta, this.quickPages - 1), 0);
       if (next === this.quickPage) return;
       this.quickPage = next;
-      this.quickActive = next * LIBRARY_QUICK_STEP;
+      this.quickActive = next * this.quickPer;
     },
     // 화살표를 누르면 넘기고, 마우스가 위에 있어도 기본 상태로 돌려 둔다
     pressArrow: function (delta) {
@@ -620,7 +643,7 @@ var LibraryMain = {
       this.arrowRest = delta;
     },
     hoverQuick: function (i) {
-      if (Math.floor(i / LIBRARY_QUICK_STEP) === this.quickPage) this.quickActive = i;
+      if (Math.floor(i / this.quickPer) === this.quickPage) this.quickActive = i;
     },
     actionIcon: function (a) { return LIBRARY_ACTION_ICON[a]; },
     actionLabel: function (a) { return LIBRARY_ACTION_LABEL[a]; },
@@ -965,7 +988,7 @@ var LibraryMain = {
     },
   },
   template:
-    '<div class="library" :class="{ \'is-no-owned\': store.noOwned }">' +
+    '<div ref="root" class="library" :class="{ \'is-no-owned\': store.noOwned }">' +
 
 
       // ---- 빠른 실행 ----
@@ -979,7 +1002,7 @@ var LibraryMain = {
         '</div>' +
         '<div class="library-quick__viewport">' +
           '<div class="library-quick__track" :style="quickTrackStyle">' +
-           // 페이지(4장)마다 680 고정 상자 — 카드들이 동시에 커지고 줄어도 합이 항상 680
+           // 페이지(quickPer장)마다 빠른 실행 폭 고정 상자 — 카드들이 동시에 커지고 줄어도 합이 항상 그 폭
            '<div v-for="(page, p) in quickPageList" :key="p" class="library-quick__page" :class="{ \'is-offpage\': p !== quickPage, \'is-full\': page.length === quickStep }">' +
             '<div v-for="g in page" :key="g.key" class="library-quick__card"' +
               ' :class="{ \'is-active\': g.index === quickActive, \'library-quick__card--ad\': g.ad }" @mouseenter="hoverQuick(g.index)" @contextmenu.prevent="g.ad || openCardMenu($event, g)">' +

@@ -6,7 +6,7 @@
    ============================================================= */
 .library {
   flex: 0 0 auto; /* .main은 세로 flex — 줄어들지 않게 */
-  padding: 0 4rem 10rem;
+  padding: 0 var(--page-gutter) 10rem; /* 좌우 = 콘텐츠 그리드 여백 (css/dashboard.css) */
 }
 
 /* ---- 섹션 공통 — 제목 16/700/24 + 개수(elevation-4) -------------- */
@@ -60,9 +60,10 @@
   transition: opacity 0.2s ease;
 }
 .library-quick__page.is-offpage { opacity: 0; pointer-events: none; }
-/* 꽉 찬 페이지(4장)만 마지막 카드가 남는 폭을 채운다. 덜 찬 페이지(마지막 페이지 등)는
-   카드 크기 그대로(접힘 120 · 펼침 260) 왼쪽부터 놓인다 */
-.library-quick__page.is-full > .library-quick__card:last-child { flex-grow: 1; }
+/* 꽉 찬 페이지만 펼친(activated) 카드가 남는 폭을 채운다 — 접힌 카드는 120 고정 (Figma 12300:6658
+   "프레임이 커질 때 inactive 카드는 고정, activated 카드 width만 변경", 사용자 11-17).
+   덜 찬 페이지(마지막 페이지 등)는 카드 크기 그대로(접힘 120 · 펼침 260) 왼쪽부터 놓인다 */
+.library-quick__page.is-full > .library-quick__card.is-active { flex-grow: 1; }
 .library-quick__card {
   position: relative;
   flex: 0 1 12rem;
@@ -73,11 +74,10 @@
   background: transparent; /* 접힌 카드는 썸네일이 다 덮는다 — 배경이 모서리에 비치지 않게 */
   cursor: pointer;
   /* 펼침 — 빠르게 커지다 부드럽게 멈춘다 (넘쳤다 돌아오는 스프링 없음) */
-  transition: flex-basis 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+  transition: flex-basis 0.5s cubic-bezier(0.22, 1, 0.36, 1), flex-grow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
     background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .library-quick__card.is-active { flex-basis: 26rem; background: var(--stds-glob-color-black); }
-.library-quick__page.is-full > .library-quick__card.is-active:last-child { flex-grow: 1; }
 .library-quick__thumb {
   position: absolute;
   inset: 0;
@@ -429,7 +429,7 @@
 
 .library-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--library-cols, 5), minmax(0, 1fr));
   gap: 2.8rem 2rem;
   margin: 1.6rem 0 0;
   padding: 0;
@@ -1134,3 +1134,8 @@
   bottom: 0;
   z-index: 1;
 }
+
+/* ---- 보유게임 단 수 — 콘텐츠 영역(.main, 우측패널 뺀 폭) 기준 (Figma 2026_웹전환 12300:6658, 사용자 11-17)
+   1400 미만 5단 · 1400~1679 6단 · 1680~ 7단 (= 창 1920 · 2200 경계) */
+@container page (min-width: 1400px) { .library-grid { --library-cols: 6; } }
+@container page (min-width: 1680px) { .library-grid { --library-cols: 7; } }
