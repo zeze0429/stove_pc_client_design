@@ -93,6 +93,7 @@
     });
     grip.addEventListener('pointermove', function (e) {
       if (!drag) return;
+      if (e.buttons === 0) { end(); return; } // 버튼을 이미 놓았는데 놓음 신호를 못 받은 경우
       // 가운데 정렬이라 한쪽을 d만큼 끌면 양쪽이 같이 — 크기는 2d (화면 배율만큼 되돌려서)
       var dx = (e.clientX - drag.x) / scale * 2;
       var dy = (e.clientY - drag.y) / scale * 2;
@@ -113,6 +114,11 @@
     }
     grip.addEventListener('pointerup', end);
     grip.addEventListener('pointercancel', end);
+    // 창 밖 · 브라우저 밖에서 놓거나 포인터 추적이 끊겨도 반드시 끝낸다 — 안 끝나면 클라이언트(iframe)
+    // 클릭을 막아 둔 상태(is-resizing)가 남아 다른 곳이 눌리지 않는다 (사용자 11-17)
+    grip.addEventListener('lostpointercapture', end);
+    window.addEventListener('pointerup', end);
+    window.addEventListener('blur', end);
   });
 
   // ---- 사이즈 지정 입력 — Enter 또는 칸을 벗어날 때 반영 ----
