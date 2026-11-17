@@ -25,6 +25,7 @@ var EVENT_SERVICES = {
 };
 
 // 카드 — 썸네일은 assets/event/thumb-XX.jpg (목록 순서 그대로)
+// today1: "오늘의 1등" 이벤트 카드 — 11-17 종료로 목록에서 뺀다(썸네일 번호는 원래 순서 유지)
 var EVENT_CARDS = [
   { flake: true, date: '2026.10.18 ~ 10.21', title: '게임 리뷰 읽고,\n댓글 달면 플레이크 GET!', desc: '지금 바로 클릭해 읽어보세요!', service: '스토어' },
   { date: '2026.10.16 ~ 10.30', title: '다이너마이트 블루\n스토브 출시!', desc: '오늘도 평범한 하루,\n출시 기념 5% 결제 할인 쿠폰과 함께!', service: '스토어' },
@@ -42,7 +43,7 @@ var EVENT_CARDS = [
   { flake: true, date: '2026.10.01 ~ 10.31', title: '스토어 10월 출석 교환 상점', desc: '매일매일 다양한 혜택이 팡팡!', service: '스토어' },
   { date: '2026.10.01 ~ 10.31', title: '마작일번가 10월 스토어 이벤트', desc: '누적 결제, 첫 결제, 신규/복귀 혜택 총출동!\n작탁을 접수하라!', service: '스토어' },
   { date: '2026.10.01 ~ 10.31', title: '2026년 10월 신작 모아보기', desc: '따끈따끈한 10월 신작을 만나 보세요.\n출시 게임부터 출시 할인까지 한눈에👀', service: '스토어' },
-  { flake: true, date: '2026.09.29 ~ 10.31', title: '내 일상과 드립이 돈이 되는 순간!', desc: '1등 인기글에 매일 100만원을 드려요.\n인기글을 뽑기만 해도 최대 10만원의 행운이!', service: '스토브' },
+  { today1: true, flake: true, date: '2026.09.29 ~ 10.31', title: '내 일상과 드립이 돈이 되는 순간!', desc: '1등 인기글에 매일 100만원을 드려요.\n인기글을 뽑기만 해도 최대 10만원의 행운이!', service: '스토브' },
   { date: '2026.09.18 ~ 10.28', title: '에픽세븐 X 카오스 제로 나이트메어', desc: '출석만 해도 ★5 월광 영웅 레노아 지급!', service: '에픽세븐' },
   { date: '2026.08.28 ~ 10.28', title: '에픽세븐 8주년!', desc: '계승자님을 위한 축제', service: '에픽세븐' },
   // 상시 이벤트 — 기간 칩이 없다
@@ -54,7 +55,7 @@ var EVENT_CARDS = [
   c.icon = 'assets/event/svc-' + EVENT_SERVICES[c.service] + '.png';
   c.status = c.status || '진행 중';
   return c;
-});
+}).filter(function (c) { return !c.today1; });
 
 var EventMain = {
   data: function () {

@@ -2,7 +2,7 @@
  * 라운지 홈 (탐색 · 트렌드) — Vue 3 CDN 컴포넌트
  * -------------------------------------------------------------
  * 실제 lounge.onstove.com/ko 홈을 다시 실측해 옮긴 것 (2026-11-17, 사용자 "지금 기준으로").
- * 예전 "오늘의 1등" 날짜 화면은 지웠다.
+ * 예전 "오늘의 1등" 날짜 화면은 지웠고, 11-17 이벤트 종료로 1단 메뉴 · 미니 배너의 오늘의 1등도 뺐다.
  * 글 · 작성자 · 썸네일 · 배너는 실제 웹에서 받아 온 고정 데이터(assets/lounge/v2-*).
  * 구글 광고 자리(피드 중간 · 오른쪽 단)는 뺐다.
  *
@@ -24,7 +24,6 @@ var LOUNGE_MENU = [
     ] },
   { id: 'following', label: '팔로잉', icon: 'ic-v2-community-officialtag-line', edit: true, fold: true },
   { id: 'game-feed', label: '게임 피드', icon: 'ic-v2-object-game-line', fold: true },
-  { id: 'today1', label: '오늘의 1등', icon: 'ic-v2-object-fire-line', chip: '다시보기' },
   { id: 'notice', label: '공지', icon: 'ic-v2-object-notice-line', isNew: true },
 ];
 
@@ -62,9 +61,8 @@ var LOUNGE_HOT = [
   { title: '1인당 2만원 댓글만 써도 2만원 억시탈이 쏩니다.', temp: '1,471', reply: 124, thumb: 'v2-hot-3.webp' },
 ];
 
-// 오른쪽 미니 배너 — 4초마다 넘어간다 (웹과 같은 순서: 오늘의 1등 결산 → 라운지 NPC)
+// 오른쪽 미니 배너 — 여러 장이면 4초마다 넘어가고 오른쪽 위에 장 수 ("오늘의1등 결산"은 11-17 종료로 뺌)
 var LOUNGE_MINI_BANNERS = [
-  { src: 'v2-minibanner-today1.webp', alt: '오늘의1등 43일 간의 이벤트 결산' },
   { src: 'v2-minibanner-npc.webp', alt: '라운지NPC' },
 ];
 
@@ -89,7 +87,7 @@ var LoungeMain = {
   },
   mounted: function () {
     var self = this;
-    this._bannerTimer = setInterval(function () { self.bannerIndex = (self.bannerIndex + 1) % self.banners.length; }, 4000);
+    if (this.banners.length > 1) this._bannerTimer = setInterval(function () { self.bannerIndex = (self.bannerIndex + 1) % self.banners.length; }, 4000);
   },
   beforeUnmount: function () { clearInterval(this._bannerTimer); },
   methods: { asset: loungeAsset },
@@ -219,7 +217,7 @@ var LoungeMain = {
             '</div>' +
             '<a class="lounge-mini" href="#" @click.prevent>' +
               '<img v-for="(b, i) in banners" :key="b.src" :class="{ \'is-on\': i === bannerIndex }" :src="asset(b.src)" :alt="b.alt" />' +
-              '<span class="lounge-mini__pager">{{ bannerIndex + 1 }} / {{ banners.length }}</span>' +
+              '<span v-if="banners.length > 1" class="lounge-mini__pager">{{ bannerIndex + 1 }} / {{ banners.length }}</span>' +
             '</a>' +
             '<footer class="lounge-footer">' +
               '<nav class="lounge-footer__links"><a v-for="f in footer" :key="f" href="#" :class="{ \'is-strong\': f === \'개인정보처리방침\' }" @click.prevent>{{ f }}</a></nav>' +

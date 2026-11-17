@@ -119,7 +119,7 @@
 }
 .store-rest-indicator__dot.is-active { background: var(--stds-sem-color-on-surface-elevation-1); }
 
-/* ---- 바로가기 아이콘 — 10개, 칸 94 · 아이콘 60 / 모서리 20 ------- */
+/* ---- 바로가기 아이콘 — 9개(오늘의 1등 뺌, 11-17), 칸 94 · 아이콘 60 / 모서리 20 ------- */
 .store-shortcuts {
   display: flex;
   justify-content: space-between;
@@ -616,7 +616,6 @@
   cursor: pointer;
 }
 .store-wide-banner img,
-.store-today1__item img,
 .store-gift__img {
   display: block;
   width: 100%;
@@ -683,18 +682,3 @@
   text-overflow: ellipsis;
 }
 
-/* ---- 오늘의 1등 — 2열 배너 (92:55), 모서리 32, 간격 20 ------------- */
-.store-today1 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-}
-.store-today1__item {
-  aspect-ratio: 92 / 55; /* 1040 폭(md) 기준 470 x 281 */
-  border-radius: var(--stds-glob-border-radius-4xl);
-  overflow: hidden;
-  background: var(--stds-sem-color-inverse-elevation-6);
-  cursor: pointer;
-}
-.store-today1__item img { transition-duration: 0.3s; }
-.store-today1__item:hover img { transform: scale(1.05); }

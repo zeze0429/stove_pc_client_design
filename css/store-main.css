@@ -81,14 +81,6 @@
   font-weight: 700;
   color: var(--stds-sem-color-background-variant-2); /* 칩(on-surface-elevation-1) 위 반전 글자 */
 }
-.store-nav__tab--image { padding: 0 1.6rem; }
-/* 오늘의1등이 선택되면 칩(on-surface-elevation-1) 위라 반대 테마 로고를 쓴다 —
-   다크: 밝은 칩 위 어두운 글자 로고 / 라이트: 어두운 칩 위 밝은 글자 로고 */
-:root:not([data-theme="light"]) .store-nav__tab.is-selected .theme-img--dark,
-:root[data-theme="light"] .store-nav__tab.is-selected .theme-img--light { display: none; }
-:root:not([data-theme="light"]) .store-nav__tab.is-selected .theme-img--light,
-:root[data-theme="light"] .store-nav__tab.is-selected .theme-img--dark { display: block; }
-.store-nav__tab-img { display: block; width: 7.7rem; height: 2rem; }
 
 /* 카테고리 — 앞에 1 x 12 구분선 */
 .store-nav__category {

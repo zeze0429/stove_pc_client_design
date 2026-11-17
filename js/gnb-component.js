@@ -1032,10 +1032,6 @@ var GnbComponent = {
               '<i :class="item.icon"></i>' +
               '<span class="menu-item__label stds-title8">{{ item.label }}</span>' +
               '<img v-if="item.badge === \'new\' && proto.menuNew" class="badge-new" src="assets/gnb-badge/badge-new@2x.png" alt="NEW" data-name="component/badge/menu_title" />' +
-              // 메뉴 강조 > 뱃지 — 라운지 "오늘의 1등" (Figma img_badge_lounge 11133:59958)
-              '<span v-if="item.id === \'lounge\' && proto.menuBadge" class="badge-menu-img" data-name="img_badge_lounge">' +
-                '<img src="assets/gnb-badge/badge-lounge-today1@2x.png" alt="오늘의 1등" />' +
-              '</span>' +
               // 다운로드 관리 — 남은 개수(파랑) · 진행률 · 완료 체크 · 에러(빨간 !) 레이어. 데이터는 js/download-sim.js
               // 에러는 난 순간 잠깐, 실패 항목이 남은 채 끝나면 마지막에 계속 (사용자 11-16)
               '<span v-if="item.id === \'download\' && proto.download" class="download-queue">' +

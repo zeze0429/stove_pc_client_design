@@ -8,12 +8,11 @@
  *   스크롤을 내리면 숨고 올리면 다시 나타난다(웹과 같은 동작).
  * 배너: 644 x 276 카드, 간격 20, 가운데 정렬, 무한 반복,
  *   4초 자동 재생 · 0.4초 전환(웹 Swiper 설정 그대로), 좌우 화살표,
- *   "n/14 ⏸" 표시를 누르면 재생/일시정지, 끌어서 넘기기.
+ *   "n/9 ⏸" 표시를 누르면 재생/일시정지, 끌어서 넘기기.
  * 배너 이미지·문구는 실제 웹에서 받아 온 것(assets/store-hero/).
  */
 var STORE_MAIN_TABS = [
   { id: 'recommend', label: '추천' },
-  { id: 'today1', label: '오늘의1등', image: true },
   { id: 'online', label: '온라인 게임' },
   { id: 'visual-novel', label: '비주얼 노벨' },
   { id: 'community', label: '공식 커뮤니티' },
@@ -21,27 +20,20 @@ var STORE_MAIN_TABS = [
   { id: 'taps', label: '스토브 탭스' },
 ];
 
-// 실제 웹 배너 14장 (store.onstove.com/ko 메인 PR 배너, 2026-10-19 기준 순서)
+// 실제 웹 배너 9장 (store.onstove.com/ko 메인 PR 배너, 2026-11-17 기준 순서 — "오늘의 1등" 종료로 교체)
+// 이미지는 웹 원본(1380 x 681 PNG)을 JPG 85로 줄여 assets/store-hero/banner-NN.jpg
 var STORE_MAIN_BANNERS = [
-  { title: '매일 1등 인기글에<br>100만원을 드려요.', desc: '오늘의 1등 인기글 도전!<br>참여만 해도 최대 10만 원 행운!' },
-  { title: 'NO 설치? 바로 클릭!<br>용사단 키우기!', desc: '아니 뭐했다고 벌써 50랩?<br>스토브탭스! 설치 없이 시간 순삭!' },
-  { title: 'NO 설치? 시간 순삭!<br>수박 만들기 2048', desc: '수박만들기, 쉽지 않으실텐데...<br>스토브탭스! 설치 없이 바로 도전!' },
-  { title: '로드나인<br>신규 서버 \'하칸\'', desc: 'RE:MAKE 서버 10/23(금) OPEN!' },
-  { title: '다이너마이트 블루<br>스토브 출시!', desc: '오늘도 평범한 하루, <br>출시 기념 5% 결제 할인 쿠폰과 함께!' },
-  { title: '럽플레이스 <br>스토브 출시!', desc: '출시 기념 선착순 10% 결제 할인 쿠폰 제공!<br>혜택 받고 나만의 스타일로 데뷔!' },
-  { title: '비욘드 디즈 스타즈<br>지금 플레이 가능!', desc: '우주고래 등에 도시를 건설해서!<br>우주 여행을 떠나보자~🐳',
-    price: { discount: '-20%', price: '₩23,920', original: '₩29,900' } },
-  { title: '히파티아<br>반값 특별 할인!', desc: '취향 저격 메이드 4인방<br>당신의 최애 메이드는 누구?',
-    price: { discount: '-50%', price: '₩4,500', original: '₩9,000' } },
-  { title: '더 매거스 써클<br>손으로 그리는 주문', desc: '마법진을 그려 시전하는 로그라이크<br>250가지 조합의 다른 재미',
-    price: { price: '₩12,500' } },
-  { title: '스토브페이로 결제하면<br>5% 포인트 적립!', desc: '놓치면 안되는 5% 적립 기회~ 지금 확인!' },
-  { title: '어이쿠! 왕자님<br>지금 만나보세요!', desc: '귀여운 제목만 보고 들어왔다면...<br>어이쿠! 마음의 준비부터.' },
-  { title: '신작 수집형 RPG<br>라스트 소녀 전사 출시', desc: '지휘관님, 출시 기념<br>5% 결제 할인 쿠폰 드려요' },
-  { title: '게임 리뷰 읽고,<br> 댓글 달면 플레이크 GET!', desc: '지금 바로 클릭해 읽어보세요!' },
-  { title: '마작일번가<br>10월 스토어 이벤트', desc: '누적 결제, 첫 결제, 신규/복귀 혜택 총출동!<br>작탁을 접수하라!' },
+  { title: '10% 할인 + 10% 쿠폰<br>굿즈 3종 세트까지!', desc: '사이코 슬루스 출시 기념<br>응원 이벤트 진행 중' },
+  { title: '방치는 내가!<br>성장은 용사가!', desc: '스트레스 없이 키우는<br>나만의 용사단!' },
+  { title: '만만히 봤다간<br>큰코 다칠 수박에...', desc: '시간 살살 녹는<br>수박 만들기 한 판!' },
+  { title: '멸망의 세계 속,<br>희망이 피어나는 곳', desc: '소녀들과 함께 만들어가는<br>「라스트 소녀 전사」' },
+  { title: '당신의 눈으로 본 것은<br>진실이 아닐수도 있습니다', desc: '리뷰 읽고 플레이크 받아가세요!' },
+  { title: '프레이야 가문의 가주<br>블레이즈벨 등장!', desc: '강하고 고고한 그녀를<br>지금 만나보세요!' },
+  { title: '11월엔 11% 추가 쿠폰!<br>최대 90% 할인에 더하다', desc: '추운데 나가지 마,<br>게임하기 딱 좋은 계절' },
+  { title: '게임 리뷰 읽고,<br>댓글 달면 플레이크 GET!', desc: '지금 바로 클릭해 읽어보세요!' },
+  { title: '마작일번가<br>11월 스토어 이벤트', desc: '혜택 4종, 텐파이 완료!<br>마지막 한 장은 지금 바로 접속!' },
 ].map(function (b, i) {
-  b.image = 'assets/store-hero/banner-' + (i < 10 ? '0' : '') + i + '.jpg';
+  b.image = 'assets/store-hero/banner-' + (i < 10 ? '0' : '') + i + '.jpg?v=2'; // v=2 — 11-17 교체(같은 파일 이름이라 예전 그림이 캐시에서 안 나오게)
   return b;
 });
 
@@ -233,12 +225,8 @@ var StoreMainTop = {
             '<span class="store-nav__indicator" :style="indicatorStyle" aria-hidden="true"></span>' +
             '<ul class="store-nav__tabs">' +
               '<li v-for="tab in tabs" :key="tab.id">' +
-                '<button class="store-nav__tab" :class="{ \'is-selected\': selectedTab === tab.id, \'store-nav__tab--image\': tab.image }" type="button" @click="selectTab(tab)">' +
-                  '<template v-if="tab.image">' +
-                    '<img class="store-nav__tab-img theme-img--dark" src="assets/store-hero/today1-dark.png" :alt="tab.label" />' +
-                    '<img class="store-nav__tab-img theme-img--light" src="assets/store-hero/today1-light.png" :alt="tab.label" />' +
-                  '</template>' +
-                  '<span v-else class="store-nav__tab-label">{{ tab.label }}</span>' +
+                '<button class="store-nav__tab" :class="{ \'is-selected\': selectedTab === tab.id }" type="button" @click="selectTab(tab)">' +
+                  '<span class="store-nav__tab-label">{{ tab.label }}</span>' +
                 '</button>' +
               '</li>' +
             '</ul>' +

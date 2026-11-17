@@ -16,7 +16,6 @@ var STORE_REST = {
     { label: '전체 게임', img: 'assets/store-rest/shortcut-04.png' },
     { label: '게임 리뷰', img: 'assets/store-rest/shortcut-05.png' },
     { label: '이달의 신작', img: 'assets/store-rest/shortcut-06.png' },
-    { label: '오늘의 1등', img: 'assets/store-rest/shortcut-07.png' },
     { label: '플레이크 미션', img: 'assets/store-rest/shortcut-08.png' },
     { label: '캡슐 뽑기', img: 'assets/store-rest/shortcut-09.png' },
   ],
@@ -27,7 +26,6 @@ var STORE_REST = {
     { title: '마작일번가 10월 출석 상점', desc: '출석만 해도 플레이크와 게임 아이템이 우르르!', img: 'assets/store-rest/gift-02.jpg', icon: 'assets/store-rest/gift-icon-02.png' },
     { title: '스토어 10월 출석 교환 상점', desc: '매일매일 다양한 혜택이 팡팡!', img: 'assets/store-rest/gift-03.jpg', icon: 'assets/store-rest/gift-icon-03.png' },
   ],
-  today1: ['assets/store-rest/today1-0.jpg', 'assets/store-rest/today1-1.jpg'],
   newReleases: [
     { title: '비욘드 디스 스타즈 (Beyond These Stars)', genre: '시뮬레이션, 전략', strike: '₩29,900', discount: '-20%', price: '₩23,920', rating: '100% 추천해요', tone: 'blue', buttons: ['navigation-cart-fill', 'community-like-line', 'navigation-community-line'], img: 'assets/store-rest/new-00.jpg' },
     { title: 'Dynamite Blue', genre: 'RPG, 액션', rating: '92.3% 추천해요', plain: '무료', tone: 'blue', buttons: ['community-like-line', 'navigation-community-line'], img: 'assets/store-rest/new-01.jpg' },
@@ -278,7 +276,6 @@ var StoreRest = {
       recentPage: 0,
       banner: STORE_REST.banner,
       gifts: STORE_REST.gifts,
-      today1: STORE_REST.today1,
       newReleases: STORE_REST.newReleases,
       upcoming: STORE_REST.upcoming,
       featured: STORE_REST.featured,
@@ -382,14 +379,6 @@ var StoreRest = {
           '</div>' +
         '</div>' +
         '<store-rest-dots :pages="giftPager.pages" :page="giftPager.page" @go="go(giftPager, $event)"></store-rest-dots>' +
-      '</section>' +
-
-      // ---- 오늘의 1등 (2열 배너) ----
-      '<section class="store-rest-section">' +
-        '<h2 class="store-rest-title">오늘의 1등, 매일매일 100만원이 터진다!</h2>' +
-        '<div class="store-today1">' +
-          '<div v-for="src in today1" :key="src" class="store-today1__item"><img :src="src" alt="" /></div>' +
-        '</div>' +
       '</section>' +
 
       // ---- 신작 출시 ----
