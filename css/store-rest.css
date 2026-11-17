@@ -610,7 +610,7 @@
 
 /* ---- 와이드 배너 — 960 x 310, 모서리 32, 호버 1.05 확대(0.5초) ---- */
 .store-wide-banner {
-  height: 31rem;
+  aspect-ratio: 1950 / 570; /* 실제 스토어 1단 배너 비율 — 1300 폭에서 380 (11-17, 예전 고정 높이 310) */
   border-radius: var(--stds-glob-border-radius-4xl);
   overflow: hidden;
   cursor: pointer;

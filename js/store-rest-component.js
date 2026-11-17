@@ -19,7 +19,7 @@ var STORE_REST = {
     { label: '플레이크 미션', img: 'assets/store-rest/shortcut-08.png' },
     { label: '캡슐 뽑기', img: 'assets/store-rest/shortcut-09.png' },
   ],
-  banner: 'assets/store-rest/banner-wide.jpg',
+  banner: 'assets/store-rest/banner-wide-reward.jpg', // 11-17 교체 — 예전 "오늘의 1등" 배너 대신 실제 스토어 1단 배너(결제 리워드 대축제)
   gifts: [
     { title: '플레이크를 만나는 즐거운 방법🥳', desc: '매일 미션 참여하고 플레이크 받아가세요!', img: 'assets/store-rest/gift-00.jpg', icon: 'assets/store-rest/gift-icon-00.png' },
     { title: '럽플레이스 10월 출석 교환 상점', desc: '럽플레이스 스토브 데뷔! 쏟아지는 선물 🎁', img: 'assets/store-rest/gift-01.jpg', icon: 'assets/store-rest/gift-icon-01.png' },

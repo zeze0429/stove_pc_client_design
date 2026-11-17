@@ -8,6 +8,11 @@
  * 스타일은 css/event.css.
  */
 var EVENT_HERO_COUNT = 12;
+var EVENT_HERO_SKIP = [2]; // hero-02 "내 일상과 드립이 돈이 되는 순간"(오늘의 1등) — 11-17 종료로 뺌
+// 상단 배너 그림 — 뺀 번호는 건너뛴다 (파일 번호는 원래 순서)
+var EVENT_HEROES = Array.from({ length: EVENT_HERO_COUNT }, function (_, i) { return i; })
+  .filter(function (i) { return EVENT_HERO_SKIP.indexOf(i) < 0; })
+  .map(function (i) { return 'assets/event/hero-' + (i < 10 ? '0' : '') + i + '.jpg'; });
 var EVENT_HERO_DELAY = 3000; // 웹 swiper autoplay.delay
 var EVENT_HERO_SPEED = 300;  // 웹 swiper speed
 var EVENT_DOT_PITCH = 11;    // 점 6 + 간격 5
@@ -60,11 +65,9 @@ var EVENT_CARDS = [
 var EventMain = {
   data: function () {
     return {
-      heroes: Array.from({ length: EVENT_HERO_COUNT }, function (_, i) {
-        return 'assets/event/hero-' + (i < 10 ? '0' : '') + i + '.jpg';
-      }),
+      heroes: EVENT_HEROES,
       // 무한 반복: 배너 목록을 세 벌 이어 붙이고 가운데 벌에서 시작한다
-      pos: EVENT_HERO_COUNT,
+      pos: EVENT_HEROES.length,
       animate: true,
       dragX: 0,
       dragging: false,
