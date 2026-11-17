@@ -5,6 +5,7 @@
  *   시작부터 지난 초만큼 다시 돌리면 같은 상태가 된다(페이지를 옮겨도 사이드바가 이어서 진행).
  * - 다운로드 관리에 들어오면(새로고침 포함) 시작 시각을 지금으로 — 처음부터 (download-component.js).
  * - 1초(tick)마다 그래프 값 하나 + 설치 한 걸음. 큐가 다 비면 멈춘다(반복 없음).
+ * - 설치 중인 항목을 일시정지하면 그래프 · 수치도 멈춘다(새 값을 붙이지 않음), 이어받으면 다시 흐른다 (사용자 11-17).
  * - 일시정지 · 완료 후 실행 · 전체 제거 · 다시 시도는 그 페이지 안에서만 반영된다(다른 페이지는 다시 계산하므로 모름).
  * - 보기 옵션 '에러'를 체크하면 그 순간(proto.downloadErrorAt) 설치 중이던 항목이 바로 실패 — 처음부터 다시 하지 않음 (사용자 11-16)
  *   (Figma 클라이언트_v3.1 플로우 '실패', 68118:725212 · 725615 · 68123:726115)
@@ -173,13 +174,22 @@ DownloadSim.prototype = {
   // 마지막 틱 시각 — 그래프가 그 사이를 부드럽게 흐르게
   lastTickAt: function () { return this.startedAt + this.state.tick * DOWNLOAD_RUN.tick; },
 
+  // 설치 중인 항목이 일시정지 상태인지 — 그래프 · 수치를 멈춘다
+  isPaused: function () {
+    var x = downloadFlat(this.state.queue).filter(function (f) { return f.it.status === 'progress'; })[0];
+    return !!(x && x.it.run && x.it.run.paused);
+  },
+
   step: function () {
     var g = this.graph, rng = this.rng;
-    g.down.shift(); g.disk.shift();
-    g.down.push(downloadWalk(rng, g.down[g.down.length - 1], 0, 1, 0.28));
-    g.disk.push(downloadWalk(rng, g.disk[g.disk.length - 1], 0, 1, 0.15));
+    var paused = this.isPaused();
+    if (!paused) {
+      g.down.shift(); g.disk.shift();
+      g.down.push(downloadWalk(rng, g.down[g.down.length - 1], 0, 1, 0.28));
+      g.disk.push(downloadWalk(rng, g.disk[g.disk.length - 1], 0, 1, 0.15));
+    }
     this.state.tick += 1;
-    this.pushStats();
+    if (!paused) this.pushStats();
     if (this.errorTick != null && this.state.tick === this.errorTick) this.failCurrent();
     if (this.state.tick % DOWNLOAD_RUN.stepTicks === 0) this.stepRuns(20 + this.state.live.down * 40); // 수치의 "현재 다운로드 속도"(MB/s)
   },

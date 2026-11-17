@@ -220,8 +220,20 @@ var DownloadMain = {
   },
   methods: {
     // 매 프레임: 마지막 틱 이후 지난 만큼 한 칸 간격 안에서 왼쪽으로 부드럽게 이동 (새 값은 download-sim이 틱마다 붙임)
+    // 일시정지: 누른 순간 위치(hold)에 멈춘다 — 그동안 download-sim도 새 값을 붙이지 않는다.
+    // 이어받기: 멈춘 위치에서 다음 틱까지 남은 거리를 남은 시간에 나눠 가서, 틱에 맞춰 그대로 이어진다(툭 튀지 않게).
     frame: function () {
       var p = Math.min(1, Math.max(0, (Date.now() - this.sim.lastTickAt()) / DOWNLOAD_RUN.tick));
+      var tick = this.sim.state.tick;
+      if (this.sim.isPaused()) {
+        if (this.hold == null) this.hold = p;
+        this.resumeP = null;
+        p = this.hold;
+      } else if (this.hold != null) {
+        if (this.resumeP == null) { this.resumeP = p; this.resumeTick = tick; }
+        if (tick !== this.resumeTick) { this.hold = null; this.resumeP = null; }
+        else p = this.hold + (p - this.resumeP) * (1 - this.hold) / Math.max(0.001, 1 - this.resumeP);
+      }
       if (this.queue.length) this.drawGraph(this.reduceMotion ? 0 : p);
       this.raf = requestAnimationFrame(this.frame);
     },
