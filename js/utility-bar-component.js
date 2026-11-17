@@ -54,8 +54,9 @@ var UtilityBarComponent = {
   },
   data: function () {
     return {
-      // 창 최대화 여부 — 최대화 상태에서는 "이전 크기로 복원" 버튼으로 바뀐다
-      maximized: false,
+      // 창 최대화 여부 — 최대화 상태에서는 "이전 크기로 복원" 버튼으로 바뀐다.
+      // 페이지를 옮겨도 유지되게 보기 옵션(frameMax)에 두고, 데스크톱 미리보기 창(js/os-window.js)이 따라 커진다.
+      maximized: protoSettingsRead().frameMax,
       // 팝업을 띄우는 버튼들(스토브챗/알림/내 정보/PC방)은 팝업이 열려 있는
       // 동안 selected 상태로 남는다 — Figma 주석 "팝업 노출되는 아이콘 버튼에 사용"
       openPopupId: null,
@@ -83,6 +84,7 @@ var UtilityBarComponent = {
     var self = this;
     protoSettingsSubscribe(function (s) {
       self.noticeVisible = s.notice;
+      self.maximized = s.frameMax;
       self.notice.level = s.noticeUrgent ? 'urgent' : 'normal';
     });
     // 뒤로가기로 돌아온 페이지는 bfcache에서 통째로 복원돼 mounted가 다시
@@ -111,7 +113,10 @@ var UtilityBarComponent = {
     goBack: function () { if (this.canGoBack) history.back(); },
     goForward: function () { if (this.canGoForward) history.forward(); },
     reload: function () { location.reload(); },
-    toggleMaximize: function () { this.maximized = !this.maximized; },
+    toggleMaximize: function () {
+      this.maximized = !this.maximized;
+      protoSettingsWrite({ frameMax: this.maximized });
+    },
     // 팝업 안의 메뉴가 센터 레이어 팝업을 띄울 때 — 띄우던 팝업은 닫는다.
     openDialog: function (id) {
       this.openPopupId = null;

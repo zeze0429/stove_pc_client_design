@@ -42,6 +42,7 @@ var PROTO_SETTINGS_DEFAULTS = {
   frameMode: 'min', // 사이즈 지정 — 'min'(1280 × 800, 최소) · 'fhd'(1920 × 1000) · 'custom'(입력칸 / 드래그)
   frameW: 1280,     // 클라이언트 창 크기 — 최소 1280 × 800 (main.html 사이즈 지정 · 테두리 드래그, js/os-window.js)
   frameH: 800,
+  frameMax: false,  // 창 최대화 — 유틸리티 바 최대화 버튼. 켜면 작업표시줄 위 화면 전체, 끄면 frameW × frameH로 복원
 };
 
 function protoSettingsRead() {

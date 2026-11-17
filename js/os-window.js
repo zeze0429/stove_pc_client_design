@@ -7,6 +7,8 @@
  * - 최소 1280 × 800 (클라이언트 최소 창). 값은 proto-settings(frameW · frameH)에 저장 — 새로고침해도 유지.
  * - 창이 화면보다 크면 화면에 맞춰 줄여서 보여 준다(클라이언트 안의 실제 크기는 그대로).
  *   드래그하는 동안에는 배율을 고정 — 놓으면 다시 맞춘다.
+ * - 최대화(유틸리티 바 버튼 → frameMax): 작업표시줄 위 화면 전체를 채운다(모서리 · 그림자 · 테두리 드래그 없음).
+ *   복원하면 저장해 둔 frameW × frameH로 돌아간다. 사이즈를 고르거나 끌면 최대화는 풀린다.
  */
 (function () {
   var MIN_W = 1280, MIN_H = 800;
@@ -34,6 +36,7 @@
   var cur = { w: MIN_W, h: MIN_H };
   var scale = 1;
   var drag = null;
+  var maxed = false;
 
   function clamp(v, min, max, fallback) {
     v = Math.round(Number(v));
@@ -42,8 +45,9 @@
   }
 
   function fitScale(w, h) {
-    var availW = window.innerWidth - FIT_GAP * 2;
-    var availH = window.innerHeight - TASKBAR - FIT_GAP * 2;
+    var gap = maxed ? 0 : FIT_GAP; // 최대화는 둘레 여백 없이 꽉 채운다
+    var availW = window.innerWidth - gap * 2;
+    var availH = window.innerHeight - TASKBAR - gap * 2;
     return Math.min(1, availW / w, availH / h);
   }
 
@@ -53,12 +57,23 @@
     win.style.setProperty('--os-window-w', w + 'px');
     win.style.setProperty('--os-window-h', h + 'px');
     win.style.setProperty('--os-window-scale', String(scale));
-    if (inputW && document.activeElement !== inputW) inputW.value = w;
-    if (inputH && document.activeElement !== inputH) inputH.value = h;
+    if (!maxed && inputW && document.activeElement !== inputW) inputW.value = w;
+    if (!maxed && inputH && document.activeElement !== inputH) inputH.value = h;
     if (hint) {
       hint.hidden = scale >= 1;
       hint.textContent = '화면보다 커서 ' + Math.round(scale * 100) + '%로 줄여서 보여요';
     }
+  }
+
+  // 최대화 크기 — 작업표시줄을 뺀 화면 전체(최소 1280 × 800보다 작은 화면이면 최소로 두고 줄여서 보여 준다)
+  function maxSize() {
+    return { w: Math.max(MIN_W, window.innerWidth), h: Math.max(MIN_H, window.innerHeight - TASKBAR) };
+  }
+
+  function setMaxed(on) {
+    maxed = on;
+    desktop.classList.toggle('is-maximized', on);
+    if (on) { var m = maxSize(); apply(m.w, m.h); }
   }
 
   function fromSettings(s) {
@@ -66,6 +81,7 @@
     var w = clamp(s.frameW, MIN_W, MAX_W, MIN_W), h = clamp(s.frameH, MIN_H, MAX_H, MIN_H);
     var mode = s.frameMode === 'custom' || PRESETS[s.frameMode] ? s.frameMode : modeFor(w, h);
     apply(w, h);
+    setMaxed(!!s.frameMax);
     radios.forEach(function (r) { r.checked = r.value === mode; });
     if (custom) custom.hidden = mode !== 'custom';
   }
@@ -75,14 +91,14 @@
     r.addEventListener('change', function () {
       if (!r.checked) return;
       var p = PRESETS[r.value];
-      protoSettingsWrite(p ? { frameMode: r.value, frameW: p.w, frameH: p.h } : { frameMode: 'custom' });
+      protoSettingsWrite(p ? { frameMode: r.value, frameW: p.w, frameH: p.h, frameMax: false } : { frameMode: 'custom', frameMax: false });
     });
   });
 
   // ---- 테두리 · 모서리 드래그 ----
   win.querySelectorAll('[data-grip]').forEach(function (grip) {
     grip.addEventListener('pointerdown', function (e) {
-      if (e.button !== 0) return;
+      if (e.button !== 0 || maxed) return;
       e.preventDefault();
       var dir = grip.dataset.grip;
       drag = { dir: dir, x: e.clientX, y: e.clientY, w: cur.w, h: cur.h };
@@ -110,7 +126,7 @@
       if (sizeTip) sizeTip.hidden = true;
       apply(cur.w, cur.h); // 화면에 다시 맞춤
       // 저장은 놓을 때 한 번 — 움직이는 동안 매번 저장하면 iframe 안 페이지들이 계속 다시 그린다
-      protoSettingsWrite({ frameMode: modeFor(cur.w, cur.h), frameW: cur.w, frameH: cur.h });
+      protoSettingsWrite({ frameMode: modeFor(cur.w, cur.h), frameW: cur.w, frameH: cur.h, frameMax: false });
     }
     grip.addEventListener('pointerup', end);
     grip.addEventListener('pointercancel', end);
@@ -128,13 +144,17 @@
       var w = clamp(inputW.value, MIN_W, MAX_W, cur.w);
       var h = clamp(inputH.value, MIN_H, MAX_H, cur.h);
       inputW.value = w; inputH.value = h; // 최소보다 작게 넣으면 최소로 고쳐 보여 준다
-      if (w !== cur.w || h !== cur.h) protoSettingsWrite({ frameMode: 'custom', frameW: w, frameH: h });
+      var s = protoSettingsRead();
+      if (w !== s.frameW || h !== s.frameH || s.frameMax) protoSettingsWrite({ frameMode: 'custom', frameW: w, frameH: h, frameMax: false });
     }
     el.addEventListener('change', commit);
     el.addEventListener('keydown', function (e) { if (e.key === 'Enter') { commit(); el.blur(); } });
   });
 
-  window.addEventListener('resize', function () { if (!drag) apply(cur.w, cur.h); });
+  window.addEventListener('resize', function () {
+    if (drag) return;
+    if (maxed) { var m = maxSize(); apply(m.w, m.h); } else apply(cur.w, cur.h);
+  });
 
   fromSettings(protoSettingsRead());
   protoSettingsSubscribe(fromSettings);
