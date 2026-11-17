@@ -390,6 +390,7 @@ var LibraryMain = {
       quickPage: 0,
       quickActive: 0, // 넓게 펼쳐진 카드 — 마우스를 올린 카드, 없으면 지금 페이지 첫 카드
       quickPer: 4, // 한 페이지 카드 수 — 빠른 실행 폭에 맞춰 (libraryQuickPerPage)
+      quickOpen: 260, // 꽉 찬 페이지의 펼친 카드 폭(px) — 남는 폭을 채운 값
       view: 'grid',
       query: '', // 검색 필드에 친 글자 — 엔터 · 검색 버튼을 누르면 queries에 올린다(글자는 남김)
       queries: [], // 확인한 검색어 칩 (여러 개면 모두 맞는 게임만)
@@ -625,7 +626,10 @@ var LibraryMain = {
       var root = this.$refs.root;
       if (!root) return;
       var cs = getComputedStyle(root);
-      var per = libraryQuickPerPage(root.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight));
+      var w = root.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      var per = libraryQuickPerPage(w);
+      // 펼친 카드의 최종 폭 — 접힌 카드(120 + 간격 20)를 뺀 나머지. 이 값으로만 커지고 줄어 합이 항상 맞는다
+      this.quickOpen = Math.max(LIBRARY_QUICK_CARD_OPEN, Math.floor(w - (per - 1) * (LIBRARY_QUICK_CARD + LIBRARY_QUICK_GAP)));
       if (per === this.quickPer) return;
       this.quickPer = per;
       this.quickPage = Math.floor(this.quickActive / per);
@@ -1000,7 +1004,7 @@ var LibraryMain = {
             '<button class="library-quick__arrow" :class="{ \'is-rest\': arrowRest === 1 }" type="button" aria-label="다음" :disabled="quickPage >= quickPages - 1" @click="pressArrow(1)" @mouseleave="arrowRest = 0"><i class="ic-v2-control-arrow-right-line"></i></button>' +
           '</div>' +
         '</div>' +
-        '<div class="library-quick__viewport">' +
+        '<div class="library-quick__viewport" :style="{ \'--quick-open\': quickOpen + \'px\' }">' +
           '<div class="library-quick__track" :style="quickTrackStyle">' +
            // 페이지(quickPer장)마다 빠른 실행 폭 고정 상자 — 카드들이 동시에 커지고 줄어도 합이 항상 그 폭
            '<div v-for="(page, p) in quickPageList" :key="p" class="library-quick__page" :class="{ \'is-offpage\': p !== quickPage, \'is-full\': page.length === quickStep }">' +
