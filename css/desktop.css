@@ -1,5 +1,5 @@
 /* =============================================================
-   Windows 11 데스크톱 목업 — 클라이언트 창(1280x800) 미리보기용
+   Windows 11 데스크톱 목업 — 클라이언트 창(기본 1280x800, 드래그로 조절) 미리보기용
    ※ 실제 MS 배경화면 파일이 아닌 CSS 근사(Bloom 스타일) 재현.
    ============================================================= */
 
@@ -23,26 +23,70 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box; /* 창은 작업표시줄(48)을 뺀 영역 가운데 — 화면에 맞춰 줄일 때 작업표시줄에 안 걸리게 */
   padding-bottom: 48px; /* 작업표시줄 높이만큼 창을 위로 띄움 */
 }
 
-/* ---- 창(window) ------------------------------------------- */
+/* ---- 창(window) -------------------------------------------
+   크기는 js/os-window.js가 변수로 — 테두리·모서리 드래그 / 보기 옵션 "프레임 사이즈"(사용자 11-17).
+   최소 1280 × 800. 화면보다 크면 --os-window-scale로 줄여서 보여 준다(실제 크기는 그대로). */
 .os-window {
   position: relative;
-  width: 1280px;
+  flex: none;
+  width: var(--os-window-w, 1280px);
+  height: var(--os-window-h, 800px);
   border-radius: var(--stds-glob-border-radius-lg);
-  overflow: hidden;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
   background: #1f1f1f;
+  transform: scale(var(--os-window-scale, 1));
+  transform-origin: center;
 }
 
+/* 모서리는 iframe에서 둥글게 — 창 밖으로 나온 드래그 핸들이 잘리지 않게 창은 overflow를 두지 않는다 */
 .os-content {
-  width: 1280px;
-  height: 800px;
+  width: 100%;
+  height: 100%;
   border: 0;
+  border-radius: inherit;
   display: block;
   background: #1f1f1f;
 }
+
+/* 크기 조절 핸들 — 테두리 4 · 모서리 4, 창 바깥쪽에 걸쳐 둠(스크롤바·사이드바를 가리지 않게) */
+.os-window__grip { position: absolute; z-index: 2; }
+.os-window__grip--n, .os-window__grip--s { left: 8px; right: 8px; height: 10px; cursor: ns-resize; }
+.os-window__grip--e, .os-window__grip--w { top: 8px; bottom: 8px; width: 10px; cursor: ew-resize; }
+.os-window__grip--n { top: -8px; }
+.os-window__grip--s { bottom: -8px; }
+.os-window__grip--e { right: -8px; }
+.os-window__grip--w { left: -8px; }
+.os-window__grip--ne, .os-window__grip--nw, .os-window__grip--se, .os-window__grip--sw { width: 18px; height: 18px; }
+.os-window__grip--ne { top: -8px; right: -8px; cursor: nesw-resize; }
+.os-window__grip--sw { bottom: -8px; left: -8px; cursor: nesw-resize; }
+.os-window__grip--nw { top: -8px; left: -8px; cursor: nwse-resize; }
+.os-window__grip--se { bottom: -8px; right: -8px; cursor: nwse-resize; }
+/* 드래그 중 — iframe이 마우스를 가져가지 않게, 커서는 화면 전체에 */
+.os-desktop.is-resizing .os-content { pointer-events: none; }
+.os-desktop.is-resizing { user-select: none; }
+.os-desktop.is-resizing, .os-desktop.is-resizing * { cursor: var(--os-resize-cursor) !important; }
+
+/* 드래그 중 가운데에 지금 크기 */
+.os-window__size {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  padding: 8px 14px;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font: 600 14px/20px "Spoqa Han Sans Neo", stds-font-kr, system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(calc(1 / var(--os-window-scale, 1)));
+}
+.os-window__size[hidden] { display: none; }
 
 /* ---- 작업표시줄 -----------------------------------------------
    레퍼런스: https://quartz-unique-70171087.figma.site/ 실제 DOM/클래스를
@@ -204,6 +248,37 @@ html, body {
   border: 0;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
+
+/* 사이즈 지정 — 다크 / 라이트 아래: 라디오 3줄(최소 1280 × 800 · 1920 × 1000 · 사용자 지정),
+   사용자 지정이면 그 밑에 [너비] × [높이] 한 줄 (사용자 11-17) */
+.proto-frame-options { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin-top: 8px; }
+.proto-frame-options .proto-check { margin-right: 0; font-size: 11px; line-height: 16px; }
+/* 라디오 — 보조 체크박스와 같은 상자를 둥글게, 고르면 가운데 점 */
+.proto-check__box--radio { border-radius: 50%; }
+.proto-check__box--radio::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #fc4420; opacity: 0; }
+.proto-check input:checked + .proto-check__box--radio::after { opacity: 1; }
+.proto-frame[hidden] { display: none; }
+.proto-frame { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 12px; font-weight: 500; color: #364153; }
+.proto-frame input {
+  box-sizing: border-box;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  background: #fff;
+  color: #101828;
+  font: 500 12px/1 "Spoqa Han Sans Neo", stds-font-kr, system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+.proto-frame input::-webkit-outer-spin-button,
+.proto-frame input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.proto-frame input:focus { outline: 2px solid #fc4420; outline-offset: 0; }
+.proto-panel__hint { margin: 6px 0 0; font-size: 10px; line-height: 15px; color: #364153; }
+.proto-panel__hint[hidden] { display: none; }
 
 /* 토글 스위치 44x24 · 노브 20 */
 .proto-switch {
