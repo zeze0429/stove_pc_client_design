@@ -9,8 +9,6 @@
   display: flex;
   align-items: flex-start;
   color: var(--stds-sem-color-on-surface-elevation-1);
-  /* 라운지 웹은 3단 고정 폭(콘텐츠 영역 1040 기준 실측) — 창이 넓어지면 그 1040 틀을 가운데로 (콘텐츠 그리드, 사용자 11-17) */
-  padding-inline: max(0px, (100cqw - 104rem) / 2);
 }
 
 /* 불꽃 아이콘 — 아래(분홍)→위(주황) 그라데이션 글자 */
@@ -149,7 +147,10 @@
 .lounge-center {
   flex: 0 0 52rem;
   min-width: 0;
-  margin-left: 5.2rem;
+  /* 창이 넓어지면 1단(메뉴 레일)은 왼쪽에 고정, 가운데 · 오른쪽 단만 남는 공간 가운데로 — 라운지 웹과 같은 방식
+     (lounge.onstove.com 넓은 화면: 왼쪽 메뉴 고정, 나머지 단은 가운데, 사용자 11-17).
+     콘텐츠 영역 1040(.main 안쪽 972)에서는 기존 52 그대로, 넓어진 만큼의 절반을 왼쪽에 더한다 */
+  margin-left: calc(5.2rem + max(0px, (100cqw - 97.2rem) / 2));
   padding: 0.8rem 0 10rem;
   display: flex;
   flex-direction: column;
