@@ -1139,7 +1139,5 @@
   z-index: 1;
 }
 
-/* ---- 보유게임 단 수 — 콘텐츠 영역(.main, 우측패널 뺀 폭) 기준 (Figma 2026_웹전환 12300:6658, 사용자 11-17)
-   1400 미만 5단 · 1400~1679 6단 · 1680~ 7단 (= 창 1920 · 2200 경계) */
-@container page (min-width: 1400px) { .library-grid { --library-cols: 6; } }
-@container page (min-width: 1680px) { .library-grid { --library-cols: 7; } }
+/* ---- 보유게임 단 수 — --library-cols는 JS(ownedCols)가 빠른 실행 장수에 맞춰 준다
+   (빠른 실행 4 · 5장 5단 / 6 · 7장 6단 / 8장 7단, Figma 2026_웹전환 12300:6658, 사용자 11-17) */

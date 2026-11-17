@@ -529,6 +529,8 @@ var LibraryMain = {
       return cards;
     },
     quickStep: function () { return this.quickPer; },
+    // 보유게임 단 수 — 빠른 실행 장수와 짝 (Figma 12300:6658 4장 5단 · 6장 6단 · 8장 7단, 사용자 11-17 "빠른 실행과 같이")
+    ownedCols: function () { return this.quickPer >= 8 ? 7 : this.quickPer >= 6 ? 6 : 5; },
     quickPages: function () { return Math.ceil(this.quickCards.length / this.quickPer); },
     // 한 페이지 장수(quickPer)씩 묶은 페이지 — 각 카드에 전체 순번(index)을 붙여 둔다
     quickPageList: function () {
@@ -992,7 +994,7 @@ var LibraryMain = {
     },
   },
   template:
-    '<div ref="root" class="library" :class="{ \'is-no-owned\': store.noOwned }">' +
+    '<div ref="root" class="library" :class="{ \'is-no-owned\': store.noOwned }" :style="{ \'--library-cols\': ownedCols }">' +
 
 
       // ---- 빠른 실행 ----
