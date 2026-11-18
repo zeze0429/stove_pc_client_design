@@ -226,10 +226,10 @@ html, body {
 .proto-panel__body {
   flex: 1 1 auto;
   min-height: 0;
-  /* 스크롤바는 런처 스크롤바(레이어 다이얼로그 css/layer-dialog.css와 같음) — 패널 오른쪽 끝에서 8 안쪽에 썸 4.
-     오른쪽 여백은 8(바깥) + 4(썸) + 12 = 24로 지금과 같게 (사용자 11-18) */
-  margin-right: 8px;
-  padding: 8px 12px 24px 24px;
+  /* 스크롤바는 런처 스크롤바(레이어 다이얼로그 css/layer-dialog.css와 같음) — 패널 오른쪽 끝에서 4 안쪽에 썸 4 (사용자 11-18, 다이얼로그는 8).
+     콘텐츠 오른쪽 여백은 4(바깥) + 4(썸) + 16 = 24로 그대로 */
+  margin-right: 4px;
+  padding: 8px 16px 24px 24px;
   overflow-y: auto;
   scrollbar-gutter: stable; /* 스크롤 없을 때도 썸 자리 4를 남겨 오른쪽 여백 24 유지 */
   overscroll-behavior: contain;
