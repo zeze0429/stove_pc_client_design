@@ -231,6 +231,11 @@ html, body {
   overscroll-behavior: contain;
   scrollbar-width: thin;
 }
+/* 아래로 더 있을 때 — 본문 아래 40을 그라디언트로 흐리게(반투명 패널이라 덮개 대신 마스크). 끝까지 내리면 사라짐 (사용자 11-18) */
+.proto-panel__body.has-more {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 40px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 40px), transparent);
+}
 .proto-panel[hidden] { display: none; }
 
 /* 닫기 — 레이어 다이얼로그 닫기와 같게: 아이콘 24, 배경 없이 hover 50% · press 70% (css/layer-dialog.css) */
