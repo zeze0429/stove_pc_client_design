@@ -245,8 +245,7 @@ function mountGameDetail(selector, gameId) {
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--btn2" style="width: 6.4rem"></span>' +
                 '</div>' +
                 '<ul class="game-detail-community-api"><li v-for="i in 10"><div class="game-detail-community-api__row">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" :style="rw(i, 3.2, 6.4, \'rem\')"></span>' +
-                '<span class="game-detail-skeleton-fill"><span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" :style="rw(i + 10, 40, 90)"></span></span>' +
+                '<span class="game-detail-skeleton-fill"><span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" :style="rw(i + 10, 40, 95)"></span></span>' + // 분류 + 제목을 막대 하나로 (사용자 11-18)
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" style="width: 7.2rem"></span>' +
                 '</div></li></ul>' +
                 '</section>' +
@@ -289,15 +288,13 @@ function mountGameDetail(selector, gameId) {
                 // 섹션: [표 줄 수, 그래픽 줄 덧붙임, 글 줄 수, 등급 아이콘 수] — 최소 · 권장 · 지원 언어 · 이용 등급
                 '<div v-for="(sec, si) in [[8, 0, 0, 0], [7, 2, 0, 0], [0, 0, 1, 0], [0, 0, 2, 8]]" class="game-detail-system-requirements__section">' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" :style="rw(si + 130, 6.4, 11, \'rem\')"></span>' +
-                '<dl v-if="sec[0]" class="game-detail-system-requirements__rows"><div v-for="n in sec[0]">' +
-                '<dt>' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" :style="rw(si * 10 + n + 60, 45, 100)"></span>' +
-                '</dt>' +
-                '<dd>' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" :style="rw(si * 10 + n + 80, 30, 90)"></span>' +
-                '<template v-if="n === 4 && sec[1]"><span v-for="m in sec[1]" class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" :style="rw(m + 120, 50, 95)"></span></template>' +
-                '</dd>' +
-                '</div></dl>' +
+                // 항목 + 값을 줄마다 막대 하나로 (사용자 11-18). 그래픽처럼 여러 줄인 값은 줄 수만큼
+                '<div v-if="sec[0]" class="game-detail-system-requirements__rows">' +
+                '<template v-for="n in sec[0]">' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" :style="rw(si * 10 + n + 80, 35, 85)"></span>' +
+                '<template v-if="n === 4 && sec[1]"><span v-for="m in sec[1]" class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3 is-continued" :style="rw(m + 120, 40, 90)"></span></template>' +
+                '</template>' +
+                '</div>' +
                 '<div v-if="sec[2]" class="game-detail-rating">' +
                 '<span v-for="m in sec[2]" class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" :style="{ width: m === 1 ? \'40%\' : \'70%\' }"></span>' +
                 '<div v-if="sec[3]" class="game-detail-rating__icons"><span v-for="m in sec[3]" class="game-detail-skeleton game-detail-skeleton--rating"></span></div>' +

@@ -552,7 +552,6 @@
 .game-detail--skeleton .game-detail-shortcut__row,
 .game-detail--skeleton .game-detail-market-download__row { display: flex; align-items: center; }
 .game-detail--skeleton .game-detail-community-api__row { padding: 0.1rem 0; }
-.game-detail--skeleton .game-detail-community-api__row > .game-detail-skeleton-bar:first-child { margin-right: 0.8rem; }
 .game-detail--skeleton .game-detail-community-board__row { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
 .game-detail--skeleton .game-detail-community-board__row > * { margin: 0; }
 .game-detail--skeleton .game-detail-community-board__row > .game-detail-skeleton-bar--title7 { margin: 0.4rem 0; }
@@ -561,11 +560,13 @@
 .game-detail--skeleton .game-detail-community-album__name { display: flex; flex-direction: column; margin-top: 1.4rem; }
 .game-detail--skeleton .game-detail-community-album__meta { margin-top: 0.4rem; display: flex; justify-content: space-between; }
 .game-detail--skeleton .game-detail-system-requirements__section > .game-detail-skeleton-bar--title6 { margin: 0.4rem 0; }
-.game-detail--skeleton .game-detail-system-requirements__rows dd { display: flex; flex-direction: column; }
+/* 막대 사이 8 = 실제 줄 간격 (막대 위아래 5 여백 포함 24줄) */
+.game-detail--skeleton .game-detail-system-requirements__rows { display: flex; flex-direction: column; gap: 0.8rem; }
+/* 한 값이 여러 줄이면(그래픽) 줄 사이 간격 없이 24줄로 이어진다 */
+.game-detail--skeleton .game-detail-system-requirements__rows > .is-continued { margin-top: -0.3rem; }
 .game-detail--skeleton .game-detail-summary__rows dd { display: flex; }
 /* 항목 칸(dt) 막대도 칸 폭 안에서 무작위 길이 */
-.game-detail--skeleton .game-detail-summary__rows dt,
-.game-detail--skeleton .game-detail-system-requirements__rows dt { display: flex; }
+.game-detail--skeleton .game-detail-summary__rows dt { display: flex; }
 .game-detail--skeleton .game-detail-shortcut__row { gap: 0.8rem; padding: 0 1.6rem; }
 .game-detail-skeleton--icon { flex: none; width: 2rem; height: 2rem; border-radius: var(--stds-glob-border-radius-sm); }
 .game-detail-skeleton--arrow { flex: none; width: 1.6rem; height: 1.6rem; border-radius: var(--stds-glob-border-radius-sm); }
