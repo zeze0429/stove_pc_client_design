@@ -241,7 +241,7 @@ function mountGameDetail(selector, gameId) {
                 // 5 커뮤니티-api연동형
                 '<section class="game-detail-board">' +
                 '<div class="game-detail-board__title">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 6.4rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title8" style="width: 6.4rem"></span>' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--btn2" style="width: 6.4rem"></span>' +
                 '</div>' +
                 '<ul class="game-detail-community-api"><li v-for="i in 10"><div class="game-detail-community-api__row">' +
@@ -252,7 +252,7 @@ function mountGameDetail(selector, gameId) {
                 // 6 커뮤니티-앨범형
                 '<section class="game-detail-board">' +
                 '<div class="game-detail-board__title">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 8.8rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title8" style="width: 8.8rem"></span>' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--btn2" style="width: 6.4rem"></span>' +
                 '</div>' +
                 '<div class="game-detail-community-album"><div v-for="n in 6" class="game-detail-community-album__item">' +
@@ -271,7 +271,7 @@ function mountGameDetail(selector, gameId) {
                 // 7 커뮤니티-게시판형
                 '<section class="game-detail-board">' +
                 '<div class="game-detail-board__title">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 7.6rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title8" style="width: 7.6rem"></span>' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--btn2" style="width: 6.4rem"></span>' +
                 '</div>' +
                 '<ul class="game-detail-community-board"><li v-for="i in 4"><div class="game-detail-community-board__row">' +
@@ -282,7 +282,7 @@ function mountGameDetail(selector, gameId) {
                 // 8 시스템 요구사항
                 '<section class="game-detail-board">' +
                 '<div class="game-detail-board__title">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 10.4rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title8" style="width: 10.4rem"></span>' +
                 '</div>' +
                 '<div class="game-detail-system-requirements">' +
                 // 섹션: [표 줄 수, 그래픽 줄 덧붙임, 글 줄 수, 등급 아이콘 수] — 최소 · 권장 · 지원 언어 · 이용 등급
@@ -308,7 +308,7 @@ function mountGameDetail(selector, gameId) {
               // 9 게임요약
                 '<section class="game-detail-board game-detail-board--summary">' +
                 '<div class="game-detail-board__head">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 7.2rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title8" style="width: 7.2rem"></span>' +
                 '</div>' +
                 '<div class="game-detail-summary">' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" style="width: 50%"></span>' +
@@ -322,7 +322,7 @@ function mountGameDetail(selector, gameId) {
               // 10 바로가기
                 '<section class="game-detail-board">' +
                 '<div class="game-detail-board__head">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 6.8rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title8" style="width: 6.8rem"></span>' +
                 '</div>' +
                 // 4줄 · 아이콘은 타이틀과 같은 왼쪽 선 · 이름 막대는 길게 (사용자 11-18)
                 '<ul class="game-detail-shortcut"><li v-for="i in 4"><div class="game-detail-shortcut__row">' +
@@ -334,7 +334,7 @@ function mountGameDetail(selector, gameId) {
               // 12 마켓다운로드링크 + QR
                 '<section class="game-detail-board">' +
                 '<div class="game-detail-board__head">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 9.6rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title8" style="width: 9.6rem"></span>' +
                 '</div>' +
                 // 줄 카드만 3개 — 아이콘 · 글자 · QR 없음 (사용자 11-18)
                 '<ul class="game-detail-market-download"><li v-for="n in 3"><div class="game-detail-skeleton game-detail-market-download__row"></div></li></ul>' +
@@ -427,7 +427,7 @@ function mountGameDetail(selector, gameId) {
                 // 15-1 로아상영관 추천 (포스터 5열) — 로스트아크 한정
                 '<section v-if="d.loaTheaterRec" class="game-detail-board game-detail-board--rec">' +
                   '<div class="game-detail-board__title">' +
-                    '<h2 class="stds-title6 fw-bold">로아 상영관</h2>' +
+                    '<h2 class="stds-title8 fw-bold">로아 상영관</h2>' +
                     '<span class="game-detail-board-badge game-detail-board-badge--rec stds-cap1 fw-bold"><i class="ic-v2-community-thumbs-up-fill"></i>추천</span>' +
                     '<button class="game-detail-more stds-btn2 fw-regular" type="button">전체보기<i class="ic-v2-control-arrow-right-line"></i></button>' +
                   '</div>' +
@@ -442,7 +442,7 @@ function mountGameDetail(selector, gameId) {
                 // 15-2 BEST · 15-3 NEW 로아상영관 (4열 2줄) — 로스트아크 한정
                 '<template v-if="d.loaTheater"><section v-for="kind in [\'best\', \'new\']" class="game-detail-board" :class="\'game-detail-board--\' + kind">' +
                   '<div class="game-detail-board__title">' +
-                    '<h2 class="stds-title6 fw-bold">로아 상영관</h2>' +
+                    '<h2 class="stds-title8 fw-bold">로아 상영관</h2>' +
                     '<span class="game-detail-board-badge stds-title8 fw-bold" :class="\'game-detail-board-badge--\' + kind">' +
                       '<i :class="kind === \'best\' ? \'ic-v2-object-crown-fill\' : \'ic-v2-community-star-fill\'"></i>{{ kind === \'best\' ? \'BEST\' : \'NEW\' }}' +
                     '</span>' +
@@ -461,7 +461,7 @@ function mountGameDetail(selector, gameId) {
                 // 5 커뮤니티-api연동형 (component/board/notice) — 공지사항
                 '<section class="game-detail-board">' +
                   '<div class="game-detail-board__title">' +
-                    '<h2 class="stds-title6 fw-bold">공지사항</h2>' +
+                    '<h2 class="stds-title8 fw-bold">공지사항</h2>' +
                     '<button class="game-detail-more stds-btn2 fw-regular" type="button">전체보기<i class="ic-v2-control-arrow-right-line"></i></button>' +
                   '</div>' +
                   '<ul class="game-detail-community-api">' +
@@ -475,7 +475,7 @@ function mountGameDetail(selector, gameId) {
                 // 6 커뮤니티-앨범형 (component/board/album) — UCC 게시판
                 '<section class="game-detail-board">' +
                   '<div class="game-detail-board__title">' +
-                    '<h2 class="stds-title6 fw-bold">UCC 게시판</h2>' +
+                    '<h2 class="stds-title8 fw-bold">UCC 게시판</h2>' +
                     '<button class="game-detail-more stds-btn2 fw-regular" type="button">전체보기<i class="ic-v2-control-arrow-right-line"></i></button>' +
                   '</div>' +
                   '<div class="game-detail-community-album">' +
@@ -497,7 +497,7 @@ function mountGameDetail(selector, gameId) {
                 // 7 커뮤니티-게시판형 (component/board/list) — 자유 게시판
                 '<section class="game-detail-board">' +
                   '<div class="game-detail-board__title">' +
-                    '<h2 class="stds-title6 fw-bold">자유 게시판</h2>' +
+                    '<h2 class="stds-title8 fw-bold">자유 게시판</h2>' +
                     '<button class="game-detail-more stds-btn2 fw-regular" type="button">전체보기<i class="ic-v2-control-arrow-right-line"></i></button>' +
                   '</div>' +
                   '<ul class="game-detail-community-board">' +
@@ -514,7 +514,7 @@ function mountGameDetail(selector, gameId) {
 
                 // 8 시스템 요구사항 (component/additional info)
                 '<section class="game-detail-board">' +
-                  '<div class="game-detail-board__title"><h2 class="stds-title6 fw-bold">시스템 요구 사항</h2></div>' +
+                  '<div class="game-detail-board__title"><h2 class="stds-title8 fw-bold">시스템 요구 사항</h2></div>' +
                   '<div class="game-detail-system-requirements">' +
                     '<div v-for="sec in d.systemRequirements" class="game-detail-system-requirements__section">' +
                       '<h3 class="stds-title6 fw-medium">{{ sec.title }}</h3>' +
@@ -542,7 +542,7 @@ function mountGameDetail(selector, gameId) {
             '<div class="game-detail__right">' +
               // 9 게임요약 — 이 카드만 바탕 70%
               '<section class="game-detail-board game-detail-board--summary">' +
-                '<div class="game-detail-board__head"><h2 class="stds-title6 fw-bold">게임 정보</h2></div>' +
+                '<div class="game-detail-board__head"><h2 class="stds-title8 fw-bold">게임 정보</h2></div>' +
                 '<div class="game-detail-summary stds-text3 fw-regular">' +
                   '<p class="game-detail-summary__tagline">{{ d.summary.tagline }}</p>' +
                   '<dl class="game-detail-summary__rows"><div v-for="r in d.summary.rows"><dt>{{ r[0] }}</dt><dd>{{ r[1] }}</dd></div></dl>' +
@@ -562,7 +562,7 @@ function mountGameDetail(selector, gameId) {
               // 17 공지사항 축소형 — 로스트아크 한정
               '<section v-if="d.noticeCompact" class="game-detail-board">' +
                 '<div class="game-detail-board__title">' +
-                  '<h2 class="stds-title6 fw-bold">공지사항</h2>' +
+                  '<h2 class="stds-title8 fw-bold">공지사항</h2>' +
                   '<button class="game-detail-more stds-btn2 fw-regular" type="button">전체보기<i class="ic-v2-control-arrow-right-line"></i></button>' +
                 '</div>' +
                 '<div class="game-detail-notice-compact stds-title7 fw-medium">' +
@@ -575,7 +575,7 @@ function mountGameDetail(selector, gameId) {
 
               // 10 바로가기
               '<section class="game-detail-board">' +
-                '<div class="game-detail-board__head"><h2 class="stds-title6 fw-bold">바로가기</h2></div>' +
+                '<div class="game-detail-board__head"><h2 class="stds-title8 fw-bold">바로가기</h2></div>' +
                 '<ul class="game-detail-shortcut">' +
                   '<li v-for="s in d.shortcuts"><a href="#" @click.prevent>' +
                     '<img v-if="s.svg" class="game-detail-shortcut__svg" :src="img(s.svg)" alt="" /><i v-else :class="s.icon"></i>' +
@@ -593,7 +593,7 @@ function mountGameDetail(selector, gameId) {
 
               // 12 마켓다운로드링크 + QR (component/marketdownload)
               '<section class="game-detail-board">' +
-                '<div class="game-detail-board__head"><h2 class="stds-title6 fw-bold">마켓 다운로드</h2></div>' +
+                '<div class="game-detail-board__head"><h2 class="stds-title8 fw-bold">마켓 다운로드</h2></div>' +
                 '<ul class="game-detail-market-download">' +
                   '<li v-for="m in d.marketDownload"><a href="#" @click.prevent>' +
                     '<i :class="m.icon"></i><span class="stds-text4 fw-medium">{{ m.label }}</span>' +

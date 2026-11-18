@@ -224,6 +224,7 @@
   border-radius: var(--stds-glob-border-radius-3xl);
   background: var(--stds-sem-color-surface-variant-1);
 }
+/* 카드 타이틀 = 14 Bold(stds-title8 14/20, 사용자 11-18 — Figma 시안은 Title6-B 18/26) */
 .game-detail-board h2,
 .game-detail-board h3 { margin: 0; color: var(--stds-sem-color-on-surface-elevation-1); }
 /* 제목 줄 + 아래 구분선(1) — 구분선 위아래 16 */
@@ -545,6 +546,7 @@
 .game-detail-skeleton-bar { flex: none; max-width: 100%; border-radius: var(--stds-glob-border-radius-md); } /* 글자 막대 모서리 4 (사용자 11-18) */
 .game-detail-skeleton-bar--title3 { height: 4.4rem; }
 .game-detail-skeleton-bar--title6 { height: 2.6rem; }
+.game-detail-skeleton-bar--title8 { height: 2rem; } /* 카드 타이틀 14B (사용자 11-18) */
 .game-detail-skeleton-bar--title7 { height: 2.4rem; }
 .game-detail-skeleton-bar--text3 { height: 2.4rem; }
 .game-detail-skeleton-bar--text4 { height: 2.2rem; }
