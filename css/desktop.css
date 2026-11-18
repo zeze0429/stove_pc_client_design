@@ -226,11 +226,26 @@ html, body {
 .proto-panel__body {
   flex: 1 1 auto;
   min-height: 0;
-  padding: 8px 24px 24px;
+  /* 스크롤바는 런처 스크롤바(레이어 다이얼로그 css/layer-dialog.css와 같음) — 패널 오른쪽 끝에서 8 안쪽에 썸 4.
+     오른쪽 여백은 8(바깥) + 4(썸) + 12 = 24로 지금과 같게 (사용자 11-18) */
+  margin-right: 8px;
+  padding: 8px 12px 24px 24px;
   overflow-y: auto;
+  scrollbar-gutter: stable; /* 스크롤 없을 때도 썸 자리 4를 남겨 오른쪽 여백 24 유지 */
   overscroll-behavior: contain;
-  scrollbar-width: thin;
 }
+.proto-panel__body::-webkit-scrollbar { width: 4px; }
+.proto-panel__body::-webkit-scrollbar-thumb {
+  border-bottom: 12px solid transparent;
+  border-radius: 2px / 2px 2px 14px 14px;
+  background-clip: padding-box;
+  background-color: transparent;
+}
+/* 패널에 마우스가 있을 때만 보인다(스크롤바 공통 규칙). 기본 inverse-elevation-2, 호버 · 누름 -1 —
+   패널은 테마와 상관없이 항상 라이트라 라이트 테마 값(black-15 · black-30)을 바로 쓴다 */
+.proto-panel:hover .proto-panel__body::-webkit-scrollbar-thumb { background-color: var(--stds-glob-color-black-15); }
+.proto-panel:hover .proto-panel__body::-webkit-scrollbar-thumb:hover,
+.proto-panel:hover .proto-panel__body::-webkit-scrollbar-thumb:active { background-color: var(--stds-glob-color-black-30); }
 /* 아래로 더 있을 때 — 본문 아래 40을 그라디언트로 흐리게(반투명 패널이라 덮개 대신 마스크). 끝까지 내리면 사라짐 (사용자 11-18) */
 .proto-panel__body.has-more {
   -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 40px), transparent);
