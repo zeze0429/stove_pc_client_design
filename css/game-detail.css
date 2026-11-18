@@ -541,7 +541,7 @@
 .game-detail-skeleton--chevron { flex: none; width: 2.8rem; height: 2.8rem; border-radius: var(--stds-glob-border-radius-full); }
 .game-detail-skeleton--banner { width: 100%; aspect-ratio: 620 / 260; }
 /* 카드형(5 · 6 · 7 · 8 · 9 · 10 · 12) — 실제 카드 틀(.game-detail-board 등)을 그대로 쓰고 안쪽 글자 자리만 막대로 (사용자 11-18).
-   막대 높이 = 글자 줄 높이(line-height) — 타이포 토큰 그대로라 카드 높이가 실제와 같다 (사용자 11-18). 막대 모서리 4 */
+   막대 높이 = 글자 줄 높이(line-height) — 스토어 · 라운지 실제 화면과 같은 방식, 카드 높이도 실제와 같다 (사용자 11-18). 막대 모서리 4 */
 .game-detail-skeleton-bar { flex: none; max-width: 100%; border-radius: var(--stds-glob-border-radius-md); } /* 글자 막대 모서리 4 (사용자 11-18) */
 .game-detail-skeleton-bar--title6 { height: 2.6rem; }
 .game-detail-skeleton-bar--title7 { height: 2.4rem; }
@@ -561,6 +561,7 @@
 .game-detail--skeleton .game-detail-community-board__row > * { margin: 0; }
 .game-detail--skeleton .game-detail-community-album__img { display: block; border: 0; }
 .game-detail--skeleton .game-detail-community-album__name { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 1.4rem; } /* 두 줄 막대가 붙지 않게 4 */
+.game-detail--skeleton .game-detail-community-album__item > .game-detail-skeleton-bar--text4 { margin-top: 0.4rem; } /* 닉네임 막대도 제목과 4 띄움 (사용자 11-18 "붙어 보임") */
 .game-detail--skeleton .game-detail-community-album__meta { margin-top: 0.4rem; display: flex; justify-content: space-between; }
 /* 막대 사이 8 = 실제 줄 간격 (막대 위아래 5 여백 포함 24줄) */
 .game-detail--skeleton .game-detail-system-requirements__rows { display: flex; flex-direction: column; gap: 0.8rem; }
