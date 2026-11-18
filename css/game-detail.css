@@ -14,8 +14,8 @@
 }
 .game-detail { position: relative; flex: 0 0 auto; } /* .main은 세로 flex — 줄어들지 않게 */
 
-/* ---- bg (1100:15048) — 480 높이, 유틸리티 바 뒤까지. 검정 50% + 아래로 페이지 색에 녹아드는 그라데이션 ---- */
-.game-detail__bg {
+/* ---- 1 백그라운드 (bg 1100:15048) — 480 높이, 유틸리티 바 뒤까지. 검정 50% + 아래로 페이지 색에 녹아드는 그라데이션 ---- */
+.game-detail-background {
   position: absolute;
   top: 0;
   left: 0;
@@ -24,8 +24,8 @@
   overflow: hidden;
   pointer-events: none;
 }
-.game-detail__bg img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.game-detail__bg::after {
+.game-detail-background img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.game-detail-background::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -72,7 +72,7 @@
 .game-detail-badge--test { background: #6a1ec7; } /* tint_purple_A700 — 시멘틱 없음 */
 .game-detail-badge--black { background: var(--stds-glob-color-black); }
 
-/* 아이콘배너 (link badge) */
+/* 아이콘배너 (link badge) — 18 링크 지원 게임 마크(--link) · 13 PC방 혜택 아이콘(--pcbang) */
 .game-detail-title__links { flex: none; display: flex; gap: 0.8rem; }
 .game-detail-link-badge {
   display: flex;
@@ -90,8 +90,8 @@
 .game-detail-link-badge__label { display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
 .game-detail-link-badge__label i { font-size: 1.6rem; }
 
-/* ---- component/banner/notice (1100:15068) ---- */
-.game-detail-banner-notice {
+/* ---- 19 공지 설정 (component/banner/notice 1100:15068) — 디자인 추후 전달 예정(사용자 11-18) ---- */
+.game-detail-notice-banner {
   margin-top: 2rem;
   height: 5.6rem;
   display: flex;
@@ -103,22 +103,22 @@
   background-size: cover;
   color: var(--stds-glob-color-white);
 }
-.game-detail-banner-notice i { font-size: 2rem; }
+.game-detail-notice-banner i { font-size: 2rem; }
 
-/* ---- component/banner/full (1100:15069) ---- */
-.game-detail-banner-full { margin-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: 2.4rem; }
-.game-detail-banner-full__banner { position: relative; width: 100%; }
-.game-detail-banner-full__img {
+/* ---- 2 1단 풀배너 (component/banner/full 1100:15069) ---- */
+.game-detail-full-banner { margin-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: 2.4rem; }
+.game-detail-full-banner__banner { position: relative; width: 100%; }
+.game-detail-full-banner__img {
   display: block;
   width: 100%;
   aspect-ratio: 940 / 339.69;
   object-fit: cover;
   border-radius: var(--stds-glob-border-radius-3xl);
 }
-.game-detail-banner-full__prev,
-.game-detail-banner-full__next { position: absolute; top: 50%; transform: translateY(-50%); }
-.game-detail-banner-full__prev { left: -1.8rem; }
-.game-detail-banner-full__next { right: -1.8rem; }
+.game-detail-full-banner__prev,
+.game-detail-full-banner__next { position: absolute; top: 50%; transform: translateY(-50%); }
+.game-detail-full-banner__prev { left: -1.8rem; }
+.game-detail-full-banner__next { right: -1.8rem; }
 
 /* chevron — 28 (패딩 6.2) / lg 36 (패딩 8) */
 .game-detail-chevron {
@@ -174,18 +174,18 @@
 .game-detail__right { display: flex; flex-direction: column; gap: 2rem; }
 .game-detail a { color: inherit; text-decoration: none; }
 
-/* ---- pattern/banner/multi (1100:15078) ---- */
-.game-detail-banner-multi { display: flex; flex-direction: column; gap: 1.6rem; }
-.game-detail-banner-multi__main {
+/* ---- 3 1단배너-썸네일형 (pattern/banner/multi 1100:15078) ---- */
+.game-detail-thumbnail-banner { display: flex; flex-direction: column; gap: 1.6rem; }
+.game-detail-thumbnail-banner__main {
   position: relative;
   overflow: hidden;
   aspect-ratio: 620 / 348.04;
   border-radius: var(--stds-glob-border-radius-3xl);
 }
-.game-detail-banner-multi__main > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
-.game-detail-banner-multi__list { display: flex; align-items: center; justify-content: center; gap: 2rem; }
-.game-detail-banner-multi__thumbs { display: flex; gap: 1.2rem; }
-.game-detail-banner-multi__thumb {
+.game-detail-thumbnail-banner__main > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
+.game-detail-thumbnail-banner__list { display: flex; align-items: center; justify-content: center; gap: 2rem; }
+.game-detail-thumbnail-banner__thumbs { display: flex; gap: 1.2rem; }
+.game-detail-thumbnail-banner__thumb {
   position: relative;
   width: 9.2rem;
   height: 5.175rem;
@@ -196,23 +196,23 @@
   background: none;
   cursor: pointer;
 }
-.game-detail-banner-multi__thumb > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
+.game-detail-thumbnail-banner__thumb > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
 /* 고르지 않은 썸네일은 검정 50% 덮개 */
-.game-detail-banner-multi__thumb::after { content: ""; position: absolute; inset: 0; background: var(--stds-glob-color-black-50); }
-.game-detail-banner-multi__thumb.is-active { border-color: var(--stds-glob-color-white-50); }
-.game-detail-banner-multi__thumb.is-active::after { display: none; }
+.game-detail-thumbnail-banner__thumb::after { content: ""; position: absolute; inset: 0; background: var(--stds-glob-color-black-50); }
+.game-detail-thumbnail-banner__thumb.is-active { border-color: var(--stds-glob-color-white-50); }
+.game-detail-thumbnail-banner__thumb.is-active::after { display: none; }
 
-/* ---- 1_이벤트배너 (component/banner/event 1099:10744) ---- */
-.game-detail-banner-event { display: flex; flex-direction: column; align-items: center; gap: 1.6rem; }
-.game-detail-banner-event__img {
+/* ---- 4 1단배너-배너형 (component/banner/event 1099:10744) ---- */
+.game-detail-banner { display: flex; flex-direction: column; align-items: center; gap: 1.6rem; }
+.game-detail-banner__img {
   position: relative;
   width: 100%;
   overflow: hidden;
   aspect-ratio: 620 / 260;
   border-radius: var(--stds-glob-border-radius-3xl);
 }
-.game-detail-banner-event__img > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
-.game-detail-banner-event__control { display: flex; align-items: center; gap: 2rem; }
+.game-detail-banner__img > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
+.game-detail-banner__control { display: flex; align-items: center; gap: 2rem; }
 
 /* ---- 카드 공통 (component/board/*) — 바탕 surface-variant-1, 패딩 24, 간격 16 ---- */
 .game-detail-board {
@@ -247,7 +247,7 @@
 }
 .game-detail-more i { font-size: 1.6rem; }
 
-/* 로아 상영관 — 로스트아크 한정. 카드 바탕에 색 10%를 얹는다 */
+/* 15 로아상영관 — 로스트아크 한정. 카드 바탕에 색 10%를 얹는다 */
 .game-detail-board--rec { background: linear-gradient(rgba(234, 51, 153, 0.1), rgba(234, 51, 153, 0.1)), var(--stds-sem-color-surface-variant-1); }
 .game-detail-board--best,
 .game-detail-board--new { background: linear-gradient(rgba(80, 61, 175, 0.1), rgba(80, 61, 175, 0.1)), var(--stds-sem-color-surface-variant-1); }
@@ -267,9 +267,9 @@
 .game-detail-board-badge--new i { font-size: 1.6rem; }
 
 /* 두 줄 말줄임 */
-.game-detail-theater-rec__name,
-.game-detail-theater__name,
-.game-detail-album__name {
+.game-detail-loa-theater-rec__name,
+.game-detail-loa-theater__name,
+.game-detail-community-album__name {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -277,83 +277,84 @@
   color: var(--stds-sem-color-on-surface-elevation-1);
 }
 
-/* 추천 — 포스터(260:380) 5열 */
-.game-detail-theater-rec { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1.6rem; }
-.game-detail-theater-rec__item { display: flex; flex-direction: column; }
-.game-detail-theater-rec__img { aspect-ratio: 260 / 380; overflow: hidden; border-radius: var(--stds-glob-border-radius-lg); }
-.game-detail-theater-rec__img img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.game-detail-theater-rec__name { padding-top: 1rem; }
+/* 15-1 추천 — 포스터(260:380) 5열 */
+.game-detail-loa-theater-rec { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1.6rem; }
+.game-detail-loa-theater-rec__item { display: flex; flex-direction: column; }
+.game-detail-loa-theater-rec__img { aspect-ratio: 260 / 380; overflow: hidden; border-radius: var(--stds-glob-border-radius-lg); }
+.game-detail-loa-theater-rec__img img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.game-detail-loa-theater-rec__name { padding-top: 1rem; }
 
-/* BEST · NEW — 320:180 4열 2줄 */
-.game-detail-theater { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem 1.6rem; }
-.game-detail-theater__item { display: flex; flex-direction: column; }
-.game-detail-theater__img { aspect-ratio: 320 / 180; overflow: hidden; }
-.game-detail-theater__img img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.game-detail-theater__name { margin-top: 1rem; }
-.game-detail-theater__author { margin-top: 0.2rem; color: #8b78e9; } /* 시안 헥스 — 시멘틱 없음 */
-.game-detail-theater__date {
+/* 15-2 BEST · 15-3 NEW — 320:180 4열 2줄 */
+.game-detail-loa-theater { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem 1.6rem; }
+.game-detail-loa-theater__item { display: flex; flex-direction: column; }
+.game-detail-loa-theater__img { aspect-ratio: 320 / 180; overflow: hidden; }
+.game-detail-loa-theater__img img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.game-detail-loa-theater__name { margin-top: 1rem; }
+.game-detail-loa-theater__author { margin-top: 0.2rem; color: #8b78e9; } /* 시안 헥스 — 시멘틱 없음 */
+.game-detail-loa-theater__date {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   color: var(--stds-sem-color-on-surface-elevation-4);
 }
 
-/* ---- 2_공지사항 (component/board/notice) ---- */
-.game-detail-notice { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 1.2rem; }
-.game-detail-notice__row { display: flex; align-items: center; gap: 4rem; padding: 0.1rem 0; }
-.game-detail-notice__title { flex: 1 1 0; min-width: 0; display: flex; gap: 0.8rem; white-space: nowrap; }
-.game-detail-notice__cat { flex: none; color: var(--stds-sem-color-on-surface-elevation-1); }
-.game-detail-notice__text { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--stds-sem-color-on-surface-elevation-3); }
-.game-detail-notice__date { flex: none; color: var(--stds-sem-color-on-surface-elevation-4); }
+/* ---- 5 커뮤니티-api연동형 (component/board/notice) — 공지사항 ---- */
+.game-detail-community-api { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 1.2rem; }
+.game-detail-community-api__row { display: flex; align-items: center; gap: 4rem; padding: 0.1rem 0; }
+.game-detail-community-api__title { flex: 1 1 0; min-width: 0; display: flex; gap: 0.8rem; white-space: nowrap; }
+.game-detail-community-api__cat { flex: none; color: var(--stds-sem-color-on-surface-elevation-1); }
+.game-detail-community-api__text { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--stds-sem-color-on-surface-elevation-3); }
+.game-detail-community-api__date { flex: none; color: var(--stds-sem-color-on-surface-elevation-4); }
 
-/* ---- 3_앨범형 게시판 (component/board/album) — 3열 ---- */
-.game-detail-album { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; }
-.game-detail-album__item { display: flex; flex-direction: column; }
-.game-detail-album__img {
+/* ---- 6 커뮤니티-앨범형 (component/board/album) — UCC 게시판 3열 ---- */
+.game-detail-community-album { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; }
+.game-detail-community-album__item { display: flex; flex-direction: column; }
+.game-detail-community-album__img {
   position: relative;
   overflow: hidden;
   aspect-ratio: 177.33 / 135.695;
   border: 1px solid var(--stds-sem-color-inverse-elevation-4);
   border-radius: var(--stds-glob-border-radius-lg);
 }
-.game-detail-album__img > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
-.game-detail-album__name { margin-top: 1.4rem; min-height: 4.8rem; } /* 제목은 늘 두 줄 자리 */
-.game-detail-album__user { color: var(--stds-sem-color-on-surface-elevation-3); }
-.game-detail-album__meta { margin-top: 0.4rem; display: flex; justify-content: space-between; color: var(--stds-sem-color-on-surface-elevation-4); }
-.game-detail-album__counts { display: flex; gap: 1.2rem; }
-.game-detail-album__counts > span,
-.game-detail-list__info > span:last-child { display: inline-flex; align-items: center; gap: 0.2rem; }
-.game-detail-album__counts i,
-.game-detail-list__info i { font-size: 1.4rem; }
+.game-detail-community-album__img > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
+.game-detail-community-album__name { margin-top: 1.4rem; min-height: 4.8rem; } /* 제목은 늘 두 줄 자리 */
+.game-detail-community-album__user { color: var(--stds-sem-color-on-surface-elevation-3); }
+.game-detail-community-album__meta { margin-top: 0.4rem; display: flex; justify-content: space-between; color: var(--stds-sem-color-on-surface-elevation-4); }
+.game-detail-community-album__counts { display: flex; gap: 1.2rem; }
+.game-detail-community-album__counts > span,
+.game-detail-community-board__info > span:last-child { display: inline-flex; align-items: center; gap: 0.2rem; }
+.game-detail-community-album__counts i,
+.game-detail-community-board__info i { font-size: 1.4rem; }
 
-/* ---- 4_리스트형 게시판 (component/board/list) ---- */
-.game-detail-list { margin: 0; padding: 0; list-style: none; }
-.game-detail-list li + li { margin-top: 1.6rem; padding-top: 1.6rem; border-top: 1px solid var(--stds-sem-color-inverse-elevation-4); }
-.game-detail-list__row { display: flex; flex-direction: column; gap: 0.8rem; }
-.game-detail-list__title { display: flex; gap: 0.4rem; white-space: nowrap; overflow: hidden; }
-.game-detail-list__text { min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--stds-sem-color-on-surface-elevation-1); }
-.game-detail-list__reply { flex: none; color: var(--stds-sem-color-brand-primary); }
-.game-detail-list__info { display: flex; align-items: center; gap: 1.6rem; color: var(--stds-sem-color-on-surface-elevation-3); }
-.game-detail-list__gm { color: var(--stds-sem-color-information); }
-.game-detail-list__date { color: var(--stds-sem-color-on-surface-elevation-4); }
+/* ---- 7 커뮤니티-게시판형 (component/board/list) — 자유 게시판 ---- */
+.game-detail-community-board { margin: 0; padding: 0; list-style: none; }
+.game-detail-community-board li + li { margin-top: 1.6rem; padding-top: 1.6rem; border-top: 1px solid var(--stds-sem-color-inverse-elevation-4); }
+.game-detail-community-board__row { display: flex; flex-direction: column; gap: 0.8rem; }
+.game-detail-community-board__title { display: flex; gap: 0.4rem; white-space: nowrap; overflow: hidden; }
+.game-detail-community-board__text { min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--stds-sem-color-on-surface-elevation-1); }
+.game-detail-community-board__reply { flex: none; color: var(--stds-sem-color-brand-primary); }
+.game-detail-community-board__info { display: flex; align-items: center; gap: 1.6rem; color: var(--stds-sem-color-on-surface-elevation-3); }
+.game-detail-community-board__gm { color: var(--stds-sem-color-information); }
+.game-detail-community-board__date { color: var(--stds-sem-color-on-surface-elevation-4); }
 
-/* ---- 5_시스템 요구 사항 (component/additional info) ---- */
-.game-detail-sysreq__section { display: flex; flex-direction: column; gap: 1.6rem; }
-.game-detail-sysreq__section + .game-detail-sysreq__section { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--stds-sem-color-inverse-elevation-4); }
-.game-detail-sysreq__rows,
-.game-detail-info__rows { margin: 0; display: flex; flex-direction: column; gap: 0.8rem; }
-.game-detail-sysreq__rows > div,
-.game-detail-info__rows > div { display: flex; gap: 2rem; }
-.game-detail-sysreq__rows dt,
-.game-detail-info__rows dt { flex: none; width: 8rem; color: var(--stds-sem-color-on-surface-elevation-3); }
-.game-detail-sysreq__rows dd,
-.game-detail-info__rows dd { flex: 1 1 0; min-width: 0; margin: 0; white-space: pre-line; color: var(--stds-sem-color-on-surface-elevation-1); }
-.game-detail-sysreq__text { margin: 0; white-space: pre-wrap; color: var(--stds-sem-color-on-surface-elevation-1); }
-.game-detail-sysreq__rating { display: flex; flex-direction: column; gap: 0.8rem; }
-.game-detail-sysreq__icons { display: flex; flex-wrap: wrap; gap: 0.8rem; }
-.game-detail-sysreq__icons > img,
+/* ---- 8 시스템 요구사항 (component/additional info) ---- */
+.game-detail-system-requirements__section { display: flex; flex-direction: column; gap: 1.6rem; }
+.game-detail-system-requirements__section + .game-detail-system-requirements__section { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--stds-sem-color-inverse-elevation-4); }
+.game-detail-system-requirements__rows,
+.game-detail-summary__rows { margin: 0; display: flex; flex-direction: column; gap: 0.8rem; }
+.game-detail-system-requirements__rows > div,
+.game-detail-summary__rows > div { display: flex; gap: 2rem; }
+.game-detail-system-requirements__rows dt,
+.game-detail-summary__rows dt { flex: none; width: 8rem; color: var(--stds-sem-color-on-surface-elevation-3); }
+.game-detail-system-requirements__rows dd,
+.game-detail-summary__rows dd { flex: 1 1 0; min-width: 0; margin: 0; white-space: pre-line; color: var(--stds-sem-color-on-surface-elevation-1); }
+.game-detail-system-requirements__text,
+.game-detail-rating__text { margin: 0; white-space: pre-wrap; color: var(--stds-sem-color-on-surface-elevation-1); }
+.game-detail-rating { display: flex; flex-direction: column; gap: 0.8rem; }
+.game-detail-rating__icons { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+.game-detail-rating__icons > img,
 .game-detail-rating-sexual { display: block; width: 6.4rem; height: 7.4rem; }
-/* 선정성 — 레이어 6장을 Figma 좌표대로 겹친다 */
+/* 20 등급 및 게임물 내용 정보 — 선정성은 레이어 6장을 Figma 좌표대로 겹친다 */
 .game-detail-rating-sexual { position: relative; }
 .game-detail-rating-sexual img { position: absolute; display: block; }
 .game-detail-rating-sexual .is-shape { left: 0; top: 0; width: 6.4rem; height: 7.4rem; }
@@ -361,14 +362,14 @@
 .game-detail-rating-sexual .is-shape-2 { left: 1.247rem; top: 6.104rem; width: 3.8531rem; height: 0.9162rem; }
 .game-detail-rating-sexual [class*="is-clip"] { left: 0.366rem; top: 0.349rem; width: 5.6674rem; height: 5.526rem; }
 
-/* ---- 오른쪽 · 1_게임 정보 — 이 카드만 바탕 70% ---- */
-.game-detail-board--info { background: color-mix(in srgb, var(--stds-sem-color-surface-variant-1) 70%, transparent); }
-.game-detail-info { display: flex; flex-direction: column; gap: 2rem; }
-.game-detail-info__tagline { margin: 0; color: var(--stds-sem-color-on-surface-elevation-3); }
-.game-detail-info__rows > div { gap: 2.8rem; }
-.game-detail-info__rows dt { width: 10.4rem; }
+/* ---- 9 게임요약 — 이 카드만 바탕 70% ---- */
+.game-detail-board--summary { background: color-mix(in srgb, var(--stds-sem-color-surface-variant-1) 70%, transparent); }
+.game-detail-summary { display: flex; flex-direction: column; gap: 2rem; }
+.game-detail-summary__tagline { margin: 0; color: var(--stds-sem-color-on-surface-elevation-3); }
+.game-detail-summary__rows > div { gap: 2.8rem; }
+.game-detail-summary__rows dt { width: 10.4rem; }
 
-/* ---- MD — 쿠폰 (1103:11492) 300 × 100: 티켓(272) + 로고 탭(48) + NEW 리본 ---- */
+/* ---- 16 쿠폰 (MD 1103:11492) 300 × 100: 티켓(272) + 로고 탭(48) + NEW 리본 ---- */
 .game-detail-coupon { position: relative; display: block; height: 10rem; }
 .game-detail-coupon__ticket,
 .game-detail-coupon__border { position: absolute; left: 0; top: 0; width: 27.3rem; height: 10rem; }
@@ -426,13 +427,13 @@
   color: var(--stds-glob-color-white);
 }
 
-/* ---- 오른쪽 공지사항 (1103:11493) ---- */
-.game-detail-side-notice { display: flex; flex-direction: column; gap: 1.2rem; color: var(--stds-sem-color-on-surface-elevation-3); }
-.game-detail-side-notice a,
-.game-detail-side-notice__pinned a { display: flex; align-items: center; gap: 0.8rem; min-width: 0; }
-.game-detail-side-notice span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+/* ---- 17 공지사항 축소형 (1103:11493) ---- */
+.game-detail-notice-compact { display: flex; flex-direction: column; gap: 1.2rem; color: var(--stds-sem-color-on-surface-elevation-3); }
+.game-detail-notice-compact a,
+.game-detail-notice-compact__pinned a { display: flex; align-items: center; gap: 0.8rem; min-width: 0; }
+.game-detail-notice-compact span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 /* 강조 묶음 — 흰 6% 바탕, 별 아이콘 */
-.game-detail-side-notice__pinned {
+.game-detail-notice-compact__pinned {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
@@ -440,9 +441,9 @@
   border-radius: 0.6rem;
   background: var(--stds-glob-color-white-6);
 }
-.game-detail-side-notice__pinned i { flex: none; font-size: 1.2rem; color: #e74ca2; } /* 시안 헥스 — 시멘틱 없음 */
+.game-detail-notice-compact__pinned i { flex: none; font-size: 1.2rem; color: #e74ca2; } /* 시안 헥스 — 시멘틱 없음 */
 
-/* ---- 2_바로가기 (1100:15088) ---- */
+/* ---- 10 바로가기 (1100:15088) ---- */
 .game-detail-shortcut {
   margin: 0;
   padding: 1.2rem 0;
@@ -458,14 +459,14 @@
 .game-detail-shortcut__dot { width: 0.4rem; height: 0.4rem; display: block; }
 .game-detail-shortcut__arrow { margin-left: 2rem; font-size: 1.6rem; }
 
-/* ---- 3_서브배너 (1100:15089) 300 × 133 ---- */
+/* ---- 11 서브배너 (1100:15089) 300 × 133 ---- */
 .game-detail-sub-banner { position: relative; overflow: hidden; aspect-ratio: 300 / 133.006; border-radius: var(--stds-glob-border-radius-3xl); }
 .game-detail-sub-banner > img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .game-detail-sub-banner .game-detail-indicator { position: absolute; left: 50%; bottom: 1.6rem; transform: translateX(-50%); }
 
-/* ---- component/marketdownload (1100:15090) ---- */
-.game-detail-market { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 1.2rem; }
-.game-detail-market a {
+/* ---- 12 마켓다운로드링크 + QR (component/marketdownload 1100:15090) ---- */
+.game-detail-market-download { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 1.2rem; }
+.game-detail-market-download a {
   display: flex;
   align-items: center;
   gap: 0.8rem;
@@ -475,9 +476,9 @@
   background: var(--stds-glob-color-gray840);
   color: var(--stds-sem-color-on-surface-elevation-1);
 }
-.game-detail-market a > i { font-size: 2rem; }
-.game-detail-market a > span { flex: 1 1 0; min-width: 0; }
-.game-detail-market__qr {
+.game-detail-market-download a > i { font-size: 2rem; }
+.game-detail-market-download a > span { flex: 1 1 0; min-width: 0; }
+.game-detail-market-download__qr {
   flex: none;
   display: inline-flex;
   align-items: center;
@@ -489,9 +490,9 @@
   color: var(--stds-sem-color-on-surface-elevation-2);
   cursor: pointer;
 }
-.game-detail-market__qr i { font-size: 1.6rem; }
+.game-detail-market-download__qr i { font-size: 1.6rem; }
 
-/* ---- component/banner/pcbang (1100:15086) 300 × 100 ---- */
+/* ---- 13 PC방 혜택 배너 (component/banner/pcbang 1100:15086) 300 × 100 ---- */
 .game-detail-pcbang-banner { display: block; overflow: hidden; aspect-ratio: 3 / 1; border-radius: var(--stds-glob-border-radius-3xl); }
 .game-detail-pcbang-banner img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
