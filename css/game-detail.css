@@ -545,7 +545,9 @@
 .game-detail-skeleton-bar--text4 { height: 1.3rem; margin: 0.45rem 0; }
 .game-detail-skeleton-bar--btn2 { height: 1.4rem; margin: 0.3rem 0 0.3rem auto; }
 .game-detail-skeleton-bar--cap1 { height: 1.2rem; margin: 0.3rem 0; }
-.game-detail-skeleton-gap { flex: 1 1 0; }
+/* 길이가 다른 막대는 남은 폭 칸 안에서만 — 오른쪽 날짜 · QR · 화살표가 늘 카드 오른쪽 끝에 맞는다 */
+.game-detail-skeleton-fill { flex: 1 1 0; min-width: 0; display: flex; }
+.game-detail--skeleton .game-detail-community-api__row > .game-detail-skeleton-fill { margin-right: 4rem; } /* 실제 제목 ↔ 날짜 간격 40 */
 .game-detail--skeleton .game-detail-community-api__row,
 .game-detail--skeleton .game-detail-community-board__row,
 .game-detail--skeleton .game-detail-shortcut__row,

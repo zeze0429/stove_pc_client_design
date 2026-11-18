@@ -238,8 +238,7 @@ function mountGameDetail(selector, gameId) {
                 '</div>' +
                 '<ul class="game-detail-community-api"><li v-for="w in [62, 80, 55, 62, 48, 62, 62, 55, 62, 55]"><div class="game-detail-community-api__row">' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" style="width: 4rem"></span>' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" :style="{ width: w + \'%\' }"></span>' +
-                '<span class="game-detail-skeleton-gap"></span>' +
+                '<span class="game-detail-skeleton-fill"><span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" :style="{ width: w + \'%\' }"></span></span>' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" style="width: 7.2rem"></span>' +
                 '</div></li></ul>' +
                 '</section>' +
@@ -322,8 +321,7 @@ function mountGameDetail(selector, gameId) {
                 '</div>' +
                 '<ul class="game-detail-shortcut"><li v-for="w in [45, 35, 35, 50, 30, 45, 40]"><div class="game-detail-shortcut__row">' +
                 '<span class="game-detail-skeleton game-detail-skeleton--icon"></span>' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" :style="{ width: w + \'%\' }"></span>' +
-                '<span class="game-detail-skeleton-gap"></span>' +
+                '<span class="game-detail-skeleton-fill"><span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" :style="{ width: w + \'%\' }"></span></span>' +
                 '<span class="game-detail-skeleton game-detail-skeleton--arrow"></span>' +
                 '</div></li></ul>' +
                 '</section>' +
@@ -335,8 +333,7 @@ function mountGameDetail(selector, gameId) {
                 '</div>' +
                 '<ul class="game-detail-market-download"><li v-for="(w, i) in [40, 35, 45, 35, 60, 40, 50]"><div class="game-detail-market-download__row">' +
                 '<span class="game-detail-skeleton game-detail-skeleton--icon"></span>' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" :style="{ width: w + \'%\' }"></span>' +
-                '<span class="game-detail-skeleton-gap"></span>' +
+                '<span class="game-detail-skeleton-fill"><span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" :style="{ width: w + \'%\' }"></span></span>' +
                 '<span v-if="i < 5" class="game-detail-skeleton game-detail-skeleton--qr"></span>' +
                 '</div></li></ul>' +
                 '</section>' +
