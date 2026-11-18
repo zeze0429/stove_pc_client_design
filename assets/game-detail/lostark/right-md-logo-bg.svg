@@ -1,0 +1,13 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="48" height="100" viewBox="0 0 48 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<foreignObject x="-3" y="-3" width="54" height="106"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(1.5px);clip-path:url(#bgblur_0_0_41_clip_path);height:100%;width:100%"></div></foreignObject><g id="Rectangle 4073" data-figma-bg-blur-radius="3">
+<path d="M1 1H27C38.0457 1 47 9.9543 47 21V79C47 90.0457 38.0457 99 27 99H1V1Z" fill="white" fill-opacity="0.06"/>
+<mask id="stroke0_0_41" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="100" fill="black">
+<rect fill="white" width="48" height="100"/>
+<path d="M1 1H27C38.0457 1 47 9.9543 47 21V79C47 90.0457 38.0457 99 27 99H1V1Z"/>
+</mask>
+<path d="M1 1H27C38.0457 1 47 9.9543 47 21V79C47 90.0457 38.0457 99 27 99H1V1Z" stroke-width="2" stroke="white" stroke-opacity="0.1" mask="url(#stroke0_0_41)"/>
+</g>
+<defs>
+<clipPath id="bgblur_0_0_41_clip_path" transform="translate(3 3)"><path d="M1 1H27C38.0457 1 47 9.9543 47 21V79C47 90.0457 38.0457 99 27 99H1V1Z"/>
+</clipPath></defs>
+</svg>

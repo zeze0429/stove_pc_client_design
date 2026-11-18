@@ -1,0 +1,24 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="44" height="30" viewBox="0 0 44 30" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="Mask group">
+<mask id="mask0_0_35" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="44" height="30">
+<g id="Rectangle 4135">
+<use xlink:href="#stroke0_0_35" fill="#EA3399"/>
+<mask id="stroke1_0_35" fill="white">
+<use xlink:href="#stroke0_0_35"/>
+</mask>
+<path d="M22.4021 29.8234L43.4021 20.6016C43.7654 20.442 44 20.0827 44 19.6859V1C44 0.447715 43.5523 0 43 0H1C0.447715 0 0 0.447716 0 1V19.6859C0 20.0827 0.234612 20.442 0.597924 20.6016L21.5979 29.8234C21.8542 29.936 22.1458 29.936 22.4021 29.8234Z" stroke-width="2" stroke="white" stroke-opacity="0.03" mask="url(#stroke1_0_35)"/>
+</g>
+</mask>
+<g mask="url(#mask0_0_35)">
+<rect id="Rectangle 4134" opacity="0.7" width="31.6722" height="69.26" transform="matrix(0.867359 0.497683 -0.50232 0.864682 -11.2539 -23.5885)" fill="url(#paint0_linear_0_35)"/>
+</g>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_35" x1="31.6722" y1="69.26" x2="0" y2="69.26" gradientUnits="userSpaceOnUse">
+<stop stop-color="#BB3580" stop-opacity="0"/>
+<stop offset="0.5" stop-color="#EE92E3"/>
+<stop offset="1" stop-color="#BB3580" stop-opacity="0"/>
+</linearGradient>
+<path id="stroke0_0_35" d="M0 1C0 0.447716 0.447715 0 1 0H43C43.5523 0 44 0.447715 44 1V19.6859C44 20.0827 43.7654 20.442 43.4021 20.6016L22.4021 29.8234C22.1458 29.936 21.8542 29.936 21.5979 29.8234L0.597924 20.6016C0.234612 20.442 0 20.0827 0 19.6859V1Z"/>
+</defs>
+</svg>
