@@ -386,6 +386,8 @@ html, body {
   color: #fff;
   cursor: pointer;
 }
+.proto-theme:hover { opacity: 0.5; } /* 호버 · 프레스는 투명도로 — 타이틀 닫기 버튼과 같은 값 (사용자 11-18) */
+.proto-theme:active { opacity: 0.7; }
 .proto-theme svg { width: 18px; height: 18px; display: block; } /* 달 · 해 아이콘 18 (사용자 11-18), 버튼은 32 그대로 */
 .proto-theme svg path:first-child, .proto-theme .proto-theme__sun circle { fill: currentColor; } /* 달 · 해 몸통은 채움, 해 빛살은 선 */
 .proto-theme .proto-theme__sun,
