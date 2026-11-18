@@ -497,9 +497,10 @@
 .game-detail-pcbang-banner img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 /* ---- 다른 스토브게임 — 공용 컴포넌트 자리만 음영 (사용자 11-18) ----
-   색은 사내 Storybook Skeleton 정의(Usage) 두 가지만 — 막대 · 블록 inverse-elevation-4, 카드 바탕 surface-elevation-1.
-   "지정된 토큰 값 외 응용 사용 제한" — 그 밖의 색은 쓰지 않는다 (사용자 11-18 "스켈레톤은 무조건 정의된 대로").
-   웨이브(115deg · 2s)는 새 색 없이 같은 inverse-elevation-4를 한 겹 더 얹은 빛줄기. 화면 기준(fixed)이라 모든 블록을 같은 줄기가 지나간다.
+   색은 스토어(store.onstove.com)와 같게 — 막대 · 블록 inverse-elevation-7 (.stds-skeleton-contents, 사용자 11-18 "컬러는 스토어에 맞출게").
+   카드는 스토어처럼 실제 화면 틀 그대로(surface-variant-1). 글자 막대 모서리 4 (사용자 11-18).
+   웨이브 · 모션 끔 펄스는 우측패널 스켈레톤(css/library-panel.css)과 같은 값 — 빛 inverse-elevation-4 · 115deg · 2s,
+   화면 기준(fixed)이라 모든 블록을 같은 줄기가 지나간다.
    우측패널은 오른쪽 280 구간만 쓸지만 여기는 콘텐츠 전체(사이드바 오른쪽 ~ 창 끝)를 쓴다.
    모서리 · 크기 · 비율은 실제 컴포넌트와 같다
    (카드 높이는 로스트아크 시안 1100:13451 값). 로스트아크 한정 15 · 16 · 17, 게임 공지, 2 1단 풀배너는 없음 */
@@ -507,7 +508,7 @@
 .game-detail-skeleton {
   display: block;
   border-radius: var(--stds-glob-border-radius-3xl);
-  background-color: var(--stds-sem-color-inverse-elevation-4);
+  background-color: var(--stds-sem-color-inverse-elevation-7);
   background-image: linear-gradient(115deg, transparent 42%, var(--stds-sem-color-inverse-elevation-4) 50%, transparent 58%);
   background-repeat: no-repeat;
   background-size: 80rem 100%;
@@ -518,13 +519,13 @@
   from { background-position: calc(24rem - 80rem) 0; }
   to { background-position: calc(100vw + 2rem) 0; }
 }
-/* OS 애니메이션 효과 끔 — 웨이브 대신 제자리 펄스: 막대 색 inverse-elevation-4 ↔ 카드 바탕 surface-elevation-1 (정의된 두 색만) */
+/* OS 애니메이션 효과 끔 — 웨이브 대신 제자리 밝기 펄스 (우측패널과 같은 규칙) */
 @media (prefers-reduced-motion: reduce) {
   .game-detail-skeleton { background-image: none; animation: game-detail-skeleton-pulse 2s ease-in-out infinite; }
 }
 @keyframes game-detail-skeleton-pulse {
-  0%, 100% { background-color: var(--stds-sem-color-inverse-elevation-4); }
-  50% { background-color: var(--stds-sem-color-surface-elevation-1); }
+  0%, 100% { background-color: var(--stds-sem-color-inverse-elevation-7); }
+  50% { background-color: var(--stds-sem-color-inverse-elevation-4); }
 }
 /* 게임명 줄 — 실제 아이콘 · 이름만 (뱃지 · 아이콘배너 없음), 이름은 아이콘과 세로 가운데.
    70은 뱃지가 있을 때 높이 — 뱃지가 없으면 썸네일 높이(60)만 (사용자 11-18) */
@@ -537,8 +538,8 @@
 .game-detail-skeleton--chevron { flex: none; width: 2.8rem; height: 2.8rem; border-radius: var(--stds-glob-border-radius-full); }
 .game-detail-skeleton--banner { width: 100%; aspect-ratio: 620 / 260; }
 /* 카드형(5 · 6 · 7 · 8 · 9 · 10 · 12) — 실제 카드 틀(.game-detail-board 등)을 그대로 쓰고 안쪽 글자 자리만 막대로 (사용자 11-18).
-   막대 = 글자 크기 높이, 위아래 여백으로 실제 줄 높이를 채워 카드 높이가 실제와 같다. 막대 모서리 0 (Storybook) */
-.game-detail-skeleton-bar { flex: none; max-width: 100%; border-radius: 0; }
+   막대 = 글자 크기 높이, 위아래 여백으로 실제 줄 높이를 채워 카드 높이가 실제와 같다. 막대 모서리 4 */
+.game-detail-skeleton-bar { flex: none; max-width: 100%; border-radius: var(--stds-glob-border-radius-md); } /* 글자 막대 모서리 4 (사용자 11-18) */
 .game-detail-skeleton-bar--title6 { height: 1.8rem; margin: 0.4rem 0; }
 .game-detail-skeleton-bar--title7 { height: 1.6rem; margin: 0.4rem 0; }
 .game-detail-skeleton-bar--text3 { height: 1.4rem; margin: 0.5rem 0; }
@@ -566,8 +567,8 @@
 /* 한 값이 여러 줄이면(그래픽) 줄 사이 간격 없이 24줄로 이어진다 */
 .game-detail--skeleton .game-detail-system-requirements__rows > .is-continued { margin-top: -0.3rem; }
 .game-detail--skeleton .game-detail-summary__rows dd { display: flex; }
-/* 카드 바탕 = 스켈레톤 정의 surface-elevation-1 (게임요약 70% 반투명 · 로아상영관 색 덧칠 없이 모두 같은 색) */
-.game-detail--skeleton .game-detail-board { background: var(--stds-sem-color-surface-elevation-1); }
+/* 카드 바탕 = 실제 카드색 surface-variant-1 하나로 (게임요약 70%는 배경 그림이 비치라고 둔 값이라 음영 화면에선 불투명) */
+.game-detail--skeleton .game-detail-board { background: var(--stds-sem-color-surface-variant-1); }
 /* 항목 칸(dt) 막대도 칸 폭 안에서 무작위 길이 */
 .game-detail--skeleton .game-detail-summary__rows dt { display: flex; }
 .game-detail--skeleton .game-detail-shortcut__row { gap: 0.8rem; padding: 0; }
