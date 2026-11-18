@@ -141,7 +141,9 @@
 .game-detail-full-banner__prev { left: -1.8rem; }
 .game-detail-full-banner__next { right: -1.8rem; }
 
-/* chevron — 28 (패딩 6.2) / lg 36 (패딩 8) */
+/* chevron — 온스토브 스토어 메인 캐러셀과 같은 값 (사용자 11-18, store.onstove.com/ko 실측):
+   28 동그라미 · 아이콘 16, 바탕 neutral-variant-3 (호버 -hover), 아이콘 on-surface-elevation-1.
+   lg 36 · 아이콘 20 = 스토어 메인 배너 화살표 (바탕 같음) */
 .game-detail-chevron {
   flex: none;
   display: grid;
@@ -151,23 +153,30 @@
   padding: 0;
   border: 0;
   border-radius: var(--stds-glob-border-radius-full);
-  background: var(--stds-sem-color-neutral-variant-2);
+  background: var(--stds-sem-color-neutral-variant-3);
   color: var(--stds-sem-color-on-surface-elevation-1);
-  font-size: 1.556rem;
+  font-size: 1.6rem;
   cursor: pointer;
 }
+.game-detail-chevron:hover { background: var(--stds-sem-color-neutral-variant-3-hover); }
+.game-detail-chevron:active { background: var(--stds-sem-color-neutral-variant-3); }
 .game-detail-chevron--lg { width: 3.6rem; height: 3.6rem; font-size: 2rem; }
 
-/* Indicator — 활성 막대 48 + 점 6, 간격 8 (sm: 서브배너 막대 16) */
-.game-detail-indicator { display: inline-flex; align-items: center; gap: 0.8rem; }
+/* Indicator — 온스토브 스토어 메인 캐러셀과 같은 값 (사용자 11-18): 점 6 · 간격 5, 현재 점도 같은 크기,
+   현재 on-surface-elevation-1 · 나머지 neutral-variant-4, 바뀔 때 0.2s */
+.game-detail-indicator { display: inline-flex; align-items: center; gap: 0.5rem; }
 .game-detail-indicator span {
   width: 0.6rem;
   height: 0.6rem;
   border-radius: var(--stds-glob-border-radius-full);
-  background: var(--stds-glob-color-white-20);
+  background: var(--stds-sem-color-neutral-variant-4);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.game-detail-indicator span.is-active { width: 4.8rem; background: var(--stds-glob-color-white); }
-.game-detail-indicator--sm span.is-active { width: 1.6rem; }
+.game-detail-indicator span.is-active { background: var(--stds-sem-color-on-surface-elevation-1); }
+/* sm — 서브배너 그림 위에 얹힌 것은 Figma 그대로 (흰 점 · 현재 막대 16, 간격 8) */
+.game-detail-indicator--sm { gap: 0.8rem; }
+.game-detail-indicator--sm span { background: var(--stds-glob-color-white-20); }
+.game-detail-indicator--sm span.is-active { width: 1.6rem; background: var(--stds-glob-color-white); }
 
 /* 재생 버튼 (play 56 / 썸네일 24) — 가운데 */
 .game-detail-play {
@@ -204,7 +213,7 @@
   border-radius: var(--stds-glob-border-radius-3xl);
 }
 .game-detail-thumbnail-banner__main > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
-.game-detail-thumbnail-banner__list { display: flex; align-items: center; justify-content: center; gap: 2rem; }
+.game-detail-thumbnail-banner__list { display: flex; align-items: center; justify-content: center; gap: 1.6rem; } /* 화살표 ↔ 썸네일 16 (스토어 캐러셀) */
 .game-detail-thumbnail-banner__thumbs { display: flex; gap: 1.2rem; }
 .game-detail-thumbnail-banner__thumb {
   position: relative;
@@ -240,7 +249,7 @@
   border-radius: var(--stds-glob-border-radius-3xl);
 }
 .game-detail-banner__img > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
-.game-detail-banner__control { display: flex; align-items: center; gap: 2rem; }
+.game-detail-banner__control { display: flex; align-items: center; gap: 1.6rem; } /* 화살표 ↔ 점 16 (스토어 캐러셀) */
 
 /* ---- 카드 공통 (component/board/*) — 바탕 surface-variant-1, 패딩 24, 간격 16 ---- */
 .game-detail-board {
@@ -562,7 +571,7 @@
 /* 게임 아이콘 60 · 게임명 막대(title3 줄 높이 44)도 블록 (사용자 11-18) */
 .game-detail-skeleton--thumb { flex: none; width: 6rem; height: 6rem; border-radius: var(--stds-glob-border-radius-lg); }
 .game-detail--skeleton .game-detail-title__info { align-items: center; }
-.game-detail-skeleton--indicator { width: 10.4rem; height: 0.6rem; border-radius: var(--stds-glob-border-radius-full); }
+.game-detail-skeleton--indicator { width: 5rem; height: 0.6rem; border-radius: var(--stds-glob-border-radius-full); } /* 점 5개 줄 폭 */
 .game-detail-skeleton--thumbnail-banner { aspect-ratio: 620 / 348.04; }
 .game-detail-skeleton--thumbnail { width: 9.2rem; height: 5.175rem; border-radius: var(--stds-glob-border-radius-lg); }
 /* 화살표 자리 — 실제 chevron 28 동그라미 (3 썸네일형 · 4 배너형 컨트롤 줄) */
