@@ -571,9 +571,13 @@
 .game-detail--skeleton .game-detail-summary__rows dd { display: flex; }
 /* 카드 바탕 = 실제 카드색 surface-variant-1 하나로 (게임요약 70%는 배경 그림이 비치라고 둔 값이라 음영 화면에선 불투명) */
 .game-detail--skeleton .game-detail-board { background: var(--stds-sem-color-surface-variant-1); }
-/* 큰 박스는 모두 같은 색 — 배너 자리(3 · 4 · 11 · 13)도 카드와 같은 surface-variant-1 상자 (사용자 11-18 "큰 박스는 모두 같아야").
-   음영(inverse-elevation-7 · 웨이브)은 안쪽 막대 · 썸네일 · 화살표 같은 작은 요소에만 */
+/* 카드 밖 페이지 바탕에 놓인 것은 모두 카드와 같은 surface-variant-1 상자 — 배너 자리(3 · 4 · 11 · 13)와
+   그 아래 썸네일 · 화살표 · 인디케이터까지 (사용자 11-18 "큰 박스는 모두 같아야", "이런 것도 흰색").
+   음영(inverse-elevation-7 · 웨이브)은 카드 안 막대 · 아이콘 · 썸네일에만 */
 .game-detail--skeleton .game-detail-skeleton--thumbnail-banner,
+.game-detail--skeleton .game-detail-skeleton--thumbnail,
+.game-detail--skeleton .game-detail-skeleton--chevron,
+.game-detail--skeleton .game-detail-skeleton--indicator,
 .game-detail--skeleton .game-detail-skeleton--banner,
 .game-detail--skeleton .game-detail-skeleton--sub-banner,
 .game-detail--skeleton .game-detail-skeleton--pcbang-banner {
