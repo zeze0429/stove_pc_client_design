@@ -360,6 +360,10 @@
           var parentKey = sub ? sub.dataset.protoParent : sw && sw.dataset.protoKey;
           el.disabled = !!parentKey && !s[parentKey];
         });
+        // 일반배너 단 수(1 · 2 · 3단)는 일반배너가 체크돼 있을 때만 — 전략배너면 디스에이블 (사용자 11-18, 고른 단 수는 기억)
+        panel.querySelectorAll('input[data-proto-col]').forEach(function (el) {
+          if (!s.prBasic) el.disabled = true;
+        });
       }
 
       startBtn.addEventListener('click', function () { setOpen(panel.hidden); });
