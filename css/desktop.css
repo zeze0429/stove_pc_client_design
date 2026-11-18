@@ -426,6 +426,9 @@ html, body {
 }
 .proto-check__box svg { width: 12px; height: 12px; opacity: 0; }
 .proto-check input:checked + .proto-check__box svg { opacity: 1; }
+/* 체크됨 — 라디오 선택과 같은 brand-primary 바탕 + 흰 체크 (사용자 11-18) */
+.proto-check input:checked + .proto-check__box { border-color: var(--stds-sem-color-brand-primary); background: var(--stds-sem-color-brand-primary); }
+.proto-check input:checked + .proto-check__box svg { stroke: var(--stds-glob-color-white); }
 .proto-check input:focus-visible + .proto-check__box { outline: 2px solid #fc4420; outline-offset: 1px; }
 /* 항목 토글이 꺼져 있으면 디스에이블 (패널 공통) */
 .proto-check:has(input:disabled) { opacity: 0.4; cursor: default; }
