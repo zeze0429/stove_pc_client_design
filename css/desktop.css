@@ -342,7 +342,7 @@ html, body {
 }
 .proto-frame input::-webkit-outer-spin-button,
 .proto-frame input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-.proto-frame input:focus { outline: 2px solid #fc4420; outline-offset: 0; }
+.proto-frame input:focus { outline: none; border-color: var(--stds-glob-color-black-30); } /* 포커스 = 테두리만 검정 10 → 30 (사용자 11-18, 예전 주황 2px 아웃라인) */
 .proto-panel__hint { margin: 6px 0 0; font-size: 10px; line-height: 15px; color: #364153; }
 .proto-panel__hint[hidden] { display: none; }
 
