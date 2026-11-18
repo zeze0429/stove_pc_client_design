@@ -168,14 +168,33 @@ var GAME_DETAIL_DATA = {
   },
 };
 
+// 사이드바 항목 id(즐겨찾기는 'fav-lostark' 같은 별도 id) → 게임 카탈로그 id
+function gameDetailKey(id) {
+  var entry = typeof gnbFindGameById === 'function' ? gnbFindGameById(id) : null;
+  return entry && entry.game ? entry.game : id;
+}
+
+// 스토브게임(사이드바 '스토브게임' 그룹)인지 — 상세 데이터가 없으면 공용 컴포넌트 자리를 음영으로 잡는다
+function gameDetailIsStove(key) {
+  if (typeof GNB_GAME_GROUPS === 'undefined') return false;
+  for (var i = 0; i < GNB_GAME_GROUPS.length; i++) {
+    if (GNB_GAME_GROUPS[i].id !== 'stove-games') continue;
+    return GNB_GAME_GROUPS[i].games.some(function (g) { return g.game === key; });
+  }
+  return false;
+}
+
 function mountGameDetail(selector, gameId) {
-  var data = GAME_DETAIL_DATA[gameId] || null;
-  var game = typeof gameInfo === 'function' ? gameInfo(gameId) : null; // 이름 · 썸네일은 게임 카탈로그 (js/game-catalog.js)
+  var key = gameDetailKey(gameId);
+  var data = GAME_DETAIL_DATA[key] || null;
+  var game = typeof gameInfo === 'function' ? gameInfo(key) : null; // 이름 · 썸네일은 게임 카탈로그 (js/game-catalog.js)
+  var skeleton = !data && gameDetailIsStove(key);
 
   var app = Vue.createApp({
     data: function () {
       return {
         d: data,
+        skeleton: skeleton,
         name: game ? game.name : '게임 상세',
         thumb: game && game.thumb ? game.thumb : '',
         thumbnailIndex: 0,
@@ -185,7 +204,58 @@ function mountGameDetail(selector, gameId) {
       img: function (file) { return GAME_DETAIL_DIR + this.d.dir + file; },
     },
     template:
-      '<div v-if="!d" class="game-detail-empty stds-title2">' +
+      // 다른 스토브게임 — 로스트아크 한정(15 · 16 · 17)을 뺀 공용 컴포넌트 자리만 음영으로 (사용자 11-18).
+      // 크기는 로스트아크 구현과 같은 자리 · 비율, 배경(1)은 게임마다 그림이라 비워 둔다.
+      '<div v-if="skeleton" class="game-detail game-detail--skeleton" aria-busy="true" :aria-label="name + \' 상세\'">' +
+        '<div class="game-detail__contents">' +
+          '<div class="game-detail-title">' +
+            '<div class="game-detail-title__info">' +
+              '<span class="game-detail-skeleton game-detail-skeleton--thumb"></span>' +
+              '<div class="game-detail-title__text">' +
+                '<span class="game-detail-skeleton game-detail-skeleton--badges"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton--name"></span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="game-detail-title__links">' +
+              '<span class="game-detail-skeleton game-detail-skeleton--link-badge"></span>' + // 18 링크 지원 게임 마크
+              '<span class="game-detail-skeleton game-detail-skeleton--link-badge"></span>' + // 13 PC방 혜택 아이콘
+            '</div>' +
+          '</div>' +
+          '<span class="game-detail-skeleton game-detail-skeleton--notice-banner"></span>' + // 게임 공지
+          '<div class="game-detail-full-banner">' + // 2 1단 풀배너
+            '<span class="game-detail-skeleton game-detail-skeleton--full-banner"></span>' +
+            '<span class="game-detail-skeleton game-detail-skeleton--indicator"></span>' +
+          '</div>' +
+          '<div class="game-detail__columns">' +
+            '<div class="game-detail__left">' +
+              '<div class="game-detail-thumbnail-banner">' + // 3 1단배너-썸네일형
+                '<span class="game-detail-skeleton game-detail-skeleton--thumbnail-banner"></span>' +
+                '<div class="game-detail-thumbnail-banner__list"><div class="game-detail-thumbnail-banner__thumbs">' +
+                  '<span v-for="n in 4" class="game-detail-skeleton game-detail-skeleton--thumbnail"></span>' +
+                '</div></div>' +
+              '</div>' +
+              '<div class="game-detail__components">' +
+                '<div class="game-detail-banner">' + // 4 1단배너-배너형
+                  '<span class="game-detail-skeleton game-detail-skeleton--banner"></span>' +
+                  '<span class="game-detail-skeleton game-detail-skeleton--indicator"></span>' +
+                '</div>' +
+                '<span class="game-detail-skeleton game-detail-skeleton--community-api"></span>' + // 5 커뮤니티-api연동형
+                '<span class="game-detail-skeleton game-detail-skeleton--community-album"></span>' + // 6 커뮤니티-앨범형
+                '<span class="game-detail-skeleton game-detail-skeleton--community-board"></span>' + // 7 커뮤니티-게시판형
+                '<span class="game-detail-skeleton game-detail-skeleton--system-requirements"></span>' + // 8 시스템 요구사항
+              '</div>' +
+            '</div>' +
+            '<div class="game-detail__right">' +
+              '<span class="game-detail-skeleton game-detail-skeleton--summary"></span>' + // 9 게임요약
+              '<span class="game-detail-skeleton game-detail-skeleton--shortcut"></span>' + // 10 바로가기
+              '<span class="game-detail-skeleton game-detail-skeleton--sub-banner"></span>' + // 11 서브배너
+              '<span class="game-detail-skeleton game-detail-skeleton--market-download"></span>' + // 12 마켓다운로드링크 + QR
+              '<span class="game-detail-skeleton game-detail-skeleton--pcbang-banner"></span>' + // 13 PC방 혜택 배너
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div v-else-if="!d" class="game-detail-empty stds-title2">' +
         '<strong class="fw-bold">{{ name }}</strong>상세 페이지 준비 중입니다.' +
       '</div>' +
       '<div v-else class="game-detail">' +

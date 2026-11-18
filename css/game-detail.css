@@ -496,6 +496,39 @@
 .game-detail-pcbang-banner { display: block; overflow: hidden; aspect-ratio: 3 / 1; border-radius: var(--stds-glob-border-radius-3xl); }
 .game-detail-pcbang-banner img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
+/* ---- 다른 스토브게임 — 공용 컴포넌트 자리만 음영 (사용자 11-18) ----
+   색은 사내 Storybook Skeleton 블록과 같은 inverse-elevation-7 (우측패널 스켈레톤과 같은 값).
+   로딩이 아니라 "자리"라서 움직이지 않는다. 모서리 · 크기 · 비율은 실제 컴포넌트와 같다
+   (카드 높이는 로스트아크 시안 1100:13451 값). 로스트아크 한정 15 · 16 · 17은 없음 */
+.game-detail--skeleton { pointer-events: none; }
+.game-detail-skeleton {
+  display: block;
+  background: var(--stds-sem-color-inverse-elevation-7);
+  border-radius: var(--stds-glob-border-radius-3xl);
+}
+.game-detail-skeleton--thumb { flex: none; width: 6rem; height: 6rem; border-radius: var(--stds-glob-border-radius-lg); }
+.game-detail-skeleton--badges { width: 20rem; height: 2.2rem; border-radius: var(--stds-glob-border-radius-full); }
+.game-detail-skeleton--name { width: 16rem; height: 4.4rem; border-radius: var(--stds-glob-border-radius-lg); }
+.game-detail-skeleton--link-badge { width: 14.4rem; height: 5.4rem; border-radius: var(--stds-glob-border-radius-lg); }
+.game-detail-skeleton--notice-banner { margin-top: 2rem; height: 5.6rem; border-radius: var(--stds-glob-border-radius-lg); }
+.game-detail-skeleton--full-banner { width: 100%; aspect-ratio: 940 / 339.69; }
+.game-detail-skeleton--indicator { width: 10.4rem; height: 0.6rem; border-radius: var(--stds-glob-border-radius-full); }
+.game-detail-skeleton--thumbnail-banner { aspect-ratio: 620 / 348.04; }
+.game-detail-skeleton--thumbnail { width: 9.2rem; height: 5.175rem; border-radius: var(--stds-glob-border-radius-lg); }
+/* 4 배너 아래 컨트롤 줄(28) 가운데에 인디케이터 — 실제 높이 맞춤 */
+.game-detail--skeleton .game-detail-banner { gap: 2.7rem; }
+.game-detail--skeleton .game-detail-banner .game-detail-skeleton--indicator { margin-bottom: 1.1rem; }
+.game-detail-skeleton--banner { width: 100%; aspect-ratio: 620 / 260; }
+.game-detail-skeleton--community-api { height: 47.5rem; }
+.game-detail-skeleton--community-album { height: 60.5rem; }
+.game-detail-skeleton--community-board { height: 42.1rem; }
+.game-detail-skeleton--system-requirements { height: 106.4rem; }
+.game-detail-skeleton--summary { height: 35rem; }
+.game-detail-skeleton--shortcut { height: 41.8rem; }
+.game-detail-skeleton--sub-banner { aspect-ratio: 300 / 133.006; }
+.game-detail-skeleton--market-download { height: 55.4rem; }
+.game-detail-skeleton--pcbang-banner { aspect-ratio: 3 / 1; }
+
 /* ---- 상세 데이터가 없는 게임 ---- */
 .game-detail-empty {
   flex: 1 1 auto;
