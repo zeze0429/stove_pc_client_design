@@ -53,9 +53,9 @@ var GNB_GAME_GROUPS = [
     count: 7,
     collapsed: false,
     games: [
-      { id: 'eclipse', game: 'eclipse', badges: ['link'] },
-      { id: 'lostark', game: 'lostark' },
+      { id: 'lostark', game: 'lostark' }, // 순서: 로스트아크 · 로드나인 · 이클립스 (사용자 11-18)
       { id: 'rodnine', game: 'rodnine', badges: ['link', 'multiplay'] },
+      { id: 'eclipse', game: 'eclipse', badges: ['link'] },
       { id: 'chaos', game: 'chaos' },
       { id: 'e7', game: 'e7' },
       { id: 'bts', game: 'bts' },
