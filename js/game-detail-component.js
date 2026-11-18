@@ -14,6 +14,8 @@
  *   13 PC방 혜택 배너 / 아이콘 pcbang-banner · link-badge--pcbang · 15-1·2·3 로아상영관 loa-theater ·
  *   16 쿠폰 coupon · 17 공지사항 축소형 notice-compact · 18 링크 지원 게임 마크 link-badge--link ·
  *   20 등급 및 게임물 내용 정보 rating
+ *   로스트아크 한정: 15-1·2·3 로아상영관 · 16 쿠폰 · 17 공지사항 축소형 — 데이터(loaTheaterRec · loaTheater · coupon ·
+ *     noticeCompact)가 있는 게임에서만 그린다 (사용자 11-18)
  *   번호 없는 것: 게임명 title · 게임 공지 notice-banner (component/banner/notice — 가이드 번호와 별도, 사용자 11-18)
  *   아직 없음: 14 이벤트 - 이미지 · 동영상(팝업) 나중에 진행 / 19 공지 설정(가이드 그림상 하단 플레이 바 위 공통 공지 띠 + 공지 팝업) 보류 (사용자 11-18)
  *
@@ -53,7 +55,8 @@ var GAME_DETAIL_DATA = {
     ],
     // 4 1단배너-배너형 (component/banner/event)
     banner: { src: 'event-01.jpg', video: true, count: 5 },
-    // 15 로아상영관 — 로스트아크 한정 (15-1 추천 · 15-2 BEST · 15-3 NEW)
+    // ---- 로스트아크 한정 (15 · 16 · 17) — 다른 게임은 이 키를 넣지 않는다 ----
+    // 15 로아상영관 (15-1 추천 · 15-2 BEST · 15-3 NEW)
     loaTheaterRec: [
       { src: 'theater-rec-01.png', title: '카제로스 레이드 3막 "칠흑, 폭풍의 밤" Teaser' },
       { src: 'theater-rec-02.png', title: '신상입고! MARCH. 2025 네리아의 드레스룸' },
@@ -102,7 +105,9 @@ var GAME_DETAIL_DATA = {
         ['배급사', 'Smilegate RPG'], ['마지막 플레이', '2023.08.09'], ['총 플레이 시간', '3일 2시간 24분'],
       ],
     },
-    // 17 공지사항 축소형 — 위 3개는 강조 묶음(별 아이콘)
+    // 16 쿠폰 (로스트아크 한정)
+    coupon: { title: '쿠폰', desc: '등록 가능한 쿠폰이 있어요.\n지금 확인해 보세요!' },
+    // 17 공지사항 축소형 (로스트아크 한정) — 위 3개는 강조 묶음(별 아이콘)
     noticeCompact: {
       pinned: ['6월 2일 (수) 임시점검 안내', '베른 대도서관 5월의 우수 사서를 찾아서! 이벤트 당첨자 발표합니다', '엘가시아 질서의 신 루페온이 빚어낸 라제니스의 낙원'],
       rows: ['6월 2일 (수) 임시점검 안내', '베른 대도서관 5월의 우수 사서를 찾아서! ', '6월 2일 (수) 임시점검 안내', '6월 2일 (수) 임시점검 안내',
@@ -260,8 +265,8 @@ function mountGameDetail(selector, gameId) {
                   '</div>' +
                 '</div>' +
 
-                // 15-1 로아상영관 추천 (포스터 5열)
-                '<section class="game-detail-board game-detail-board--rec">' +
+                // 15-1 로아상영관 추천 (포스터 5열) — 로스트아크 한정
+                '<section v-if="d.loaTheaterRec" class="game-detail-board game-detail-board--rec">' +
                   '<div class="game-detail-board__title">' +
                     '<h2 class="stds-title6 fw-bold">로아 상영관</h2>' +
                     '<span class="game-detail-board-badge game-detail-board-badge--rec stds-cap1 fw-bold"><i class="ic-v2-community-thumbs-up-fill"></i>추천</span>' +
@@ -275,8 +280,8 @@ function mountGameDetail(selector, gameId) {
                   '</div>' +
                 '</section>' +
 
-                // 15-2 BEST · 15-3 NEW 로아상영관 (4열 2줄)
-                '<section v-for="kind in [\'best\', \'new\']" class="game-detail-board" :class="\'game-detail-board--\' + kind">' +
+                // 15-2 BEST · 15-3 NEW 로아상영관 (4열 2줄) — 로스트아크 한정
+                '<template v-if="d.loaTheater"><section v-for="kind in [\'best\', \'new\']" class="game-detail-board" :class="\'game-detail-board--\' + kind">' +
                   '<div class="game-detail-board__title">' +
                     '<h2 class="stds-title6 fw-bold">로아 상영관</h2>' +
                     '<span class="game-detail-board-badge stds-title8 fw-bold" :class="\'game-detail-board-badge--\' + kind">' +
@@ -292,7 +297,7 @@ function mountGameDetail(selector, gameId) {
                       '<span class="game-detail-loa-theater__date stds-cap1 fw-regular">{{ t.date }}</span>' +
                     '</a>' +
                   '</div>' +
-                '</section>' +
+                '</section></template>' +
 
                 // 5 커뮤니티-api연동형 (component/board/notice) — 공지사항
                 '<section class="game-detail-board">' +
@@ -385,18 +390,18 @@ function mountGameDetail(selector, gameId) {
                 '</div>' +
               '</section>' +
 
-              // 16 쿠폰 (MD — 티켓 모양 + 로고 탭 + NEW 리본)
-              '<a class="game-detail-coupon" href="#" @click.prevent>' +
+              // 16 쿠폰 (MD — 티켓 모양 + 로고 탭 + NEW 리본) — 로스트아크 한정
+              '<a v-if="d.coupon" class="game-detail-coupon" href="#" @click.prevent>' +
                 '<span class="game-detail-coupon__ticket" :style="{ maskImage: \'url(\' + img(\'right-md-mask.svg\') + \')\', webkitMaskImage: \'url(\' + img(\'right-md-mask.svg\') + \')\' }"><img :src="img(\'right-md-img.png\')" alt="" /></span>' +
                 '<img class="game-detail-coupon__border" :src="img(\'right-md-border.svg\')" alt="" />' +
-                '<span class="game-detail-coupon__title stds-title6 fw-bold">쿠폰</span>' +
-                '<span class="game-detail-coupon__desc stds-cap1 fw-medium">등록 가능한 쿠폰이 있어요.<br>지금 확인해 보세요!</span>' +
+                '<span class="game-detail-coupon__title stds-title6 fw-bold">{{ d.coupon.title }}</span>' +
+                '<span class="game-detail-coupon__desc stds-cap1 fw-medium">{{ d.coupon.desc }}</span>' +
                 '<span class="game-detail-coupon__tab"><img :src="img(\'right-md-logo-bg.svg\')" alt="" /><img class="game-detail-coupon__logo" :src="img(\'right-md-logo.png\')" alt="" /></span>' +
                 '<span class="game-detail-coupon__new"><img :src="img(\'right-md-badge-bg.svg\')" alt="" /><img :src="img(\'right-md-badge-mask.svg\')" alt="" /><span>NEW</span></span>' +
               '</a>' +
 
-              // 17 공지사항 축소형
-              '<section class="game-detail-board">' +
+              // 17 공지사항 축소형 — 로스트아크 한정
+              '<section v-if="d.noticeCompact" class="game-detail-board">' +
                 '<div class="game-detail-board__title">' +
                   '<h2 class="stds-title6 fw-bold">공지사항</h2>' +
                   '<button class="game-detail-more stds-btn2 fw-regular" type="button">전체보기<i class="ic-v2-control-arrow-right-line"></i></button>' +

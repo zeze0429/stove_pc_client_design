@@ -247,7 +247,7 @@
 }
 .game-detail-more i { font-size: 1.6rem; }
 
-/* 15 로아상영관 — 로스트아크 한정. 카드 바탕에 색 10%를 얹는다 */
+/* 15 로아상영관 — 로스트아크 한정 (15 · 16 · 17 모두 로스트아크 한정). 카드 바탕에 색 10%를 얹는다 */
 .game-detail-board--rec { background: linear-gradient(rgba(234, 51, 153, 0.1), rgba(234, 51, 153, 0.1)), var(--stds-sem-color-surface-variant-1); }
 .game-detail-board--best,
 .game-detail-board--new { background: linear-gradient(rgba(80, 61, 175, 0.1), rgba(80, 61, 175, 0.1)), var(--stds-sem-color-surface-variant-1); }
@@ -369,7 +369,7 @@
 .game-detail-summary__rows > div { gap: 2.8rem; }
 .game-detail-summary__rows dt { width: 10.4rem; }
 
-/* ---- 16 쿠폰 (MD 1103:11492) 300 × 100: 티켓(272) + 로고 탭(48) + NEW 리본 ---- */
+/* ---- 16 쿠폰 · 로스트아크 한정 (MD 1103:11492) 300 × 100: 티켓(272) + 로고 탭(48) + NEW 리본 ---- */
 .game-detail-coupon { position: relative; display: block; height: 10rem; }
 .game-detail-coupon__ticket,
 .game-detail-coupon__border { position: absolute; left: 0; top: 0; width: 27.3rem; height: 10rem; }
@@ -393,7 +393,7 @@
 .game-detail-coupon__title,
 .game-detail-coupon__desc { position: absolute; left: 2.4rem; color: var(--stds-glob-color-white); }
 .game-detail-coupon__title { top: 1.6rem; }
-.game-detail-coupon__desc { bottom: 1.6rem; }
+.game-detail-coupon__desc { bottom: 1.6rem; white-space: pre-line; }
 .game-detail-coupon__tab { position: absolute; right: 0; top: 0; width: 4.8rem; height: 10rem; }
 .game-detail-coupon__tab > img:first-child { display: block; width: 100%; height: 100%; }
 .game-detail-coupon__logo {
@@ -427,7 +427,7 @@
   color: var(--stds-glob-color-white);
 }
 
-/* ---- 17 공지사항 축소형 (1103:11493) ---- */
+/* ---- 17 공지사항 축소형 · 로스트아크 한정 (1103:11493) ---- */
 .game-detail-notice-compact { display: flex; flex-direction: column; gap: 1.2rem; color: var(--stds-sem-color-on-surface-elevation-3); }
 .game-detail-notice-compact a,
 .game-detail-notice-compact__pinned a { display: flex; align-items: center; gap: 0.8rem; min-width: 0; }
