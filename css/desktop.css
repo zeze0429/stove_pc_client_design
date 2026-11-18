@@ -381,8 +381,8 @@ html, body {
   padding: 0;
   border: 0;
   border-radius: var(--stds-glob-border-radius-full);
-  /* 흰색 반투명 바탕 + 흰색 채운 아이콘 (사용자 11-18, 예전 검정 20% 바탕 + 검정 선 아이콘) */
-  background: rgba(255, 255, 255, 0.4);
+  /* 검정 8% 바탕 + 흰색 채운 아이콘 (사용자 11-18, 예전 검정 20% 바탕 + 검정 선 아이콘 → 흰 40% → 검정 8%) */
+  background: rgba(0, 0, 0, 0.08);
   color: #fff;
   cursor: pointer;
 }
