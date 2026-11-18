@@ -530,6 +530,8 @@
 /* 게임명 줄 — 실제 아이콘 · 이름만 (뱃지 · 아이콘배너 없음), 이름은 아이콘과 세로 가운데.
    70은 뱃지가 있을 때 높이 — 뱃지가 없으면 썸네일 높이(60)만 (사용자 11-18) */
 .game-detail--skeleton .game-detail-title { height: 6rem; }
+/* 배경 그림이 없으니 게임명은 흰색 고정이 아니라 테마 글자색 — 라이트에서 안 보이던 것 (사용자 11-18) */
+.game-detail--skeleton .game-detail-title__name { color: var(--stds-sem-color-on-surface-elevation-1); }
 .game-detail--skeleton .game-detail-title__info { align-items: center; }
 .game-detail-skeleton--indicator { width: 10.4rem; height: 0.6rem; border-radius: var(--stds-glob-border-radius-full); }
 .game-detail-skeleton--thumbnail-banner { aspect-ratio: 620 / 348.04; }
