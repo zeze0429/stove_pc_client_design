@@ -215,11 +215,7 @@ function mountGameDetail(selector, gameId) {
               '<h1 class="game-detail-title__name stds-title3 fw-bold">{{ name }}</h1>' +
             '</div>' +
           '</div>' +
-          '<span class="game-detail-skeleton game-detail-skeleton--notice-banner"></span>' + // 게임 공지
-          '<div class="game-detail-full-banner">' + // 2 1단 풀배너
-            '<span class="game-detail-skeleton game-detail-skeleton--full-banner"></span>' +
-            '<span class="game-detail-skeleton game-detail-skeleton--indicator"></span>' +
-          '</div>' +
+          // 게임 공지 · 2 1단 풀배너는 음영 화면에 넣지 않는다 (사용자 11-18)
           '<div class="game-detail__columns">' +
             '<div class="game-detail__left">' +
               '<div class="game-detail-thumbnail-banner">' + // 3 1단배너-썸네일형

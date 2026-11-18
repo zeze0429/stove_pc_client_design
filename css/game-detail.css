@@ -501,7 +501,7 @@
    웨이브 빛 inverse-elevation-4 · 115deg · 2s, 화면 기준(fixed)이라 모든 블록을 같은 빛줄기가 지나간다 (사용자 11-18).
    우측패널은 오른쪽 280 구간만 쓸지만 여기는 콘텐츠 전체(사이드바 오른쪽 ~ 창 끝)를 쓴다.
    모서리 · 크기 · 비율은 실제 컴포넌트와 같다
-   (카드 높이는 로스트아크 시안 1100:13451 값). 로스트아크 한정 15 · 16 · 17은 없음 */
+   (카드 높이는 로스트아크 시안 1100:13451 값). 로스트아크 한정 15 · 16 · 17, 게임 공지, 2 1단 풀배너는 없음 */
 .game-detail--skeleton { pointer-events: none; }
 .game-detail-skeleton {
   display: block;
@@ -529,8 +529,6 @@
    70은 뱃지가 있을 때 높이 — 뱃지가 없으면 썸네일 높이(60)만 (사용자 11-18) */
 .game-detail--skeleton .game-detail-title { height: 6rem; }
 .game-detail--skeleton .game-detail-title__info { align-items: center; }
-.game-detail-skeleton--notice-banner { margin-top: 2rem; height: 5.6rem; border-radius: var(--stds-glob-border-radius-lg); }
-.game-detail-skeleton--full-banner { width: 100%; aspect-ratio: 940 / 339.69; }
 .game-detail-skeleton--indicator { width: 10.4rem; height: 0.6rem; border-radius: var(--stds-glob-border-radius-full); }
 .game-detail-skeleton--thumbnail-banner { aspect-ratio: 620 / 348.04; }
 .game-detail-skeleton--thumbnail { width: 9.2rem; height: 5.175rem; border-radius: var(--stds-glob-border-radius-lg); }
