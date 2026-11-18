@@ -40,14 +40,25 @@
 /* ---- 게임명 (1100:15051) ---- */
 .game-detail-title { display: flex; align-items: center; gap: 1.6rem; height: 7rem; } /* 시안 70 — 글자 상자(72)가 살짝 넘친다 */
 .game-detail-title__info { flex: 1 1 0; min-width: 0; display: flex; align-items: flex-start; gap: 1.6rem; }
+/* 썸네일 테두리는 모두 이미지 위에 겹치는 안쪽 테두리(::after) — 썸네일 공통 규칙 (사용자 11-18, 라이브러리 카드와 같은 방식) */
 .game-detail-thumb {
+  position: relative;
   flex: none;
   width: 6rem;
   height: 6rem;
   overflow: hidden;
-  border: 1px solid var(--stds-sem-color-inverse-variant-3);
   border-radius: var(--stds-glob-border-radius-lg);
 }
+.game-detail-thumb::after,
+.game-detail-community-album__img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--stds-sem-color-inverse-variant-3);
+  border-radius: inherit;
+  pointer-events: none;
+}
+.game-detail-community-album__img::after { border-color: var(--stds-sem-color-inverse-elevation-4); } /* 앨범은 Figma inverse-elevation-4 */
 .game-detail-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .game-detail-title__text { display: flex; flex-direction: column; gap: 0.6rem; min-width: 0; }
 .game-detail-title__badges { display: flex; flex-wrap: wrap; gap: 0.4rem; }
@@ -201,16 +212,23 @@
   height: 5.175rem;
   padding: 0;
   overflow: hidden;
-  border: 1px solid var(--stds-sem-color-inverse-variant-3);
+  border: 0;
   border-radius: var(--stds-glob-border-radius-lg);
   background: none;
   cursor: pointer;
 }
 .game-detail-thumbnail-banner__thumb > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
-/* 고르지 않은 썸네일은 검정 50% 덮개 */
-.game-detail-thumbnail-banner__thumb::after { content: ""; position: absolute; inset: 0; background: var(--stds-glob-color-black-50); }
-.game-detail-thumbnail-banner__thumb.is-active { border-color: var(--stds-glob-color-white-50); }
-.game-detail-thumbnail-banner__thumb.is-active::after { display: none; }
+/* 안쪽 테두리 + 고르지 않은 썸네일은 검정 50% 덮개 (::after 하나), 고른 썸네일은 덮개 없이 흰 50% 테두리 */
+.game-detail-thumbnail-banner__thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--stds-sem-color-inverse-variant-3);
+  border-radius: inherit;
+  background: var(--stds-glob-color-black-50);
+  pointer-events: none;
+}
+.game-detail-thumbnail-banner__thumb.is-active::after { border-color: var(--stds-glob-color-white-50); background: none; }
 
 /* ---- 4 1단배너-배너형 (component/banner/event 1099:10744) ---- */
 .game-detail-banner { display: flex; flex-direction: column; align-items: center; gap: 1.6rem; }
@@ -324,7 +342,6 @@
   position: relative;
   overflow: hidden;
   aspect-ratio: 177.33 / 135.695;
-  border: 1px solid var(--stds-sem-color-inverse-elevation-4);
   border-radius: var(--stds-glob-border-radius-lg);
 }
 .game-detail-community-album__img > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
@@ -572,7 +589,8 @@
 .game-detail--skeleton .game-detail-community-api__row { padding: 0.1rem 0; }
 .game-detail--skeleton .game-detail-community-board__row { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
 .game-detail--skeleton .game-detail-community-board__row > * { margin: 0; }
-.game-detail--skeleton .game-detail-community-album__img { display: block; border: 0; }
+.game-detail--skeleton .game-detail-community-album__img { display: block; }
+.game-detail--skeleton .game-detail-community-album__img::after { display: none; }
 .game-detail--skeleton .game-detail-community-album__name { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 1.4rem; } /* 두 줄 막대가 붙지 않게 4 */
 .game-detail--skeleton .game-detail-community-album__item > .game-detail-skeleton-bar--text4 { margin-top: 0.4rem; } /* 닉네임 막대도 제목과 4 띄움 (사용자 11-18 "붙어 보임") */
 .game-detail--skeleton .game-detail-community-album__meta { margin-top: 0.4rem; display: flex; justify-content: space-between; }
