@@ -354,7 +354,7 @@ body { margin: 0; }
    NEW: 메뉴명에서 4 옆(행 gap 6 - 2), 20 x 6.5, 메뉴명 글자 윗변에 탑정렬 —
    이미지가 글자로 꽉 차 있어 이미지 윗변 = NEW 글자 윗변. 메뉴명(14/20)의
    글자 윗변은 행 콘텐츠 위에서 1.4px 아래(실측)라 그만큼 내린다.
-   (라운지 "오늘의 1등" 뱃지는 11-17 이벤트 종료로 뺌) */
+   (라운지 "오늘의 1등" 뱃지는 11-17 이벤트 종료로 뺌 → 11-18 같은 자리에 "챌린지" 뱃지, 아래 .badge-menu-challenge) */
 .badge-new {
   flex: 0 0 auto;
   display: block;
@@ -363,6 +363,57 @@ body { margin: 0; }
   margin-left: -0.2rem;
   width: 2rem;
   height: 0.65rem;
+}
+
+/* 라운지 "챌린지" 뱃지 (Figma 클라이언트_v3.1 img_badge_lounge 68267:393384) — 예전 오늘의 1등 자리:
+   메뉴명에서 6 옆(행 gap), 53 x 18, 행 세로 가운데.
+   배경: 그라데이션 #5673F6 → #DD48FB (Figma 핸들 (-1,10)→(63.5,23.4)을 CSS 각도 · 위치로 옮긴 값) — 치환할 시멘틱 없음.
+   글자: Spoqa Bold 11, 흰색, 왼쪽 7 / 번개 아이콘 12: 오른쪽 4 (x 37). 글자 · 아이콘 모두 검정 51% 그림자. */
+.badge-menu-challenge {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 5.3rem;
+  height: 1.8rem;
+  padding: 0 0 0 0.7rem;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: linear-gradient(101.7deg, #5673f6 1.9%, #dd48fb 120.5%);
+  color: var(--stds-glob-color-white);
+  overflow: hidden;
+}
+.badge-menu-challenge__label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.4rem;
+  white-space: nowrap;
+  text-shadow: 0 0 0.771px rgba(0, 0, 0, 0.51);
+}
+.badge-menu-challenge__icon {
+  position: absolute; /* 글자 폭과 상관없이 Figma 자리(오른쪽 4, 위 3) 고정 — 글자 박스(31)와 1px 겹치는 것도 Figma 그대로 */
+  top: 0.3rem;
+  right: 0.4rem;
+  display: block;
+  width: 1.2rem;
+  height: 1.2rem;
+  filter: drop-shadow(0 0 0.578px rgba(0, 0, 0, 0.51));
+}
+/* 빛이 흐르는 효과 — 예전 오늘의 1등 뱃지와 같음(실제 라운지 웹 EVENT 뱃지 animate-shine):
+   흰 50% 띠를 4초마다 처음 30% 동안 오른쪽 밖 → 왼쪽 밖으로 한 번 */
+.badge-menu-challenge::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(98.34deg, transparent 35%, var(--stds-glob-color-white-50) 50%, transparent 65%) no-repeat;
+  background-size: 150% 100%;
+  background-position: 200% 50%;
+  animation: gnb-badge-shine 4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes gnb-badge-shine {
+  0%       { background-position: 200% 50%; }
+  30%, 100% { background-position: -100% 50%; }
 }
 
 /* ---- AD 배너 (200 x 40) ---------------------------------- */

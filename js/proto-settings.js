@@ -39,6 +39,7 @@ var PROTO_SETTINGS_DEFAULTS = {
   libraryPanelSkeletonAt: 0, // 켠 시각 — 켤 때마다 처음부터 다시 불러온다
   containerBlur: false, // 컨테이너(우클릭 메뉴 · 필터 레이어) 바탕을 반투명 + 배경 블러로 — 테스트용 비교
   menuNew: false,   // 메뉴 강조 — 라운지 NEW 표시
+  menuBadge: true,  // 메뉴 강조 — 라운지 "챌린지" 뱃지 (기본 켜짐, 사용자 11-18 · 예전 오늘의 1등 자리)
   frameMode: 'min', // 사이즈 지정 — 'min'(1280 × 800, 최소) · 'fhd'(1920 × 1000) · 'custom'(입력칸 / 드래그)
   frameW: 1280,     // 클라이언트 창 크기 — 최소 1280 × 800 (main.html 사이즈 지정 · 테두리 드래그, js/os-window.js)
   frameH: 800,

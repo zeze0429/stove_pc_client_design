@@ -1032,6 +1032,12 @@ var GnbComponent = {
               '<i :class="item.icon"></i>' +
               '<span class="menu-item__label stds-title8">{{ item.label }}</span>' +
               '<img v-if="item.badge === \'new\' && proto.menuNew" class="badge-new" src="assets/gnb-badge/badge-new@2x.png" alt="NEW" data-name="component/badge/menu_title" />' +
+              // 메뉴 강조 > 뱃지 — 라운지 "챌린지" (Figma 클라이언트_v3.1 img_badge_lounge 68267:393384, 사용자 11-18)
+              // 예전 "오늘의 1등" 뱃지 자리 그대로. 번개 아이콘은 ic-v2-media-image-flash-on-fill 벡터(12 박스, 2.5 · 1 위치)
+              '<span v-if="item.id === \'lounge\' && proto.menuBadge" class="badge-menu-challenge" data-name="img_badge_lounge">' +
+                '<span class="badge-menu-challenge__label">챌린지</span>' +
+                '<svg class="badge-menu-challenge__icon" viewBox="-5 -2 24 24" aria-hidden="true"><path fill="currentColor" d="M8.88235 1.00009C8.88235 0.552201 8.58455 0.15894 8.15343 0.0375285C7.72232 -0.0838831 7.26305 0.0961692 7.02932 0.47823L0.146967 11.7282C-0.0418469 12.0369 -0.0492193 12.4234 0.127688 12.739C0.304596 13.0546 0.638189 13.2501 1 13.2501H5.35294V19.0001C5.35294 19.4391 5.63926 19.8268 6.05886 19.9559C6.47845 20.085 6.93318 19.9253 7.17997 19.5622L14.827 8.31225C15.0353 8.00591 15.0571 7.60956 14.8838 7.2822C14.7105 6.95483 14.3704 6.75009 14 6.75009H8.88235V1.00009Z"/></svg>' +
+              '</span>' +
               // 다운로드 관리 — 남은 개수(파랑) · 진행률 · 완료 체크 · 에러(빨간 !) 레이어. 데이터는 js/download-sim.js
               // 에러는 난 순간 잠깐, 실패 항목이 남은 채 끝나면 마지막에 계속 (사용자 11-16)
               '<span v-if="item.id === \'download\' && proto.download" class="download-queue">' +
