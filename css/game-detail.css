@@ -34,6 +34,10 @@
     linear-gradient(var(--stds-glob-color-black-50), var(--stds-glob-color-black-50));
 }
 
+/* [테스트] 유틸리티 바 — 맨 위(기본 상태)에서는 바탕색을 꺼서 배경 그림이 비치게. 스크롤되면 원래대로
+   background-variant-1 70% + 블러 (css/utility-bar.css .is-scrolled). 게임 상세에만 (사용자 11-18 테스트) */
+.utility-bar:not(.is-scrolled) { background: transparent; }
+
 /* 유틸리티 바(48) + 40 아래에서 시작 */
 .game-detail__contents { position: relative; padding: calc(8.8rem + var(--utility-notice-h, 0px)) var(--page-gutter) 10rem; } /* 최하단 100 — 라이브러리 · 다운로드 관리 · 이벤트와 같음 (사용자 11-18) */
 
