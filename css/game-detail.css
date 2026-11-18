@@ -497,14 +497,33 @@
 .game-detail-pcbang-banner img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 /* ---- 다른 스토브게임 — 공용 컴포넌트 자리만 음영 (사용자 11-18) ----
-   색은 사내 Storybook Skeleton 블록과 같은 inverse-elevation-7 (우측패널 스켈레톤과 같은 값).
-   로딩이 아니라 "자리"라서 움직이지 않는다. 모서리 · 크기 · 비율은 실제 컴포넌트와 같다
+   색 · 애니메이션은 우측패널 스켈레톤(css/library-panel.css)과 같은 Storybook 값 — 블록 inverse-elevation-7,
+   웨이브 빛 inverse-elevation-4 · 115deg · 2s, 화면 기준(fixed)이라 모든 블록을 같은 빛줄기가 지나간다 (사용자 11-18).
+   우측패널은 오른쪽 280 구간만 쓸지만 여기는 콘텐츠 전체(사이드바 오른쪽 ~ 창 끝)를 쓴다.
+   모서리 · 크기 · 비율은 실제 컴포넌트와 같다
    (카드 높이는 로스트아크 시안 1100:13451 값). 로스트아크 한정 15 · 16 · 17은 없음 */
 .game-detail--skeleton { pointer-events: none; }
 .game-detail-skeleton {
   display: block;
-  background: var(--stds-sem-color-inverse-elevation-7);
   border-radius: var(--stds-glob-border-radius-3xl);
+  background-color: var(--stds-sem-color-inverse-elevation-7);
+  background-image: linear-gradient(115deg, transparent 42%, var(--stds-sem-color-inverse-elevation-4) 50%, transparent 58%);
+  background-repeat: no-repeat;
+  background-size: 80rem 100%;
+  background-attachment: fixed;
+  animation: game-detail-skeleton-wave 2s linear infinite;
+}
+@keyframes game-detail-skeleton-wave {
+  from { background-position: calc(24rem - 80rem) 0; }
+  to { background-position: calc(100vw + 2rem) 0; }
+}
+/* OS 애니메이션 효과 끔 — 웨이브 대신 제자리 밝기 펄스 (우측패널과 같은 규칙) */
+@media (prefers-reduced-motion: reduce) {
+  .game-detail-skeleton { background-image: none; animation: game-detail-skeleton-pulse 2s ease-in-out infinite; }
+}
+@keyframes game-detail-skeleton-pulse {
+  0%, 100% { background-color: var(--stds-sem-color-inverse-elevation-7); }
+  50% { background-color: var(--stds-sem-color-inverse-elevation-4); }
 }
 .game-detail-skeleton--thumb { flex: none; width: 6rem; height: 6rem; border-radius: var(--stds-glob-border-radius-lg); }
 .game-detail-skeleton--badges { width: 20rem; height: 2.2rem; border-radius: var(--stds-glob-border-radius-full); }
