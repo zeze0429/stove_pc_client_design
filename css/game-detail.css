@@ -127,7 +127,7 @@
 .game-detail-notice-banner i { font-size: 2rem; }
 
 /* ---- 2 1단 풀배너 (component/banner/full 1100:15069) ---- */
-.game-detail-full-banner { margin-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: 2.4rem; }
+.game-detail-full-banner { margin-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: 1.6rem; } /* 배너 ↔ 컨트롤 줄 16 (4 배너형과 같게) */
 .game-detail-full-banner__banner { position: relative; width: 100%; }
 .game-detail-full-banner__img {
   display: block;
@@ -136,14 +136,10 @@
   object-fit: cover;
   border-radius: var(--stds-glob-border-radius-3xl);
 }
-.game-detail-full-banner__prev,
-.game-detail-full-banner__next { position: absolute; top: 50%; transform: translateY(-50%); }
-.game-detail-full-banner__prev { left: -1.8rem; }
-.game-detail-full-banner__next { right: -1.8rem; }
+.game-detail-full-banner__control { display: flex; align-items: center; gap: 1.6rem; } /* 화살표 ↔ 점 16 (스토어 캐러셀) */
 
 /* chevron — 온스토브 스토어 메인 캐러셀과 같은 값 (사용자 11-18, store.onstove.com/ko 실측):
-   28 동그라미 · 아이콘 16, 바탕 neutral-variant-3 (호버 -hover), 아이콘 on-surface-elevation-1.
-   lg 36 · 아이콘 20 = 스토어 메인 배너 화살표 (바탕 같음) */
+   28 동그라미 · 아이콘 16, 바탕 neutral-variant-3 (호버 -hover), 아이콘 on-surface-elevation-1 */
 .game-detail-chevron {
   flex: none;
   display: grid;
@@ -160,7 +156,6 @@
 }
 .game-detail-chevron:hover { background: var(--stds-sem-color-neutral-variant-3-hover); }
 .game-detail-chevron:active { background: var(--stds-sem-color-neutral-variant-3); }
-.game-detail-chevron--lg { width: 3.6rem; height: 3.6rem; font-size: 2rem; }
 
 /* Indicator — 온스토브 스토어 메인 캐러셀과 같은 값 (사용자 11-18): 점 6 · 간격 5, 현재 점도 같은 크기,
    현재 on-surface-elevation-1 · 나머지 neutral-variant-4, 바뀔 때 0.2s */

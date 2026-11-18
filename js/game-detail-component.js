@@ -383,10 +383,13 @@ function mountGameDetail(selector, gameId) {
           '<div class="game-detail-full-banner">' +
             '<div class="game-detail-full-banner__banner">' +
               '<img class="game-detail-full-banner__img" :src="img(d.fullBanner.src)" alt="" />' +
-              '<button class="game-detail-chevron game-detail-chevron--lg game-detail-full-banner__prev" type="button" aria-label="이전"><i class="ic-v2-control-arrow-left-line"></i></button>' +
-              '<button class="game-detail-chevron game-detail-chevron--lg game-detail-full-banner__next" type="button" aria-label="다음"><i class="ic-v2-control-arrow-right-line"></i></button>' +
             '</div>' +
-            '<span class="game-detail-indicator"><span v-for="n in d.fullBanner.count" :class="{ \'is-active\': n === 1 }"></span></span>' +
+            // 화살표는 배너 양옆에 겹치지 않고 아래 컨트롤 줄로 — 4 배너형과 같은 모양 (사용자 11-18)
+            '<div class="game-detail-full-banner__control">' +
+              '<button class="game-detail-chevron" type="button" aria-label="이전"><i class="ic-v2-control-arrow-left-line"></i></button>' +
+              '<span class="game-detail-indicator"><span v-for="n in d.fullBanner.count" :class="{ \'is-active\': n === 1 }"></span></span>' +
+              '<button class="game-detail-chevron" type="button" aria-label="다음"><i class="ic-v2-control-arrow-right-line"></i></button>' +
+            '</div>' +
           '</div>' +
 
           '<div class="game-detail__columns">' +
