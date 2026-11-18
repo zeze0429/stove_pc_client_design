@@ -203,6 +203,42 @@
         </label>
       </div>
 
+      <!-- 라이브러리 설정 — 클라이언트가 라이브러리 페이지에 있을 때만 노출. 레이아웃 설정 바로 아래 (사용자 11-18).
+           빠른 실행은 사용자 설정에 따라 숨길 수 있는 영역 -->
+      <div class="proto-panel__section" id="protoLibrarySettings" hidden>
+        <hr class="proto-panel__divider" />
+        <h2 class="proto-panel__title">라이브러리 설정</h2>
+        <div class="proto-panel__row">
+          <span class="proto-panel__label">보유게임 없음</span>
+          <button class="proto-switch" type="button" role="switch" data-proto-key="libraryNoOwned" aria-label="보유게임 없음"></button>
+        </div>
+        <div class="proto-panel__row">
+          <span class="proto-panel__label">빠른 실행</span>
+          <span class="proto-panel__controls">
+            <label class="proto-check">
+              <input type="checkbox" data-proto-key="libraryQuickAd" />
+              <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
+              광고
+            </label>
+            <button class="proto-switch" type="button" role="switch" data-proto-key="libraryQuick" aria-label="빠른 실행"></button>
+          </span>
+        </div>
+        <div class="proto-panel__row">
+          <span class="proto-panel__label">패널 로딩 서클</span>
+          <button class="proto-switch" type="button" role="switch" data-proto-key="libraryPanelSpinner" aria-label="패널 로딩 서클"></button>
+        </div>
+        <!-- 패널 스켈레톤 — 지금은 미노출(사용자 11-16 "필요하면 나중에 요청"). 다시 보이려면 hidden만 지우면 된다 -->
+        <div class="proto-panel__row" hidden>
+          <span class="proto-panel__label">패널 스켈레톤 (10개씩)</span>
+          <button class="proto-switch" type="button" role="switch" data-proto-key="libraryPanelSkeleton" aria-label="패널 스켈레톤"></button>
+        </div>
+        <!-- 컨테이너 블러 — 지금은 미노출(사용자 11-13 "나중에 꺼내달라고 할 때"). 다시 보이려면 hidden만 지우면 된다 -->
+        <div class="proto-panel__row" hidden>
+          <span class="proto-panel__label">컨테이너 블러</span>
+          <button class="proto-switch" type="button" role="switch" data-proto-key="containerBlur" aria-label="컨테이너 블러"></button>
+        </div>
+      </div>
+
       <hr class="proto-panel__divider" />
 
       <h2 class="proto-panel__title">GNB 설정</h2>
@@ -243,42 +279,6 @@
       <div class="proto-panel__row">
         <span class="proto-panel__label">즐겨찾기</span>
         <button class="proto-switch" type="button" role="switch" data-proto-key="favorites" aria-label="즐겨찾기"></button>
-      </div>
-
-      <!-- 라이브러리 설정 — 클라이언트가 라이브러리 페이지에 있을 때만 노출.
-           빠른 실행은 사용자 설정에 따라 숨길 수 있는 영역 -->
-      <div class="proto-panel__section" id="protoLibrarySettings" hidden>
-        <hr class="proto-panel__divider" />
-        <h2 class="proto-panel__title">라이브러리 설정</h2>
-        <div class="proto-panel__row">
-          <span class="proto-panel__label">보유게임 없음</span>
-          <button class="proto-switch" type="button" role="switch" data-proto-key="libraryNoOwned" aria-label="보유게임 없음"></button>
-        </div>
-        <div class="proto-panel__row">
-          <span class="proto-panel__label">빠른 실행</span>
-          <span class="proto-panel__controls">
-            <label class="proto-check">
-              <input type="checkbox" data-proto-key="libraryQuickAd" />
-              <span class="proto-check__box"><svg viewBox="0 0 12 12" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9.5 10 3"></path></svg></span>
-              광고
-            </label>
-            <button class="proto-switch" type="button" role="switch" data-proto-key="libraryQuick" aria-label="빠른 실행"></button>
-          </span>
-        </div>
-        <div class="proto-panel__row">
-          <span class="proto-panel__label">패널 로딩 서클</span>
-          <button class="proto-switch" type="button" role="switch" data-proto-key="libraryPanelSpinner" aria-label="패널 로딩 서클"></button>
-        </div>
-        <!-- 패널 스켈레톤 — 지금은 미노출(사용자 11-16 "필요하면 나중에 요청"). 다시 보이려면 hidden만 지우면 된다 -->
-        <div class="proto-panel__row" hidden>
-          <span class="proto-panel__label">패널 스켈레톤 (10개씩)</span>
-          <button class="proto-switch" type="button" role="switch" data-proto-key="libraryPanelSkeleton" aria-label="패널 스켈레톤"></button>
-        </div>
-        <!-- 컨테이너 블러 — 지금은 미노출(사용자 11-13 "나중에 꺼내달라고 할 때"). 다시 보이려면 hidden만 지우면 된다 -->
-        <div class="proto-panel__row" hidden>
-          <span class="proto-panel__label">컨테이너 블러</span>
-          <button class="proto-switch" type="button" role="switch" data-proto-key="containerBlur" aria-label="컨테이너 블러"></button>
-        </div>
       </div>
 
       <!-- 클라이언트 레이아웃 — 우측패널은 다운로드 관리 · 스튜디오 테스트에만 적용.
