@@ -214,11 +214,11 @@ function mountGameDetail(selector, gameId) {
       // 크기는 로스트아크 구현과 같은 자리 · 비율, 배경(1)은 게임마다 그림이라 비워 둔다.
       '<div v-if="skeleton" class="game-detail game-detail--skeleton" aria-busy="true" :aria-label="name + \' 상세\'">' +
         '<div class="game-detail__contents">' +
-          // 게임 아이콘 · 게임명은 실제로 (카탈로그), 뱃지 · 오른쪽 아이콘배너(18 · 13)는 넣지 않는다 (사용자 11-18)
+          // 게임 아이콘 · 게임명도 블록 (사용자 11-18), 뱃지 · 오른쪽 아이콘배너(18 · 13)는 넣지 않는다
           '<div class="game-detail-title">' +
             '<div class="game-detail-title__info">' +
-              '<span class="game-detail-thumb"><img v-if="thumb" :src="thumb" alt="" /></span>' +
-              '<h1 class="game-detail-title__name stds-title3 fw-bold">{{ name }}</h1>' +
+              '<span class="game-detail-skeleton game-detail-skeleton--thumb"></span>' +
+              '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title3" style="width: 16rem"></span>' +
             '</div>' +
           '</div>' +
           // 게임 공지 · 2 1단 풀배너는 음영 화면에 넣지 않는다 (사용자 11-18)

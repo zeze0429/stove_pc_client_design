@@ -531,8 +531,8 @@
 /* 게임명 줄 — 실제 아이콘 · 이름만 (뱃지 · 아이콘배너 없음), 이름은 아이콘과 세로 가운데.
    70은 뱃지가 있을 때 높이 — 뱃지가 없으면 썸네일 높이(60)만 (사용자 11-18) */
 .game-detail--skeleton .game-detail-title { height: 6rem; }
-/* 배경 그림이 없으니 게임명은 흰색 고정이 아니라 테마 글자색 — 라이트에서 안 보이던 것 (사용자 11-18) */
-.game-detail--skeleton .game-detail-title__name { color: var(--stds-sem-color-on-surface-elevation-1); }
+/* 게임 아이콘 60 · 게임명 막대(title3 줄 높이 44)도 블록 (사용자 11-18) */
+.game-detail-skeleton--thumb { flex: none; width: 6rem; height: 6rem; border-radius: var(--stds-glob-border-radius-lg); }
 .game-detail--skeleton .game-detail-title__info { align-items: center; }
 .game-detail-skeleton--indicator { width: 10.4rem; height: 0.6rem; border-radius: var(--stds-glob-border-radius-full); }
 .game-detail-skeleton--thumbnail-banner { aspect-ratio: 620 / 348.04; }
@@ -543,6 +543,7 @@
 /* 카드형(5 · 6 · 7 · 8 · 9 · 10 · 12) — 실제 카드 틀(.game-detail-board 등)을 그대로 쓰고 안쪽 글자 자리만 막대로 (사용자 11-18).
    막대 높이 = 글자 줄 높이(line-height) — 스토어 · 라운지 실제 화면과 같은 방식, 카드 높이도 실제와 같다 (사용자 11-18). 막대 모서리 4 */
 .game-detail-skeleton-bar { flex: none; max-width: 100%; border-radius: var(--stds-glob-border-radius-md); } /* 글자 막대 모서리 4 (사용자 11-18) */
+.game-detail-skeleton-bar--title3 { height: 4.4rem; }
 .game-detail-skeleton-bar--title6 { height: 2.6rem; }
 .game-detail-skeleton-bar--title7 { height: 2.4rem; }
 .game-detail-skeleton-bar--text3 { height: 2.4rem; }
@@ -576,6 +577,7 @@
 /* 카드 밖 페이지 바탕에 놓인 것은 모두 카드와 같은 surface-variant-1 상자 — 배너 자리(3 · 4 · 11 · 13)와
    그 아래 썸네일 · 화살표 · 인디케이터까지 (사용자 11-18 "큰 박스는 모두 같아야", "이런 것도 흰색").
    음영(inverse-elevation-6 · 웨이브)은 카드 안 막대 · 아이콘 · 썸네일에만 */
+.game-detail--skeleton .game-detail-title .game-detail-skeleton,
 .game-detail--skeleton .game-detail-skeleton--thumbnail-banner,
 .game-detail--skeleton .game-detail-skeleton--thumbnail,
 .game-detail--skeleton .game-detail-skeleton--chevron,
