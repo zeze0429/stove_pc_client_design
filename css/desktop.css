@@ -205,10 +205,10 @@ html, body {
   -webkit-backdrop-filter: blur(64px);
   color: #101828;
   font-family: "Spoqa Han Sans Neo", stds-font-kr, system-ui, sans-serif;
-  /* 최대 780 — 기본 항목(타이틀 57 + 본문 708 + 테두리 2 = 767)이 스크롤 없이 다 보이게 (사용자 11-18, 예전 700).
-     라이브러리 설정 · 사용자 지정 입력칸 등이 더 열리면 본문만 스크롤, 타이틀은 위에 고정.
+  /* 높이 고정 768 — 페이지마다 항목 수가 달라도(라이브러리 설정 등) 패널 크기는 그대로, 넘치면 본문만 스크롤 (사용자 11-18).
+     768 = 기본 항목(타이틀 57 + 본문 708(줄임 안내 포함) + 테두리 2 = 767)이 스크롤 없이 다 보이는 높이.
      화면이 낮으면 작업표시줄 위 화면 안까지만 */
-  max-height: min(780px, calc(100vh - 64px));
+  height: min(768px, calc(100vh - 64px));
   overflow: hidden;
 }
 .proto-panel__head {
