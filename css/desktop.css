@@ -319,6 +319,7 @@ html, body {
 .proto-panel .stds-radio {
   --stds-radio-background: var(--stds-glob-color-white);   /* 라이트 neutral-variant-3 */
   --stds-radio-border: var(--stds-glob-color-black-10);    /* 테두리 검정 10% (사용자 11-18, 예전 라이트 border gray150) */
+  background-clip: padding-box; /* 흰 바탕은 테두리 안쪽까지만 — 테두리 자리에 패널 바탕이 비친다 */
 }
 .proto-panel .stds-radio-label { margin-left: 8px; font-size: 11px; font-weight: 500; line-height: 16px; color: #364153; }
 .proto-frame[hidden] { display: none; }
@@ -421,6 +422,7 @@ html, body {
   border: 1px solid var(--stds-glob-color-black-10); /* 라디오와 같은 검정 10% (사용자 11-18, 예전 흰 70%) */
   border-radius: 3px;
   background: #fff;
+  background-clip: padding-box; /* 라디오와 같이 테두리 자리에 패널 바탕이 비친다 */
 }
 .proto-check__box svg { width: 12px; height: 12px; opacity: 0; }
 .proto-check input:checked + .proto-check__box svg { opacity: 1; }
