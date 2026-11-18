@@ -226,14 +226,16 @@ function mountGameDetail(selector, gameId) {
             '<div class="game-detail__left">' +
               '<div class="game-detail-thumbnail-banner">' + // 3 1단배너-썸네일형
                 '<span class="game-detail-skeleton game-detail-skeleton--thumbnail-banner"></span>' +
-                '<div class="game-detail-thumbnail-banner__list"><div class="game-detail-thumbnail-banner__thumbs">' +
-                  '<span v-for="n in 4" class="game-detail-skeleton game-detail-skeleton--thumbnail"></span>' +
-                '</div></div>' +
+                '<div class="game-detail-thumbnail-banner__list">' +
+                  '<span class="game-detail-skeleton game-detail-skeleton--chevron"></span>' + // 화살표 자리 (사용자 11-18)
+                  '<div class="game-detail-thumbnail-banner__thumbs"><span v-for="n in 4" class="game-detail-skeleton game-detail-skeleton--thumbnail"></span></div>' +
+                  '<span class="game-detail-skeleton game-detail-skeleton--chevron"></span>' +
+                '</div>' +
               '</div>' +
               '<div class="game-detail__components">' +
                 '<div class="game-detail-banner">' + // 4 1단배너-배너형
                   '<span class="game-detail-skeleton game-detail-skeleton--banner"></span>' +
-                  '<span class="game-detail-skeleton game-detail-skeleton--indicator"></span>' +
+                  '<div class="game-detail-banner__control">' + '<span class="game-detail-skeleton game-detail-skeleton--chevron"></span>' + '<span class="game-detail-skeleton game-detail-skeleton--indicator"></span>' + '<span class="game-detail-skeleton game-detail-skeleton--chevron"></span>' + '</div>' +
                 '</div>' +
                 // 카드형은 실제 카드 틀 + 안쪽 큰 타이틀 · 전체보기 · 내용 줄 자리만 음영 막대 (사용자 11-18)
                 // 5 커뮤니티-api연동형

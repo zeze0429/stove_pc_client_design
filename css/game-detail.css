@@ -532,9 +532,8 @@
 .game-detail-skeleton--indicator { width: 10.4rem; height: 0.6rem; border-radius: var(--stds-glob-border-radius-full); }
 .game-detail-skeleton--thumbnail-banner { aspect-ratio: 620 / 348.04; }
 .game-detail-skeleton--thumbnail { width: 9.2rem; height: 5.175rem; border-radius: var(--stds-glob-border-radius-lg); }
-/* 4 배너 아래 컨트롤 줄(28) 가운데에 인디케이터 — 실제 높이 맞춤 */
-.game-detail--skeleton .game-detail-banner { gap: 2.7rem; }
-.game-detail--skeleton .game-detail-banner .game-detail-skeleton--indicator { margin-bottom: 1.1rem; }
+/* 화살표 자리 — 실제 chevron 28 동그라미 (3 썸네일형 · 4 배너형 컨트롤 줄) */
+.game-detail-skeleton--chevron { flex: none; width: 2.8rem; height: 2.8rem; border-radius: var(--stds-glob-border-radius-full); }
 .game-detail-skeleton--banner { width: 100%; aspect-ratio: 620 / 260; }
 /* 카드형(5 · 6 · 7 · 8 · 9 · 10 · 12) — 실제 카드 틀(.game-detail-board 등)을 그대로 쓰고 안쪽 글자 자리만 막대로 (사용자 11-18).
    막대 = 글자 크기 높이, 위아래 여백으로 실제 줄 높이를 채워 카드 높이가 실제와 같다. 막대 모서리 0 (Storybook) */
