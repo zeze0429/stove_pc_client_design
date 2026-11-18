@@ -247,12 +247,13 @@ html, body {
 .proto-panel__close:hover { opacity: 0.5; }
 .proto-panel__close:active { opacity: 0.7; }
 
-/* 섹션 제목(모드지정 · 사이즈 지정 …) — 패널 타이틀(16)보다 작게, 항목(11.25)보다는 크게 (사용자 11-18, 예전 15) */
+/* 섹션 제목(모드 지정 · 사이즈 지정 …) — 그룹 머리말처럼 작고 흐리게, 항목(11.25 굵게)이 먼저 읽히게 (사용자 11-18, 15 → 13 → 11 + 50%) */
 .proto-panel__title {
-  margin: 0 0 12px;
-  font-size: 13px;
+  margin: 0 0 10px;
+  font-size: 11px;
   font-weight: 600;
-  line-height: 18px;
+  line-height: 16px;
+  color: rgba(16, 24, 40, 0.5); /* 패널 글자색 #101828의 50% */
 }
 
 .proto-panel__row {
