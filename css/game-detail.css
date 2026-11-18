@@ -90,7 +90,7 @@
 .game-detail-link-badge__label { display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
 .game-detail-link-badge__label i { font-size: 1.6rem; }
 
-/* ---- 게임 공지 (component/banner/notice 1100:15068) — 가이드 19 공지 설정(공지 팝업)과는 별도 ---- */
+/* ---- 게임 공지 (component/banner/notice 1100:15068) — 가이드 19 공지 설정(보류)과는 별도 ---- */
 .game-detail-notice-banner {
   margin-top: 2rem;
   height: 5.6rem;
