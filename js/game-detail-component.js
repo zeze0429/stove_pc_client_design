@@ -13,8 +13,9 @@
  *   10 바로가기 shortcut · 11 서브배너 sub-banner · 12 마켓다운로드링크 + QR market-download ·
  *   13 PC방 혜택 배너 / 아이콘 pcbang-banner · link-badge--pcbang · 15-1·2·3 로아상영관 loa-theater ·
  *   16 쿠폰 coupon · 17 공지사항 축소형 notice-compact · 18 링크 지원 게임 마크 link-badge--link ·
- *   19 공지 설정 notice-banner(디자인 추후) · 20 등급 및 게임물 내용 정보 rating
- *   (14 이벤트 - 이미지 · 동영상은 팝업 — 나중에 진행, 사용자 11-18)
+ *   20 등급 및 게임물 내용 정보 rating
+ *   번호 없는 것: 게임명 title · 게임 공지 notice-banner (component/banner/notice — 가이드 번호와 별도, 사용자 11-18)
+ *   아직 없음: 14 이벤트 - 이미지 · 동영상(팝업) 나중에 진행 / 19 공지 설정(공지 팝업) 디자인 나중에 받음 (사용자 11-18)
  *
  *   mountGameDetail('#game-detail-mount', gameId)
  */
@@ -39,7 +40,7 @@ var GAME_DETAIL_DATA = {
       { kind: 'link', label: '링크 지원 게임', icon: 'ic-badge-link.svg' },
       { kind: 'pcbang', label: 'PC방 혜택', icon: 'ic-badge-pcbang.svg' },
     ],
-    // 19 공지 설정 — 디자인 나중에 받음(사용자 11-18), 지금은 시안의 점검 띠
+    // 게임 공지 (component/banner/notice) — 가이드 19 공지 설정(공지 팝업)과는 별도
     noticeBanner: '게임점검 중입니다. (점검 종료까지 1시간 20분 남음)',
     // 2 1단 풀배너
     fullBanner: { src: 'banner-full-01.jpg', count: 5 },
@@ -208,7 +209,7 @@ function mountGameDetail(selector, gameId) {
             '</div>' +
           '</div>' +
 
-          // ---- 19 공지 설정 (component/banner/notice) ----
+          // ---- 게임 공지 (component/banner/notice) — 가이드 번호와 별도 ----
           '<div class="game-detail-notice-banner" :style="{ backgroundImage: \'url(\' + img(\'notice-inspection.png\') + \')\' }">' +
             '<i class="ic-v2-object-notice-fill" aria-hidden="true"></i>' +
             '<span class="stds-text2 fw-bold">{{ d.noticeBanner }}</span>' +
