@@ -141,8 +141,10 @@ html, body {
 }
 .os-taskbar__btn svg { width: 20px; height: 20px; display: block; }
 .os-taskbar__btn:hover { background: rgba(255, 255, 255, 0.1); }
-/* 선택(시작 메뉴 열림 · 실행 중 앱) — 테두리 대신 흰 배경을 채우고 아이콘은 어둡게 (사용자 11-18) */
+/* 선택(시작 메뉴 열림 등) — 테두리 대신 흰 배경을 채우고 아이콘은 어둡게 (사용자 11-18) */
 .os-taskbar__btn.is-active { background: #fff; color: #1f1f1f; }
+/* STOVE(실행 중 앱)는 예전 라인 그대로 — 흰 테두리 + 흰 20% (사용자 11-18) */
+.os-taskbar__btn[data-os-app].is-active { background: rgba(255, 255, 255, 0.2); border-color: #fff; }
 
 .os-taskbar__divider {
   width: 1px;
