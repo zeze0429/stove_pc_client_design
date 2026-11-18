@@ -353,7 +353,7 @@ html, body {
   padding: 0;
   border: 0;
   border-radius: var(--stds-glob-border-radius-full);
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--stds-glob-color-black-15); /* 꺼짐 — 검정 15% (사용자 11-18, 예전 20%) */
   cursor: pointer;
   transition: background 0.2s;
 }
@@ -381,8 +381,8 @@ html, body {
   padding: 0;
   border: 0;
   border-radius: var(--stds-glob-border-radius-full);
-  /* 검정 8% 바탕 + 흰색 채운 아이콘 (사용자 11-18, 예전 검정 20% 바탕 + 검정 선 아이콘 → 흰 40% → 검정 8%) */
-  background: rgba(0, 0, 0, 0.08);
+  /* 검정 15% 바탕 + 흰색 채운 아이콘 (사용자 11-18, 예전 검정 20% 바탕 + 검정 선 아이콘 → 흰 40% → 검정 8% → 15%) */
+  background: var(--stds-glob-color-black-15);
   color: #fff;
   cursor: pointer;
 }
