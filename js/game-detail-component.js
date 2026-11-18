@@ -202,6 +202,12 @@ function mountGameDetail(selector, gameId) {
     },
     methods: {
       img: function (file) { return GAME_DETAIL_DIR + this.d.dir + file; },
+      // 음영 막대 길이 — seed마다 고정된 무작위 값 (min ~ max, unit '%' 또는 'rem')
+      rw: function (seed, min, max, unit) {
+        var x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+        x -= Math.floor(x);
+        return { width: (min + x * (max - min)).toFixed(1) + (unit || '%') };
+      },
     },
     template:
       // 다른 스토브게임 — 로스트아크 한정(15 · 16 · 17)을 뺀 공용 컴포넌트 자리만 음영으로 (사용자 11-18).
@@ -233,28 +239,28 @@ function mountGameDetail(selector, gameId) {
                 // 5 커뮤니티-api연동형
                 '<section class="game-detail-board">' +
                 '<div class="game-detail-board__title">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 8rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 6.4rem"></span>' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--btn2" style="width: 6.4rem"></span>' +
                 '</div>' +
-                '<ul class="game-detail-community-api"><li v-for="w in [62, 80, 55, 62, 48, 62, 62, 55, 62, 55]"><div class="game-detail-community-api__row">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" style="width: 4rem"></span>' +
-                '<span class="game-detail-skeleton-fill"><span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" :style="{ width: w + \'%\' }"></span></span>' +
+                '<ul class="game-detail-community-api"><li v-for="i in 10"><div class="game-detail-community-api__row">' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" :style="rw(i, 3.2, 6.4, \'rem\')"></span>' +
+                '<span class="game-detail-skeleton-fill"><span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" :style="rw(i + 10, 40, 90)"></span></span>' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" style="width: 7.2rem"></span>' +
                 '</div></li></ul>' +
                 '</section>' +
                 // 6 커뮤니티-앨범형
                 '<section class="game-detail-board">' +
                 '<div class="game-detail-board__title">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 8rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 8.8rem"></span>' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--btn2" style="width: 6.4rem"></span>' +
                 '</div>' +
                 '<div class="game-detail-community-album"><div v-for="n in 6" class="game-detail-community-album__item">' +
                 '<span class="game-detail-skeleton game-detail-community-album__img"></span>' +
                 '<span class="game-detail-community-album__name">' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" style="width: 100%"></span>' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" style="width: 60%"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" :style="rw(n + 20, 25, 85)"></span>' +
                 '</span>' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" style="width: 40%"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" :style="rw(n + 30, 25, 60)"></span>' +
                 '<span class="game-detail-community-album__meta">' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--cap1" style="width: 30%"></span>' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--cap1" style="width: 35%"></span>' +
@@ -264,30 +270,30 @@ function mountGameDetail(selector, gameId) {
                 // 7 커뮤니티-게시판형
                 '<section class="game-detail-board">' +
                 '<div class="game-detail-board__title">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 8rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 7.6rem"></span>' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--btn2" style="width: 6.4rem"></span>' +
                 '</div>' +
-                '<ul class="game-detail-community-board"><li v-for="w in [85, 60, 60, 60]"><div class="game-detail-community-board__row">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" :style="{ width: w + \'%\' }"></span>' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" style="width: 40%"></span>' +
+                '<ul class="game-detail-community-board"><li v-for="i in 4"><div class="game-detail-community-board__row">' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" :style="rw(i + 40, 40, 95)"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" :style="rw(i + 50, 25, 55)"></span>' +
                 '</div></li></ul>' +
                 '</section>' +
                 // 8 시스템 요구사항
                 '<section class="game-detail-board">' +
                 '<div class="game-detail-board__title">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 8rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 10.4rem"></span>' +
                 '</div>' +
                 '<div class="game-detail-system-requirements">' +
                 // 섹션: [표 줄 수, 그래픽 줄 덧붙임, 글 줄 수, 등급 아이콘 수] — 최소 · 권장 · 지원 언어 · 이용 등급
-                '<div v-for="sec in [[8, 0, 0, 0], [7, 2, 0, 0], [0, 0, 1, 0], [0, 0, 2, 8]]" class="game-detail-system-requirements__section">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 9rem"></span>' +
+                '<div v-for="(sec, si) in [[8, 0, 0, 0], [7, 2, 0, 0], [0, 0, 1, 0], [0, 0, 2, 8]]" class="game-detail-system-requirements__section">' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" :style="rw(si + 130, 6.4, 11, \'rem\')"></span>' +
                 '<dl v-if="sec[0]" class="game-detail-system-requirements__rows"><div v-for="n in sec[0]">' +
                 '<dt>' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" style="width: 6rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" :style="rw(si * 10 + n + 60, 45, 100)"></span>' +
                 '</dt>' +
                 '<dd>' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" style="width: 55%"></span>' +
-                '<template v-if="n === 4 && sec[1]"><span v-for="m in sec[1]" class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" style="width: 75%"></span></template>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" :style="rw(si * 10 + n + 80, 30, 90)"></span>' +
+                '<template v-if="n === 4 && sec[1]"><span v-for="m in sec[1]" class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" :style="rw(m + 120, 50, 95)"></span></template>' +
                 '</dd>' +
                 '</div></dl>' +
                 '<div v-if="sec[2]" class="game-detail-rating">' +
@@ -303,21 +309,21 @@ function mountGameDetail(selector, gameId) {
               // 9 게임요약
                 '<section class="game-detail-board game-detail-board--summary">' +
                 '<div class="game-detail-board__head">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 8rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 7.2rem"></span>' +
                 '</div>' +
                 '<div class="game-detail-summary">' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" style="width: 50%"></span>' +
                 '<dl class="game-detail-summary__rows"><div v-for="n in 7"><dt>' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" style="width: 5.6rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" :style="rw(n + 100, 40, 90)"></span>' +
                 '</dt><dd>' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" style="width: 70%"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" :style="rw(n + 110, 30, 95)"></span>' +
                 '</dd></div></dl>' +
                 '</div>' +
                 '</section>' +
               // 10 바로가기
                 '<section class="game-detail-board">' +
                 '<div class="game-detail-board__head">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 8rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 6.8rem"></span>' +
                 '</div>' +
                 '<ul class="game-detail-shortcut"><li v-for="w in [45, 35, 35, 50, 30, 45, 40]"><div class="game-detail-shortcut__row">' +
                 '<span class="game-detail-skeleton game-detail-skeleton--icon"></span>' +
@@ -329,7 +335,7 @@ function mountGameDetail(selector, gameId) {
               // 12 마켓다운로드링크 + QR
                 '<section class="game-detail-board">' +
                 '<div class="game-detail-board__head">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 8rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 9.6rem"></span>' +
                 '</div>' +
                 '<ul class="game-detail-market-download"><li v-for="(w, i) in [40, 35, 45, 35, 60, 40, 50]"><div class="game-detail-market-download__row">' +
                 '<span class="game-detail-skeleton game-detail-skeleton--icon"></span>' +
