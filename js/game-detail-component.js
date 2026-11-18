@@ -324,9 +324,10 @@ function mountGameDetail(selector, gameId) {
                 '<div class="game-detail-board__head">' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 6.8rem"></span>' +
                 '</div>' +
-                '<ul class="game-detail-shortcut"><li v-for="w in [45, 35, 35, 50, 30, 45, 40]"><div class="game-detail-shortcut__row">' +
+                // 4줄 · 아이콘은 타이틀과 같은 왼쪽 선 · 이름 막대는 길게 (사용자 11-18)
+                '<ul class="game-detail-shortcut"><li v-for="i in 4"><div class="game-detail-shortcut__row">' +
                 '<span class="game-detail-skeleton game-detail-skeleton--icon"></span>' +
-                '<span class="game-detail-skeleton-fill"><span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" :style="{ width: w + \'%\' }"></span></span>' +
+                '<span class="game-detail-skeleton-fill"><span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" :style="rw(i + 140, 60, 95)"></span></span>' +
                 '</div></li></ul>' +
                 '</section>' +
               '<span class="game-detail-skeleton game-detail-skeleton--sub-banner"></span>' + // 11 서브배너
@@ -336,7 +337,7 @@ function mountGameDetail(selector, gameId) {
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 9.6rem"></span>' +
                 '</div>' +
                 // 줄 카드만 3개 — 아이콘 · 글자 · QR 없음 (사용자 11-18)
-                '<ul class="game-detail-market-download"><li v-for="n in 3"><div class="game-detail-market-download__row"></div></li></ul>' +
+                '<ul class="game-detail-market-download"><li v-for="n in 3"><div class="game-detail-skeleton game-detail-market-download__row"></div></li></ul>' +
                 '</section>' +
               '<span class="game-detail-skeleton game-detail-skeleton--pcbang-banner"></span>' + // 13 PC방 혜택 배너
             '</div>' +
