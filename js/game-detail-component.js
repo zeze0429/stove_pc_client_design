@@ -233,17 +233,117 @@ function mountGameDetail(selector, gameId) {
                   '<span class="game-detail-skeleton game-detail-skeleton--banner"></span>' +
                   '<span class="game-detail-skeleton game-detail-skeleton--indicator"></span>' +
                 '</div>' +
-                '<span class="game-detail-skeleton game-detail-skeleton--community-api"></span>' + // 5 커뮤니티-api연동형
-                '<span class="game-detail-skeleton game-detail-skeleton--community-album"></span>' + // 6 커뮤니티-앨범형
-                '<span class="game-detail-skeleton game-detail-skeleton--community-board"></span>' + // 7 커뮤니티-게시판형
-                '<span class="game-detail-skeleton game-detail-skeleton--system-requirements"></span>' + // 8 시스템 요구사항
+                // 카드형은 실제 카드 틀 + 안쪽 큰 타이틀 · 전체보기 · 내용 줄 자리만 음영 막대 (사용자 11-18)
+                // 5 커뮤니티-api연동형
+                '<section class="game-detail-board">' +
+                '<div class="game-detail-board__title">' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 8rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--btn2" style="width: 6.4rem"></span>' +
+                '</div>' +
+                '<ul class="game-detail-community-api"><li v-for="w in [62, 80, 55, 62, 48, 62, 62, 55, 62, 55]"><div class="game-detail-community-api__row">' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" style="width: 4rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" :style="{ width: w + \'%\' }"></span>' +
+                '<span class="game-detail-skeleton-gap"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" style="width: 7.2rem"></span>' +
+                '</div></li></ul>' +
+                '</section>' +
+                // 6 커뮤니티-앨범형
+                '<section class="game-detail-board">' +
+                '<div class="game-detail-board__title">' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 8rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--btn2" style="width: 6.4rem"></span>' +
+                '</div>' +
+                '<div class="game-detail-community-album"><div v-for="n in 6" class="game-detail-community-album__item">' +
+                '<span class="game-detail-skeleton game-detail-community-album__img"></span>' +
+                '<span class="game-detail-community-album__name">' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" style="width: 100%"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" style="width: 60%"></span>' +
+                '</span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" style="width: 40%"></span>' +
+                '<span class="game-detail-community-album__meta">' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--cap1" style="width: 30%"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--cap1" style="width: 35%"></span>' +
+                '</span>' +
+                '</div></div>' +
+                '</section>' +
+                // 7 커뮤니티-게시판형
+                '<section class="game-detail-board">' +
+                '<div class="game-detail-board__title">' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 8rem"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--btn2" style="width: 6.4rem"></span>' +
+                '</div>' +
+                '<ul class="game-detail-community-board"><li v-for="w in [85, 60, 60, 60]"><div class="game-detail-community-board__row">' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" :style="{ width: w + \'%\' }"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" style="width: 40%"></span>' +
+                '</div></li></ul>' +
+                '</section>' +
+                // 8 시스템 요구사항
+                '<section class="game-detail-board">' +
+                '<div class="game-detail-board__title">' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 8rem"></span>' +
+                '</div>' +
+                '<div class="game-detail-system-requirements">' +
+                // 섹션: [표 줄 수, 그래픽 줄 덧붙임, 글 줄 수, 등급 아이콘 수] — 최소 · 권장 · 지원 언어 · 이용 등급
+                '<div v-for="sec in [[8, 0, 0, 0], [7, 2, 0, 0], [0, 0, 1, 0], [0, 0, 2, 8]]" class="game-detail-system-requirements__section">' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 9rem"></span>' +
+                '<dl v-if="sec[0]" class="game-detail-system-requirements__rows"><div v-for="n in sec[0]">' +
+                '<dt>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" style="width: 6rem"></span>' +
+                '</dt>' +
+                '<dd>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" style="width: 55%"></span>' +
+                '<template v-if="n === 4 && sec[1]"><span v-for="m in sec[1]" class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" style="width: 75%"></span></template>' +
+                '</dd>' +
+                '</div></dl>' +
+                '<div v-if="sec[2]" class="game-detail-rating">' +
+                '<span v-for="m in sec[2]" class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" :style="{ width: m === 1 ? \'40%\' : \'70%\' }"></span>' +
+                '<div v-if="sec[3]" class="game-detail-rating__icons"><span v-for="m in sec[3]" class="game-detail-skeleton game-detail-skeleton--rating"></span></div>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '</section>' +
               '</div>' +
             '</div>' +
             '<div class="game-detail__right">' +
-              '<span class="game-detail-skeleton game-detail-skeleton--summary"></span>' + // 9 게임요약
-              '<span class="game-detail-skeleton game-detail-skeleton--shortcut"></span>' + // 10 바로가기
+              // 9 게임요약
+                '<section class="game-detail-board game-detail-board--summary">' +
+                '<div class="game-detail-board__head">' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 8rem"></span>' +
+                '</div>' +
+                '<div class="game-detail-summary">' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" style="width: 50%"></span>' +
+                '<dl class="game-detail-summary__rows"><div v-for="n in 7"><dt>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" style="width: 5.6rem"></span>' +
+                '</dt><dd>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" style="width: 70%"></span>' +
+                '</dd></div></dl>' +
+                '</div>' +
+                '</section>' +
+              // 10 바로가기
+                '<section class="game-detail-board">' +
+                '<div class="game-detail-board__head">' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 8rem"></span>' +
+                '</div>' +
+                '<ul class="game-detail-shortcut"><li v-for="w in [45, 35, 35, 50, 30, 45, 40]"><div class="game-detail-shortcut__row">' +
+                '<span class="game-detail-skeleton game-detail-skeleton--icon"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" :style="{ width: w + \'%\' }"></span>' +
+                '<span class="game-detail-skeleton-gap"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton--arrow"></span>' +
+                '</div></li></ul>' +
+                '</section>' +
               '<span class="game-detail-skeleton game-detail-skeleton--sub-banner"></span>' + // 11 서브배너
-              '<span class="game-detail-skeleton game-detail-skeleton--market-download"></span>' + // 12 마켓다운로드링크 + QR
+              // 12 마켓다운로드링크 + QR
+                '<section class="game-detail-board">' +
+                '<div class="game-detail-board__head">' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title6" style="width: 8rem"></span>' +
+                '</div>' +
+                '<ul class="game-detail-market-download"><li v-for="(w, i) in [40, 35, 45, 35, 60, 40, 50]"><div class="game-detail-market-download__row">' +
+                '<span class="game-detail-skeleton game-detail-skeleton--icon"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" :style="{ width: w + \'%\' }"></span>' +
+                '<span class="game-detail-skeleton-gap"></span>' +
+                '<span v-if="i < 5" class="game-detail-skeleton game-detail-skeleton--qr"></span>' +
+                '</div></li></ul>' +
+                '</section>' +
               '<span class="game-detail-skeleton game-detail-skeleton--pcbang-banner"></span>' + // 13 PC방 혜택 배너
             '</div>' +
           '</div>' +

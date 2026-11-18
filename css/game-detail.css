@@ -538,12 +538,46 @@
 .game-detail--skeleton .game-detail-banner { gap: 2.7rem; }
 .game-detail--skeleton .game-detail-banner .game-detail-skeleton--indicator { margin-bottom: 1.1rem; }
 .game-detail-skeleton--banner { width: 100%; aspect-ratio: 620 / 260; }
-.game-detail-skeleton--community-api { height: 47.5rem; }
-.game-detail-skeleton--community-album { height: 60.5rem; }
-.game-detail-skeleton--community-board { height: 42.1rem; }
-.game-detail-skeleton--system-requirements { height: 106.4rem; }
-.game-detail-skeleton--summary { height: 35rem; }
-.game-detail-skeleton--shortcut { height: 41.8rem; }
+/* 카드형(5 · 6 · 7 · 8 · 9 · 10 · 12) — 실제 카드 틀(.game-detail-board 등)을 그대로 쓰고 안쪽 글자 자리만 막대로 (사용자 11-18).
+   막대 = 글자 크기 높이, 위아래 여백으로 실제 줄 높이를 채워 카드 높이가 실제와 같다. 막대 모서리 0 (Storybook) */
+.game-detail-skeleton-bar { flex: none; max-width: 100%; border-radius: 0; }
+.game-detail-skeleton-bar--title6 { height: 1.8rem; margin: 0.4rem 0; }
+.game-detail-skeleton-bar--title7 { height: 1.6rem; margin: 0.4rem 0; }
+.game-detail-skeleton-bar--text3 { height: 1.4rem; margin: 0.5rem 0; }
+.game-detail-skeleton-bar--text4 { height: 1.3rem; margin: 0.45rem 0; }
+.game-detail-skeleton-bar--btn2 { height: 1.4rem; margin: 0.3rem 0 0.3rem auto; }
+.game-detail-skeleton-bar--cap1 { height: 1.2rem; margin: 0.3rem 0; }
+.game-detail-skeleton-gap { flex: 1 1 0; }
+.game-detail--skeleton .game-detail-community-api__row,
+.game-detail--skeleton .game-detail-community-board__row,
+.game-detail--skeleton .game-detail-shortcut__row,
+.game-detail--skeleton .game-detail-market-download__row { display: flex; align-items: center; }
+.game-detail--skeleton .game-detail-community-api__row { padding: 0.1rem 0; }
+.game-detail--skeleton .game-detail-community-api__row > .game-detail-skeleton-bar:first-child { margin-right: 0.8rem; }
+.game-detail--skeleton .game-detail-community-board__row { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+.game-detail--skeleton .game-detail-community-board__row > * { margin: 0; }
+.game-detail--skeleton .game-detail-community-board__row > .game-detail-skeleton-bar--title7 { margin: 0.4rem 0; }
+.game-detail--skeleton .game-detail-community-board__row > .game-detail-skeleton-bar--text4 { margin: 0.45rem 0; }
+.game-detail--skeleton .game-detail-community-album__img { display: block; border: 0; }
+.game-detail--skeleton .game-detail-community-album__name { display: flex; flex-direction: column; margin-top: 1.4rem; }
+.game-detail--skeleton .game-detail-community-album__meta { margin-top: 0.4rem; display: flex; justify-content: space-between; }
+.game-detail--skeleton .game-detail-system-requirements__section > .game-detail-skeleton-bar--title6 { margin: 0.4rem 0; }
+.game-detail--skeleton .game-detail-system-requirements__rows dd { display: flex; flex-direction: column; }
+.game-detail--skeleton .game-detail-summary__rows dd { display: flex; }
+.game-detail--skeleton .game-detail-shortcut__row { gap: 0.8rem; padding: 0 1.6rem; }
+.game-detail-skeleton--icon { flex: none; width: 2rem; height: 2rem; border-radius: var(--stds-glob-border-radius-sm); }
+.game-detail-skeleton--arrow { flex: none; width: 1.6rem; height: 1.6rem; border-radius: var(--stds-glob-border-radius-sm); }
+.game-detail--skeleton .game-detail-market-download__row {
+  gap: 0.8rem;
+  height: 5.6rem;
+  padding: 1.2rem 1.6rem;
+  border-radius: var(--stds-glob-border-radius-lg);
+  background: var(--stds-glob-color-gray840);
+}
+.game-detail-skeleton--rating { flex: none; width: 6.4rem; height: 7.4rem; border-radius: var(--stds-glob-border-radius-sm); }
+.game-detail--skeleton .game-detail-rating { gap: 0; }
+.game-detail--skeleton .game-detail-rating__icons { margin-top: 0.8rem; }
+.game-detail-skeleton--qr { flex: none; width: 5.6rem; height: 3.2rem; border-radius: var(--stds-glob-border-radius-full); }
 .game-detail-skeleton--sub-banner { aspect-ratio: 300 / 133.006; }
 .game-detail-skeleton--market-download { height: 55.4rem; }
 .game-detail-skeleton--pcbang-banner { aspect-ratio: 3 / 1; }
