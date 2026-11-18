@@ -497,8 +497,9 @@
 .game-detail-pcbang-banner img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 /* ---- 다른 스토브게임 — 공용 컴포넌트 자리만 음영 (사용자 11-18) ----
-   색 · 애니메이션은 우측패널 스켈레톤(css/library-panel.css)과 같은 Storybook 값 — 블록 inverse-elevation-7,
-   웨이브 빛 inverse-elevation-4 · 115deg · 2s, 화면 기준(fixed)이라 모든 블록을 같은 빛줄기가 지나간다 (사용자 11-18).
+   색은 사내 Storybook Skeleton 정의(Usage) 두 가지만 — 막대 · 블록 inverse-elevation-4, 카드 바탕 surface-elevation-1.
+   "지정된 토큰 값 외 응용 사용 제한" — 그 밖의 색은 쓰지 않는다 (사용자 11-18 "스켈레톤은 무조건 정의된 대로").
+   웨이브(115deg · 2s)는 새 색 없이 같은 inverse-elevation-4를 한 겹 더 얹은 빛줄기. 화면 기준(fixed)이라 모든 블록을 같은 줄기가 지나간다.
    우측패널은 오른쪽 280 구간만 쓸지만 여기는 콘텐츠 전체(사이드바 오른쪽 ~ 창 끝)를 쓴다.
    모서리 · 크기 · 비율은 실제 컴포넌트와 같다
    (카드 높이는 로스트아크 시안 1100:13451 값). 로스트아크 한정 15 · 16 · 17, 게임 공지, 2 1단 풀배너는 없음 */
@@ -506,7 +507,7 @@
 .game-detail-skeleton {
   display: block;
   border-radius: var(--stds-glob-border-radius-3xl);
-  background-color: var(--stds-sem-color-inverse-elevation-7);
+  background-color: var(--stds-sem-color-inverse-elevation-4);
   background-image: linear-gradient(115deg, transparent 42%, var(--stds-sem-color-inverse-elevation-4) 50%, transparent 58%);
   background-repeat: no-repeat;
   background-size: 80rem 100%;
@@ -517,13 +518,13 @@
   from { background-position: calc(24rem - 80rem) 0; }
   to { background-position: calc(100vw + 2rem) 0; }
 }
-/* OS 애니메이션 효과 끔 — 웨이브 대신 제자리 밝기 펄스 (우측패널과 같은 규칙) */
+/* OS 애니메이션 효과 끔 — 웨이브 대신 제자리 펄스: 막대 색 inverse-elevation-4 ↔ 카드 바탕 surface-elevation-1 (정의된 두 색만) */
 @media (prefers-reduced-motion: reduce) {
   .game-detail-skeleton { background-image: none; animation: game-detail-skeleton-pulse 2s ease-in-out infinite; }
 }
 @keyframes game-detail-skeleton-pulse {
-  0%, 100% { background-color: var(--stds-sem-color-inverse-elevation-7); }
-  50% { background-color: var(--stds-sem-color-inverse-elevation-4); }
+  0%, 100% { background-color: var(--stds-sem-color-inverse-elevation-4); }
+  50% { background-color: var(--stds-sem-color-surface-elevation-1); }
 }
 /* 게임명 줄 — 실제 아이콘 · 이름만 (뱃지 · 아이콘배너 없음), 이름은 아이콘과 세로 가운데.
    70은 뱃지가 있을 때 높이 — 뱃지가 없으면 썸네일 높이(60)만 (사용자 11-18) */
@@ -565,8 +566,8 @@
 /* 한 값이 여러 줄이면(그래픽) 줄 사이 간격 없이 24줄로 이어진다 */
 .game-detail--skeleton .game-detail-system-requirements__rows > .is-continued { margin-top: -0.3rem; }
 .game-detail--skeleton .game-detail-summary__rows dd { display: flex; }
-/* 9 게임요약 바탕 70%는 배경 그림이 비치라고 둔 값 — 음영 화면엔 배경 그림이 없어 다른 카드보다 어두워 보이므로 불투명으로 (사용자 11-18) */
-.game-detail--skeleton .game-detail-board--summary { background: var(--stds-sem-color-surface-variant-1); }
+/* 카드 바탕 = 스켈레톤 정의 surface-elevation-1 (게임요약 70% 반투명 · 로아상영관 색 덧칠 없이 모두 같은 색) */
+.game-detail--skeleton .game-detail-board { background: var(--stds-sem-color-surface-elevation-1); }
 /* 항목 칸(dt) 막대도 칸 폭 안에서 무작위 길이 */
 .game-detail--skeleton .game-detail-summary__rows dt { display: flex; }
 .game-detail--skeleton .game-detail-shortcut__row { gap: 0.8rem; padding: 0; }
