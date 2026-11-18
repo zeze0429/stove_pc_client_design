@@ -283,7 +283,7 @@ html, body {
 .proto-panel__sub + .proto-panel__row { margin-top: 12px; }
 
 .proto-panel__divider {
-  margin: 24px 0;
+  margin: 16px 0; /* 구분선 위아래 간격 (사용자 11-18, 예전 24) */
   border: 0;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
