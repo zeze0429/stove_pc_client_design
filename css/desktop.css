@@ -386,7 +386,7 @@ html, body {
   color: #fff;
   cursor: pointer;
 }
-.proto-theme svg { width: 16px; height: 16px; display: block; }
+.proto-theme svg { width: 20px; height: 20px; display: block; } /* 달 · 해 아이콘 16 → 20 (사용자 11-18), 버튼은 32 그대로 */
 .proto-theme svg path:first-child, .proto-theme .proto-theme__sun circle { fill: currentColor; } /* 달 · 해 몸통은 채움, 해 빛살은 선 */
 .proto-theme .proto-theme__sun,
 .proto-panel.is-light .proto-theme .proto-theme__moon { display: none; }
