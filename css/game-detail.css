@@ -541,14 +541,14 @@
 .game-detail-skeleton--chevron { flex: none; width: 2.8rem; height: 2.8rem; border-radius: var(--stds-glob-border-radius-full); }
 .game-detail-skeleton--banner { width: 100%; aspect-ratio: 620 / 260; }
 /* 카드형(5 · 6 · 7 · 8 · 9 · 10 · 12) — 실제 카드 틀(.game-detail-board 등)을 그대로 쓰고 안쪽 글자 자리만 막대로 (사용자 11-18).
-   막대 = 글자 크기 높이, 위아래 여백으로 실제 줄 높이를 채워 카드 높이가 실제와 같다. 막대 모서리 4 */
+   막대 높이 = 글자 줄 높이(line-height) — 타이포 토큰 그대로라 카드 높이가 실제와 같다 (사용자 11-18). 막대 모서리 4 */
 .game-detail-skeleton-bar { flex: none; max-width: 100%; border-radius: var(--stds-glob-border-radius-md); } /* 글자 막대 모서리 4 (사용자 11-18) */
-.game-detail-skeleton-bar--title6 { height: 1.8rem; margin: 0.4rem 0; }
-.game-detail-skeleton-bar--title7 { height: 1.6rem; margin: 0.4rem 0; }
-.game-detail-skeleton-bar--text3 { height: 1.4rem; margin: 0.5rem 0; }
-.game-detail-skeleton-bar--text4 { height: 1.3rem; margin: 0.45rem 0; }
-.game-detail-skeleton-bar--btn2 { height: 1.4rem; margin: 0.3rem 0 0.3rem auto; }
-.game-detail-skeleton-bar--cap1 { height: 1.2rem; margin: 0.3rem 0; }
+.game-detail-skeleton-bar--title6 { height: 2.6rem; }
+.game-detail-skeleton-bar--title7 { height: 2.4rem; }
+.game-detail-skeleton-bar--text3 { height: 2.4rem; }
+.game-detail-skeleton-bar--text4 { height: 2.2rem; }
+.game-detail-skeleton-bar--btn2 { height: 2rem; margin-left: auto; }
+.game-detail-skeleton-bar--cap1 { height: 1.8rem; }
 /* 길이가 다른 막대는 남은 폭 칸 안에서만 — 오른쪽 날짜 · QR · 화살표가 늘 카드 오른쪽 끝에 맞는다 */
 .game-detail-skeleton-fill { flex: 1 1 0; min-width: 0; display: flex; }
 .game-detail--skeleton .game-detail-community-api__row > .game-detail-skeleton-fill { margin-right: 4rem; } /* 실제 제목 ↔ 날짜 간격 40 */
@@ -559,16 +559,12 @@
 .game-detail--skeleton .game-detail-community-api__row { padding: 0.1rem 0; }
 .game-detail--skeleton .game-detail-community-board__row { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
 .game-detail--skeleton .game-detail-community-board__row > * { margin: 0; }
-.game-detail--skeleton .game-detail-community-board__row > .game-detail-skeleton-bar--title7 { margin: 0.4rem 0; }
-.game-detail--skeleton .game-detail-community-board__row > .game-detail-skeleton-bar--text4 { margin: 0.45rem 0; }
 .game-detail--skeleton .game-detail-community-album__img { display: block; border: 0; }
-.game-detail--skeleton .game-detail-community-album__name { display: flex; flex-direction: column; margin-top: 1.4rem; }
+.game-detail--skeleton .game-detail-community-album__name { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 1.4rem; } /* 두 줄 막대가 붙지 않게 4 */
 .game-detail--skeleton .game-detail-community-album__meta { margin-top: 0.4rem; display: flex; justify-content: space-between; }
-.game-detail--skeleton .game-detail-system-requirements__section > .game-detail-skeleton-bar--title6 { margin: 0.4rem 0; }
 /* 막대 사이 8 = 실제 줄 간격 (막대 위아래 5 여백 포함 24줄) */
 .game-detail--skeleton .game-detail-system-requirements__rows { display: flex; flex-direction: column; gap: 0.8rem; }
-/* 한 값이 여러 줄이면(그래픽) 줄 사이 간격 없이 24줄로 이어진다 */
-.game-detail--skeleton .game-detail-system-requirements__rows > .is-continued { margin-top: -0.3rem; }
+/* 막대가 줄 높이라 여러 줄 값(그래픽)도 다른 줄처럼 8 띄워야 한 덩어리로 안 붙는다 */
 .game-detail--skeleton .game-detail-summary__rows dd { display: flex; }
 /* 카드 바탕 = 실제 카드색 surface-variant-1 하나로 (게임요약 70%는 배경 그림이 비치라고 둔 값이라 음영 화면에선 불투명) */
 .game-detail--skeleton .game-detail-board { background: var(--stds-sem-color-surface-variant-1); }
