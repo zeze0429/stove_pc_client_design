@@ -196,8 +196,8 @@ html, body {
   flex-direction: column;
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: var(--stds-glob-border-radius-xl);
-  /* 화이트 60% + 배경 블러 — 뒤 배경화면이 흐리게 비치게 (사용자 11-18, 예전 80%) */
-  background: rgba(255, 255, 255, 0.6);
+  /* 화이트 40% + 배경 블러 — 뒤 배경화면이 흐리게 비치게 (사용자 11-18, 80% → 60% → 40%) */
+  background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(64px);
   -webkit-backdrop-filter: blur(64px);
   color: #101828;
