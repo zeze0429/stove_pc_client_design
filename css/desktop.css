@@ -303,7 +303,9 @@ html, body {
   height: 20px;
   margin-top: 8px;
 }
-.proto-panel__sub .proto-panel__controls .proto-check:last-child { margin-right: 0; }
+.proto-panel__controls .stds-radio-container { margin-right: 4px; } /* 줄 안 라디오(단 수 · 메뉴 강조)도 체크박스와 같은 간격 */
+.proto-panel__sub .proto-panel__controls .proto-check:last-child,
+.proto-panel__controls .stds-radio-container:last-child { margin-right: 0; }
 .proto-panel__sub + .proto-panel__row { margin-top: 12px; }
 
 .proto-panel__divider {
@@ -432,4 +434,9 @@ html, body {
 .proto-check input:checked + .proto-check__box svg { stroke: var(--stds-glob-color-white); }
 .proto-check input:focus-visible + .proto-check__box { outline: 2px solid #fc4420; outline-offset: 1px; }
 /* 항목 토글이 꺼져 있으면 디스에이블 (패널 공통) */
-.proto-check:has(input:disabled) { opacity: 0.4; cursor: default; }
+.proto-check:has(input:disabled),
+.proto-panel .stds-radio-container:has(.stds-radio:disabled) { opacity: 0.4; cursor: default; }
+/* 패널 라디오도 체크박스처럼 색은 그대로 두고 투명도 40%만 — 시스템 비활성 색은 다크 모드 값이라 밝은 패널에서 진한 회색으로 보인다 */
+.proto-panel .stds-radio:disabled { background: var(--stds-radio-background); }
+.proto-panel .stds-radio:checked:disabled { border-color: var(--stds-sem-color-brand-primary); background: var(--stds-sem-color-brand-primary); }
+.proto-panel .stds-radio:checked:disabled::after { background: var(--stds-glob-color-white); }
