@@ -247,11 +247,12 @@ html, body {
 .proto-panel__close:hover { opacity: 0.5; }
 .proto-panel__close:active { opacity: 0.7; }
 
+/* 섹션 제목(모드지정 · 사이즈 지정 …) — 패널 타이틀(16)보다 작게, 항목(11.25)보다는 크게 (사용자 11-18, 예전 15) */
 .proto-panel__title {
   margin: 0 0 12px;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
-  line-height: 20px;
+  line-height: 18px;
 }
 
 .proto-panel__row {
