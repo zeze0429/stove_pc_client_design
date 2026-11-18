@@ -53,8 +53,18 @@
 .game-detail-title__badges { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .game-detail-title__name { margin: 0; color: var(--stds-glob-color-white); }
 
-/* Badge/Left top · Client · Right top — 22 높이 알약 */
+/* Badge/Left top · Client · Right top — 라이브러리 카드 뱃지(css/library.css .library-card__badge)와 같은 크기 · 폰트:
+   22 높이 · 좌우 6 · Inter Bold 11/18 (한글은 stds-font-kr), 색만 뱃지별 (사용자 11-18).
+   Inter는 프로젝트에 없어서 Bold(라틴)만 따로 불러온다 — 라이브러리 · 온스토브 뱃지와 같은 파일 */
+@font-face {
+  font-family: Inter;
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.16/files/inter-latin-700-normal.woff2') format('woff2');
+}
 .game-detail-badge {
+  font-family: Inter, stds-font-kr, sans-serif;
   display: inline-flex;
   align-items: center;
   gap: 0.2rem;
