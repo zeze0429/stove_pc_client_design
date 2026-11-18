@@ -35,7 +35,7 @@
 }
 
 /* 유틸리티 바(48) + 40 아래에서 시작 */
-.game-detail__contents { position: relative; padding: calc(8.8rem + var(--utility-notice-h, 0px)) var(--page-gutter) 4rem; }
+.game-detail__contents { position: relative; padding: calc(8.8rem + var(--utility-notice-h, 0px)) var(--page-gutter) 10rem; } /* 최하단 100 — 라이브러리 · 다운로드 관리 · 이벤트와 같음 (사용자 11-18) */
 
 /* ---- 게임명 (1100:15051) ---- */
 .game-detail-title { display: flex; align-items: center; gap: 1.6rem; height: 7rem; } /* 시안 70 — 글자 상자(72)가 살짝 넘친다 */
