@@ -499,7 +499,7 @@
 /* ---- 다른 스토브게임 — 공용 컴포넌트 자리만 음영 (사용자 11-18) ----
    색은 막대 · 블록 inverse-elevation-6 (라이트 검정 4% · 다크 흰 4% — 라운지 · 스토어 GNB 스켈레톤과 같은 토큰, 사용자 11-18 "검정 4로").
    카드는 스토어처럼 실제 화면 틀 그대로(surface-variant-1). 글자 막대 모서리 4 (사용자 11-18).
-   웨이브 · 모션 끔 펄스는 우측패널 스켈레톤(css/library-panel.css)과 같은 값 — 빛 inverse-elevation-4 · 115deg · 2s,
+   웨이브는 115deg · 2s, 빛은 막대와 같은 inverse-elevation-6 한 겹(사용자 11-18 "흐르는 컬러 진함"),
    화면 기준(fixed)이라 모든 블록을 같은 줄기가 지나간다.
    우측패널은 오른쪽 280 구간만 쓸지만 여기는 콘텐츠 전체(사이드바 오른쪽 ~ 창 끝)를 쓴다.
    모서리 · 크기 · 비율은 실제 컴포넌트와 같다
@@ -509,7 +509,8 @@
   display: block;
   border-radius: var(--stds-glob-border-radius-3xl);
   background-color: var(--stds-sem-color-inverse-elevation-6);
-  background-image: linear-gradient(115deg, transparent 42%, var(--stds-sem-color-inverse-elevation-4) 50%, transparent 58%);
+  /* 빛줄기 = 막대와 같은 inverse-elevation-6을 한 겹 더 (가장 밝은 곳 약 8%) — -4(8%)를 얹으면 12%로 진해서 낮춤 (사용자 11-18) */
+  background-image: linear-gradient(115deg, transparent 42%, var(--stds-sem-color-inverse-elevation-6) 50%, transparent 58%);
   background-repeat: no-repeat;
   background-size: 80rem 100%;
   background-attachment: fixed;
