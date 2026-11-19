@@ -624,10 +624,10 @@ function mountGameDetail(selector, gameId) {
               '<a v-if="d.coupon" class="game-detail-coupon" href="#" @click.prevent>' +
                 '<span class="game-detail-coupon__ticket" :style="couponMask"><img :src="img(\'right-md-img.png\')" alt="" /></span>' +
                 '<span class="game-detail-coupon__border"><span class="game-detail-coupon__border-start" :style="{ backgroundImage: \'url(\' + img(\'right-md-border.svg\') + \')\' }"></span></span>' +
-                '<span class="game-detail-coupon__title stds-title6 fw-bold">{{ d.coupon.title }}</span>' +
+                '<span class="game-detail-coupon__title stds-title8 fw-bold">{{ d.coupon.title }}</span>' +
                 '<span class="game-detail-coupon__desc stds-cap1 fw-medium">{{ d.coupon.desc }}</span>' +
                 '<span class="game-detail-coupon__tab"><img :src="img(\'right-md-logo-bg.svg\')" alt="" /><img class="game-detail-coupon__logo" :src="img(\'right-md-logo.png\')" alt="" /></span>' +
-                '<span class="game-detail-coupon__new"><img :src="img(\'right-md-badge-bg.svg\')" alt="" /><img :src="img(\'right-md-badge-mask.svg\')" alt="" /><span>NEW</span></span>' +
+                '<span class="game-detail-coupon__new"><img :src="img(\'right-md-badge-bg.svg\')" alt="" /><span class="game-detail-coupon__shine" :style="{ maskImage: \'url(\' + img(\'right-md-badge-bg.svg\') + \')\', webkitMaskImage: \'url(\' + img(\'right-md-badge-bg.svg\') + \')\' }"></span><span>NEW</span></span>' +
               '</a>' +
 
               // 17 공지사항 축소형 — 로스트아크 한정

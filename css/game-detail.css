@@ -483,6 +483,19 @@
 .game-detail-coupon__desc { bottom: 1.6rem; white-space: pre-line; }
 .game-detail-coupon__tab { position: absolute; right: 0; top: 0; width: 4.8rem; height: 10rem; }
 .game-detail-coupon__tab > img:first-child { display: block; width: 100%; height: 100%; }
+/* 라이트 테마 — 시안 탭(white-6 바탕 · white-10 테두리 · 흰 로고)이 밝은 바탕에 안 보여 블랙 톤 글로벌 토큰으로 임시 차용 (사용자 11-19).
+   모양은 시안 svg와 같게: 오른쪽 모서리 21(안쪽 20 + 테두리 1) · 바깥 1px 테두리 · 배경 블러 Figma 3 = CSS 1.5px */
+:root[data-theme="light"] .game-detail-coupon__tab > img:first-child { visibility: hidden; }
+:root[data-theme="light"] .game-detail-coupon__tab::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--stds-glob-color-black-10);
+  border-radius: 0 2.1rem 2.1rem 0;
+  background: var(--stds-glob-color-black-6) padding-box;
+  backdrop-filter: blur(0.15rem);
+}
+:root[data-theme="light"] .game-detail-coupon__logo { filter: brightness(0); } /* 흰 로고 → 블랙, 투명도(0.28)는 그대로 */
 .game-detail-coupon__logo {
   position: absolute;
   left: 50%;
@@ -502,6 +515,35 @@
   filter: drop-shadow(0 0.3rem 0.05rem rgba(0, 0, 0, 0.25));
 }
 .game-detail-coupon__new img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+/* NEW 뱃지 빛 — 시안 badge 컴포넌트(68145:1171914) 프로토타입 그대로 (사용자 11-19):
+   Default → 0.3s 뒤 Smart animate Ease out 1000ms로 빛 사각형이 오른쪽 64.46 이동(Variant2) → 바로 처음 자리로, 반복.
+   빛 = 31.67 × 69.26 · 29.85° 기울기 · 불투명 0.7, 가로 그라데이션 #BB3580 0 → #EE92E3 → #BB3580 0 (시안 헥스, 토큰 없음).
+   뱃지 모양 밖은 안 보이게 뱃지 svg로 마스크 */
+.game-detail-coupon__shine {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  -webkit-mask: no-repeat 0 0 / 100% 100%;
+  mask: no-repeat 0 0 / 100% 100%;
+}
+.game-detail-coupon__shine::before {
+  content: "";
+  position: absolute;
+  left: -1.1254rem;
+  top: -2.3588rem;
+  width: 3.1672rem;
+  height: 6.926rem;
+  opacity: 0.7;
+  background: linear-gradient(90deg, rgba(187, 53, 128, 0) 0%, #ee92e3 50%, rgba(187, 53, 128, 0) 100%);
+  transform-origin: 0 0;
+  transform: rotate(29.85deg);
+  animation: game-detail-coupon-shine 1.3s infinite;
+}
+@keyframes game-detail-coupon-shine {
+  0% { translate: 0 0; }
+  23.077% { translate: 0 0; animation-timing-function: ease-out; } /* 0.3s 대기 */
+  100% { translate: 6.4465rem 0; } /* 1s 이동 */
+}
 .game-detail-coupon__new span {
   position: absolute;
   left: 0;
@@ -610,6 +652,7 @@
 }
 /* OS 애니메이션 효과 끔 — 웨이브 대신 제자리 밝기 펄스 (우측패널과 같은 규칙) */
 @media (prefers-reduced-motion: reduce) {
+  .game-detail-coupon__shine::before { animation: none; }
   .game-detail-skeleton { background-image: none; animation: game-detail-skeleton-pulse 2s ease-in-out infinite; }
 }
 @keyframes game-detail-skeleton-pulse {
