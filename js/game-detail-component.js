@@ -48,7 +48,7 @@ var GAME_DETAIL_DATA = {
     // 2 1단 풀배너 — 이미지 2600×920 (1.5배수), 파일명 Client3.0_PC게임상세_07_1단풀배너_게임명_NN
     //   로스트아크 10장 = 스마일게이트 뉴스룸 로스트아크 갤러리에서 크롭 (사용자 11-19)
     fullBanner: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (n) {
-      return 'Client3.0_PC게임상세_07_1단풀배너_로스트아크_' + (n < 10 ? '0' : '') + n + '.jpg';
+      return 'Client3.0_PC게임상세_07_1단풀배너_로스트아크_' + (n < 10 ? '0' : '') + n + '.jpg?v=2';
     }),
     // 3 1단배너-썸네일형 (pattern/banner/multi) — 첫 장(영상)이 큰 화면, 아래 썸네일로 바꾼다
     thumbnailBanner: [
@@ -220,13 +220,23 @@ function mountGameDetail(selector, gameId) {
         skeleton: skeleton,
         name: game ? game.name : '게임 상세',
         thumb: game && game.thumb ? game.thumb : '',
-        fullBannerIndex: 0,
+        // 2 대표배너 슬라이드 — 트랙 [마지막 복제, 1…N, 첫 장 복제], 위치 1 = 첫 장. 무한 루프 (스토어 메인 캐러셀)
+        fullBannerPos: 1,
+        fullBannerAnim: false,
         thumbnailIndex: 0,
         // 점검중 — '점검' 뱃지 + 게임 공지(점검) 띠를 한 묶음으로 (하단 설정 패널 '게임 상세 설정 > 점검중', 사용자 11-19)
         inspection: typeof protoSettingsRead === 'function' ? !!protoSettingsRead().gameDetailInspection : true,
       };
     },
     computed: {
+      fullBannerIndex: function () {
+        var n = this.d && this.d.fullBanner ? this.d.fullBanner.length : 1;
+        return (this.fullBannerPos - 1 + n) % n;
+      },
+      fullBannerTrack: function () {
+        var list = this.d && this.d.fullBanner || [];
+        return list.length ? [list[list.length - 1]].concat(list, [list[0]]) : [];
+      },
       // 점검중이면 '점검' 뱃지만, 아니면 '점검'을 뺀 나머지 뱃지 (사용자 11-19)
       titleBadges: function () {
         var on = this.inspection;
@@ -239,6 +249,20 @@ function mountGameDetail(selector, gameId) {
     },
     methods: {
       img: function (file) { return GAME_DETAIL_DIR + this.d.dir + file; },
+      // 2 대표배너 넘김 — 옆으로 밀기 0.4s ease (온스토브 스토어 메인 캐러셀 swiper speed 400, 사용자 11-19).
+      // 움직이는 동안 들어온 클릭은 무시, 복제 장에 닿으면 애니메이션 없이 진짜 장으로 바꿔 끝없이 돈다
+      fullBannerGo: function (pos) {
+        if (this.fullBannerAnim || pos === this.fullBannerPos) return;
+        this.fullBannerAnim = true;
+        this.fullBannerPos = pos;
+      },
+      fullBannerEnd: function (e) {
+        if (e.target !== e.currentTarget) return;
+        var n = this.d.fullBanner.length;
+        this.fullBannerAnim = false;
+        if (this.fullBannerPos === 0) this.fullBannerPos = n;
+        else if (this.fullBannerPos === n + 1) this.fullBannerPos = 1;
+      },
       // 음영 막대 길이 — seed마다 고정된 무작위 값 (min ~ max, unit '%' 또는 'rem')
       rw: function (seed, min, max, unit) {
         var x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
@@ -419,13 +443,15 @@ function mountGameDetail(selector, gameId) {
           // ---- 2 1단 풀배너 (component/banner/full) ----
           '<div class="game-detail-full-banner">' +
             '<div class="game-detail-full-banner__banner">' +
-              '<img class="game-detail-full-banner__img" :src="img(d.fullBanner[fullBannerIndex])" alt="" />' +
+              '<div class="game-detail-full-banner__track" :class="{ \'is-moving\': fullBannerAnim }" :style="{ transform: \'translateX(\' + (-100 * fullBannerPos) + \'%)\' }" @transitionend="fullBannerEnd">' +
+                '<img v-for="(src, i) in fullBannerTrack" :key="i" class="game-detail-full-banner__img" :src="img(src)" alt="" />' +
+              '</div>' +
             '</div>' +
             // 화살표는 배너 양옆에 겹치지 않고 아래 컨트롤 줄로 — 4 배너형과 같은 모양 (사용자 11-18)
             '<div class="game-detail-full-banner__control">' +
-              '<button class="game-detail-chevron" type="button" aria-label="이전" @click="fullBannerIndex = (fullBannerIndex + d.fullBanner.length - 1) % d.fullBanner.length"><i class="ic-v2-control-arrow-left-line"></i></button>' +
-              '<span class="game-detail-indicator"><span v-for="(b, i) in d.fullBanner" role="button" :aria-label="(i + 1) + \'번째 배너\'" :class="{ \'is-active\': i === fullBannerIndex }" @click="fullBannerIndex = i"></span></span>' +
-              '<button class="game-detail-chevron" type="button" aria-label="다음" @click="fullBannerIndex = (fullBannerIndex + 1) % d.fullBanner.length"><i class="ic-v2-control-arrow-right-line"></i></button>' +
+              '<button class="game-detail-chevron" type="button" aria-label="이전" @click="fullBannerGo(fullBannerPos - 1)"><i class="ic-v2-control-arrow-left-line"></i></button>' +
+              '<span class="game-detail-indicator"><span v-for="(b, i) in d.fullBanner" role="button" :aria-label="(i + 1) + \'번째 배너\'" :class="{ \'is-active\': i === fullBannerIndex }" @click="fullBannerGo(i + 1)"></span></span>' +
+              '<button class="game-detail-chevron" type="button" aria-label="다음" @click="fullBannerGo(fullBannerPos + 1)"><i class="ic-v2-control-arrow-right-line"></i></button>' +
             '</div>' +
           '</div>' +
 

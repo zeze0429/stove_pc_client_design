@@ -162,13 +162,16 @@
 
 /* ---- 2 1단 풀배너 (component/banner/full 1100:15069) ---- */
 .game-detail-full-banner { margin-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: 1.6rem; } /* 배너 ↔ 컨트롤 줄 16 (4 배너형과 같게) */
-.game-detail-full-banner__banner { position: relative; width: 100%; }
+.game-detail-full-banner__banner { position: relative; width: 100%; overflow: hidden; border-radius: var(--stds-glob-border-radius-3xl); }
+/* 슬라이드 트랙 — 옆으로 밀기 0.4s ease (온스토브 스토어 메인 캐러셀 swiper speed 400 · ease, 사용자 11-19) */
+.game-detail-full-banner__track { display: flex; }
+.game-detail-full-banner__track.is-moving { transition: transform 0.4s ease; }
 .game-detail-full-banner__img {
   display: block;
+  flex: none;
   width: 100%;
   aspect-ratio: 940 / 339.69;
   object-fit: cover;
-  border-radius: var(--stds-glob-border-radius-3xl);
 }
 .game-detail-full-banner__control { display: flex; align-items: center; gap: 1.6rem; } /* 화살표 ↔ 점 16 (스토어 캐러셀) */
 
