@@ -132,6 +132,10 @@
   color: var(--stds-glob-color-white);
   cursor: pointer;
 }
+/* 호버 · 프레스 — 시안에 상태 없음, 바탕 검정 투명도만 올림 (사용자 11-19) */
+.game-detail-link-badge { transition: background-color .15s; }
+.game-detail-link-badge:hover { background: var(--stds-glob-color-black-30); }
+.game-detail-link-badge:active { background: var(--stds-glob-color-black-40); }
 .game-detail-link-badge__icon { width: 2.4rem; height: 2.4rem; display: block; }
 .game-detail-link-badge__label { display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
 .game-detail-link-badge__label i { font-size: 1.6rem; }
