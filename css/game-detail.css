@@ -329,7 +329,9 @@
 .game-detail-board--best,
 .game-detail-board--new { background: linear-gradient(rgba(80, 61, 175, 0.1), rgba(80, 61, 175, 0.1)), var(--stds-sem-color-surface-variant-1); }
 /* 로아 상영관 타이틀 옆 뱃지 (추천 · BEST · NEW) — 사이드바 라운지 '챌린지' 뱃지(css/gnb.css .badge-menu-challenge)와 같은 크기 · 글자
-   (사용자 11-19): 높이 18 · Bold 11/14 · 아이콘 12, 아이콘 쪽 4 · 글자 쪽 7 (챌린지 뱃지 좌우 여백을 아이콘이 앞에 오게 뒤집은 값).
+   (사용자 11-19): 높이 18 · Bold 11/14 · 아이콘 12(그림 높이 약 10).
+   간격은 실측(그림 기준)으로 챌린지와 같게: 바깥 ~ 아이콘 그림 6 · 아이콘 그림 ~ 글자 2 · 글자 ~ 바깥 7
+   (아이콘 폰트 그림이 12 박스 안 좌우 1씩 들어가 있어 padding-left 5 · gap 1).
    영문은 다른 뱃지(게임명 위 · 라이브러리)처럼 Inter, 한글은 stds-font-kr. 색은 시안 그대로 */
 .game-detail-board-badge {
   font-family: Inter, stds-font-kr, sans-serif;
@@ -337,7 +339,8 @@
   align-items: center;
   box-sizing: border-box;
   height: 1.8rem;
-  padding: 0 0.7rem 0 0.4rem;
+  gap: 0.1rem;
+  padding: 0 0.7rem 0 0.5rem;
   border-radius: var(--stds-glob-border-radius-full);
   font-size: 1.1rem;
   font-weight: 700;
