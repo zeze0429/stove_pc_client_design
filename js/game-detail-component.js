@@ -29,7 +29,7 @@ var GAME_DETAIL_DATA = {
     dir: 'lostark/',
     // 게임명 위 뱃지 (Badge/Left top · Client · Right top) — 시안의 모든 종류
     badges: [
-      { label: '점검', kind: 'warning', icon: 'ic-v2-state-warning-circle-fill' },
+      { label: '점검', kind: 'warning', icon: 'ic-v2-state-warning-circle-fill', inspection: true }, // 점검중일 때만 — 아래 게임 공지(점검) 띠와 한 묶음
       { label: 'NEW', kind: 'new' },
       { label: 'UPDATE', kind: 'update' },
       { label: 'CBT', kind: 'test' },
@@ -218,7 +218,19 @@ function mountGameDetail(selector, gameId) {
         name: game ? game.name : '게임 상세',
         thumb: game && game.thumb ? game.thumb : '',
         thumbnailIndex: 0,
+        // 점검중 — '점검' 뱃지 + 게임 공지(점검) 띠를 한 묶음으로 (하단 설정 패널 '게임 상세 설정 > 점검중', 사용자 11-19)
+        inspection: typeof protoSettingsRead === 'function' ? !!protoSettingsRead().gameDetailInspection : true,
       };
+    },
+    computed: {
+      titleBadges: function () {
+        var on = this.inspection;
+        return (this.d && this.d.badges || []).filter(function (b) { return on || !b.inspection; });
+      },
+    },
+    mounted: function () {
+      var self = this;
+      if (typeof protoSettingsSubscribe === 'function') protoSettingsSubscribe(function (s) { self.inspection = !!s.gameDetailInspection; });
     },
     methods: {
       img: function (file) { return GAME_DETAIL_DIR + this.d.dir + file; },
@@ -378,7 +390,7 @@ function mountGameDetail(selector, gameId) {
               '<span class="game-detail-thumb"><img v-if="thumb" :src="thumb" alt="" /></span>' +
               '<div class="game-detail-title__text">' +
                 '<div class="game-detail-title__badges">' +
-                  '<span v-for="b in d.badges" class="game-detail-badge stds-cap2 fw-bold" :class="\'game-detail-badge--\' + b.kind">' +
+                  '<span v-for="b in titleBadges" class="game-detail-badge stds-cap2 fw-bold" :class="\'game-detail-badge--\' + b.kind">' +
                     '<i v-if="b.icon" class="game-detail-badge__icon" :class="b.icon"></i>{{ b.label }}' +
                   '</span>' +
                 '</div>' +
@@ -393,8 +405,8 @@ function mountGameDetail(selector, gameId) {
             '</div>' +
           '</div>' +
 
-          // ---- 게임 공지 (component/banner/notice) — 가이드 번호와 별도 ----
-          '<div class="game-detail-notice-banner" :style="{ backgroundImage: \'url(\' + img(\'notice-inspection.png\') + \')\' }">' +
+          // ---- 게임 공지 (component/banner/notice) — 가이드 번호와 별도. 점검중일 때만 ('점검' 뱃지와 한 묶음) ----
+          '<div v-if="inspection && d.noticeBanner" class="game-detail-notice-banner" :style="{ backgroundImage: \'url(\' + img(\'notice-inspection.png\') + \')\' }">' +
             '<i class="ic-v2-object-notice-fill" aria-hidden="true"></i>' +
             '<span class="stds-text2 fw-bold">{{ d.noticeBanner }}</span>' +
           '</div>' +
