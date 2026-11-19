@@ -525,6 +525,112 @@
   23.077% { transform: translateX(0); animation-timing-function: ease-out; } /* 0.3s 대기 */
   100% { transform: translateX(64.4648px); } /* 1s 이동 — svg 사용자 단위 */
 }
+.game-detail-coupon__new span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 1rem;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--stds-glob-color-white);
+}
+
+/* ---- 17 공지사항 축소형 · 로스트아크 한정 (1103:11493) ---- */
+.game-detail-notice-compact { display: flex; flex-direction: column; gap: 1.2rem; color: var(--stds-sem-color-on-surface-elevation-3); }
+.game-detail-notice-compact a,
+.game-detail-notice-compact__pinned a { display: flex; align-items: center; gap: 0.8rem; min-width: 0; }
+.game-detail-notice-compact span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+/* 강조 묶음 — 흰 6% 바탕, 별 아이콘 */
+.game-detail-notice-compact__pinned {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.6rem;
+  background: var(--stds-glob-color-white-6);
+}
+.game-detail-notice-compact__pinned i { flex: none; font-size: 1.2rem; color: #e74ca2; } /* 시안 헥스 — 시멘틱 없음 */
+
+/* ---- 10 바로가기 (1100:15088) ---- */
+.game-detail-shortcut {
+  margin: 0;
+  padding: 1.2rem 0;
+  list-style: none;
+  border: 1px solid var(--stds-sem-color-inverse-elevation-4);
+  border-radius: var(--stds-glob-border-radius-lg);
+}
+.game-detail-shortcut li + li { margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid var(--stds-sem-color-inverse-elevation-4); }
+.game-detail-shortcut a { display: flex; align-items: center; gap: 0.8rem; padding: 0 1.6rem; color: var(--stds-sem-color-on-surface-elevation-1); }
+.game-detail-shortcut a > i:first-child { font-size: 2rem; }
+.game-detail-shortcut__svg { width: 2rem; height: 2rem; display: block; }
+.game-detail-shortcut__label { flex: 1 1 0; display: flex; align-items: flex-start; gap: 0.4rem; }
+.game-detail-shortcut__dot { width: 0.4rem; height: 0.4rem; display: block; }
+.game-detail-shortcut__arrow { margin-left: 2rem; font-size: 1.6rem; }
+
+/* ---- 11 서브배너 (1100:15089) 300 × 133 ---- */
+.game-detail-sub-banner { position: relative; overflow: hidden; aspect-ratio: 300 / 133.006; border-radius: var(--stds-glob-border-radius-3xl); }
+.game-detail-sub-banner > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.game-detail-sub-banner .game-detail-indicator { position: absolute; left: 50%; bottom: 1.6rem; transform: translateX(-50%); }
+
+/* ---- 12 마켓다운로드링크 + QR (component/marketdownload 1100:15090) ---- */
+.game-detail-market-download { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 1.2rem; }
+.game-detail-market-download a {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  height: 5.6rem;
+  padding: 1.2rem 1.6rem;
+  border-radius: var(--stds-glob-border-radius-lg);
+  background: var(--stds-glob-color-gray840);
+  color: var(--stds-sem-color-on-surface-elevation-1);
+}
+.game-detail-market-download a > i { font-size: 2rem; }
+.game-detail-market-download a > span { flex: 1 1 0; min-width: 0; }
+.game-detail-market-download__qr {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.7rem 1.2rem;
+  border: 0;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-sem-color-neutral-variant-2);
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  cursor: pointer;
+}
+.game-detail-market-download__qr i { font-size: 1.6rem; }
+
+/* ---- 13 PC방 혜택 배너 (component/banner/pcbang 1100:15086) 300 × 100 ---- */
+/* 13 PC방 혜택 배너형 — 300×100 (이미지 600×200 2배수). 아이콘형은 .game-detail-link-badge--pcbang */
+.game-detail-pcbang-banner { display: block; overflow: hidden; aspect-ratio: 3 / 1; border-radius: var(--stds-glob-border-radius-3xl); }
+.game-detail-pcbang-banner img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* ---- 다른 스토브게임 — 공용 컴포넌트 자리만 음영 (사용자 11-18) ----
+   색은 막대 · 블록 inverse-elevation-6 (라이트 검정 4% · 다크 흰 4% — 라운지 · 스토어 GNB 스켈레톤과 같은 토큰, 사용자 11-18 "검정 4로").
+   카드는 스토어처럼 실제 화면 틀 그대로(surface-variant-1). 글자 막대 모서리 4 (사용자 11-18).
+   웨이브는 115deg · 2s, 빛은 막대와 같은 inverse-elevation-6 한 겹(사용자 11-18 "흐르는 컬러 진함"),
+   화면 기준(fixed)이라 모든 블록을 같은 줄기가 지나간다.
+   우측패널은 오른쪽 280 구간만 쓸지만 여기는 콘텐츠 전체(사이드바 오른쪽 ~ 창 끝)를 쓴다.
+   모서리 · 크기 · 비율은 실제 컴포넌트와 같다
+   (카드 높이는 로스트아크 시안 1100:13451 값). 로스트아크 한정 15 · 16 · 17, 게임 공지, 2 1단 풀배너는 없음 */
+.game-detail--skeleton { pointer-events: none; }
+.game-detail-skeleton {
+  display: block;
+  border-radius: var(--stds-glob-border-radius-3xl);
+  background-color: var(--stds-sem-color-inverse-elevation-6);
+  /* 빛줄기 = 막대와 같은 inverse-elevation-6을 한 겹 더 (가장 밝은 곳 약 8%) — -4(8%)를 얹으면 12%로 진해서 낮춤 (사용자 11-18) */
+  background-image: linear-gradient(115deg, transparent 42%, var(--stds-sem-color-inverse-elevation-6) 50%, transparent 58%);
+  background-repeat: no-repeat;
+  background-size: 80rem 100%;
+  background-attachment: fixed;
+  animation: game-detail-skeleton-wave 2s linear infinite;
+}
+@keyframes game-detail-skeleton-wave {
+  from { background-position: calc(24rem - 80rem) 0; }
+  to { background-position: calc(100vw + 2rem) 0; }
+}
 /* OS 애니메이션 효과 끔 — 웨이브 대신 제자리 밝기 펄스 (우측패널과 같은 규칙) */
 @media (prefers-reduced-motion: reduce) {
   .game-detail-coupon__shine-move { animation: none; }
