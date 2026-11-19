@@ -186,7 +186,7 @@ function gameDetailIsStove(key) {
 
 // 18 링크 지원 게임 마크 — 링크 플레이를 지원하는 게임 페이지에서만. 지원 여부는 사이드바 · 우측패널
 // 게임 목록 뱃지와 같은 데이터(게임 카탈로그 badges: ['link', …])로 판단한다 (사용자 11-19)
-var GAME_DETAIL_LINK_BADGE = { kind: 'link', label: '링크 지원 게임', src: GAME_DETAIL_DIR + 'common/ic-badge-link.svg' };
+var GAME_DETAIL_LINK_BADGE = { kind: 'link', label: '링크 지원 게임', src: GAME_DETAIL_DIR + 'common/ic-badge-link.svg', srcLight: GAME_DETAIL_DIR + 'common/ic-badge-link-light.svg' };
 
 function gameDetailHasListBadge(key, badge) {
   var info = typeof gameInfo === 'function' ? gameInfo(key) : null;
@@ -197,7 +197,8 @@ function gameDetailHasListBadge(key, badge) {
 function gameDetailLinkBadges(key, data) {
   var list = gameDetailHasListBadge(key, 'link') ? [GAME_DETAIL_LINK_BADGE] : [];
   (data && data.linkBadges || []).forEach(function (l) {
-    list.push({ kind: l.kind, label: l.label, src: GAME_DETAIL_DIR + data.dir + l.icon });
+    // 라이트 테마용 아이콘은 같은 이름 + '-light' (흰 부분만 어두운 색)
+    list.push({ kind: l.kind, label: l.label, src: GAME_DETAIL_DIR + data.dir + l.icon, srcLight: GAME_DETAIL_DIR + data.dir + l.icon.replace(/\.svg$/, '-light.svg') });
   });
   return list;
 }
@@ -386,7 +387,8 @@ function mountGameDetail(selector, gameId) {
             '</div>' +
             '<div class="game-detail-title__links">' +
               '<button v-for="l in linkBadges" class="game-detail-link-badge" :class="\'game-detail-link-badge--\' + l.kind" type="button">' +
-                '<img class="game-detail-link-badge__icon" :src="l.src" alt="" />' +
+                '<img class="game-detail-link-badge__icon game-detail-link-badge__icon--dark" :src="l.src" alt="" />' +
+                '<img class="game-detail-link-badge__icon game-detail-link-badge__icon--light" :src="l.srcLight" alt="" />' +
                 '<span class="game-detail-link-badge__label stds-cap2 fw-bold">{{ l.label }}<i class="ic-v2-control-arrow-right-line" aria-hidden="true"></i></span>' +
               '</button>' +
             '</div>' +

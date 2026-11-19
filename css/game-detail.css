@@ -114,6 +114,9 @@
 
 /* 아이콘배너 (link badge) — 18 링크 지원 게임 마크(--link) · 13 PC방 혜택 아이콘(--pcbang) */
 .game-detail-title__links { flex: none; display: flex; gap: 0.8rem; }
+/* 13 PC방 혜택 아이콘 · 18 링크 지원 마크 — 시안(검정 50% · 흰 글자, 다크 기준 헥스)을 시멘틱으로 (사용자 11-19):
+   바탕 surface-variant-1 70% + 블러 22(유틸리티 바와 같은 값), 글자 · 화살표 on-surface-elevation-1.
+   아이콘 40 → 24 (글자와 균형). 아이콘의 흰 부분은 라이트에서 안 보여 -light.svg(on-surface-elevation-1 라이트 값 #1F1F1F)로 바꿔 보인다 */
 .game-detail-link-badge {
   display: flex;
   align-items: center;
@@ -122,11 +125,16 @@
   padding: 0.4rem 1.2rem 0.4rem 0.8rem;
   border: 0;
   border-radius: var(--stds-glob-border-radius-lg);
-  background: var(--stds-glob-color-black-50);
-  color: var(--stds-glob-color-white);
+  background: color-mix(in srgb, var(--stds-sem-color-surface-variant-1) 70%, transparent);
+  -webkit-backdrop-filter: blur(2.2rem);
+  backdrop-filter: blur(2.2rem);
+  color: var(--stds-sem-color-on-surface-elevation-1);
   cursor: pointer;
 }
-.game-detail-link-badge__icon { width: 4rem; height: 4rem; display: block; }
+.game-detail-link-badge__icon { width: 2.4rem; height: 2.4rem; display: block; }
+.game-detail-link-badge__icon--light,
+:root[data-theme="light"] .game-detail-link-badge__icon--dark { display: none; }
+:root[data-theme="light"] .game-detail-link-badge__icon--light { display: block; }
 .game-detail-link-badge__label { display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
 .game-detail-link-badge__label i { font-size: 1.6rem; }
 
