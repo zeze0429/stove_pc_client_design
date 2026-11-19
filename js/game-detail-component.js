@@ -349,7 +349,7 @@ function mountGameDetail(selector, gameId) {
       '</div>' +
       '<div v-else class="game-detail">' +
         // 1 백그라운드 (bg 480) — 유틸리티 바 뒤까지 깔리고 아래로 페이지 색에 녹아든다
-        '<div class="game-detail-background" aria-hidden="true"><img :src="img(\'bg.jpg\')" alt="" /></div>' +
+        '<div class="game-detail-background" aria-hidden="true"><img :src="img(\'Client3.0_PC게임상세_01_백그라운드_로스트아크.jpg\')" alt="" /></div>' +
 
         '<div class="game-detail__contents">' +
           // ---- 게임명 ----
