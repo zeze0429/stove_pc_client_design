@@ -48,7 +48,7 @@ var GAME_DETAIL_DATA = {
     // 2 1단 풀배너 — 이미지 2600×920 (1.5배수), 파일명 Client3.0_PC게임상세_07_1단풀배너_게임명_NN
     //   로스트아크 10장 = 스마일게이트 뉴스룸 로스트아크 갤러리에서 크롭 (사용자 11-19)
     fullBanner: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (n) {
-      return 'Client3.0_PC게임상세_07_1단풀배너_로스트아크_' + (n < 10 ? '0' : '') + n + '.jpg?v=2';
+      return 'Client3.0_PC게임상세_07_1단풀배너_로스트아크_' + (n < 10 ? '0' : '') + n + '.jpg?v=3';
     }),
     // 3 1단배너-썸네일형 (pattern/banner/multi) — 첫 장(영상)이 큰 화면, 아래 썸네일로 바꾼다
     thumbnailBanner: [
