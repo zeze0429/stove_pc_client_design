@@ -38,6 +38,21 @@
     var(--stds-glob-color-black-50);
 }
 
+/* 유틸리티 바 — 게임 상세에서만: 맨 위(기본 상태)는 바탕 투명 + 아이콘 · 구분선 · PC방 글자를 흰 톤(다크 테마 값)으로.
+   스크롤되면(.is-scrolled) 원래대로 background-variant-1 70% + 블러 · 테마 색 (사용자 11-19).
+   버튼 · 구분선에만 시멘틱을 다크 값으로 다시 선언 — 팝업 · 툴팁 색은 그대로 */
+.utility-bar:not(.is-scrolled) { background: transparent; }
+.utility-bar:not(.is-scrolled) :is(.utility-bar-icon-btn, .utility-bar-pc-cafe, .utility-bar__divider) {
+  --stds-sem-color-on-surface-elevation-1: var(--stds-glob-color-gray80);
+  --stds-sem-color-interaction-hover: var(--stds-glob-color-white-4);
+  --stds-sem-color-interaction-pressed: var(--stds-glob-color-white-10);
+  --stds-sem-color-interaction-selected: var(--stds-glob-color-white-8);
+  --stds-sem-color-disabled-variant-1: var(--stds-glob-color-gray500);
+  --stds-sem-color-inverse-elevation-3: var(--stds-glob-color-white-10);
+}
+:root[data-theme="light"] .utility-bar:not(.is-scrolled) .utility-bar-pc-cafe__badge--dark { display: block; }
+:root[data-theme="light"] .utility-bar:not(.is-scrolled) .utility-bar-pc-cafe__badge--light { display: none; }
+
 /* 유틸리티 바(48) + 40 아래에서 시작 */
 .game-detail__contents { position: relative; padding: calc(8.8rem + var(--utility-notice-h, 0px)) var(--page-gutter) 10rem; } /* 최하단 100 — 라이브러리 · 다운로드 관리 · 이벤트와 같음 (사용자 11-18) */
 
