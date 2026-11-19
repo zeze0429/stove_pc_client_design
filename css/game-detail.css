@@ -328,20 +328,26 @@
 .game-detail-board--rec { background: linear-gradient(rgba(234, 51, 153, 0.1), rgba(234, 51, 153, 0.1)), var(--stds-sem-color-surface-variant-1); }
 .game-detail-board--best,
 .game-detail-board--new { background: linear-gradient(rgba(80, 61, 175, 0.1), rgba(80, 61, 175, 0.1)), var(--stds-sem-color-surface-variant-1); }
+/* 로아 상영관 타이틀 옆 뱃지 (추천 · BEST · NEW) — 사이드바 라운지 '챌린지' 뱃지(css/gnb.css .badge-menu-challenge)와 같은 크기 · 글자
+   (사용자 11-19): 높이 18 · Bold 11/14 · 아이콘 12, 아이콘 쪽 4 · 글자 쪽 7 (챌린지 뱃지 좌우 여백을 아이콘이 앞에 오게 뒤집은 값).
+   영문은 다른 뱃지(게임명 위 · 라이브러리)처럼 Inter, 한글은 stds-font-kr. 색은 시안 그대로 */
 .game-detail-board-badge {
+  font-family: Inter, stds-font-kr, sans-serif;
   display: inline-flex;
   align-items: center;
-  gap: 0.2rem;
-  padding: 0.2rem 0.6rem;
+  box-sizing: border-box;
+  height: 1.8rem;
+  padding: 0 0.7rem 0 0.4rem;
   border-radius: var(--stds-glob-border-radius-full);
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.4rem;
   white-space: nowrap;
 }
-.game-detail-board-badge--rec { padding-right: 0.8rem; background: #ea3399; color: var(--stds-glob-color-white); }
-.game-detail-board-badge--rec i { font-size: 1.4rem; }
+.game-detail-board-badge i { font-size: 1.2rem; }
+.game-detail-board-badge--rec { background: #ea3399; color: var(--stds-glob-color-white); }
 .game-detail-board-badge--best,
 .game-detail-board-badge--new { background: #503daf; color: var(--stds-sem-color-on-surface-elevation-1); }
-.game-detail-board-badge--best i,
-.game-detail-board-badge--new i { font-size: 1.6rem; }
 
 /* 두 줄 말줄임 */
 .game-detail-loa-theater-rec__name,

@@ -499,7 +499,7 @@ function mountGameDetail(selector, gameId) {
                 '<section v-if="d.loaTheaterRec" class="game-detail-board game-detail-board--rec">' +
                   '<div class="game-detail-board__title">' +
                     '<h2 class="stds-title8 fw-bold">로아 상영관</h2>' +
-                    '<span class="game-detail-board-badge game-detail-board-badge--rec stds-cap1 fw-bold"><i class="ic-v2-community-thumbs-up-fill"></i>추천</span>' +
+                    '<span class="game-detail-board-badge game-detail-board-badge--rec"><i class="ic-v2-community-thumbs-up-fill"></i>추천</span>' +
                     '<button class="game-detail-more stds-btn2 fw-regular" type="button">전체보기<i class="ic-v2-control-arrow-right-line"></i></button>' +
                   '</div>' +
                   '<div class="game-detail-loa-theater-rec">' +
@@ -514,7 +514,7 @@ function mountGameDetail(selector, gameId) {
                 '<template v-if="d.loaTheater"><section v-for="kind in [\'best\', \'new\']" class="game-detail-board" :class="\'game-detail-board--\' + kind">' +
                   '<div class="game-detail-board__title">' +
                     '<h2 class="stds-title8 fw-bold">로아 상영관</h2>' +
-                    '<span class="game-detail-board-badge stds-title8 fw-bold" :class="\'game-detail-board-badge--\' + kind">' +
+                    '<span class="game-detail-board-badge" :class="\'game-detail-board-badge--\' + kind">' +
                       '<i :class="kind === \'best\' ? \'ic-v2-object-crown-fill\' : \'ic-v2-community-star-fill\'"></i>{{ kind === \'best\' ? \'BEST\' : \'NEW\' }}' +
                     '</span>' +
                     '<button class="game-detail-more stds-btn2 fw-regular" type="button">전체보기<i class="ic-v2-control-arrow-right-line"></i></button>' +
