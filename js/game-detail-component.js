@@ -11,7 +11,8 @@
  *   4 1단배너-배너형 banner · 5 커뮤니티-api연동형 community-api · 6 커뮤니티-앨범형 community-album ·
  *   7 커뮤니티-게시판형 community-board · 8 시스템 요구사항 system-requirements · 9 게임요약 summary ·
  *   10 바로가기 shortcut · 11 서브배너 sub-banner · 12 마켓다운로드링크 + QR market-download ·
- *   13 PC방 혜택 배너 / 아이콘 pcbang-banner · link-badge--pcbang · 15-1·2·3 로아상영관 loa-theater ·
+ *   13 PC방 혜택 — 두 종류로 관리 (사용자 11-19): 아이콘형 link-badge--pcbang(게임명 줄 오른쪽) · 배너형 pcbang-banner(오른쪽 열 아래) ·
+ *   15-1·2·3 로아상영관 loa-theater ·
  *   16 쿠폰 coupon · 17 공지사항 축소형 notice-compact · 18 링크 지원 게임 마크 link-badge--link ·
  *   20 등급 및 게임물 내용 정보 rating
  *   로스트아크 한정: 15-1·2·3 로아상영관 · 16 쿠폰 · 17 공지사항 축소형 — 데이터(loaTheaterRec · loaTheater · coupon ·
@@ -37,7 +38,7 @@ var GAME_DETAIL_DATA = {
       { label: '사전설치', kind: 'test' },
       { label: 'TEST', kind: 'black' },
     ],
-    // 아이콘배너 (link badge) — 13 PC방 혜택 아이콘. 18 링크 지원 게임 마크는 여기 두지 않고
+    // 아이콘배너 (link badge) — 13 PC방 혜택 아이콘형. 18 링크 지원 게임 마크는 여기 두지 않고
     // 사이드바 게임 뱃지('link')가 있는 게임에서만 앞에 붙인다 (gameDetailLinkBadges, 사용자 11-19)
     linkBadges: [
       { kind: 'pcbang', label: 'PC방 혜택', icon: 'ic-badge-pcbang.svg?v=2' },
@@ -135,8 +136,8 @@ var GAME_DETAIL_DATA = {
       { icon: 'ic-v2-logo-galaxystore-fill', label: 'Galaxy Store' },
       { icon: 'ic-v2-control-long-arrow-up-circle-fill', label: '마켓다운로드링크' },
     ],
-    // 13 PC방 혜택 배너
-    pcbangBanner: 'pcbang-banner.png',
+    // 13 PC방 혜택 배너형 — 이미지 600×200(2배수 → 300×100), 파일명 Client3.0_PC게임상세_06_PC방혜택배너_게임명 (사용자 11-19)
+    pcbangBanner: 'Client3.0_PC게임상세_06_PC방혜택배너_로스트아크.png',
     // 8 시스템 요구사항 — Figma 원문 그대로 (두 번째 제목도 시안대로 "최소 요구 사항")
     systemRequirements: [
       { title: '최소 요구 사항', rows: [
@@ -358,7 +359,7 @@ function mountGameDetail(selector, gameId) {
                 // 줄 카드만 3개 — 아이콘 · 글자 · QR 없음 (사용자 11-18)
                 '<ul class="game-detail-market-download"><li v-for="n in 3"><div class="game-detail-skeleton game-detail-market-download__row"></div></li></ul>' +
                 '</section>' +
-              '<span class="game-detail-skeleton game-detail-skeleton--pcbang-banner"></span>' + // 13 PC방 혜택 배너
+              '<span class="game-detail-skeleton game-detail-skeleton--pcbang-banner"></span>' + // 13 PC방 혜택 배너형
             '</div>' +
           '</div>' +
         '</div>' +
@@ -624,7 +625,7 @@ function mountGameDetail(selector, gameId) {
                 '</ul>' +
               '</section>' +
 
-              // 13 PC방 혜택 배너 (component/banner/pcbang)
+              // 13 PC방 혜택 배너형 (component/banner/pcbang) — 아이콘형은 게임명 줄 link-badge--pcbang
               '<a class="game-detail-pcbang-banner" href="#" @click.prevent><img :src="img(d.pcbangBanner)" alt="" /></a>' +
             '</div>' +
           '</div>' +
