@@ -223,9 +223,10 @@ function mountGameDetail(selector, gameId) {
       };
     },
     computed: {
+      // 점검중이면 '점검' 뱃지만, 아니면 '점검'을 뺀 나머지 뱃지 (사용자 11-19)
       titleBadges: function () {
         var on = this.inspection;
-        return (this.d && this.d.badges || []).filter(function (b) { return on || !b.inspection; });
+        return (this.d && this.d.badges || []).filter(function (b) { return on ? b.inspection : !b.inspection; });
       },
     },
     mounted: function () {
