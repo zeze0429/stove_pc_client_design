@@ -14,7 +14,9 @@
 }
 .game-detail { position: relative; flex: 0 0 auto; } /* .main은 세로 flex — 줄어들지 않게 */
 
-/* ---- 1 백그라운드 (bg 1100:15048) — 480 높이, 유틸리티 바 뒤까지. 검정 50% + 아래로 페이지 색에 녹아드는 그라데이션 ---- */
+/* ---- 1 백그라운드 (bg 1100:15048) — 480 높이, 유틸리티 바 뒤까지.
+   층 쌓기 = 온스토브 스토어 게임 상세(store.onstove.com/ko/games/…)와 같음 (사용자 11-19):
+   ① 상자 바탕 background-variant-1 → ② 그림 60% → ③ 검정 50% → ④ 아래 70% 높이, 바탕색에서 위로 투명 ---- */
 .game-detail-background {
   position: absolute;
   top: 0;
@@ -23,17 +25,18 @@
   height: 48rem;
   overflow: hidden;
   pointer-events: none;
+  background: var(--stds-sem-color-background-variant-1);
 }
-.game-detail-background img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; } /* 등록 크기 2790×720 = 1.5배수 → 화면 1860×480, 좁으면 가운데 기준으로 양옆을 자름 */
+/* 등록 크기 2790×720 = 1.5배수 → 화면 1860×480, 좁으면 위 가운데 기준으로 양옆을 자름 */
+.game-detail-background img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; opacity: 0.6; }
 .game-detail-background::after {
   content: "";
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(to bottom, transparent 37.305%, var(--stds-sem-color-background-variant-1)),
-    linear-gradient(color-mix(in srgb, var(--stds-sem-color-background-variant-1) 50%, transparent), color-mix(in srgb, var(--stds-sem-color-background-variant-1) 50%, transparent));
+    linear-gradient(to top, var(--stds-sem-color-background-variant-1), transparent) left bottom / 100% 70% no-repeat,
+    var(--stds-glob-color-black-50);
 }
-/* 덮개 = 다른 페이지 바탕(background-variant-1)으로 다크 · 라이트 대응 — 전체 50% + 37.3%부터 아래로 바탕색까지 (사용자 11-19, 예전 검정 50%) */
 
 /* [테스트] 유틸리티 바 — 맨 위(기본 상태)에서는 바탕색을 꺼서 배경 그림이 비치게. 스크롤되면 원래대로
    background-variant-1 70% + 블러 (css/utility-bar.css .is-scrolled). 게임 상세에만 (사용자 11-18 테스트) */
