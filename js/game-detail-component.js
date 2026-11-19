@@ -233,6 +233,11 @@ function mountGameDetail(selector, gameId) {
         var n = this.d && this.d.fullBanner ? this.d.fullBanner.length : 1;
         return (this.fullBannerPos - 1 + n) % n;
       },
+      // 16 쿠폰 티켓 — 왼쪽 홈(반원 · 모서리) 40은 Figma 마스크 그대로, 나머지는 사각형으로 늘어난다 (열 300 · 420 대응)
+      couponMask: function () {
+        var m = 'url(' + this.img('right-md-mask.svg') + '), linear-gradient(#000, #000)';
+        return { maskImage: m, webkitMaskImage: m };
+      },
       fullBannerTrack: function () {
         var list = this.d && this.d.fullBanner || [];
         return list.length ? [list[list.length - 1]].concat(list, [list[0]]) : [];
@@ -617,8 +622,8 @@ function mountGameDetail(selector, gameId) {
 
               // 16 쿠폰 (MD — 티켓 모양 + 로고 탭 + NEW 리본) — 로스트아크 한정
               '<a v-if="d.coupon" class="game-detail-coupon" href="#" @click.prevent>' +
-                '<span class="game-detail-coupon__ticket" :style="{ maskImage: \'url(\' + img(\'right-md-mask.svg\') + \')\', webkitMaskImage: \'url(\' + img(\'right-md-mask.svg\') + \')\' }"><img :src="img(\'right-md-img.png\')" alt="" /></span>' +
-                '<img class="game-detail-coupon__border" :src="img(\'right-md-border.svg\')" alt="" />' +
+                '<span class="game-detail-coupon__ticket" :style="couponMask"><img :src="img(\'right-md-img.png\')" alt="" /></span>' +
+                '<span class="game-detail-coupon__border"><span class="game-detail-coupon__border-start" :style="{ backgroundImage: \'url(\' + img(\'right-md-border.svg\') + \')\' }"></span></span>' +
                 '<span class="game-detail-coupon__title stds-title6 fw-bold">{{ d.coupon.title }}</span>' +
                 '<span class="game-detail-coupon__desc stds-cap1 fw-medium">{{ d.coupon.desc }}</span>' +
                 '<span class="game-detail-coupon__tab"><img :src="img(\'right-md-logo-bg.svg\')" alt="" /><img class="game-detail-coupon__logo" :src="img(\'right-md-logo.png\')" alt="" /></span>' +
