@@ -424,7 +424,7 @@ function mountGameDetail(selector, gameId) {
             // 화살표는 배너 양옆에 겹치지 않고 아래 컨트롤 줄로 — 4 배너형과 같은 모양 (사용자 11-18)
             '<div class="game-detail-full-banner__control">' +
               '<button class="game-detail-chevron" type="button" aria-label="이전" @click="fullBannerIndex = (fullBannerIndex + d.fullBanner.length - 1) % d.fullBanner.length"><i class="ic-v2-control-arrow-left-line"></i></button>' +
-              '<span class="game-detail-indicator"><span v-for="(b, i) in d.fullBanner" :class="{ \'is-active\': i === fullBannerIndex }"></span></span>' +
+              '<span class="game-detail-indicator"><span v-for="(b, i) in d.fullBanner" role="button" :aria-label="(i + 1) + \'번째 배너\'" :class="{ \'is-active\': i === fullBannerIndex }" @click="fullBannerIndex = i"></span></span>' +
               '<button class="game-detail-chevron" type="button" aria-label="다음" @click="fullBannerIndex = (fullBannerIndex + 1) % d.fullBanner.length"><i class="ic-v2-control-arrow-right-line"></i></button>' +
             '</div>' +
           '</div>' +

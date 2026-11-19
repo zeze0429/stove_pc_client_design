@@ -202,6 +202,9 @@
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .game-detail-indicator span.is-active { background: var(--stds-sem-color-on-surface-elevation-1); }
+/* 클릭되는 점 (2 대표배너) — 누르면 그 장으로. 누르는 자리는 점 간격 반씩(2.5)까지 넓힘, 보이는 크기는 그대로 */
+.game-detail-indicator span[role="button"] { position: relative; cursor: pointer; }
+.game-detail-indicator span[role="button"]::before { content: ""; position: absolute; inset: -0.25rem; }
 /* sm — 서브배너 그림 위에 얹힌 것은 Figma 그대로 (흰 점 · 현재 막대 16, 간격 8) */
 .game-detail-indicator--sm { gap: 0.8rem; }
 .game-detail-indicator--sm span { background: var(--stds-glob-color-white-20); }
