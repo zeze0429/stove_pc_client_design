@@ -225,11 +225,11 @@
 }
 .game-detail-play--sm { width: 2.4rem; height: 2.4rem; }
 
-/* ---- 콘텐츠 2단 — 왼쪽 가변 + 오른쪽 300 ---- */
+/* ---- 콘텐츠 2단 — 왼쪽 가변 + 오른쪽 MD 320 · LG 420 (사용자 11-19, 운영가이드 쿠폰 MD 320~) ---- */
 .game-detail__columns {
   margin-top: 2rem;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 30rem;
+  grid-template-columns: minmax(0, 1fr) 32rem;
   gap: 2rem;
   align-items: start;
 }
