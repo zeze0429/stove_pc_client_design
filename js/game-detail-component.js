@@ -45,8 +45,11 @@ var GAME_DETAIL_DATA = {
     ],
     // 게임 공지 (component/banner/notice) — 가이드 19 공지 설정(보류)과는 별도
     noticeBanner: '게임점검 중입니다. (점검 종료까지 1시간 20분 남음)',
-    // 2 1단 풀배너
-    fullBanner: { src: 'banner-full-01.jpg', count: 5 },
+    // 2 1단 풀배너 — 이미지 2600×920 (1.5배수), 파일명 Client3.0_PC게임상세_07_1단풀배너_게임명_NN
+    //   로스트아크 10장 = 스마일게이트 뉴스룸 로스트아크 갤러리에서 크롭 (사용자 11-19)
+    fullBanner: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (n) {
+      return 'Client3.0_PC게임상세_07_1단풀배너_로스트아크_' + (n < 10 ? '0' : '') + n + '.jpg';
+    }),
     // 3 1단배너-썸네일형 (pattern/banner/multi) — 첫 장(영상)이 큰 화면, 아래 썸네일로 바꾼다
     thumbnailBanner: [
       { src: 'video-01.jpg', video: true },
@@ -217,6 +220,7 @@ function mountGameDetail(selector, gameId) {
         skeleton: skeleton,
         name: game ? game.name : '게임 상세',
         thumb: game && game.thumb ? game.thumb : '',
+        fullBannerIndex: 0,
         thumbnailIndex: 0,
         // 점검중 — '점검' 뱃지 + 게임 공지(점검) 띠를 한 묶음으로 (하단 설정 패널 '게임 상세 설정 > 점검중', 사용자 11-19)
         inspection: typeof protoSettingsRead === 'function' ? !!protoSettingsRead().gameDetailInspection : true,
@@ -415,13 +419,13 @@ function mountGameDetail(selector, gameId) {
           // ---- 2 1단 풀배너 (component/banner/full) ----
           '<div class="game-detail-full-banner">' +
             '<div class="game-detail-full-banner__banner">' +
-              '<img class="game-detail-full-banner__img" :src="img(d.fullBanner.src)" alt="" />' +
+              '<img class="game-detail-full-banner__img" :src="img(d.fullBanner[fullBannerIndex])" alt="" />' +
             '</div>' +
             // 화살표는 배너 양옆에 겹치지 않고 아래 컨트롤 줄로 — 4 배너형과 같은 모양 (사용자 11-18)
             '<div class="game-detail-full-banner__control">' +
-              '<button class="game-detail-chevron" type="button" aria-label="이전"><i class="ic-v2-control-arrow-left-line"></i></button>' +
-              '<span class="game-detail-indicator"><span v-for="n in d.fullBanner.count" :class="{ \'is-active\': n === 1 }"></span></span>' +
-              '<button class="game-detail-chevron" type="button" aria-label="다음"><i class="ic-v2-control-arrow-right-line"></i></button>' +
+              '<button class="game-detail-chevron" type="button" aria-label="이전" @click="fullBannerIndex = (fullBannerIndex + d.fullBanner.length - 1) % d.fullBanner.length"><i class="ic-v2-control-arrow-left-line"></i></button>' +
+              '<span class="game-detail-indicator"><span v-for="(b, i) in d.fullBanner" :class="{ \'is-active\': i === fullBannerIndex }"></span></span>' +
+              '<button class="game-detail-chevron" type="button" aria-label="다음" @click="fullBannerIndex = (fullBannerIndex + 1) % d.fullBanner.length"><i class="ic-v2-control-arrow-right-line"></i></button>' +
             '</div>' +
           '</div>' +
 
