@@ -347,7 +347,7 @@
 .game-detail-board-badge i { font-size: 1.2rem; }
 .game-detail-board-badge--rec { background: #ea3399; color: var(--stds-glob-color-white); }
 .game-detail-board-badge--best,
-.game-detail-board-badge--new { background: #503daf; color: var(--stds-sem-color-on-surface-elevation-1); }
+.game-detail-board-badge--new { background: #503daf; color: var(--stds-glob-color-gray80); } /* 바탕이 고정 보라라 글자도 다크 시안 값(gray80) 글로벌로 고정 — 라이트에서 어두워져 안 보이던 것 (사용자 11-19) */
 
 /* 두 줄 말줄임 */
 .game-detail-loa-theater-rec__name,
