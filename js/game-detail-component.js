@@ -185,14 +185,12 @@ function gameDetailIsStove(key) {
 }
 
 // 18 링크 지원 게임 마크 — 링크 플레이를 지원하는 게임 페이지에서만. 지원 여부는 사이드바 · 우측패널
-// 게임 목록 뱃지와 같은 데이터(GNB_GAME_GROUPS 항목의 badges: ['link', …])로 판단한다 (사용자 11-19)
+// 게임 목록 뱃지와 같은 데이터(게임 카탈로그 badges: ['link', …])로 판단한다 (사용자 11-19)
 var GAME_DETAIL_LINK_BADGE = { kind: 'link', label: '링크 지원 게임', src: GAME_DETAIL_DIR + 'common/ic-badge-link.svg' };
 
 function gameDetailHasListBadge(key, badge) {
-  if (typeof GNB_GAME_GROUPS === 'undefined') return false;
-  return GNB_GAME_GROUPS.some(function (group) {
-    return group.games.some(function (g) { return g.game === key && g.badges && g.badges.indexOf(badge) !== -1; });
-  });
+  var info = typeof gameInfo === 'function' ? gameInfo(key) : null;
+  return !!info && info.badges.indexOf(badge) !== -1;
 }
 
 // 게임명 줄 오른쪽 아이콘배너 — [18 링크 지원(뱃지 있을 때)] + 게임 데이터의 아이콘배너(13 PC방 혜택 등)

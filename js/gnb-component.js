@@ -39,11 +39,11 @@ function gnbInferActiveMenuId() {
   return 'store';
 }
 
-// 사이드바 고정 그룹 — 게임 정보(이름 · 썸네일)는 공통 카탈로그(js/game-catalog.js)에서
-// 가져온다. 여기엔 그룹 안의 순서 · 항목 id · 뱃지만 둔다.
+// 사이드바 고정 그룹 — 게임 정보(이름 · 썸네일 · 뱃지)는 공통 카탈로그(js/game-catalog.js)에서
+// 가져온다. 여기엔 그룹 안의 순서 · 항목 id만 둔다.
 function gnbGroupGame(entry) {
   var info = gameInfo(entry.game) || { name: entry.game, thumb: '' };
-  return { id: entry.id, game: entry.game, name: info.name, thumb: info.thumb, badges: entry.badges };
+  return { id: entry.id, game: entry.game, name: info.name, thumb: info.thumb, badges: info.badges || [] };
 }
 
 var GNB_GAME_GROUPS = [
@@ -54,8 +54,8 @@ var GNB_GAME_GROUPS = [
     collapsed: false,
     games: [
       { id: 'lostark', game: 'lostark' }, // 순서: 로스트아크 · 로드나인 · 이클립스 (사용자 11-18)
-      { id: 'rodnine', game: 'rodnine', badges: ['link', 'multiplay'] },
-      { id: 'eclipse', game: 'eclipse', badges: ['link'] },
+      { id: 'rodnine', game: 'rodnine' },
+      { id: 'eclipse', game: 'eclipse' },
       { id: 'chaos', game: 'chaos' },
       { id: 'e7', game: 'e7' },
       { id: 'bts', game: 'bts' },
@@ -71,7 +71,7 @@ var GNB_GAME_GROUPS = [
       { id: 'fav-floppy-knight', game: 'floppy-knight' },
       { id: 'fav-hwayeonwol', game: 'hwayeonwol' },
       { id: 'fav-lostark', game: 'lostark' },
-      { id: 'fav-rodnine', game: 'rodnine', badges: ['link', 'multiplay'] },
+      { id: 'fav-rodnine', game: 'rodnine' },
       { id: 'fav-deluvian-winds', game: 'deluvian-winds' },
       { id: 'fav-bus-world', game: 'bus-world' },
       { id: 'fav-happy-quest', game: 'happy-quest' },
@@ -104,7 +104,7 @@ function gnbSaveFavorites() {
     if (!fav) return;
     sessionStorage.setItem(GNB_FAVORITES_KEY, JSON.stringify({
       count: fav.count,
-      games: fav.games.map(function (g) { return { id: g.id, game: g.game, badges: g.badges }; }),
+      games: fav.games.map(function (g) { return { id: g.id, game: g.game }; }),
     }));
   } catch (e) { /* 저장 못 하면 이 페이지에서만 유지 */ }
 }
@@ -115,14 +115,14 @@ function gnbSaveFavorites() {
     var fav = GNB_GAME_GROUPS.find(function (g) { return g.id === 'favorites'; });
     if (!fav) return;
     fav.games = saved.games.map(function (e) {
-      return gnbGroupGame({ id: e.id, game: e.game || e.id.replace(/^fav-/, ''), badges: e.badges });
+      return gnbGroupGame({ id: e.id, game: e.game || e.id.replace(/^fav-/, '') });
     });
     fav.count = saved.count;
   } catch (e) { /* 깨진 값이면 처음 목록 */ }
 })();
 
 // 게임 리스트 뱃지 — 이미지 리소스 (Figma 2026_웹전환 11716:51837, 2배수 32 → 16 표시).
-// 게임마다 badges: ['link', 'multiplay'] 중 필요한 것만 달면 어느 게임에든 붙는다.
+// 게임마다 카탈로그(js/game-catalog.js) badges: ['link', 'multiplay'] 중 필요한 것만 달면 어느 게임에든 붙는다.
 // 파일명은 Figma 컴포넌트 이름 그대로 (공백은 %20)
 var GNB_BADGE_ICON = {
   link: 'assets/gnb-badge/img_badge_link.png',

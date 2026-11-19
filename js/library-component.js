@@ -32,12 +32,12 @@ var LIBRARY_QUICK_AD = { game: 'store-30', message: '지금 바로 즐겨보세�
 
 // 보유게임 — action: play(실행) · update(업데이트) · install(설치)
 //   played: 마지막 플레이가 몇 분 전인지 (없으면 플레이 기록 없음), total: 총 플레이 시간
-//   badges: 우측패널 게임 목록 뱃지 ['link', 'multiplay'] (사이드바와 같은 규칙)
+//   우측패널 게임 목록 뱃지(link · multiplay)는 게임 카탈로그 badges에서 온다 (사이드바 · 게임 상세와 같은 값)
 var LIBRARY_OWNED = [
   // 화면 순서 = 이 배열 순서. 뱃지(Collection · DLC · DEMO) 게임은 한쪽에 몰리지 않게 줄 · 칸을 흩어 둠.
   // store-NN은 스토어 신작(store-30 수박 만들기는 광고 전용이라 제외) — 버튼 상태 · 최근 플레이는 시안용 임의 값
   // 다운로드 관리에 있는 게임(여기사 아가씨 · 러브인 로그인 · 시크릿 커리큘럼 + DLC)은 store-NN 8개 자리를 바꿔 넣음 (사용자 11-13)
-  { id: 'atom-rpg', action: 'play', collection: true, played: 60, total: '총 172시간 35분', badges: ['link', 'multiplay'] },
+  { id: 'atom-rpg', action: 'play', collection: true, played: 60, total: '총 172시간 35분' },
   { id: 'ghostrunner', action: 'update' },
   { id: 'deluvian-winds', action: 'play', played: 10, total: '총 24시간 30분' },
   { id: 'scarf', action: 'install' },

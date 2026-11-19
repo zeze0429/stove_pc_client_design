@@ -10,18 +10,20 @@
  * type: 단품 정식 게임이 아닌 상품만 적는다 — 'dlc' · 'demo' · 'collection'(합본팩) · 'utility'(소설 · 월페이퍼 등 부가 콘텐츠).
  *   스토어 상품 정보(product_detail_type · demo · product_type) 기준. 빠른 실행에는 정식 게임(type 없음)만 나온다.
  * 스토브게임(LOST ARK · 로드나인 등 사이드바 고정 그룹)은 라이브러리 보유게임에 넣지 않는다.
+ * badges: 게임 목록 아이콘 뱃지 ['link'(링크 플레이 지원), 'multiplay'(PC방 무료)] — 사이드바 · 우측패널 · 게임 상세(18 링크 지원 마크)가
+ *   모두 여기 값을 쓴다. 같은 게임은 어디서나 같은 뱃지 (사용자 11-19 "데이터는 항상 같아야")
  * 이 파일은 gnb-component.js 등 게임을 쓰는 스크립트보다 먼저 불러야 한다.
  */
 var GAME_CATALOG = {
   // 스토브게임 썸네일은 스토어 GNB '인기 게임' 아이콘(gnb_img) 원본
-  eclipse: { name: '이클립스: 더 어웨이크닝', genre: '' }, // 출시 전 — 스토어 장르 미등록
+  eclipse: { name: '이클립스: 더 어웨이크닝', genre: '', badges: ['link'] }, // 출시 전 — 스토어 장르 미등록
   lostark: { name: 'LOST ARK', genre: 'MMORPG', ext: 'jpg' },
-  rodnine: { name: '로드나인', genre: 'MMORPG', ext: 'jpg' },
+  rodnine: { name: '로드나인', genre: 'MMORPG', ext: 'jpg', badges: ['link', 'multiplay'] },
   chaos: { name: '카오스 제로 나이트메어', genre: '로그라이트 RPG' },
   e7: { name: '에픽세븐', genre: '턴제RPG' },
   bts: { name: 'BTS 쿠킹온 STOVE : 타이니탄 레스토랑', genre: '캐주얼' },
   tales: { name: '테일즈런너', genre: 'Racing', ext: 'jpg' },
-  'atom-rpg': { name: '아톰 RPG 트루도그라드 디럭스 컬렉션', genre: 'RPG', type: 'collection' },
+  'atom-rpg': { name: '아톰 RPG 트루도그라드 디럭스 컬렉션', genre: 'RPG', type: 'collection', badges: ['link', 'multiplay'] },
   ghostrunner: { name: '고스트러너: 컴플리트 에디션', genre: '액션' },
   'deluvian-winds': { name: '딜루비안 윈즈 (Diluvian Winds)', genre: '시뮬레이션' },
   scarf: { name: '스카프 (Scarf)', genre: '어드벤처', ext: 'jpg' },
@@ -135,9 +137,9 @@ var GAME_CATALOG = {
   'store-60': { name: 'Chrono', genre: '액션' },
 };
 
-// 게임 정보 하나 — { id, name, genre, thumb }. 카탈로그에 없는 id면 null
+// 게임 정보 하나 — { id, name, genre, type, thumb, badges }. 카탈로그에 없는 id면 null
 function gameInfo(id) {
   var g = GAME_CATALOG[id];
   if (!g) return null;
-  return { id: id, name: g.name, genre: g.genre, type: g.type || 'game', thumb: 'assets/games/' + id + '.' + (g.ext || 'png') };
+  return { id: id, name: g.name, genre: g.genre, type: g.type || 'game', thumb: 'assets/games/' + id + '.' + (g.ext || 'png'), badges: g.badges || [] };
 }
