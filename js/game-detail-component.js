@@ -442,9 +442,11 @@ function mountGameDetail(selector, gameId) {
           '</div>' +
 
           // ---- 게임 공지 (component/banner/notice) — 가이드 번호와 별도. 점검중일 때만 ('점검' 뱃지와 한 묶음) ----
-          '<div v-if="inspection && d.noticeBanner" class="game-detail-notice-banner" :style="{ backgroundImage: \'url(\' + img(\'notice-inspection.png\') + \')\' }">' +
+          //   디자인 테스트(사용자 11-20): 유틸 밑 공지 띠(utility-notice)와 높이 28 · 글자 크기(cap2) 같게 — --strip.
+          //   원래 모양으로 되돌리려면 --strip 클래스를 빼고 글자 클래스를 stds-text2로.
+          '<div v-if="inspection && d.noticeBanner" class="game-detail-notice-banner game-detail-notice-banner--strip" :style="{ backgroundImage: \'url(\' + img(\'notice-inspection.png\') + \')\' }">' +
             '<i class="ic-v2-object-notice-fill" aria-hidden="true"></i>' +
-            '<span class="stds-text2 fw-bold">{{ d.noticeBanner }}</span>' +
+            '<span class="stds-cap2 fw-bold">{{ d.noticeBanner }}</span>' +
           '</div>' +
 
           // ---- 2 1단 풀배너 (component/banner/full) ----

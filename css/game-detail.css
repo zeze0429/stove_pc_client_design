@@ -159,6 +159,9 @@
   color: var(--stds-glob-color-white);
 }
 .game-detail-notice-banner i { font-size: 2rem; }
+/* 디자인 테스트(사용자 11-20) — 유틸 밑 공지 띠(css/utility-notice.css)와 높이 28 같게. 글자는 템플릿에서 stds-cap2(11/18)
+   원래 모양(56 · stds-text2)은 위 규칙 그대로 — --strip만 빼면 돌아간다 */
+.game-detail-notice-banner--strip { height: 2.8rem; }
 
 /* ---- 2 1단 풀배너 (component/banner/full 1100:15069) ---- */
 .game-detail-full-banner { margin-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: 1.6rem; } /* 배너 ↔ 컨트롤 줄 16 (4 배너형과 같게) */
