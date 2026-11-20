@@ -159,13 +159,16 @@
   color: var(--stds-glob-color-white);
 }
 .game-detail-notice-banner i { font-size: 2rem; }
-/* 디자인 테스트(사용자 11-20) — 유틸 밑 공지 띠(css/utility-notice.css)와 높이 28 같게. 글자는 템플릿에서 stds-cap2(11/18)
-   아이콘 · 배경 이미지 빼고 바탕 = 점검 뱃지 배경(.game-detail-badge--warning), 모서리 lg(8) → md(4)
+/* 띠형 (Figma 68348:430890, 사용자 11-20) — 높이 28, 글자 Caption2-B(템플릿 stds-cap2 fw-bold), 아이콘 · 배경 이미지 없음.
+   Figma가 글로벌 지정: 바탕 black/15 + 배경 블러 20(CSS 10px), 글자 system-yellow, 모서리 radius/sm(2)
    원래 모양(56 · stds-text2 · 배경 이미지 · 아이콘)은 위 규칙 그대로 — 템플릿 주석대로 되돌리면 된다 */
 .game-detail-notice-banner--strip {
   height: 2.8rem;
-  border-radius: var(--stds-glob-border-radius-md);
-  background: var(--stds-sem-color-warning);
+  border-radius: var(--stds-glob-border-radius-sm);
+  background: var(--stds-glob-color-black-15);
+  -webkit-backdrop-filter: blur(1rem);
+  backdrop-filter: blur(1rem);
+  color: var(--stds-glob-color-system-yellow);
 }
 
 /* ---- 2 1단 풀배너 (component/banner/full 1100:15069) ---- */

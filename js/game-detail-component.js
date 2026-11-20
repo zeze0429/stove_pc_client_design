@@ -442,8 +442,7 @@ function mountGameDetail(selector, gameId) {
           '</div>' +
 
           // ---- 게임 공지 (component/banner/notice) — 가이드 번호와 별도. 점검중일 때만 ('점검' 뱃지와 한 묶음) ----
-          //   디자인 테스트(사용자 11-20): 유틸 밑 공지 띠(utility-notice)와 높이 28 · 글자 크기(cap2) 같게, 아이콘 · 배경 이미지 빼고
-          //   점검 뱃지 배경색(warning) · 모서리 md — --strip.
+          //   띠형(사용자 11-20, Figma 68348:430890): 높이 28 · 글자 cap2 bold · 아이콘 · 배경 이미지 없음 — --strip.
           //   원래 모양으로 되돌리려면: --strip 클래스 빼고, 배경 :style="{ backgroundImage: 'url(' + img('notice-inspection.png') + ')' }" ·
           //   앞 아이콘 <i class="ic-v2-object-notice-fill" aria-hidden="true"></i> 다시 넣고, 글자 클래스를 stds-text2로.
           '<div v-if="inspection && d.noticeBanner" class="game-detail-notice-banner game-detail-notice-banner--strip">' +
