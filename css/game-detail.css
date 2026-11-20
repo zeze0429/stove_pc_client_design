@@ -170,6 +170,8 @@
   backdrop-filter: blur(1rem);
   color: var(--stds-glob-color-system-yellow);
 }
+/* 띠 ↔ 대표배너 12 (사용자 11-20, 시안 20에서 줄임) — 점검 꺼져 띠가 없으면 게임명 아래 20 그대로 */
+.game-detail-notice-banner--strip + .game-detail-full-banner { margin-top: 1.2rem; }
 
 /* ---- 2 1단 풀배너 (component/banner/full 1100:15069) ---- */
 .game-detail-full-banner { margin-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: 1.6rem; } /* 배너 ↔ 컨트롤 줄 16 (4 배너형과 같게) */
