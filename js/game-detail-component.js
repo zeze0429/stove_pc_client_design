@@ -52,10 +52,11 @@ var GAME_DETAIL_DATA = {
     }),
     // 3 1단배너-썸네일형 (pattern/banner/multi) — 첫 장(영상)이 큰 화면, 아래 썸네일로 바꾼다
     thumbnailBanner: [
-      { src: 'video-01.jpg', video: true },
-      { src: 'video-02.jpg' },
-      { src: 'video-03.jpg' },
-      { src: 'video-04.jpg' },
+      // 이미지 = 스마일게이트 뉴스룸 로스트아크 갤러리 중 2 대표배너에 안 쓴 캐릭터 그림 16:9 (사용자 11-20), 1290×726
+      { src: 'video-01.jpg?v=2', video: true },
+      { src: 'video-02.jpg?v=2' },
+      { src: 'video-03.jpg?v=2' },
+      { src: 'video-04.jpg?v=2' },
     ],
     // 4 1단배너-배너형 (component/banner/event)
     banner: { src: 'event-01.jpg', video: true, count: 5 },
@@ -466,18 +467,18 @@ function mountGameDetail(selector, gameId) {
               // 3 1단배너-썸네일형 (pattern/banner/multi)
               '<div class="game-detail-thumbnail-banner">' +
                 '<div class="game-detail-thumbnail-banner__main">' +
+                  // 큰 화면엔 재생 아이콘 없음 — 가이드 68345:428349 (사용자 11-20), 영상 표시는 썸네일에만
                   '<img :src="img(d.thumbnailBanner[thumbnailIndex].src)" alt="" />' +
-                  '<img v-if="d.thumbnailBanner[thumbnailIndex].video" class="game-detail-play" :src="img(\'play-56.svg\')" alt="재생" />' +
                 '</div>' +
                 '<div class="game-detail-thumbnail-banner__list">' +
-                  '<button class="game-detail-chevron" type="button" aria-label="이전" @click="thumbnailIndex = (thumbnailIndex + d.thumbnailBanner.length - 1) % d.thumbnailBanner.length"><i class="ic-v2-control-arrow-left-line"></i></button>' +
+                  '<button class="game-detail-chevron" type="button" aria-label="이전" :disabled="thumbnailIndex === 0" @click="thumbnailIndex--"><i class="ic-v2-control-arrow-left-line"></i></button>' +
                   '<div class="game-detail-thumbnail-banner__thumbs">' +
                     '<button v-for="(m, i) in d.thumbnailBanner" class="game-detail-thumbnail-banner__thumb" :class="{ \'is-active\': i === thumbnailIndex }" type="button" @click="thumbnailIndex = i">' +
                       '<img :src="img(m.src)" alt="" />' +
-                      '<img v-if="m.video" class="game-detail-play game-detail-play--sm" :src="img(\'play-24.svg\')" alt="" />' +
+                      '<span v-if="m.video" class="game-detail-thumbnail-banner__play"><img :src="img(\'play-24.svg?v=2\')" alt="" /></span>' +
                     '</button>' +
                   '</div>' +
-                  '<button class="game-detail-chevron" type="button" aria-label="다음" @click="thumbnailIndex = (thumbnailIndex + 1) % d.thumbnailBanner.length"><i class="ic-v2-control-arrow-right-line"></i></button>' +
+                  '<button class="game-detail-chevron" type="button" aria-label="다음" :disabled="thumbnailIndex === d.thumbnailBanner.length - 1" @click="thumbnailIndex++"><i class="ic-v2-control-arrow-right-line"></i></button>' +
                 '</div>' +
               '</div>' +
 

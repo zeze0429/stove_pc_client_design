@@ -193,6 +193,7 @@
 }
 .game-detail-chevron:hover { background: var(--stds-sem-color-neutral-variant-3-hover); }
 .game-detail-chevron:active { background: var(--stds-sem-color-neutral-variant-3); }
+.game-detail-chevron:disabled { background: var(--stds-sem-color-disabled-variant-3); color: var(--stds-sem-color-disabled-variant-1); cursor: default; } /* 처음 · 끝 (3 썸네일형 가이드) */
 
 /* Indicator — 온스토브 스토어 메인 캐러셀과 같은 값 (사용자 11-18): 점 6 · 간격 5, 현재 점도 같은 크기,
    현재 on-surface-elevation-1 · 나머지 neutral-variant-4, 바뀔 때 0.2s */
@@ -243,30 +244,33 @@
 .game-detail__right { display: flex; flex-direction: column; gap: 2rem; }
 .game-detail a { color: inherit; text-decoration: none; }
 
-/* ---- 3 1단배너-썸네일형 (pattern/banner/multi 1100:15078) ---- */
+/* ---- 3 1단배너-썸네일형 — 가이드 68345:428349 (사용자 11-20) ----
+   큰 화면 16:9 · 모서리 28(토큰 없음 — 3xl 20 · 4xl 32 사이, 시안 값) → 16 → 썸네일 줄(높이 56):
+   화살표 28 ↔ 썸네일 20, 썸네일 100 × 56.25 · 모서리 12(xl) · 간격 12.
+   고르지 않은 썸네일 = black-50 덮개, 고른 썸네일 = 바깥 3 띄워 1.5 테두리 on-surface-elevation-1(모서리 14).
+   처음 · 끝에서 화살표는 비활성(무한 반복 없음) — disabled-variant-3 바탕 · disabled-variant-1 아이콘 */
 .game-detail-thumbnail-banner { display: flex; flex-direction: column; gap: 1.6rem; }
 .game-detail-thumbnail-banner__main {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 620 / 348.04;
-  border-radius: var(--stds-glob-border-radius-3xl);
+  aspect-ratio: 16 / 9;
+  border-radius: 2.8rem;
 }
 .game-detail-thumbnail-banner__main > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
-.game-detail-thumbnail-banner__list { display: flex; align-items: center; justify-content: center; gap: 1.6rem; } /* 화살표 ↔ 썸네일 16 (스토어 캐러셀) */
+.game-detail-thumbnail-banner__list { display: flex; align-items: center; justify-content: center; gap: 2rem; height: 5.6rem; }
 .game-detail-thumbnail-banner__thumbs { display: flex; gap: 1.2rem; }
 .game-detail-thumbnail-banner__thumb {
   position: relative;
-  width: 9.2rem;
-  height: 5.175rem;
+  width: 10rem;
+  aspect-ratio: 16 / 9;
   padding: 0;
-  overflow: hidden;
   border: 0;
-  border-radius: var(--stds-glob-border-radius-lg);
+  border-radius: var(--stds-glob-border-radius-xl);
   background: none;
   cursor: pointer;
 }
-.game-detail-thumbnail-banner__thumb > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
-/* 안쪽 테두리 + 고르지 않은 썸네일은 검정 50% 덮개 (::after 하나), 고른 썸네일은 덮개 없이 흰 50% 테두리 */
+.game-detail-thumbnail-banner__thumb > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+/* 안쪽 테두리(썸네일 공통 규칙) + 고르지 않은 썸네일은 검정 50% 덮개 */
 .game-detail-thumbnail-banner__thumb::after {
   content: "";
   position: absolute;
@@ -276,7 +280,20 @@
   background: var(--stds-glob-color-black-50);
   pointer-events: none;
 }
-.game-detail-thumbnail-banner__thumb.is-active::after { border-color: var(--stds-glob-color-white-50); background: none; }
+.game-detail-thumbnail-banner__thumb.is-active::after { background: none; }
+/* 고른 썸네일 — 바깥 3 띄운 1.5 테두리 (시안 106 × 62 · 모서리 14) */
+.game-detail-thumbnail-banner__thumb.is-active::before {
+  content: "";
+  position: absolute;
+  inset: -0.3rem;
+  border: 0.15rem solid var(--stds-sem-color-on-surface-elevation-1);
+  border-radius: 1.4rem;
+  pointer-events: none;
+}
+/* 썸네일 재생 아이콘 24 — 가운데, 아이콘 뒤 black-40 사각(가운데 12, 시안 그대로) */
+.game-detail-thumbnail-banner__play { position: absolute; z-index: 1; left: 50%; top: 50%; width: 2.4rem; height: 2.4rem; transform: translate(-50%, -50%); pointer-events: none; }
+.game-detail-thumbnail-banner__play::before { content: ""; position: absolute; inset: 25%; background: var(--stds-glob-color-black-40); }
+.game-detail-thumbnail-banner__play img { position: relative; display: block; width: 100%; height: 100%; }
 
 /* ---- 4 1단배너-배너형 (component/banner/event 1099:10744) ---- */
 .game-detail-banner { display: flex; flex-direction: column; align-items: center; gap: 1.6rem; }
@@ -656,8 +673,8 @@
 .game-detail-skeleton--thumb { flex: none; width: 6rem; height: 6rem; border-radius: var(--stds-glob-border-radius-lg); }
 .game-detail--skeleton .game-detail-title__info { align-items: center; }
 .game-detail-skeleton--indicator { width: 5rem; height: 0.6rem; border-radius: var(--stds-glob-border-radius-full); } /* 점 5개 줄 폭 */
-.game-detail-skeleton--thumbnail-banner { aspect-ratio: 620 / 348.04; }
-.game-detail-skeleton--thumbnail { width: 9.2rem; height: 5.175rem; border-radius: var(--stds-glob-border-radius-lg); }
+.game-detail-skeleton--thumbnail-banner { aspect-ratio: 16 / 9; border-radius: 2.8rem; } /* 3 썸네일형 가이드 68345:428349와 같은 크기 (11-20) */
+.game-detail-skeleton--thumbnail { width: 10rem; aspect-ratio: 16 / 9; border-radius: var(--stds-glob-border-radius-xl); }
 /* 화살표 자리 — 실제 chevron 28 동그라미 (3 썸네일형 · 4 배너형 컨트롤 줄) */
 .game-detail-skeleton--chevron { flex: none; width: 2.8rem; height: 2.8rem; border-radius: var(--stds-glob-border-radius-full); }
 .game-detail-skeleton--banner { width: 100%; aspect-ratio: 620 / 260; }
