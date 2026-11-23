@@ -251,6 +251,8 @@
 @container page (min-width: 1440px) {
   .game-detail__columns { grid-template-columns: minmax(0, 1fr) 42rem; }
 }
+/* 대표배너 인디케이터 줄 위아래 같게 16 (사용자 11-23) — 음영 화면(배너 없음)은 게임명 아래 20 그대로 */
+.game-detail-full-banner + .game-detail__columns { margin-top: 1.6rem; }
 .game-detail__left,
 .game-detail__right { min-width: 0; }
 .game-detail__components { margin-top: 4rem; display: flex; flex-direction: column; gap: 2rem; }
