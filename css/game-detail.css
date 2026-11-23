@@ -310,7 +310,8 @@
 .game-detail-thumbnail-banner__play img { position: relative; display: block; width: 100%; height: 100%; }
 
 /* ---- 4 1단배너-배너형 (component/banner/event 1099:10744) ---- */
-.game-detail-banner { display: flex; flex-direction: column; align-items: center; gap: 1.6rem; }
+/* 인디케이터 줄 위아래 같게 16 (사용자 11-23, 2 대표배너와 같은 기준) — 아래는 열 안 카드 사이 20에서 4만 당김 */
+.game-detail-banner { display: flex; flex-direction: column; align-items: center; gap: 1.6rem; margin-bottom: -0.4rem; }
 .game-detail-banner__img {
   position: relative;
   width: 100%;
