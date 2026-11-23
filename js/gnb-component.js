@@ -68,7 +68,7 @@ var GNB_GAME_GROUPS = [
     count: 23,
     collapsed: false,
     games: [
-      { id: 'fav-floppy-knight', game: 'floppy-knight' },
+      { id: 'fav-ghostrunner', game: 'ghostrunner' }, // 첫 줄 = 고스트러너 (사용자 11-24, 플로피 나이트와 자리 바꿈)
       { id: 'fav-hwayeonwol', game: 'hwayeonwol' },
       { id: 'fav-lostark', game: 'lostark' },
       { id: 'fav-rodnine', game: 'rodnine' },
@@ -86,7 +86,7 @@ var GNB_GAME_GROUPS = [
       { id: 'fav-fog-detective', game: 'fog-detective' },
       { id: 'fav-bullet-delivery', game: 'bullet-delivery' },
       { id: 'fav-four-lights', game: 'four-lights' },
-      { id: 'fav-ghostrunner', game: 'ghostrunner' },
+      { id: 'fav-floppy-knight', game: 'floppy-knight' },
       { id: 'fav-undying', game: 'undying' },
       { id: 'fav-suicide-countdown', game: 'suicide-countdown' },
       { id: 'fav-novena-diabolos', game: 'novena-diabolos' },
