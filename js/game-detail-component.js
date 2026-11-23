@@ -30,13 +30,14 @@ var GAME_DETAIL_DATA = {
     // 게임명 위 뱃지 (Badge/Left top · Client · Right top) — 시안의 모든 종류
     badges: [
       { label: '점검', kind: 'warning', icon: 'ic-v2-state-warning-circle-fill', inspection: true }, // 점검중일 때만 — 아래 게임 공지(점검) 띠와 한 묶음
-      { label: 'NEW', kind: 'new' },
+      // hidden: true = 데이터 · 스타일은 두고 화면에서만 숨김 — 지금은 UPDATE만 보이게 (사용자 11-23 "지우지는 말고")
+      { label: 'NEW', kind: 'new', hidden: true },
       { label: 'UPDATE', kind: 'update' },
-      { label: 'CBT', kind: 'test' },
-      { label: 'OBT', kind: 'test' },
-      { label: '사전예약', kind: 'test' },
-      { label: '사전설치', kind: 'test' },
-      { label: 'TEST', kind: 'black' },
+      { label: 'CBT', kind: 'test', hidden: true },
+      { label: 'OBT', kind: 'test', hidden: true },
+      { label: '사전예약', kind: 'test', hidden: true },
+      { label: '사전설치', kind: 'test', hidden: true },
+      { label: 'TEST', kind: 'black', hidden: true },
     ],
     // 아이콘배너 (link badge) — 13 PC방 혜택 아이콘형. 18 링크 지원 게임 마크는 여기 두지 않고
     // 사이드바 게임 뱃지('link')가 있는 게임에서만 앞에 붙인다 (gameDetailLinkBadges, 사용자 11-19)
@@ -244,10 +245,10 @@ function mountGameDetail(selector, gameId) {
         var list = this.d && this.d.fullBanner || [];
         return list.length ? [list[list.length - 1]].concat(list, [list[0]]) : [];
       },
-      // 점검중이면 '점검' 뱃지만, 아니면 '점검'을 뺀 나머지 뱃지 (사용자 11-19)
+      // 점검중이면 '점검' 뱃지만, 아니면 '점검'을 뺀 나머지 뱃지 (사용자 11-19). hidden 뱃지는 빼고 (사용자 11-23)
       titleBadges: function () {
         var on = this.inspection;
-        return (this.d && this.d.badges || []).filter(function (b) { return on ? b.inspection : !b.inspection; });
+        return (this.d && this.d.badges || []).filter(function (b) { return !b.hidden && (on ? b.inspection : !b.inspection); });
       },
     },
     mounted: function () {
