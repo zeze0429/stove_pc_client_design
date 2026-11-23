@@ -422,7 +422,9 @@ function mountGameDetail(selector, gameId) {
 
         '<div class="game-detail__contents">' +
           // ---- 게임명 ----
-          '<div class="game-detail-title">' +
+          //   테스트 버전(사용자 11-23) --inline: 썸네일 ↔ 게임명 세로 가운데, 뱃지는 게임명 오른쪽 · 위 정렬, 뱃지 크기 = 사이드바 챌린지 뱃지.
+          //   원복 = --inline 클래스만 빼면 원래(뱃지가 게임명 위 줄)로 돌아간다.
+          '<div class="game-detail-title game-detail-title--inline">' +
             '<div class="game-detail-title__info">' +
               '<span class="game-detail-thumb"><img v-if="thumb" :src="thumb" alt="" /></span>' +
               '<div class="game-detail-title__text">' +

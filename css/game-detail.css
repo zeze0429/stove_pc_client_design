@@ -117,6 +117,28 @@
 .game-detail-badge--test { background: #6a1ec7; } /* tint_purple_A700 — 시멘틱 없음 */
 .game-detail-badge--black { background: var(--stds-glob-color-black); }
 
+/* ---- 게임명 줄 테스트 버전 --inline (사용자 11-23 — 별로면 원복, 템플릿에서 클래스만 빼면 됨) ----
+   썸네일 ↔ 게임명 세로 가운데 정렬, 뱃지는 게임명 오른쪽에 위 정렬(게임명 대문자 그림 위끝).
+   게임명 ↔ 뱃지 6 = 사이드바 메뉴 글자 ↔ 챌린지 뱃지 간격(css/gnb.css .menu-item gap).
+   뱃지 = 사이드바 챌린지 뱃지(.badge-menu-challenge)와 같은 높이 18 · Bold 11/14 · 자간 없음 · 글자 앞뒤 7,
+   아이콘 있는 '점검'은 로아 상영관 뱃지와 같은 실측값(아이콘 12 · 왼쪽 5 · 간격 1) — 영문은 Inter 그대로 */
+.game-detail-title--inline .game-detail-title__info { align-items: center; }
+.game-detail-title--inline .game-detail-title__text { flex-direction: row; align-items: flex-start; gap: 0.6rem; }
+/* 위 정렬은 글자 상자가 아니라 게임명 대문자 그림 위끝 기준 — title3(32/44)에서 글자 상자 위 ~ 대문자 위 9 (canvas 실측) */
+.game-detail-title--inline .game-detail-title__badges { order: 1; flex-wrap: nowrap; margin-top: 0.9rem; }
+.game-detail-title--inline .game-detail-badge {
+  box-sizing: border-box;
+  height: 1.8rem;
+  gap: 0.1rem;
+  padding: 0 0.7rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.4rem;
+  letter-spacing: normal;
+}
+.game-detail-title--inline .game-detail-badge--warning { padding-left: 0.5rem; }
+.game-detail-title--inline .game-detail-badge__icon { font-size: 1.2rem; }
+
 /* 아이콘배너 (link badge) — 18 링크 지원 게임 마크(--link) · 13 PC방 혜택 아이콘(--pcbang) */
 .game-detail-title__links { flex: none; display: flex; gap: 0.8rem; }
 /* 13 PC방 혜택 아이콘 · 18 링크 지원 마크 — Figma 클라이언트_v3.1 68317:412080 그대로, 글로벌 토큰 (사용자 11-19 "시멘틱 치환 없이"):
