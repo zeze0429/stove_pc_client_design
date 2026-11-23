@@ -376,7 +376,7 @@ body { margin: 0; }
   align-items: center;
   box-sizing: border-box;
   width: 5.3rem;
-  height: 1.8rem;
+  height: 2rem; /* Figma 18 → 20 (사용자 11-23 "납작해 보여서 2 높임") */
   padding: 0 0 0 0.7rem;
   border-radius: var(--stds-glob-border-radius-full);
   background: linear-gradient(101.7deg, #5673f6 1.9%, #dd48fb 120.5%);
@@ -392,7 +392,7 @@ body { margin: 0; }
 }
 .badge-menu-challenge__icon {
   position: absolute; /* 글자 폭과 상관없이 Figma 자리(오른쪽 4, 위 3) 고정 — 글자 박스(31)와 1px 겹치는 것도 Figma 그대로 */
-  top: 0.3rem;
+  top: 0.4rem; /* 높이 20에서 세로 가운데 (원래 18일 때 3) */
   right: 0.4rem;
   display: block;
   width: 1.2rem;
