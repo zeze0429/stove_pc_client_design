@@ -34,6 +34,9 @@
   position: sticky;
   height: var(--game-detail-view-h, 100vh);
   margin-bottom: calc(-1 * var(--game-detail-view-h, 100vh));
+  /* 배경 층이 화면 위·아래 끝에서 딱 끊기면, 화면 끝에 걸친 카드의 배경 블러(backdrop-filter)가 층 바깥을 섞어 밝은 띠가 생김 (사용자 11-24 제보).
+     층 바깥(보이지 않는 자리)에 바탕색을 100씩 이어 붙여 막음 — 보이는 그림 · 그라데이션은 그대로 */
+  box-shadow: 0 10rem 0 0 var(--stds-sem-color-background-variant-1), 0 -10rem 0 0 var(--stds-sem-color-background-variant-1);
 }
 /* 고정 배경 층 (사용자 11-24): 그라데이션은 화면(콘텐츠 영역 보이는 높이) 맨 아래 50% — 창이 커져도 늘 50% (% 높이라 배경 높이를 따라감),
    검정 20%. ("그라데이션 빼줘" → "밑으로 붙여서" 336 고정 → "화면의 30%, 프레임 커질 때도 30%" → 11-24 "50%로 올릴게", 원복 = 30%)
