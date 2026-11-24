@@ -35,12 +35,12 @@
   height: var(--game-detail-view-h, 100vh);
   margin-bottom: calc(-1 * var(--game-detail-view-h, 100vh));
 }
-/* 고정 배경 층 (사용자 11-24): 그라데이션은 빼지 않고 화면 맨 아래에 붙여 내림 — 높이는 예전 480 배경 때와 같은 336(480의 70%),
-   검정 20%. 높이 %로 두면 화면 높이의 70%라 너무 많이 덮인다 ("그라데이션 빼줘" → "밑으로 붙여서 내려주면", "블랙은 20").
+/* 고정 배경 층 (사용자 11-24): 그라데이션은 화면(콘텐츠 영역 보이는 높이) 맨 아래 30% — 창이 커져도 늘 30% (% 높이라 배경 높이를 따라감),
+   검정 20%. ("그라데이션 빼줘" → "밑으로 붙여서" 336 고정 → "화면의 30%, 프레임 커질 때도 30%")
    원복 = 이 규칙만 지우면 공통 층으로 돌아감. 아래쪽 공통 규칙보다 앞에 있어 선택자를 한 단계 높임 */
 .game-detail-background.game-detail-background--fixed::after {
   background:
-    linear-gradient(to top, var(--stds-sem-color-background-variant-1), transparent) left bottom / 100% 33.6rem no-repeat,
+    linear-gradient(to top, var(--stds-sem-color-background-variant-1), transparent) left bottom / 100% 30% no-repeat,
     var(--stds-glob-color-black-20);
 }
 /* 그림은 비율 그대로 꽉 채우고(cover) 위 가운데 기준으로 넘치는 쪽만 자름 — 로스트아크 11-24 교체 2560×1080 = 벨가르딘 정복전 이벤트 상단 배경(lostark.game.onstove.com/Promotion/Mission/260805 bg_index) 원본 그대로 */
