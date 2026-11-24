@@ -38,6 +38,7 @@ var PROTO_SETTINGS_DEFAULTS = {
   libraryPanelSkeleton: false, // 우측패널 목록을 10개씩 나눠 불러오기 — 아직 안 온 행은 스켈레톤 (SGVN 로딩 개선 시안)
   libraryPanelSkeletonAt: 0, // 켠 시각 — 켤 때마다 처음부터 다시 불러온다
   gameDetailInspection: true, // 게임 상세 설정 — 점검중: 게임명 위 '점검' 뱃지 + 게임 공지(점검) 띠를 같이 켜고 끈다 (사용자 11-19)
+  gameDetailFullBanner: false, // 게임 상세 설정 — 1단 풀배너(대표배너 슬라이드) 켜고 끄기. 기본 끔(11-24 사용자 "잠깐 꺼줘" 상태 유지)
   containerBlur: false, // 컨테이너(우클릭 메뉴 · 필터 레이어) 바탕을 반투명 + 배경 블러로 — 테스트용 비교
   menuNew: false,   // 메뉴 강조 — 라운지 NEW 표시
   menuBadge: true,  // 메뉴 강조 — 라운지 "챌린지" 뱃지 (기본 켜짐, 사용자 11-18 · 예전 오늘의 1등 자리)

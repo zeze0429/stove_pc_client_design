@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="css/radio.css?v=1" />
   <link rel="stylesheet" href="css/desktop.css?v=55" />
   <link rel="stylesheet" href="css/notice.css?v=16" />
-  <script src="js/proto-settings.js?v=37"></script>
+  <script src="js/proto-settings.js?v=40"></script>
   <script>
     // 업데이트 버튼·공지사항·다운로드 관리·스튜디오 테스트·메뉴 강조·PR 배너 종류는 저장해 두지 않는다 —
     // 미리보기에 새로 들어올 때마다 아래 기본 상태로 시작한다(
@@ -237,13 +237,17 @@
       </div>
 
       <!-- 게임 상세 설정 — 클라이언트가 게임 상세 페이지에 있을 때만 노출 (사용자 11-19).
-           점검중 = 게임명 위 '점검' 뱃지 + 게임 공지(점검) 띠 한 묶음 -->
+           점검중 = 게임명 위 '점검' 뱃지 + 게임 공지(점검) 띠 한 묶음 · 1단 풀배너 = 대표배너 슬라이드 켜고 끄기(11-24) -->
       <div class="proto-panel__section" id="protoGameDetailSettings" hidden>
         <hr class="proto-panel__divider" />
         <h2 class="proto-panel__title">게임 상세 설정</h2>
         <div class="proto-panel__row">
           <span class="proto-panel__label">점검중</span>
           <button class="proto-switch" type="button" role="switch" data-proto-key="gameDetailInspection" aria-label="점검중"></button>
+        </div>
+        <div class="proto-panel__row">
+          <span class="proto-panel__label">1단 풀배너</span>
+          <button class="proto-switch" type="button" role="switch" data-proto-key="gameDetailFullBanner" aria-label="1단 풀배너"></button>
         </div>
       </div>
 
