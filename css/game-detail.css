@@ -34,9 +34,6 @@
   position: sticky;
   height: var(--game-detail-view-h, 100vh);
   margin-bottom: calc(-1 * var(--game-detail-view-h, 100vh));
-  /* 배경 층이 화면 위·아래 끝에서 딱 끊기면, 화면 끝에 걸친 카드의 배경 블러(backdrop-filter)가 층 바깥을 섞어 밝은 띠가 생김 (사용자 11-24 제보).
-     층 바깥(보이지 않는 자리)에 바탕색을 100씩 이어 붙여 막음 — 보이는 그림 · 그라데이션은 그대로 */
-  box-shadow: 0 10rem 0 0 var(--stds-sem-color-background-variant-1), 0 -10rem 0 0 var(--stds-sem-color-background-variant-1);
 }
 /* 고정 배경 층 (사용자 11-24): 그라데이션은 화면(콘텐츠 영역 보이는 높이) 맨 아래 50% — 창이 커져도 늘 50% (% 높이라 배경 높이를 따라감),
    검정 20%. ("그라데이션 빼줘" → "밑으로 붙여서" 336 고정 → "화면의 30%, 프레임 커질 때도 30%" → 11-24 "50%로 올릴게", 원복 = 30%)
@@ -102,7 +99,7 @@
 .game-detail-community-album__img::after { border-color: var(--stds-sem-color-inverse-elevation-4); } /* 앨범은 Figma inverse-elevation-4 */
 /* 13 · 18 아이콘배너 — 다크 흰 10% · 라이트 흰 20% (사용자 11-19) */
 .game-detail-link-badge::after { border-color: var(--stds-glob-color-white-10); }
-:root[data-theme="light"] .game-detail-link-badge::after { border-color: var(--stds-glob-color-white-20); }
+:root[data-theme="light"] .main:not([data-theme="dark"]) .game-detail-link-badge::after { border-color: var(--stds-glob-color-white-20); }
 .game-detail-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .game-detail-title__text { display: flex; flex-direction: column; gap: 0.6rem; min-width: 0; }
 .game-detail-title__badges { display: flex; flex-wrap: wrap; gap: 0.4rem; }
@@ -559,10 +556,12 @@
 .game-detail-coupon__desc { bottom: 1.6rem; white-space: pre-line; }
 .game-detail-coupon__tab { position: absolute; z-index: 1; right: 0; top: 0; width: 4.8rem; height: 10rem; } /* 로고 탭이 티켓보다 위 (사용자 11-19) */
 .game-detail-coupon__tab > img:first-child { display: block; width: 100%; height: 100%; }
+/* (11-24) 아래 라이트 규칙은 콘텐츠 영역이 다크 고정(.main[data-theme="dark"], 스토브게임 상세)이면 적용 안 함 — 걸리면 쿠폰 탭이 밝게 그려지고
+   바로 위 카드의 배경 블러가 그 밝은 색을 끌어와 카드 아래에 밝은 띠가 생김(사용자 제보) */
 /* 라이트 테마 — 시안 탭(white-6 바탕 · white-10 테두리 · 흰 로고)이 밝은 바탕에 안 보여 블랙 톤 글로벌 토큰으로 임시 차용 (사용자 11-19).
    모양은 시안 svg와 같게: 오른쪽 모서리 21(안쪽 20 + 테두리 1) · 바깥 1px 테두리 */
-:root[data-theme="light"] .game-detail-coupon__tab > img:first-child { visibility: hidden; }
-:root[data-theme="light"] .game-detail-coupon__tab::before {
+:root[data-theme="light"] .main:not([data-theme="dark"]) .game-detail-coupon__tab > img:first-child { visibility: hidden; }
+:root[data-theme="light"] .main:not([data-theme="dark"]) .game-detail-coupon__tab::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -570,7 +569,7 @@
   border-radius: 0 2.1rem 2.1rem 0;
   background: var(--stds-glob-color-black-6) padding-box; /* 배경 블러는 맞닿는 면에 번져 뺌 (사용자 11-19) */
 }
-:root[data-theme="light"] .game-detail-coupon__logo { filter: brightness(0); } /* 흰 로고 → 블랙, 투명도(0.28)는 그대로 */
+:root[data-theme="light"] .main:not([data-theme="dark"]) .game-detail-coupon__logo { filter: brightness(0); } /* 흰 로고 → 블랙, 투명도(0.28)는 그대로 */
 .game-detail-coupon__logo {
   position: absolute;
   left: 50%;
