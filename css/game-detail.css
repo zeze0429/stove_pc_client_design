@@ -64,7 +64,7 @@
   --stds-sem-color-interaction-hover: var(--stds-glob-color-white-4);
   --stds-sem-color-interaction-pressed: var(--stds-glob-color-white-10);
   --stds-sem-color-interaction-selected: var(--stds-glob-color-white-8);
-  --stds-sem-color-disabled-variant-1: var(--stds-glob-color-gray500);
+  --stds-sem-color-disabled-variant-1: var(--stds-glob-color-white-15); /* 비활성(앞으로가기 등) = inverse-elevation-2 다크 값(흰 15%) — 그림 배경 위에서 탁한 회색(gray500) 대신 (사용자 11-24, 라이트에서도 다크 값 고정) */
   --stds-sem-color-inverse-elevation-3: var(--stds-glob-color-white-10);
 }
 :root[data-theme="light"] .utility-bar:not(.is-scrolled) .utility-bar-pc-cafe__badge--dark { display: block; }
