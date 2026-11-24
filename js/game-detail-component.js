@@ -437,9 +437,9 @@ function mountGameDetail(selector, gameId) {
       '<div v-else-if="!d" class="game-detail-empty stds-title2">' +
         '<strong class="fw-bold">{{ name }}</strong>상세 페이지 준비 중입니다.' +
       '</div>' +
-      '<div v-else class="game-detail">' +
+      '<div v-else class="game-detail" :style="d.backgroundGradient ? { \'--game-detail-bg-gradient\': d.backgroundGradient } : null">' + // 게임 색(backgroundGradient)은 최상위에 — 배경 그라데이션 · 카드 바탕이 같이 씀 (11-24)
         // 1 백그라운드 (bg 480) — 유틸리티 바 뒤까지 깔리고 아래로 페이지 색에 녹아든다
-        '<div class="game-detail-background" :class="{ \'game-detail-background--fixed\': d.backgroundFixed }" :style="d.backgroundGradient ? { \'--game-detail-bg-gradient\': d.backgroundGradient } : null" aria-hidden="true"><img :src="img(\'Client3.0_PC게임상세_01_백그라운드_로스트아크.jpg?v=4\')" alt="" /></div>' +
+        '<div class="game-detail-background" :class="{ \'game-detail-background--fixed\': d.backgroundFixed }" aria-hidden="true"><img :src="img(\'Client3.0_PC게임상세_01_백그라운드_로스트아크.jpg?v=4\')" alt="" /></div>' +
 
         '<div class="game-detail__contents">' +
           // ---- 게임명 ----
