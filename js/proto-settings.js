@@ -79,7 +79,9 @@ function protoSettingsSubscribe(fn) {
 // 클라이언트 페이지 전용 — 문서 단위 옵션(테마·그리드)을 <html>에 바로 건다.
 // 컴포넌트 단위 옵션(GNB·공지 등)은 각 Vue 컴포넌트가 직접 구독한다.
 function protoApplyDocument(s) {
-  document.documentElement.setAttribute('data-theme', s.theme);
+  // 테마 잠금(테스트, 사용자 11-24 "스토브게임 페이지들은 다크모드만") — data-theme-lock이 있는 문서는 설정과 상관없이 그 테마로.
+  // 원복 = 아래 줄을 setAttribute('data-theme', s.theme)로 되돌리고 js/game-detail-component.js의 잠금 줄 삭제
+  document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme-lock') || s.theme);
   document.documentElement.classList.toggle('proto-grid-on', !!s.grid);
   document.documentElement.classList.toggle('proto-pr-on', !!s.pr);
   document.documentElement.classList.toggle('proto-right-panel-on', !!s.rightPanel);

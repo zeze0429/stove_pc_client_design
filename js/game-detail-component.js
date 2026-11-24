@@ -218,6 +218,12 @@ function mountGameDetail(selector, gameId) {
   var data = GAME_DETAIL_DATA[key] || null;
   var game = typeof gameInfo === 'function' ? gameInfo(key) : null; // 이름 · 썸네일은 게임 카탈로그 (js/game-catalog.js)
   var skeleton = !data && gameDetailIsStove(key);
+  // 스토브게임 상세는 다크 테마만 (테스트, 사용자 11-24) — 설정에서 라이트로 바꿔도 다크 유지. 스토어형(고스트러너)은 위에서 이미 넘겨 해당 없음.
+  // 원복 = 이 if 블록 삭제 (js/proto-settings.js protoApplyDocument의 잠금 처리는 남겨도 무해)
+  if (data || gameDetailIsStove(key)) {
+    document.documentElement.setAttribute('data-theme-lock', 'dark');
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
 
   var app = Vue.createApp({
     data: function () {
