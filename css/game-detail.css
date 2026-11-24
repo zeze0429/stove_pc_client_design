@@ -320,11 +320,13 @@
 @container page (min-width: 1440px) {
   .game-detail-thumbnail-banner__thumbs { --thumb-count: 6; }
 }
-/* 마지막 쪽 빈자리 — 덜 찬 만큼(--thumb-fill장, JS thumbPage가 넣음) 비워서 한 쪽씩 통째로 넘길 수 있게 */
-.game-detail-thumbnail-banner__thumbs::after {
-  content: "";
+/* 마지막 쪽 빈칸 — 덜 찬 만큼(thumbFill개, JS thumbPage) 썸네일 크기 상자를 흰 4%로 채워 한 쪽씩 통째로 넘김 (11-24 "비워두지 말고 화이트 4로") */
+.game-detail-thumbnail-banner__empty {
   flex: none;
-  width: max(0rem, calc(var(--thumb-fill, 0) * 11.2rem - 1.2rem));
+  width: 10rem;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--stds-glob-border-radius-xl);
+  background: var(--stds-glob-color-white-4);
 }
 .game-detail-thumbnail-banner__thumb {
   position: relative;

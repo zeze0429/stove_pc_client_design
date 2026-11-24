@@ -242,6 +242,7 @@ function mountGameDetail(selector, gameId) {
         fullBannerPos: 1,
         fullBannerAnim: false,
         thumbnailIndex: 0,
+        thumbFill: 0,
         // 점검중 — '점검' 뱃지 + 게임 공지(점검) 띠를 한 묶음으로 (하단 설정 패널 '게임 상세 설정 > 점검중', 사용자 11-19)
         inspection: typeof protoSettingsRead === 'function' ? !!protoSettingsRead().gameDetailInspection : true,
         fullBannerOn: typeof protoSettingsRead === 'function' ? !!protoSettingsRead().gameDetailFullBanner : true,
@@ -291,13 +292,14 @@ function mountGameDetail(selector, gameId) {
     },
     methods: {
       // 고른 썸네일이 있는 쪽으로 줄을 넘김. 한 쪽 = --thumb-count장(CSS, MD 4 · LG 6).
-      // 마지막 쪽이 덜 차도 같은 칸 단위로 넘기도록 줄 끝에 빈자리(--thumb-fill장)를 둔다.
+      // 마지막 쪽이 덜 차도 같은 칸 단위로 넘기도록 줄 끝에 빈칸(thumbFill개, 흰 4% 상자)을 둔다.
       thumbPage: function () {
         var box = this.$refs.thumbs;
         if (!box || !box.children.length) return;
         var count = parseInt(getComputedStyle(box).getPropertyValue('--thumb-count'), 10) || 4;
         var total = this.d.thumbnailBanner.length;
-        box.style.setProperty('--thumb-fill', String((count - total % count) % count));
+        var fill = (count - total % count) % count; // 마지막 쪽 빈칸 수 — 빈칸은 흰 4% 상자로 채움(템플릿)
+        if (fill !== this.thumbFill) { this.thumbFill = fill; this.$nextTick(this.thumbPage); return; } // 빈칸이 그려진 뒤 다시 넘김
         var first = box.children[0], second = box.children[1];
         var step = second ? second.offsetLeft - first.offsetLeft : first.offsetWidth; // 썸네일 폭 + 간격
         box.scrollLeft = Math.floor(this.thumbnailIndex / count) * count * step;
@@ -529,6 +531,7 @@ function mountGameDetail(selector, gameId) {
                       '<img :src="img(m.src)" alt="" />' +
                       '<span v-if="m.video" class="game-detail-thumbnail-banner__play"><img :src="img(\'play-24.svg?v=2\')" alt="" /></span>' +
                     '</button>' +
+                    '<span v-for="n in thumbFill" :key="\'fill\' + n" class="game-detail-thumbnail-banner__empty" aria-hidden="true"></span>' + // 마지막 쪽 빈칸 (11-24 "비워두지 말고 화이트 4로")
                   '</div>' +
                   '<button class="game-detail-chevron" type="button" aria-label="다음" :disabled="thumbnailIndex === d.thumbnailBanner.length - 1" @click="thumbnailIndex++"><i class="ic-v2-control-arrow-right-line"></i></button>' +
                 '</div>' +
