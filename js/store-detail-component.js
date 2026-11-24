@@ -289,6 +289,8 @@ function mountStoreDetail(selector, key) {
       '<div class="store-detail">' +
         // 1 백그라운드 — 로아 상세와 같은 부품(css/game-detail.css .game-detail-background: 480 높이, 그림 60% · 검정 50% · 아래 70% 그라데이션)
         '<div v-if="d.background && !d.backgroundOff" class="game-detail-background" aria-hidden="true"><img :src="img(d.background)" alt="" /></div>' +
+        // 상단 네비게이션 — 스토어 메인과 같은 카테고리 바, 같은 자리(유틸리티 바 바로 아래 · 따라오다 내리면 숨음). 고른 탭 없음 (11-24)
+        '<store-nav-bar class="store-detail-nav" :selected="null" overlay></store-nav-bar>' +
         // breadcrumb — 전체 > 게임 > 액션 > 상품명
         '<nav class="store-detail-breadcrumb stds-text3" aria-label="위치">' +
           '<template v-for="(b, i) in d.breadcrumb">' +
@@ -789,6 +791,7 @@ function mountStoreDetail(selector, key) {
       '</div>',
   });
 
+  if (typeof StoreNavBar !== 'undefined') app.component('store-nav-bar', StoreNavBar); // 스토어 메인 상단 네비게이션 (js/store-main-component.js, 11-24)
   app.mount(selector);
   return app;
 }

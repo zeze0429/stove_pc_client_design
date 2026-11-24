@@ -20,6 +20,8 @@
   padding: 0.8rem var(--page-gutter); /* 좌우 = 콘텐츠 그리드 여백 (css/dashboard.css) */
   transition: transform 0.25s ease, opacity 0.25s ease;
 }
+/* 유틸리티 바가 콘텐츠 위에 떠 있는 페이지(게임 상세 — .main에 위 여백 없음)에선 바 아래에 붙어 따라온다 (11-24) */
+.store-nav--overlay { top: calc(4.8rem + var(--utility-notice-h, 0px)); }
 .store-nav.is-hidden {
   transform: translateY(-100%);
   opacity: 0;

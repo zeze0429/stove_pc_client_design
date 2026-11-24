@@ -42,15 +42,97 @@ var STORE_HERO_GAP = 20;     // 카드 간격
 var STORE_HERO_SPEED = 400;  // 전환 시간 (ms)
 var STORE_HERO_DELAY = 4000; // 자동 재생 간격 (ms)
 
-var StoreMainTop = {
+// ---- 카테고리 네비게이션 바 — 스토어 메인(StoreMainTop)과 스토어형 게임 상세(js/store-detail-component.js)가 같이 쓴다 (11-24)
+//   selected: 고른 탭 id(메인 = 추천, 상세 = 없음 → 칩 안 보임) · overlay: 유틸리티 바가 콘텐츠 위에 떠 있는 페이지(게임 상세)
+var StoreNavBar = {
+  props: {
+    selected: { type: String, default: 'recommend' },
+    overlay: { type: Boolean, default: false },
+  },
   data: function () {
-    var n = STORE_MAIN_BANNERS.length;
     return {
       tabs: STORE_MAIN_TABS,
-      selectedTab: 'recommend',
+      selectedTab: this.selected,
       indicator: { left: 0, width: 0 },
       indicatorReady: false, // 첫 배치는 애니메이션 없이 — 폭 0에서 커지는 게 보이지 않게
       navHidden: false,
+    };
+  },
+  computed: {
+    indicatorStyle: function () {
+      return {
+        transform: 'translateX(' + this.indicator.left + 'px)',
+        width: this.indicator.width + 'px',
+        transition: this.indicatorReady ? '' : 'none',
+      };
+    },
+  },
+  mounted: function () {
+    var self = this;
+    this.$nextTick(function () {
+      self.moveIndicator();
+      requestAnimationFrame(function () { requestAnimationFrame(function () { self.indicatorReady = true; }); });
+    });
+    // 스크롤을 내리면 네비게이션 바가 숨고, 올리면 다시 나타난다
+    this.scroller = document.querySelector('.app > .main');
+    this.lastScroll = 0;
+    this.onScroll = function () {
+      var y = self.scroller.scrollTop;
+      if (y < 132) self.navHidden = false;
+      else if (y > self.lastScroll + 2) self.navHidden = true;
+      else if (y < self.lastScroll - 2) self.navHidden = false;
+      self.lastScroll = y;
+    };
+    if (this.scroller) this.scroller.addEventListener('scroll', this.onScroll, { passive: true });
+  },
+  beforeUnmount: function () {
+    if (this.scroller) this.scroller.removeEventListener('scroll', this.onScroll);
+  },
+  methods: {
+    selectTab: function (tab) {
+      this.selectedTab = tab.id;
+      this.$nextTick(this.moveIndicator);
+    },
+    moveIndicator: function () {
+      var el = this.$el.querySelector('.store-nav__tab.is-selected');
+      if (!el) return;
+      this.indicator = { left: el.offsetLeft, width: el.offsetWidth };
+    },
+
+  },
+  template:
+      '<nav class="store-nav" :class="{ \'is-hidden\': navHidden, \'store-nav--overlay\': overlay }" aria-label="스토어 카테고리">' +
+        '<div class="store-nav__bar">' +
+          '<div class="store-nav__tabs-wrap">' +
+            '<span class="store-nav__indicator" :style="indicatorStyle" aria-hidden="true"></span>' +
+            '<ul class="store-nav__tabs">' +
+              '<li v-for="tab in tabs" :key="tab.id">' +
+                '<button class="store-nav__tab" :class="{ \'is-selected\': selectedTab === tab.id }" type="button" @click="selectTab(tab)">' +
+                  '<span class="store-nav__tab-label">{{ tab.label }}</span>' +
+                '</button>' +
+              '</li>' +
+            '</ul>' +
+          '</div>' +
+          '<div class="store-nav__category">' +
+            '<span class="store-nav__divider" aria-hidden="true"></span>' +
+            '<button class="store-nav__category-btn" type="button">' +
+              '<span>카테고리</span><i class="ic-v2-control-arrow-down-line" aria-hidden="true"></i>' +
+            '</button>' +
+          '</div>' +
+          '<div class="store-nav__icons">' +
+            '<button class="store-nav__icon-btn store-nav__icon-btn--stateful" type="button" aria-label="찜"><i class="ic-v2-community-like-fill"></i></button>' +
+            '<button class="store-nav__icon-btn store-nav__icon-btn--stateful" type="button" aria-label="장바구니"><i class="ic-v2-navigation-cart-fill"></i></button>' +
+            '<button class="store-nav__icon-btn" type="button" aria-label="검색"><i class="ic-v2-navigation-search-line"></i></button>' +
+          '</div>' +
+        '</div>' +
+      '</nav>',
+};
+
+var StoreMainTop = {
+  components: { 'store-nav-bar': StoreNavBar },
+  data: function () {
+    var n = STORE_MAIN_BANNERS.length;
+    return {
       banners: STORE_MAIN_BANNERS,
       // 무한 반복: 배너 목록을 세 벌 이어 붙이고 가운데 벌에서 시작한다
       pos: n,
@@ -89,13 +171,6 @@ var StoreMainTop = {
       var bottom = 'M0.5,13 A12.5,12.5 0 0 0 13,25.5 H' + (w - 13) + ' A12.5,12.5 0 0 0 ' + (w - 0.5) + ',13';
       return { top: top, bottom: bottom, length: Math.PI * 12.5 + (w - 26) };
     },
-    indicatorStyle: function () {
-      return {
-        transform: 'translateX(' + this.indicator.left + 'px)',
-        width: this.indicator.width + 'px',
-        transition: this.indicatorReady ? '' : 'none',
-      };
-    },
   },
   watch: {
     current: function () { this.$nextTick(this.measurePager); },
@@ -111,40 +186,13 @@ var StoreMainTop = {
         self.pagerObserver.observe(self.$refs.pager);
       }
     });
-    this.$nextTick(function () {
-      self.moveIndicator();
-      requestAnimationFrame(function () { requestAnimationFrame(function () { self.indicatorReady = true; }); });
-    });
     this.startAutoplay();
-
-    // 스크롤을 내리면 네비게이션 바가 숨고, 올리면 다시 나타난다
-    this.scroller = document.querySelector('.app > .main');
-    this.lastScroll = 0;
-    this.onScroll = function () {
-      var y = self.scroller.scrollTop;
-      if (y < 132) self.navHidden = false;
-      else if (y > self.lastScroll + 2) self.navHidden = true;
-      else if (y < self.lastScroll - 2) self.navHidden = false;
-      self.lastScroll = y;
-    };
-    if (this.scroller) this.scroller.addEventListener('scroll', this.onScroll, { passive: true });
   },
   beforeUnmount: function () {
     this.stopAutoplay();
     if (this.pagerObserver) this.pagerObserver.disconnect();
-    if (this.scroller) this.scroller.removeEventListener('scroll', this.onScroll);
   },
   methods: {
-    selectTab: function (tab) {
-      this.selectedTab = tab.id;
-      this.$nextTick(this.moveIndicator);
-    },
-    moveIndicator: function () {
-      var el = this.$el.querySelector('.store-nav__tab.is-selected');
-      if (!el) return;
-      this.indicator = { left: el.offsetLeft, width: el.offsetWidth };
-    },
-
     // ---- 배너 ----
     go: function (delta) {
       var n = this.banners.length;
@@ -218,32 +266,8 @@ var StoreMainTop = {
   template:
     '<div class="store-main-top">' +
 
-      // ---- 카테고리 네비게이션 바 ----
-      '<nav class="store-nav" :class="{ \'is-hidden\': navHidden }" aria-label="스토어 카테고리">' +
-        '<div class="store-nav__bar">' +
-          '<div class="store-nav__tabs-wrap">' +
-            '<span class="store-nav__indicator" :style="indicatorStyle" aria-hidden="true"></span>' +
-            '<ul class="store-nav__tabs">' +
-              '<li v-for="tab in tabs" :key="tab.id">' +
-                '<button class="store-nav__tab" :class="{ \'is-selected\': selectedTab === tab.id }" type="button" @click="selectTab(tab)">' +
-                  '<span class="store-nav__tab-label">{{ tab.label }}</span>' +
-                '</button>' +
-              '</li>' +
-            '</ul>' +
-          '</div>' +
-          '<div class="store-nav__category">' +
-            '<span class="store-nav__divider" aria-hidden="true"></span>' +
-            '<button class="store-nav__category-btn" type="button">' +
-              '<span>카테고리</span><i class="ic-v2-control-arrow-down-line" aria-hidden="true"></i>' +
-            '</button>' +
-          '</div>' +
-          '<div class="store-nav__icons">' +
-            '<button class="store-nav__icon-btn store-nav__icon-btn--stateful" type="button" aria-label="찜"><i class="ic-v2-community-like-fill"></i></button>' +
-            '<button class="store-nav__icon-btn store-nav__icon-btn--stateful" type="button" aria-label="장바구니"><i class="ic-v2-navigation-cart-fill"></i></button>' +
-            '<button class="store-nav__icon-btn" type="button" aria-label="검색"><i class="ic-v2-navigation-search-line"></i></button>' +
-          '</div>' +
-        '</div>' +
-      '</nav>' +
+      // ---- 카테고리 네비게이션 바 (StoreNavBar — 스토어형 게임 상세도 같이 씀) ----
+      '<store-nav-bar></store-nav-bar>' +
 
       // ---- 메인 배너 캐러셀 ----
       '<section class="store-hero" aria-roledescription="carousel" aria-label="메인 배너">' +

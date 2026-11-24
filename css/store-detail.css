@@ -10,11 +10,16 @@
 .store-detail {
   position: relative;
   flex: 0 0 auto;
-  padding: calc(8.8rem + var(--utility-notice-h, 0px)) var(--page-gutter) 10rem; /* 위 = 유틸리티 바 48 + 40 (Figma y 88) */
+  padding: calc(4.8rem + var(--utility-notice-h, 0px)) var(--page-gutter) 10rem; /* 위 = 유틸리티 바 48 → 상단 네비게이션(68) → breadcrumb (11-24; 네비 전 = 48 + 40, Figma y 88) */
   color: var(--stds-sem-color-on-surface-elevation-1);
 }
 /* 배경(absolute)보다 위에 — 내용은 모두 위 층 */
 .store-detail > :not(.game-detail-background) { position: relative; }
+
+/* ---- 상단 네비게이션 (스토어 메인 카테고리 바 — js/store-main-component.js StoreNavBar, css/store-main.css) (11-24) ----
+   좌우 여백은 .store-detail이 이미 가져서 0. 아래 breadcrumb은 바 아래 40(바 영역 아래 여백 8 + 32) — 네비 전 유틸리티 바 아래 40과 같은 간격 */
+.store-detail > .store-detail-nav { position: sticky; padding-left: 0; padding-right: 0; }
+.store-detail-nav + .store-detail-breadcrumb { margin-top: 3.2rem; }
 
 /* ---- breadcrumb — text3 R, on-surface-elevation-3, 화살표 12 (elevation-4) 간격 2 ---- */
 .store-detail-breadcrumb {
