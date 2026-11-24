@@ -27,6 +27,8 @@ var GAME_DETAIL_DIR = 'assets/game-detail/';
 var GAME_DETAIL_DATA = {
   lostark: {
     dir: 'lostark/',
+    // 1 백그라운드를 콘텐츠 영역 높이만큼 채우고 고정 — 스크롤하면 콘텐츠만 올라감 (사용자 11-24, 로스트아크 이벤트 페이지 fixed_bg처럼)
+    backgroundFixed: true,
     // 게임명 위 뱃지 (Badge/Left top · Client · Right top) — 시안의 모든 종류
     badges: [
       { label: '점검', kind: 'warning', icon: 'ic-v2-state-warning-circle-fill', inspection: true }, // 점검중일 때만 — 아래 게임 공지(점검) 띠와 한 묶음
@@ -255,6 +257,15 @@ function mountGameDetail(selector, gameId) {
     },
     mounted: function () {
       var self = this;
+      // 고정 배경 높이 = 스크롤 영역(.main)의 보이는 높이 — 창 크기가 바뀌면 따라감
+      var mount = document.querySelector(selector);
+      var main = mount && mount.closest('.main'); // $el은 v-if 묶음이라 요소가 아닐 수 있어 마운트 자리에서 찾는다
+      if (main) {
+        var setViewH = function () { main.style.setProperty('--game-detail-view-h', main.clientHeight + 'px'); };
+        setViewH(); // 처음 한 번 바로
+        if (typeof ResizeObserver === 'function') new ResizeObserver(setViewH).observe(main);
+        else window.addEventListener('resize', setViewH);
+      }
       if (typeof protoSettingsSubscribe === 'function') protoSettingsSubscribe(function (s) { self.inspection = !!s.gameDetailInspection; });
     },
     methods: {
@@ -420,7 +431,7 @@ function mountGameDetail(selector, gameId) {
       '</div>' +
       '<div v-else class="game-detail">' +
         // 1 백그라운드 (bg 480) — 유틸리티 바 뒤까지 깔리고 아래로 페이지 색에 녹아든다
-        '<div class="game-detail-background" aria-hidden="true"><img :src="img(\'Client3.0_PC게임상세_01_백그라운드_로스트아크.jpg?v=4\')" alt="" /></div>' +
+        '<div class="game-detail-background" :class="{ \'game-detail-background--fixed\': d.backgroundFixed }" aria-hidden="true"><img :src="img(\'Client3.0_PC게임상세_01_백그라운드_로스트아크.jpg?v=4\')" alt="" /></div>' +
 
         '<div class="game-detail__contents">' +
           // ---- 게임명 ----
