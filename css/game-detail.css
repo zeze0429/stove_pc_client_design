@@ -350,7 +350,7 @@
 .game-detail-banner__control { display: flex; align-items: center; gap: 1.6rem; } /* 화살표 ↔ 점 16 (스토어 캐러셀) */
 
 /* ---- 카드 공통 (component/board/*) — 패딩 24, 간격 16.
-   바탕 = surface-variant-1 70% (게임 정보 카드와 같게, 사용자 11-24 "전체 카드에 투명도 이 카드랑 동일하게") +
+   바탕 = surface-variant-1 50% (11-24 게임 정보 카드와 같은 70%로 맞췄다가 "투명도를 더 줄게. 50으로") +
    배경 블러 22 (같은 화면 위에 떠 있는 유틸리티 바 blur 2.2rem과 같은 값, 사용자 11-24 "백그라운드 블러 추가").
    원복 = 바탕 var(--stds-sem-color-surface-variant-1) · 블러 두 줄 삭제 ---- */
 .game-detail-board {
@@ -360,7 +360,7 @@
   padding: 2.4rem;
   overflow: hidden;
   border-radius: var(--stds-glob-border-radius-3xl);
-  background: color-mix(in srgb, var(--stds-sem-color-surface-variant-1) 70%, transparent);
+  background: color-mix(in srgb, var(--stds-sem-color-surface-variant-1) 50%, transparent);
   -webkit-backdrop-filter: blur(2.2rem);
   backdrop-filter: blur(2.2rem);
 }
@@ -389,9 +389,9 @@
 .game-detail-more i { font-size: 1.6rem; }
 
 /* 15 로아상영관 — 로스트아크 한정 (15 · 16 · 17 모두 로스트아크 한정). 카드 바탕에 색 10%를 얹는다 */
-.game-detail-board--rec { background: linear-gradient(rgba(234, 51, 153, 0.1), rgba(234, 51, 153, 0.1)), color-mix(in srgb, var(--stds-sem-color-surface-variant-1) 70%, transparent); }
+.game-detail-board--rec { background: linear-gradient(rgba(234, 51, 153, 0.1), rgba(234, 51, 153, 0.1)), color-mix(in srgb, var(--stds-sem-color-surface-variant-1) 50%, transparent); }
 .game-detail-board--best,
-.game-detail-board--new { background: linear-gradient(rgba(80, 61, 175, 0.1), rgba(80, 61, 175, 0.1)), color-mix(in srgb, var(--stds-sem-color-surface-variant-1) 70%, transparent); } /* 바탕 70%는 카드 공통과 같게 (11-24) */
+.game-detail-board--new { background: linear-gradient(rgba(80, 61, 175, 0.1), rgba(80, 61, 175, 0.1)), color-mix(in srgb, var(--stds-sem-color-surface-variant-1) 50%, transparent); } /* 바탕 50%는 카드 공통과 같게 (11-24) */
 /* 로아 상영관 타이틀 옆 뱃지 (추천 · BEST · NEW) — 사이드바 라운지 '챌린지' 뱃지(css/gnb.css .badge-menu-challenge)와 같은 크기 · 글자
    (사용자 11-19): 높이 20(11-23 18→20, 사이드바와 같이 높임) · Bold 11/14 · 아이콘 12(그림 높이 약 10).
    간격은 실측(그림 기준)으로 챌린지와 같게: 바깥 ~ 아이콘 그림 6 · 아이콘 그림 ~ 글자 2 · 글자 ~ 바깥 7
@@ -511,7 +511,7 @@
 .game-detail-rating-sexual .is-shape-2 { left: 1.247rem; top: 6.104rem; width: 3.8531rem; height: 0.9162rem; }
 .game-detail-rating-sexual [class*="is-clip"] { left: 0.366rem; top: 0.349rem; width: 5.6674rem; height: 5.526rem; }
 
-/* ---- 9 게임요약 — 바탕 70% (11-24부터 카드 공통으로 올림) ---- */
+/* ---- 9 게임요약 — 바탕은 카드 공통(11-24부터 50%) ---- */
 .game-detail-summary { display: flex; flex-direction: column; gap: 2rem; }
 .game-detail-summary__tagline { margin: 0; color: var(--stds-sem-color-on-surface-elevation-3); }
 .game-detail-summary__rows > div { gap: 2.8rem; }
