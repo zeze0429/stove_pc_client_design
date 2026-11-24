@@ -596,7 +596,7 @@ function mountGameDetail(selector, gameId) {
                   '<div class="game-detail-loa-theater">' +
                     '<a v-for="t in d.loaTheater" class="game-detail-loa-theater__item" href="#" @click.prevent>' +
                       '<span class="game-detail-loa-theater__img"><img :src="img(t.src)" alt="" /></span>' +
-                      '<span class="game-detail-loa-theater__name stds-title7 fw-medium">{{ t.title }}</span>' +
+                      '<span class="game-detail-loa-theater__name stds-text4 fw-medium">{{ t.title }}</span>' + // 추천과 같은 Text4-M 13/22 (11-25, 전엔 title7 16)
                       '<span class="game-detail-loa-theater__author stds-text4 fw-bold">{{ t.author }}</span>' +
                       '<span class="game-detail-loa-theater__date stds-cap1 fw-regular">{{ t.date }}</span>' +
                     '</a>' +
