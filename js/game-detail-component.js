@@ -76,8 +76,9 @@ var GAME_DETAIL_DATA = {
       { src: 'theater-rec-01.png', title: '카제로스 레이드 3막 "칠흑, 폭풍의 밤" Teaser' },
       { src: 'theater-rec-02.png', title: '신상입고! MARCH. 2025 네리아의 드레스룸' },
       { src: 'theater-rec-03.png', title: '심연의 징벌자, 모르둠 (Punisher of the Abyss, Mordoom) / LOST ARK Official Soundtrack' },
-      { src: 'theater-rec-04.jpg', title: '싱글모드를 벗어난 모코코를 위한 레이드 기본 꿀팁 🐝' },
-      { src: 'theater-rec-05.jpg', title: '로생에 도움되는 꿀팁!' },
+      // 스트리머 카드 — 통째 그림(theater-rec-04/05.jpg) 대신 Figma 68449:481543 구조대로 (아바타 · STREAMER · 이름 · 영상 썸네일, 사용자 11-24)
+      { streamer: { avatar: 'theater-streamer-avatar-01.png', name: '기백', thumb: 'theater-streamer-thumb-01.png' }, title: '싱글모드를 벗어난 모코코를 위한 레이드 기본 꿀팁 🐝' },
+      { streamer: { avatar: 'theater-streamer-avatar-02.png', name: '게임하는인기', thumb: 'theater-streamer-thumb-02.png' }, title: '로생에 도움되는 꿀팁!' },
     ],
     loaTheater: [
       { src: 'theater-01.png', title: '열리는 나르가의 문 (The Great Gate of Narga) / LOST ARK Official Soundtrack', author: 'LOST ARK', date: '2025.2.05' },
@@ -569,8 +570,16 @@ function mountGameDetail(selector, gameId) {
                   '</div>' +
                   '<div class="game-detail-loa-theater-rec">' +
                     '<a v-for="t in d.loaTheaterRec" class="game-detail-loa-theater-rec__item" href="#" @click.prevent>' +
-                      '<span class="game-detail-loa-theater-rec__img"><img :src="img(t.src)" alt="" /></span>' +
-                      '<span class="game-detail-loa-theater-rec__name stds-title7 fw-medium">{{ t.title }}</span>' +
+                      '<span v-if="t.streamer" class="game-detail-loa-theater-rec__img game-detail-loa-theater-rec__img--streamer">' +
+                        '<span class="game-detail-loa-theater-rec__streamer">' +
+                          '<img class="game-detail-loa-theater-rec__avatar" :src="img(t.streamer.avatar)" alt="" />' +
+                          '<span class="game-detail-loa-theater-rec__label">STREAMER</span>' +
+                          '<span class="game-detail-loa-theater-rec__streamer-name">{{ t.streamer.name }}</span>' +
+                        '</span>' +
+                        '<img class="game-detail-loa-theater-rec__video" :src="img(t.streamer.thumb)" alt="" />' +
+                      '</span>' +
+                      '<span v-else class="game-detail-loa-theater-rec__img"><img :src="img(t.src)" alt="" /></span>' +
+                      '<span class="game-detail-loa-theater-rec__name stds-text4 fw-medium">{{ t.title }}</span>' + // Figma Text4-M 13/22 (11-24, 전엔 title7 16)
                     '</a>' +
                   '</div>' +
                 '</section>' +
