@@ -211,6 +211,8 @@ function gameDetailLinkBadges(key, data) {
 
 function mountGameDetail(selector, gameId) {
   var key = gameDetailKey(gameId);
+  // 스토어형 상세(고스트러너 등)는 구조가 달라 js/store-detail-component.js가 그린다 (사용자 11-24)
+  if (typeof STORE_DETAIL_DATA !== 'undefined' && STORE_DETAIL_DATA[key]) return mountStoreDetail(selector, key);
   var data = GAME_DETAIL_DATA[key] || null;
   var game = typeof gameInfo === 'function' ? gameInfo(key) : null; // 이름 · 썸네일은 게임 카탈로그 (js/game-catalog.js)
   var skeleton = !data && gameDetailIsStove(key);

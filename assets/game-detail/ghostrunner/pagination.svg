@@ -1,0 +1,13 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="50" height="6" viewBox="0 0 50 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="5&#60; dots">
+<circle id="1" cx="3" cy="3" r="3" fill="#EBEBEB"/>
+<circle id="2" cx="14" cy="3" r="3" fill="#4C4C4C"/>
+<circle id="3" cx="25" cy="3" r="3" fill="#4C4C4C"/>
+<g id="4">
+<circle id="4_2" cx="36" cy="3" r="2.5" fill="#4C4C4C"/>
+</g>
+<g id="5">
+<circle id="5_2" cx="47" cy="3" r="2" fill="#4C4C4C"/>
+</g>
+</g>
+</svg>

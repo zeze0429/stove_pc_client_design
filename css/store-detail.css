@@ -1,0 +1,1059 @@
+/* =============================================================
+   스토어형 게임 상세 (js/store-detail-component.js) — Figma 68436:427674
+   게임상세_MD 68412:112281 (콘텐츠 960 = 왼쪽 620 + 40 + 오른쪽 300)
+   게임상세_LG 68412:113947 (콘텐츠 1300 = 왼쪽 860 + 48 + 오른쪽 392)
+   - 폭은 콘텐츠 960 → 1300 사이에서 점점 늘어난다 (구간에서 튀지 않게, 사용자 11-23 원칙).
+   - 글자 크기 · 버튼 높이 · 썸네일 개수처럼 단계로 바뀌는 값은 콘텐츠 영역 1440(STDS LG)부터 LG 값.
+   색은 Figma 변수 그대로(시멘틱), 시멘틱이 없는 시안 색만 헥스.
+   ============================================================= */
+
+.store-detail {
+  position: relative;
+  flex: 0 0 auto;
+  padding: calc(8.8rem + var(--utility-notice-h, 0px)) var(--page-gutter) 10rem; /* 위 = 유틸리티 바 48 + 40 (Figma y 88) */
+  color: var(--stds-sem-color-on-surface-elevation-1);
+}
+
+/* ---- breadcrumb — text3 R, on-surface-elevation-3, 화살표 12 (elevation-4) 간격 2 ---- */
+.store-detail-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  color: var(--stds-sem-color-on-surface-elevation-3);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.store-detail-breadcrumb i { font-size: 1.2rem; color: var(--stds-sem-color-on-surface-elevation-4); }
+.store-detail-breadcrumb span:last-child { overflow: hidden; text-overflow: ellipsis; }
+
+/* ---- 2단 — 오른쪽 300 → 392, 사이 40 → 48 (100% = 콘텐츠 폭, 960 → 1300 비례) ---- */
+.store-detail__columns {
+  margin-top: 1.6rem; /* breadcrumb 24 아래 16 (Figma y 40) */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(30rem, calc(30rem + (100% - 96rem) * 92 / 340), 39.2rem);
+  column-gap: clamp(4rem, calc(4rem + (100% - 96rem) * 8 / 340), 4.8rem);
+  align-items: start;
+}
+.store-detail__left { display: flex; flex-direction: column; gap: 4rem; min-width: 0; } /* 섹션 사이 40 */
+.store-detail__right { min-width: 0; }
+
+/* =============================================================
+   Cover — 큰 그림 16:9 · 모서리 28, 아래 썸네일 줄(16 아래, 높이 56)
+   ============================================================= */
+.store-detail-cover { display: flex; flex-direction: column; align-items: center; gap: 1.6rem; }
+.store-detail-cover__main {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 2.8rem; /* Figma 28 — radius 토큰(20 · 32) 사이 값 */
+  overflow: hidden;
+}
+.store-detail-cover__main > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
+.store-detail-cover__play { position: absolute; top: 50%; left: 50%; width: 5.6rem; height: 5.6rem; transform: translate(-50%, -50%); }
+
+/* 썸네일 줄 — 화살표 28 · 사이 20 · 썸네일 100×56 간격 12. 보이는 개수 MD 4 · LG 5 */
+.store-detail-cover__list { display: flex; align-items: center; justify-content: center; gap: 2rem; height: 5.6rem; }
+/* 화살표 — 바탕 neutral-variant-2(이전 끝 = disabled-variant-3), 아이콘 elevation-1 */
+.store-detail-chevron { background: var(--stds-sem-color-neutral-variant-2); }
+.store-detail-chevron:hover { background: var(--stds-sem-color-neutral-variant-2-hover); }
+.store-detail-chevron:active { background: var(--stds-sem-color-neutral-variant-2-pressed); }
+.store-detail-chevron:disabled { color: var(--stds-sem-color-on-surface-elevation-4); }
+.store-detail-cover__thumbs {
+  --store-detail-cover-n: 4;
+  width: calc(var(--store-detail-cover-n) * 10rem + (var(--store-detail-cover-n) - 1) * 1.2rem);
+  /* 선택 테두리(바깥 3)가 잘리지 않게 위아래 · 양끝 여유 */
+  padding: 0.3rem;
+  margin: -0.3rem;
+  box-sizing: content-box;
+  overflow: hidden;
+}
+.store-detail-cover__track { display: flex; gap: 1.2rem; transition: transform 0.3s ease; }
+.store-detail-cover__thumb {
+  position: relative;
+  flex: none;
+  width: 10rem;
+  height: 5.6rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--stds-glob-border-radius-xl);
+  background: none;
+  cursor: pointer;
+}
+.store-detail-cover__thumb > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+/* 고르지 않은 칸은 검정 50% */
+.store-detail-cover__thumb:not(.is-active)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--stds-glob-color-black-50);
+}
+/* 고른 칸 — 바깥 3 떨어진 1.5 테두리, 모서리 14 */
+.store-detail-cover__thumb.is-active::before {
+  content: "";
+  position: absolute;
+  inset: -0.3rem;
+  border: 0.15rem solid var(--stds-sem-color-on-surface-elevation-1);
+  border-radius: 1.4rem;
+}
+.store-detail-cover__thumb-play { position: absolute; left: 50%; bottom: 1.6rem; width: 2.4rem; height: 2.4rem; transform: translateX(-50%); }
+
+/* =============================================================
+   AI 상품 브리핑 — surface-variant-2 · 모서리 28 · 안쪽 24, 줄 간격 8
+   ============================================================= */
+.store-detail-ai {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 2.4rem;
+  border-radius: 2.8rem;
+  background: var(--stds-sem-color-surface-variant-2);
+  overflow: hidden;
+}
+.store-detail-ai__title { display: flex; align-items: center; gap: 0.4rem; margin: 0; }
+.store-detail-ai__icon { width: 2.4rem; height: 2.4rem; }
+.store-detail-ai__beta { width: 2.4rem; height: 1.2rem; margin-left: -0.2rem; } /* 제목 ↔ Beta 2 */
+.store-detail-ai__info { font-size: 1.6rem; color: var(--stds-sem-color-on-surface-elevation-4); }
+/* 한줄소개 — 앞 점(4×24, 흰 15%) · 왼쪽 10 · 점 ↔ 글자 8 */
+.store-detail-ai__lines { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.2rem; }
+.store-detail-ai__lines li { position: relative; padding-left: 2.2rem; }
+.store-detail-ai__lines li::before {
+  content: "";
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--stds-glob-color-white-15);
+}
+/* 카드 줄 — 20 아래, 카드 240×128 · 간격 12 · 옆으로 넘김. 오른쪽 끝 32 바탕색으로 사라짐 */
+.store-detail-ai__row { position: relative; margin-top: 1.2rem; } /* 줄 간격 8 + 12 = 20 */
+.store-detail-ai__cards {
+  display: flex;
+  gap: 1.2rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-right: -2.4rem; /* 카드 줄은 오른쪽 안쪽 여백 밖까지 — 잘려 보이게 */
+  padding-right: 2.4rem;
+}
+.store-detail-ai__cards::-webkit-scrollbar { display: none; }
+.store-detail-ai__row::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -2.4rem;
+  width: 4rem; /* 그라데이션 32 + 바탕 8 */
+  height: 100%;
+  background: linear-gradient(to left, var(--stds-sem-color-surface-variant-2) 0.8rem, transparent);
+  pointer-events: none;
+}
+.store-detail-ai__card {
+  flex: none;
+  box-sizing: border-box;
+  width: 24rem;
+  height: 12.8rem;
+  padding: 1.6rem 2rem;
+  border-radius: var(--stds-glob-border-radius-3xl);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* 시안 그라데이션(시멘틱 없음) 10% + 흰 5% + 바탕 surface-variant-2 */
+  background:
+    linear-gradient(152.31deg, rgba(252, 68, 32, 0.1) 4.33%, rgba(255, 140, 168, 0.1) 34.12%, rgba(169, 190, 245, 0.1) 55.7%),
+    linear-gradient(rgba(241, 245, 251, 0.05), rgba(241, 245, 251, 0.05)),
+    var(--stds-sem-color-surface-variant-2);
+}
+.store-detail-ai__card p { margin: 0; }
+.store-detail-ai__card--playtime { background: var(--stds-sem-color-surface-elevation-3); box-shadow: 0 0 0.8rem rgba(0, 0, 0, 0.08); }
+.store-detail-ai__label { color: #8d9ecc; } /* 시안 색 — 시멘틱 없음 */
+.store-detail-ai__playtime { display: flex; align-items: flex-end; gap: 0.8rem; }
+.store-detail-ai__playtime > div { flex: 1 1 auto; display: flex; flex-direction: column; gap: 0.2rem; white-space: nowrap; }
+.store-detail-ai__playtime > div > span { color: var(--stds-sem-color-on-surface-elevation-4); }
+/* store-ai-illust — 막대 10×48 · 간격 10, 바탕 inverse-elevation-5, 채움 시안 그라데이션 */
+.store-detail-ai__bars { display: flex; gap: 1rem; height: 4.8rem; }
+.store-detail-ai__bars i {
+  position: relative;
+  width: 1rem;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-sem-color-inverse-elevation-5);
+}
+.store-detail-ai__bars i::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--h);
+  border-radius: inherit;
+  background: linear-gradient(to bottom, #a9bef5, #ff8ca8 84.12%, #fe757c 140.2%);
+}
+/* 오른쪽 넘김 버튼 32 — neutral-variant-3, 그림자 6 (LG 시안 68412:114093) */
+.store-detail-ai__next {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-sem-color-neutral-variant-3);
+  box-shadow: 0 0 0.6rem rgba(0, 0, 0, 0.12);
+  color: var(--stds-sem-color-on-surface-elevation-1);
+  font-size: 1.6rem;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+.store-detail-ai__next:hover { background: var(--stds-sem-color-neutral-variant-3-hover); }
+/* 리액션 — 오른쪽 끝, 글자 elevation-4 · 아이콘 16 (칸 24, 모서리 8) */
+.store-detail-ai__reaction {
+  margin-top: 0.8rem; /* Con 안 간격 16 */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.4rem;
+  color: var(--stds-sem-color-on-surface-elevation-4);
+}
+.store-detail-ai__reaction span { margin-right: 0.4rem; } /* 글자 ↔ 아이콘 8 */
+.store-detail-ai__reaction button {
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--stds-glob-border-radius-lg);
+  background: none;
+  color: inherit;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+.store-detail-ai__reaction button:hover { background: var(--stds-sem-color-inverse-elevation-5); }
+
+/* =============================================================
+   장바구니컴포넌트 — title+가격+btn
+   MD: 제목 24/34 · 할인가 20/30 · 버튼 48 btn2 · 버튼 바탕 neutral-variant-3
+   LG: 제목 28/38 · 할인가 24/34 · 버튼 56 btn1 · 버튼 바탕 neutral-variant-2
+   ============================================================= */
+.store-detail-buy { display: flex; flex-direction: column; gap: 2rem; }
+.store-detail-buy__title { display: flex; flex-direction: column; gap: 0.6rem; }
+.store-detail-buy__name { margin: 0; font-size: 2.4rem; line-height: 3.4rem; letter-spacing: -0.03em; } /* MD title4 */
+.store-detail-buy__meta { display: flex; align-items: center; gap: 0.4rem; color: var(--stds-sem-color-on-surface-elevation-2); }
+.store-detail-buy__meta a { display: inline-flex; align-items: center; gap: 0.2rem; color: inherit; text-decoration: underline; }
+.store-detail-buy__meta a.store-detail-buy__reviews { gap: 0.4rem; }
+.store-detail-buy__meta i { font-size: 1.6rem; }
+.store-detail-buy__dot { width: 0.2rem; height: 0.2rem; border-radius: 50%; background: var(--stds-glob-color-white-30); }
+
+.store-detail-buy__price { display: flex; flex-direction: column; align-items: flex-start; gap: 0.4rem; margin-top: 0; }
+.store-detail-buy__original { font-size: 1.4rem; line-height: 2.4rem; letter-spacing: -0.03em; color: var(--stds-sem-color-on-surface-elevation-4); margin-bottom: -0.2rem; } /* MD text3 M */
+.store-detail-buy__final { display: flex; align-items: center; gap: 0.4rem; margin-top: -0.4rem; font-size: 2rem; line-height: 3rem; letter-spacing: -0.03em; } /* MD title5 — 원래가와 한 묶음(사이 0) */
+.store-detail-buy__discount { color: var(--stds-sem-color-brand-primary); }
+.store-detail-buy__final i { font-size: 1.6rem; color: var(--stds-sem-color-on-surface-elevation-4); }
+/* 할인 남은 시간 — MD: brand 12% + neutral 바탕 / LG: brand 20% */
+.store-detail-buy__coupon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.2rem 0.6rem 0.2rem 0.4rem;
+  border-radius: 0.6rem;
+  background: linear-gradient(rgba(252, 68, 32, 0.12), rgba(252, 68, 32, 0.12)), var(--stds-sem-color-neutral-variant-2);
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  white-space: pre;
+}
+.store-detail-buy__coupon img { width: 1.6rem; height: 1.6rem; }
+.store-detail-buy__coupon b { color: var(--stds-sem-color-on-surface-elevation-1); }
+.store-detail-buy__btns { display: flex; flex-direction: column; gap: 1rem; margin-top: 0.4rem; } /* 가격 ↔ 버튼 24 (MD) */
+.store-detail-buy__row { display: flex; gap: 0.8rem; }
+.store-detail-buy__btn {
+  flex: 1 1 0;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  height: 4.8rem;
+  padding: 0 2rem;
+  border: 0;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-sem-color-neutral-variant-3);
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  font-family: inherit;
+  font-size: 1.4rem; line-height: 2rem; letter-spacing: -0.03em; /* btn2 */
+  cursor: pointer;
+}
+.store-detail-buy__btn i { font-size: 2rem; }
+.store-detail-buy__btn:hover { background: var(--stds-sem-color-neutral-variant-3-hover); }
+.store-detail-buy__btn:active { background: var(--stds-sem-color-neutral-variant-3-pressed); }
+.store-detail-buy__btn--primary {
+  width: 100%;
+  flex: none;
+  background: var(--stds-sem-color-brand-primary);
+  color: var(--stds-glob-color-white);
+  box-shadow: 0 0.5rem 1rem rgba(252, 68, 32, 0.2);
+}
+.store-detail-buy__btn--primary:hover { background: var(--stds-sem-color-brand-primary-hover); }
+.store-detail-buy__btn--primary:active { background: var(--stds-sem-color-brand-primary-pressed); }
+
+/* =============================================================
+   하단 정보 — 구매 영역 48 아래. 기본 정보 · 줄 · 추천 상품 (사이 32)
+   ============================================================= */
+.store-detail-side { margin-top: 4.8rem; display: flex; flex-direction: column; gap: 2rem; } /* 블록 사이 MD 20 · LG 32 */
+.store-detail-side__block { display: flex; flex-direction: column; gap: 1.6rem; }
+.store-detail-side__head {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--stds-sem-color-on-surface-elevation-1);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.store-detail-side__head span { flex: 1 1 auto; }
+.store-detail-side__head i { font-size: 2rem; color: var(--stds-sem-color-on-surface-elevation-2); } /* MD 20 · LG 24 */
+.store-detail-side__body { display: flex; flex-direction: column; gap: 1.6rem; } /* MD 16 · LG 20 */
+.store-detail-side__line { margin: 0; height: 0.1rem; border: 0; background: var(--stds-sem-color-inverse-elevation-5); }
+
+.store-detail-info { margin: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+.store-detail-info > div { display: flex; gap: 1.6rem; }
+.store-detail-info dt { flex: none; width: 8rem; color: var(--stds-sem-color-on-surface-elevation-3); }
+.store-detail-info dd { flex: 1 1 auto; min-width: 0; margin: 0; display: flex; align-items: center; gap: 0.2rem; flex-wrap: wrap; }
+.store-detail-info dd a { color: inherit; text-decoration: underline; }
+.store-detail-info dd span { margin-left: -0.2rem; } /* 쉼표는 앞 글자에 붙는다 */
+.store-detail-info dd i { font-size: 1.6rem; color: var(--stds-sem-color-on-surface-elevation-2); }
+/* 커뮤니티 · 공유하기 — 높이 40 · 모서리 8, 아이콘 16 ↔ 글자 4 */
+.store-detail-info__btns { display: flex; gap: 0.8rem; }
+.store-detail-info__btn {
+  position: relative;
+  flex: 1 1 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  height: 3.6rem; /* MD 36 · LG 40 */
+  padding: 0 0.8rem 0 1.2rem;
+  border: 0;
+  border-radius: var(--stds-glob-border-radius-lg);
+  background: linear-gradient(var(--stds-sem-color-inverse-elevation-5), var(--stds-sem-color-inverse-elevation-5)), var(--stds-sem-color-neutral-variant-2); /* MD: neutral-variant-2 + 흰 6% */
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  font-family: inherit;
+  cursor: pointer;
+}
+.store-detail-info__btn i { font-size: 1.6rem; }
+.store-detail-info__btn:first-child i { color: var(--stds-sem-color-on-surface-elevation-1); }
+.store-detail-info__btn:hover { background: var(--stds-sem-color-neutral-variant-2-hover); }
+.store-detail-info__btn:active { background: var(--stds-sem-color-neutral-variant-2-pressed); }
+/* 공유 말풍선 — 버튼 오른쪽 위(아래 끝이 버튼 위 12.4 아래), elevation-1 바탕 · surface-layer 글자 cap2 B */
+.store-detail-info__tip {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% - 0.2rem); /* 말풍선 아래 끝이 버튼 위 2 안쪽 (MD 시안), LG 6 */
+  padding: 0.2rem 0.8rem;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-sem-color-on-surface-elevation-1);
+  color: var(--stds-sem-color-surface-layer);
+  font-size: 1.1rem; line-height: 1.8rem; letter-spacing: -0.02em; font-weight: 700; /* cap2 B */
+  white-space: nowrap;
+  pointer-events: none;
+}
+.store-detail-info__tip::after { /* 꼬리 — 오른쪽 아래 */
+  content: "";
+  position: absolute;
+  right: 0.6rem;
+  bottom: -0.6rem;
+  border: 0.35rem solid transparent;
+  border-top: 0.6rem solid var(--stds-sem-color-on-surface-elevation-1);
+  border-bottom: 0;
+}
+
+/* 추천 상품 — 썸네일 72(모서리 16) · 간격 12, 행 사이 16 */
+.store-detail-rec { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 1.2rem; } /* MD 12 · LG 16 */
+.store-detail-rec__item { display: flex; align-items: center; gap: 0.8rem; } /* MD 8 · LG 12 */
+.store-detail-rec__thumb { position: relative; flex: none; width: 6.4rem; height: 6.4rem; border-radius: var(--stds-glob-border-radius-2xl); overflow: hidden; }
+.store-detail-rec__thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.store-detail-rec__thumb::after { /* 안쪽 테두리 — inverse-elevation-5 */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 0.1rem var(--stds-sem-color-inverse-elevation-5);
+}
+.store-detail-rec__info { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 0.2rem; }
+.store-detail-rec__name { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: -0.1rem; }
+.store-detail-rec__btns { flex: none; display: flex; gap: 0.8rem; }
+.store-detail-rec__name,
+.store-detail-rec .store-detail-price { font-size: 1.4rem; line-height: 2.4rem; } /* MD text3 B · LG text2 B */
+.store-detail-rec .store-detail-round { background: linear-gradient(var(--stds-sem-color-inverse-elevation-5), var(--stds-sem-color-inverse-elevation-5)), var(--stds-sem-color-neutral-variant-2); }
+
+/* 공용 — 가격(할인율 brand-primary + 판매가) */
+.store-detail-price { display: inline-flex; gap: 0.2rem; white-space: nowrap; }
+.store-detail-price b { font-weight: inherit; color: var(--stds-sem-color-brand-primary); }
+
+/* 공용 — Badge/Game type (PRE · DLC): 22 높이 · 좌우 6 · 간격 4, 보라→파랑 그라데이션(시안 헥스), Inter Bold 11/16 */
+.store-detail-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 2.2rem;
+  padding: 0 0.6rem;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: linear-gradient(to left, #3363d9, #6a1ec7);
+  color: var(--stds-glob-color-white);
+  font-family: Inter, stds-font-kr, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.6rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.store-detail-type-badge i { width: 0.2rem; height: 0.2rem; border-radius: 50%; background: currentColor; }
+
+/* 공용 — 원형 아이콘 버튼 32 (아이콘 16, neutral-variant-2) */
+.store-detail-round {
+  display: grid;
+  place-items: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-sem-color-neutral-variant-2);
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+.store-detail-round:hover { background: var(--stds-sem-color-neutral-variant-2-hover); }
+.store-detail-round:active { background: var(--stds-sem-color-neutral-variant-2-pressed); }
+
+/* =============================================================
+   LG — 콘텐츠 영역 1440 이상 (STDS LG)
+   ============================================================= */
+@container page (min-width: 1440px) {
+  .store-detail-cover__thumbs { --store-detail-cover-n: 5; }
+  .store-detail-buy__name { font-size: 2.8rem; line-height: 3.8rem; } /* Figma 28/38 */
+  .store-detail-buy__original { font-size: 1.5rem; margin-bottom: 0; } /* text2 M */
+  .store-detail-buy__price { gap: 0.6rem; }
+  .store-detail-buy__final { margin-top: -0.6rem; }
+  .store-detail-side { gap: 3.2rem; }
+  .store-detail-side__head span { font-size: 1.8rem; line-height: 2.6rem; } /* title6 */
+  .store-detail-side__head i { font-size: 2.4rem; }
+  .store-detail-side__body { gap: 2rem; }
+  .store-detail-info__btn { height: 4rem; padding: 0 1.2rem; background: var(--stds-sem-color-neutral-variant-2); }
+  .store-detail-info__tip { bottom: calc(100% - 0.6rem); }
+  .store-detail-rec { gap: 1.6rem; }
+  .store-detail-rec__item { gap: 1.2rem; }
+  .store-detail-rec__thumb { width: 7.2rem; height: 7.2rem; }
+  .store-detail-rec__name,
+  .store-detail-rec .store-detail-price { font-size: 1.5rem; }
+  .store-detail-rec .store-detail-round { background: var(--stds-sem-color-neutral-variant-2); }
+  .store-detail-buy__final { font-size: 2.4rem; line-height: 3.4rem; } /* title4 */
+  .store-detail-buy__coupon { background: rgba(252, 68, 32, 0.2); }
+  .store-detail-buy__btns { margin-top: 0.8rem; } /* 가격 ↔ 버튼 28 */
+  .store-detail-buy__btn {
+    height: 5.6rem;
+    padding: 0 2.4rem;
+    background: var(--stds-sem-color-neutral-variant-2);
+    font-size: 1.6rem; line-height: 2.4rem; /* btn1 */
+  }
+  .store-detail-buy__btn:hover { background: var(--stds-sem-color-neutral-variant-2-hover); }
+  .store-detail-buy__btn:active { background: var(--stds-sem-color-neutral-variant-2-pressed); }
+  .store-detail-buy__btn--primary,
+  .store-detail-buy__btn--primary:hover,
+  .store-detail-buy__btn--primary:active { background: var(--stds-sem-color-brand-primary); }
+  .store-detail-buy__btn--primary:hover { background: var(--stds-sem-color-brand-primary-hover); }
+  .store-detail-buy__btn--primary:active { background: var(--stds-sem-color-brand-primary-pressed); }
+}
+
+/* =============================================================
+   섹션 공통 — Title(title5 B, 아래 10 → 높이 40) + 내용
+   ============================================================= */
+.store-detail-section { display: flex; flex-direction: column; min-width: 0; }
+.store-detail-section__title { margin: 0; padding-bottom: 1rem; }
+.store-detail-section__head { display: flex; align-items: center; gap: 0.8rem; padding-bottom: 1rem; }
+.store-detail-section__head .store-detail-section__title { flex: 1 1 auto; padding-bottom: 0; }
+/* 전체보기 — 높이 32 알약, neutral-variant-3, btn3 M elevation-2, 화살표 16 */
+.store-detail-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  height: 3.2rem;
+  padding: 0 0.8rem 0 1.2rem;
+  border: 0;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-sem-color-neutral-variant-3);
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  font-family: inherit;
+  cursor: pointer;
+}
+.store-detail-all i { font-size: 1.6rem; }
+.store-detail-all:hover { background: var(--stds-sem-color-neutral-variant-3-hover); }
+.store-detail-all:active { background: var(--stds-sem-color-neutral-variant-3-pressed); }
+
+/* Contents Indicator — 위 12, 화살표 28 ↔ 점 20 (높이 44) */
+.store-detail-indicator { display: flex; align-items: center; justify-content: center; gap: 2rem; height: 4.4rem; padding-top: 1.2rem; box-sizing: border-box; }
+
+/* ---- 상품 설명 — surface-variant-1 · 모서리 28 · 안쪽 24 · 사이 24 ---- */
+.store-detail-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+  padding: 2.4rem;
+  border-radius: 2.8rem;
+  background: var(--stds-sem-color-surface-variant-1);
+}
+.store-detail-desc__more { display: flex; flex-direction: column; gap: 0.8rem; }
+/* 접힌 상태 — 최대 720, 아래 72 바탕색으로 흐려짐 */
+.store-detail-desc__body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  height: 72rem; /* Figma 접힌 높이 720 고정 */
+  overflow: hidden;
+}
+.store-detail-desc__body::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 7.2rem;
+  background: linear-gradient(to bottom, transparent, var(--stds-sem-color-surface-variant-1));
+  pointer-events: none;
+}
+.store-detail-desc__body.is-open { height: auto; }
+.store-detail-desc__body.is-open::after { display: none; }
+.store-detail-desc__body p { margin: 0; }
+.store-detail-desc__img { display: block; width: 100%; aspect-ratio: 812 / 417; object-fit: cover; object-position: 50% 43%; } /* Figma 자르기 위치 */
+.store-detail-desc__toggle {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--stds-sem-color-on-surface-elevation-1);
+  font-family: inherit;
+  cursor: pointer;
+}
+.store-detail-desc__toggle i { font-size: 2rem; }
+/* Chips — 높이 32 · 좌우 12 · 간격 6. 스토브 강조는 brand-primary 8% 바탕 + brand-primary 글자 */
+.store-detail-chips { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.store-detail-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 3.2rem;
+  padding: 0 1.2rem;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-sem-color-neutral-variant-2);
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.store-detail-chip:hover { background: var(--stds-sem-color-neutral-variant-2-hover); }
+.store-detail-chip--brand { background: rgba(252, 68, 32, 0.08); color: var(--stds-sem-color-brand-primary); } /* brand-primary 8% — 시멘틱 없음 */
+.store-detail-chip--brand:hover { background: rgba(252, 68, 32, 0.12); }
+
+/* ---- 이벤트 — 황금비 50% 높이(3.236:1) · 모서리 28, 오른쪽 아래 20 안쪽 카운터 ---- */
+.store-detail-event { position: relative; aspect-ratio: 3.236 / 1; border-radius: 2.8rem; overflow: hidden; }
+.store-detail-event > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.store-detail-event__count {
+  position: absolute;
+  right: 2rem;
+  bottom: 2rem;
+  display: inline-flex;
+  gap: 0.2rem;
+  padding: 0.8rem 1.6rem;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-glob-color-black-70);
+  -webkit-backdrop-filter: blur(1rem);
+  backdrop-filter: blur(1rem);
+  color: var(--stds-glob-color-white);
+}
+
+/* ---- 새소식 — MD: 한 상자(안쪽 12 · 모서리 24) 안 목록 / LG: 카드 2장(사이 20, 각 안쪽 20·24 · 모서리 28) ---- */
+.store-detail-news {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1.2rem;
+  border-radius: 2.4rem;
+  background: var(--stds-sem-color-surface-variant-1);
+}
+.store-detail-news__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2rem;
+  padding: 0.8rem;
+  border-radius: var(--stds-glob-border-radius-2xl);
+  color: inherit;
+  text-decoration: none;
+}
+.store-detail-news__img { position: relative; flex: none; width: 8.8rem; height: 8.8rem; border-radius: var(--stds-glob-border-radius-2xl); overflow: hidden; }
+.store-detail-news__img img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.store-detail-news__img::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 0.1rem var(--stds-sem-color-inverse-elevation-5); }
+.store-detail-news__con { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+.store-detail-news__text { display: flex; flex-direction: column; }
+.store-detail-news__title { font-size: 1.4rem; line-height: 2rem; letter-spacing: -0.03em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } /* title8 B · 한 줄 */
+.store-detail-news__sub {
+  font-size: 1.3rem; line-height: 2.2rem; letter-spacing: -0.025em; /* text4 R */
+  color: var(--stds-sem-color-on-surface-elevation-3);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.store-detail-news__date { display: flex; gap: 0.8rem; color: var(--stds-sem-color-on-surface-elevation-4); white-space: nowrap; }
+.store-detail-news__date span:first-child { overflow: hidden; text-overflow: ellipsis; }
+
+@container page (min-width: 1440px) {
+  .store-detail-news { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; padding: 0; border-radius: 0; background: none; }
+  .store-detail-news__item { align-items: center; gap: 1.6rem; padding: 2rem 2.4rem; border-radius: 2.8rem; background: var(--stds-sem-color-surface-variant-1); }
+  .store-detail-news__img { width: 12rem; height: 12rem; }
+  .store-detail-news__con { gap: 0.8rem; }
+  .store-detail-news__text { height: 9.6rem; } /* 제목 + 내용 합쳐 4줄 자리 */
+  .store-detail-news__title {
+    font-size: 1.6rem; line-height: 2.4rem; /* title7 B · 두 줄 */
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    flex: none;
+  }
+  .store-detail-news__sub { font-size: 1.4rem; line-height: 2.4rem; letter-spacing: -0.03em; } /* text3 R */
+}
+
+/* =============================================================
+   공용 행 — 썸네일(72 · 모서리 16, 안쪽 테두리) + 정보 + 버튼
+   ============================================================= */
+.store-detail-thumb { position: relative; flex: none; width: 7.2rem; height: 7.2rem; border-radius: var(--stds-glob-border-radius-2xl); overflow: hidden; }
+.store-detail-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.store-detail-thumb::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 0.1rem var(--stds-sem-color-inverse-elevation-5); }
+.store-detail-thumb--sm { width: 5.6rem; height: 5.6rem; border-radius: var(--stds-glob-border-radius-xl); }
+.store-detail-row__info { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 0.2rem; }
+.store-detail-row__name { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.store-detail-row__btns { flex: none; display: flex; gap: 0.8rem; }
+
+/* 알약 버튼 32 — 아이콘 16 + btn3 M (장바구니) */
+.store-detail-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  height: 3.2rem;
+  padding: 0 1.2rem;
+  border: 0;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-sem-color-neutral-variant-2);
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  font-family: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.store-detail-pill i { font-size: 1.6rem; }
+.store-detail-pill:hover { background: var(--stds-sem-color-neutral-variant-2-hover); }
+.store-detail-pill:active { background: var(--stds-sem-color-neutral-variant-2-pressed); }
+
+/* ---- DLC 및 추가 상품 — surface-variant-1 · 모서리 28 · 안쪽 16, 2열(사이 8) · 행 88(안쪽 8 · 모서리 16, 사이 4) ---- */
+.store-detail-dlc {
+  margin: 0;
+  padding: 1.6rem;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(38.6rem, 1fr)); /* 행 최소 386 — MD(620)에선 오른쪽 열이 잘려 옆으로 넘김 (시안) */
+  grid-auto-flow: column;
+  grid-template-rows: repeat(3, auto);
+  column-gap: 0.8rem;
+  row-gap: 0.4rem;
+  border-radius: 2.8rem;
+  background: var(--stds-sem-color-surface-variant-1);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.store-detail-dlc::-webkit-scrollbar { display: none; }
+.store-detail-row { display: flex; align-items: center; gap: 1.2rem; height: 8.8rem; box-sizing: border-box; padding: 0.8rem; border-radius: var(--stds-glob-border-radius-2xl); min-width: 0; cursor: pointer; }
+.store-detail-row:hover { background: var(--stds-sem-color-interaction-hover); } /* Figma 2번째 행 = 호버 상태 */
+/* 행 안 버튼은 바탕 neutral-variant-2 + 흰 4% (Figma) */
+.store-detail-row .store-detail-round { background: linear-gradient(var(--stds-sem-color-interaction-hover), var(--stds-sem-color-interaction-hover)), var(--stds-sem-color-neutral-variant-2); }
+
+/* ---- 이 상품이 포함된 컬렉션 — 카드 2장(사이 MD 16 · LG 20), 좁으면 398 유지하고 옆으로 넘김 ---- */
+.store-detail-section__title--info { display: flex; align-items: center; gap: 0.4rem; }
+.store-detail-section__title--info i { font-size: 1.6rem; color: var(--stds-sem-color-on-surface-elevation-4); }
+.store-detail-collections {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max(39.8rem, calc((100% - 2rem) / 2));
+  gap: 1.6rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.store-detail-collections::-webkit-scrollbar { display: none; }
+.store-detail-collection { display: flex; flex-direction: column; gap: 2rem; padding: 2.4rem; border-radius: 2.8rem; background: var(--stds-sem-color-surface-variant-1); min-width: 0; }
+.store-detail-collection__top { display: flex; flex-direction: column; gap: 1.6rem; }
+.store-detail-collection__img { position: relative; aspect-ratio: 16 / 9; border-radius: var(--stds-glob-border-radius-3xl); overflow: hidden; }
+.store-detail-collection__img > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.store-detail-collection__img::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 0.1rem var(--stds-sem-color-inverse-elevation-5); }
+/* 총 N개 상품 — 왼쪽 위 16, 회색 50% + 블러 20(Figma 20 → CSS 10), cap2 M 흰색 */
+.store-detail-collection__count {
+  position: absolute;
+  top: 1.6rem;
+  left: 1.6rem;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: rgba(128, 128, 128, 0.5);
+  -webkit-backdrop-filter: blur(1rem);
+  backdrop-filter: blur(1rem);
+  color: var(--stds-glob-color-white);
+  font-size: 1.1rem; line-height: 1.8rem; letter-spacing: -0.02em; font-weight: 500;
+}
+.store-detail-collection__count i { font-size: 1.6rem; }
+.store-detail-collection__count i:last-child { font-size: 1.2rem; margin-left: -0.2rem; }
+.store-detail-collection__info { display: flex; align-items: center; gap: 0.8rem; }
+.store-detail-collection__text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 0.2rem; }
+.store-detail-collection__text strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.store-detail-collection__btns { position: relative; flex: none; display: flex; gap: 0.8rem; }
+.store-detail-collection__btns .store-detail-pill { width: 8.8rem; }
+/* 할인 말풍선 — 장바구니 위, #292929(neutral-variant-3) · 그림자, 꼬리 가운데 아래 */
+.store-detail-collection__tip {
+  position: absolute;
+  right: -1.4rem;
+  bottom: calc(100% + 0.8rem);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.2rem 0.6rem 0.8rem;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-sem-color-neutral-variant-3);
+  box-shadow: 0 0.8rem 3rem rgba(0, 0, 0, 0.3);
+  color: var(--stds-sem-color-on-surface-elevation-1);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.store-detail-collection__tip i { font-size: 1.6rem; color: #f21838; } /* 시안 쿠폰 아이콘 색 — 시멘틱 없음 */
+.store-detail-collection__tip b { color: var(--stds-glob-color-tint-red-a400); }
+.store-detail-collection__tip::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -0.7rem;
+  transform: translateX(-50%);
+  border: 0.6rem solid transparent;
+  border-top: 0.8rem solid var(--stds-sem-color-neutral-variant-3);
+  border-bottom: 0;
+}
+.store-detail-collection__list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 1.2rem; }
+.store-detail-collection__item { display: flex; align-items: center; gap: 1.2rem; height: 6.8rem; }
+.store-detail-collection__item.is-limited .store-detail-thumb { opacity: 0.5; }
+.store-detail-collection__item .store-detail-row__name { line-height: 2.4rem; }
+.store-detail-collection__item.is-limited .store-detail-row__name { margin-bottom: -0.2rem; }
+.store-detail-collection__limited { color: var(--stds-sem-color-on-surface-elevation-4); }
+/* Game state badge/보유중 — 20 높이 · 좌우 4 · 모서리 6, inverse-elevation-5 바탕 */
+.store-detail-state {
+  flex: none;
+  align-self: flex-start;
+  margin-top: 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  height: 2rem;
+  padding: 0 0.4rem;
+  border-radius: 0.6rem;
+  background: var(--stds-sem-color-inverse-elevation-5);
+  color: var(--stds-sem-color-on-surface-elevation-4);
+}
+
+/* =============================================================
+   gameCard 줄 — 썸네일 4:5 · 모서리 20, 카드 사이 12. MD 4장 · LG 5장
+   글자 MD: 제목 14/20 한 줄 · 가격 14/20 / LG: 제목 16/24 두 줄 · 가격 16/24 (장르 13/22 공통)
+   ============================================================= */
+.store-detail-cards {
+  --store-detail-cards-n: 4;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - (var(--store-detail-cards-n) - 1) * 1.2rem) / var(--store-detail-cards-n));
+  gap: 1.2rem;
+  align-items: start;
+  overflow-x: auto; /* 화살표로 부드럽게 넘김(hidden이면 smooth가 안 됨) — 스크롤바는 숨김 */
+  scrollbar-width: none;
+}
+.store-detail-cards::-webkit-scrollbar { display: none; }
+.store-detail-card { display: flex; flex-direction: column; gap: 0.8rem; min-width: 0; color: inherit; text-decoration: none; }
+.store-detail-card__thumb { position: relative; display: block; aspect-ratio: 4 / 5; border-radius: var(--stds-glob-border-radius-3xl); overflow: hidden; }
+.store-detail-card__thumb > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.store-detail-card__badge { position: absolute; left: 0.4rem; bottom: 0.4rem; text-transform: none; }
+.store-detail-card__info { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
+.store-detail-card__title { font-size: 1.4rem; line-height: 2rem; letter-spacing: -0.03em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.store-detail-card__genre { margin-top: -0.4rem; color: var(--stds-sem-color-on-surface-elevation-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.store-detail-card__price { font-size: 1.4rem; line-height: 2rem; letter-spacing: -0.03em; }
+.store-detail-card__price--free { color: var(--stds-sem-color-brand-primary); }
+.store-detail-card__hover { display: none; flex-direction: column; gap: 0.4rem; }
+.store-detail-card:hover .store-detail-card__genre { display: none; }
+.store-detail-card:hover .store-detail-card__hover { display: flex; }
+.store-detail-card__rec { display: inline-flex; align-items: center; gap: 0.4rem; font-family: Inter, stds-font-kr, sans-serif; font-size: 1.2rem; line-height: 2rem; font-weight: 700; letter-spacing: -0.06em; color: var(--stds-sem-color-brand-blue); }
+.store-detail-card__rec i { font-size: 1.6rem; }
+.store-detail-card__btns { display: flex; gap: 0.6rem; }
+.store-detail-round--3 { background: var(--stds-sem-color-neutral-variant-3); }
+.store-detail-round--3:hover { background: var(--stds-sem-color-neutral-variant-3-hover); }
+.store-detail-pill--fill { flex: 1 1 auto; min-width: 0; padding: 0 0.4rem; background: var(--stds-sem-color-neutral-variant-3); color: var(--stds-sem-color-on-surface-elevation-1); }
+.store-detail-pill--fill:hover { background: var(--stds-sem-color-neutral-variant-3-hover); }
+
+@container page (min-width: 1440px) {
+  .store-detail-event { aspect-ratio: 860 / 260; } /* LG 시안은 높이 260 고정(860 폭) */
+  .store-detail-collections { gap: 2rem; }
+  .store-detail-cards { --store-detail-cards-n: 5; }
+  .store-detail-card__title {
+    font-size: 1.6rem; line-height: 2.4rem;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .store-detail-card__genre { margin-top: -0.4rem; }
+  .store-detail-card__price { font-size: 1.6rem; line-height: 2.4rem; }
+}
+
+/* ---- 캐시 충전 — #525f75(시안 헥스, 시멘틱 없음) · 모서리 28 · 안쪽 24, 코인 40, 이름 · 금액 title6 B 흰색 ---- */
+.store-detail-cash {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  box-sizing: border-box;
+  height: 10.2rem; /* Figma Cash 높이 */
+  padding: 0 2.4rem;
+  border-radius: 2.8rem;
+  background: #525f75;
+  box-shadow: inset 0.2rem 0.2rem 0.2rem rgba(255, 255, 255, 0.04);
+  color: var(--stds-glob-color-white);
+}
+.store-detail-cash img { width: 4rem; height: 4rem; }
+.store-detail-cash strong:first-of-type { flex: 1 1 auto; }
+.store-detail-cash__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 3.2rem;
+  padding: 0 1.6rem;
+  border: 0;
+  border-radius: var(--stds-glob-border-radius-full);
+  background: var(--stds-glob-color-white-15);
+  color: var(--stds-glob-color-white);
+  font-family: inherit;
+  cursor: pointer;
+}
+.store-detail-cash__btn i { font-size: 1.6rem; }
+
+/* 제목 옆 아이콘 버튼(새로고침) — 16, elevation-4 */
+.store-detail-section__title--icon { display: flex; align-items: center; gap: 0.4rem; }
+.store-detail-section__title--icon button { display: grid; place-items: center; padding: 0; border: 0; background: none; color: var(--stds-sem-color-on-surface-elevation-4); font-size: 1.6rem; cursor: pointer; }
+
+/* ---- 도전과제 — surface-variant-1 · 모서리 28 · 안쪽 24, 표지 260×420 + 사이 20 + 목록 ---- */
+.store-detail-ach { display: flex; gap: 2rem; padding: 2.4rem; border-radius: 2.8rem; background: var(--stds-sem-color-surface-variant-1); overflow: hidden; }
+.store-detail-ach__cover { position: relative; flex: none; width: 26rem; height: 42rem; border-radius: var(--stds-glob-border-radius-3xl); overflow: hidden; color: var(--stds-glob-color-white); }
+.store-detail-ach__cover::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 0.1rem var(--stds-sem-color-inverse-elevation-5); pointer-events: none; }
+/* 바탕 그림 + 어두운 빨강 50% · 블러 40(Figma) → CSS 20 */
+.store-detail-ach__bg { position: absolute; inset: 0; background: center / cover no-repeat; }
+.store-detail-ach__bg::after { content: ""; position: absolute; inset: 0; background: rgba(74, 0, 0, 0.5); -webkit-backdrop-filter: blur(2rem); backdrop-filter: blur(2rem); }
+/* 위 200 — 대표 그림, 아래로 갈수록 사라짐 (Figma 마스크: 40%까지 그대로) */
+.store-detail-ach__art {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 20rem;
+  object-fit: cover;
+  -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent);
+  mask-image: linear-gradient(to bottom, #000 40%, transparent);
+}
+.store-detail-ach__rate { position: absolute; left: 0; right: 0; top: 17.9rem; height: 20rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.6rem; padding: 0 2rem; }
+.store-detail-ach__gauge { position: relative; width: 12.3rem; height: 7.2rem; }
+.store-detail-ach__gauge img { position: absolute; top: 0.84rem; left: 50%; height: 6.2rem; transform: translateX(-50%); }
+.store-detail-ach__gauge .store-detail-ach__gauge-fill { left: calc(50% - 0.513rem - 0.5rem); transform: translateX(-50%); } /* 75% 호 — Figma 위치 */
+.store-detail-ach__gauge strong { position: absolute; left: 0; right: 0; top: 3.6rem; text-align: center; }
+.store-detail-ach__who { margin: -1.4rem 0 0; display: flex; color: var(--stds-glob-color-white-90); white-space: nowrap; } /* 게이지 ↔ 글자 2 */
+.store-detail-ach__who span { max-width: 12rem; overflow: hidden; text-overflow: ellipsis; }
+.store-detail-ach__count { display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
+.store-detail-ach__count > div { width: 8rem; display: flex; flex-direction: column; align-items: center; }
+.store-detail-ach__count strong { margin-bottom: -0.2rem; }
+.store-detail-ach__count span { color: var(--stds-glob-color-white-50); }
+.store-detail-ach__count > i { width: 0.1rem; height: 3.2rem; background: var(--stds-glob-color-white-8); }
+/* 목록 — 행 사이 12, 썸네일 64 · 모서리 16 */
+.store-detail-ach__list { flex: 1 1 auto; min-width: 0; height: 42rem; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 1.2rem; overflow: hidden; }
+.store-detail-ach__list li { display: flex; align-items: center; gap: 1.2rem; }
+.store-detail-ach__thumb { position: relative; flex: none; display: grid; place-items: center; width: 6.4rem; height: 6.4rem; border-radius: var(--stds-glob-border-radius-2xl); overflow: hidden; }
+.store-detail-ach__thumb img { width: 100%; height: 100%; object-fit: cover; }
+.store-detail-ach__thumb::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 0.1rem var(--stds-sem-color-inverse-elevation-5); }
+.store-detail-ach__thumb.is-locked { background: var(--stds-sem-color-inverse-elevation-5); color: var(--stds-sem-color-on-surface-elevation-4); font-size: 2.4rem; }
+.store-detail-ach__text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; white-space: nowrap; }
+.store-detail-ach__text > * { overflow: hidden; text-overflow: ellipsis; }
+.store-detail-ach__text span { color: var(--stds-sem-color-on-surface-elevation-4); }
+.store-detail-ach__state { flex: none; display: flex; flex-direction: column; align-items: flex-end; white-space: nowrap; }
+.store-detail-ach__state b { font-weight: 500; color: var(--stds-sem-color-on-surface-elevation-2); display: inline-flex; align-items: center; gap: 0.2rem; }
+.store-detail-ach__state b.is-before { color: var(--stds-sem-color-on-surface-elevation-4); }
+.store-detail-ach__state b.is-complete { color: var(--stds-sem-color-brand-blue); }
+.store-detail-ach__state b i { font-size: 1.6rem; }
+.store-detail-ach__state span { color: var(--stds-sem-color-on-surface-elevation-4); }
+
+/* ---- 랭킹 — surface-variant-1 · 모서리 28 · 안쪽 24 ---- */
+.store-detail-rank { display: flex; flex-direction: column; padding: 2.4rem; border-radius: 2.8rem; background: var(--stds-sem-color-surface-variant-1); }
+.store-detail-rank__title { align-self: flex-start; display: inline-flex; align-items: center; gap: 0.6rem; padding: 0; border: 0; background: none; color: var(--stds-sem-color-on-surface-elevation-2); font-family: inherit; cursor: pointer; }
+.store-detail-rank__title i { font-size: 2rem; }
+.store-detail-rank__filter { margin-top: 2rem; display: flex; align-items: center; gap: 3.2rem; }
+.store-detail-rank__periods { flex: 1 1 auto; display: flex; align-items: center; gap: 1.2rem; }
+.store-detail-rank__periods button { padding: 0; border: 0; background: none; color: var(--stds-sem-color-on-surface-elevation-4); font: inherit; cursor: pointer; }
+.store-detail-rank__periods button.is-active { color: var(--stds-sem-color-on-surface-elevation-1); font-weight: 500; }
+.store-detail-rank__periods > i { width: 0.1rem; height: 1.2rem; background: var(--stds-sem-color-inverse-elevation-5); }
+.store-detail-rank__date { display: flex; align-items: center; gap: 0.8rem; color: var(--stds-sem-color-on-surface-elevation-2); }
+.store-detail-rank__date button { display: grid; place-items: center; padding: 0; border: 0; background: none; color: var(--stds-sem-color-on-surface-elevation-2); font-size: 1.6rem; cursor: pointer; }
+.store-detail-rank__date button:disabled { color: var(--stds-sem-color-on-surface-elevation-4); cursor: default; }
+.store-detail-rank__table { margin-top: 1.2rem; display: flex; flex-direction: column; gap: 0.4rem; }
+/* 표 머리 — surface-elevation-2 · 모서리 12, text4 R elevation-2 */
+.store-detail-rank__head { display: flex; gap: 1.6rem; padding: 1.2rem 0.8rem; border-radius: var(--stds-glob-border-radius-xl); background: var(--stds-sem-color-surface-elevation-2); color: var(--stds-sem-color-on-surface-elevation-2); }
+.store-detail-rank__head span:first-child { width: 6.4rem; text-align: center; }
+.store-detail-rank__head span:not(:first-child) { flex: 1 1 0; }
+.store-detail-rank__list { margin: 0; padding: 0; list-style: none; }
+.store-detail-rank__list li { display: flex; align-items: center; gap: 1.6rem; height: 7.2rem; box-sizing: border-box; padding: 1.2rem 0.8rem; border-radius: var(--stds-glob-border-radius-xl); }
+.store-detail-rank__list li.is-mine { background: rgba(60, 117, 255, 0.06); } /* 내 순위 — brand-blue 6%(시안) */
+.store-detail-rank__no { flex: none; width: 6.4rem; display: flex; flex-direction: column; align-items: center; font-family: Inter, stds-font-kr, sans-serif; font-style: italic; font-weight: 700; }
+.store-detail-rank__no b { font-size: 2rem; line-height: 3.4rem; letter-spacing: -0.03em; }
+.store-detail-rank__change { display: inline-flex; align-items: center; height: 1.2rem; font-size: 1.1rem; line-height: 1.2rem; letter-spacing: -0.04em; }
+.store-detail-rank__change i { font-size: 1.2rem; font-style: normal; }
+.store-detail-rank__change.is-up,
+.store-detail-rank__change.is-new { color: var(--stds-glob-color-tint-red-a400); }
+.store-detail-rank__change.is-down { color: var(--stds-sem-color-brand-blue); }
+.store-detail-rank__change.is-same { color: var(--stds-sem-color-on-surface-elevation-4); }
+.store-detail-rank__change.is-same i { font-size: 1rem; }
+.store-detail-rank__player { flex: 1 1 0; min-width: 0; display: flex; align-items: center; gap: 1.6rem; }
+.store-detail-rank__player img { flex: none; width: 4.8rem; height: 4.8rem; border-radius: 50%; object-fit: cover; }
+.store-detail-rank__player div { min-width: 0; display: flex; flex-direction: column; }
+.store-detail-rank__player strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.store-detail-rank__player span { color: var(--stds-sem-color-on-surface-elevation-4); white-space: nowrap; }
+.store-detail-rank__record { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+/* 더보기 — 높이 44 · 모서리 8, neutral-variant-2, btn2 M elevation-2 + 화살표 20 */
+.store-detail-more {
+  margin-top: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  height: 4.4rem;
+  padding: 0 1.2rem 0 2rem;
+  border: 0;
+  border-radius: var(--stds-glob-border-radius-lg);
+  background: var(--stds-sem-color-neutral-variant-2);
+  color: var(--stds-sem-color-on-surface-elevation-2);
+  font-family: inherit;
+  cursor: pointer;
+}
+.store-detail-more i { font-size: 2rem; }
+.store-detail-more:hover { background: var(--stds-sem-color-neutral-variant-2-hover); }
+.store-detail-more:active { background: var(--stds-sem-color-neutral-variant-2-pressed); }
+
+/* ---- 수상 및 참여 — 16:9 · 모서리 28, 2장(사이 MD 16 · LG 20) ---- */
+.store-detail-awards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem; }
+.store-detail-awards img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: 100% 50%; border-radius: 2.8rem; }
+
+/* ---- 관련 링크 — surface-variant-1 · 모서리 28 · 위 24 아래 20 좌우 24, 칸 120 · 사이 8, 가운데 ---- */
+.store-detail-links-wrap { position: relative; border-radius: 2.8rem; background: var(--stds-sem-color-surface-variant-1); overflow: hidden; }
+.store-detail-links { display: flex; gap: 0.8rem; box-sizing: border-box; height: 10.4rem; /* Figma Link 높이 */ padding: 2.4rem 2.4rem 2rem; overflow-x: auto; scrollbar-width: none; }
+.store-detail-links::-webkit-scrollbar { display: none; }
+.store-detail-links > :first-child { margin-left: auto; }
+.store-detail-links > :last-child { margin-right: auto; }
+.store-detail-link { flex: none; width: 12rem; display: flex; flex-direction: column; align-items: center; gap: 0.2rem; color: var(--stds-sem-color-on-surface-elevation-2); text-decoration: none; }
+.store-detail-link span { display: grid; place-items: center; padding: 0.4rem; border-radius: var(--stds-glob-border-radius-lg); font-size: 2.4rem; }
+.store-detail-link:hover span { background: var(--stds-sem-color-inverse-elevation-5); }
+.store-detail-link b { font-weight: 400; text-align: center; }
+/* MD — 오른쪽 넘김 버튼 36 (시안 arrow 68412:112448, 오른쪽 10) */
+.store-detail-links__next { right: 1rem; width: 3.6rem; height: 3.6rem; }
+
+/* ---- 시스템 요구 사항 — surface-variant-1 · 모서리 28 · 안쪽 24, 최소 · 권장 2열(사이 20) ---- */
+.store-detail-req { padding: 2.4rem; border-radius: 2.8rem; background: var(--stds-sem-color-surface-variant-1); }
+.store-detail-req__cols { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+.store-detail-req__col { display: flex; flex-direction: column; gap: 0.8rem; min-width: 0; }
+.store-detail-req__col dl { margin: 0; display: flex; flex-direction: column; gap: 1rem; }
+.store-detail-req__col dt { color: var(--stds-sem-color-on-surface-elevation-4); }
+.store-detail-req__col dd { margin: 0; }
+.store-detail-req__note { margin: 2.4rem 0 0; color: var(--stds-sem-color-on-surface-elevation-4); }
+
+/* ---- 기타 — 2칸(사이 MD 16 · LG 20), surface-variant-1 · 모서리 24 · 안쪽 24, 화살표 24 ---- */
+.store-detail-etc { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem; }
+.store-detail-etc a { display: flex; align-items: center; gap: 0.8rem; padding: 2.4rem; border-radius: 2.4rem; background: var(--stds-sem-color-surface-variant-1); color: var(--stds-sem-color-on-surface-elevation-1); text-decoration: none; }
+.store-detail-etc a i { margin-left: auto; font-size: 2.4rem; color: var(--stds-sem-color-on-surface-elevation-2); }
+
+/* ---- 상품 후기 ---- */
+.store-detail-section__head--review { justify-content: flex-start; }
+.store-detail-section__head--review .store-detail-section__title { flex: none; }
+.store-detail-review__rule { display: inline-flex; align-items: center; gap: 0.2rem; color: var(--stds-sem-color-on-surface-elevation-3); text-decoration: none; }
+.store-detail-review__rule i { font-size: 1.2rem; }
+.store-detail-review { display: flex; flex-direction: column; padding: 2.4rem; border-radius: 2.8rem; background: var(--stds-sem-color-surface-variant-1); }
+/* User Ratings — inverse-elevation-8 · 모서리 16 · 안쪽 32·40, 사이 40 + 세로줄 */
+.store-detail-review__rating { display: flex; align-items: stretch; gap: 4rem; padding: 3.2rem 4rem; border-radius: var(--stds-glob-border-radius-2xl); background: var(--stds-sem-color-inverse-elevation-8); }
+.store-detail-review__score { flex: 1 1 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2rem; text-align: center; }
+.store-detail-review__score div { display: flex; flex-direction: column; }
+.store-detail-review__score span { color: var(--stds-sem-color-on-surface-elevation-3); }
+.store-detail-review__icon { display: grid; place-items: center; width: 4.8rem; height: 4.8rem; border-radius: 50%; background: rgba(60, 117, 255, 0.08); color: var(--stds-sem-color-brand-blue); font-size: 2.4rem; }
+.store-detail-review__line { width: 0.1rem; background: var(--stds-sem-color-inverse-elevation-4); }
+.store-detail-review__bars { flex: 1 1 0; display: flex; flex-direction: column; gap: 1.2rem; }
+.store-detail-review__bar { display: flex; align-items: center; gap: 1.6rem; }
+.store-detail-review__bars .store-detail-review__bar + .store-detail-review__bar { margin-top: -0.8rem; } /* 줄 사이 4 */
+.store-detail-review__bar > span { width: 5.7rem; color: var(--stds-sem-color-on-surface-elevation-4); white-space: nowrap; }
+.store-detail-review__bar > i { flex: 1 1 auto; max-width: 16rem; height: 0.6rem; border-radius: var(--stds-glob-border-radius-full); background: var(--stds-sem-color-inverse-elevation-5); overflow: hidden; }
+.store-detail-review__bar > i > i { display: block; height: 100%; border-radius: inherit; background: var(--stds-sem-color-brand-blue); }
+.store-detail-review__bar b { width: 4.2rem; color: var(--stds-sem-color-on-surface-elevation-2); }
+.store-detail-review__head { margin-top: 2.4rem; display: flex; align-items: center; gap: 1.2rem; }
+.store-detail-review__head strong { flex: 1 1 auto; }
+.store-detail-review__sort { display: inline-flex; align-items: center; gap: 0.2rem; padding: 0; border: 0; background: none; color: var(--stds-sem-color-on-surface-elevation-3); font-family: inherit; cursor: pointer; }
+.store-detail-review__sort i { font-size: 1.2rem; }
+/* AI 후기 — 아래 줄(inverse-elevation-5) · 아래 12 */
+.store-detail-review__ai { margin-top: 1.2rem; display: flex; flex-direction: column; gap: 0.8rem; padding-bottom: 1.2rem; border-bottom: 0.1rem solid var(--stds-sem-color-inverse-elevation-5); }
+.store-detail-review__ai-title { display: flex; align-items: center; gap: 0.4rem; }
+.store-detail-review__ai-title img:first-child { width: 1.6rem; height: 1.6rem; }
+.store-detail-review__beta { width: 2.2rem; height: 1.1rem; margin-left: -0.2rem; }
+.store-detail-review__ai-title i { font-size: 1.6rem; color: var(--stds-sem-color-on-surface-elevation-4); }
+.store-detail-review__chips { position: relative; display: flex; gap: 0.6rem; overflow: hidden; }
+.store-detail-review__chips::after { content: ""; position: absolute; top: 0; right: 0; width: 3.2rem; height: 3.2rem; background: linear-gradient(to left, var(--stds-sem-color-surface-variant-1), transparent); }
+.store-detail-review__chips .store-detail-chip { flex: none; }
+.store-detail-review__reaction { margin-top: 0.4rem; gap: 0.4rem; }
+.store-detail-review__reaction span { margin-right: 0.8rem; } /* 글자 ↔ 아이콘 12 */
+/* 댓글 — 프로필 32 · 사이 12, 항목 사이 20 */
+.store-detail-comments { margin: 2rem 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2rem; }
+.store-detail-comment { display: flex; align-items: flex-start; gap: 1.2rem; }
+.store-detail-comment__profile { flex: none; width: 3.2rem; height: 3.2rem; border-radius: 50%; box-shadow: 0 0 0 0.1rem var(--stds-sem-color-inverse-variant-3); }
+.store-detail-comment__body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 0.4rem; padding-bottom: 1.6rem; }
+.store-detail-comment__body > p { margin: 0; }
+.store-detail-comment__user { display: flex; align-items: center; gap: 0.8rem; }
+.store-detail-comment__user > div { flex: 1 1 auto; min-width: 0; }
+.store-detail-comment__user button { display: grid; place-items: center; padding: 0; border: 0; background: none; color: var(--stds-sem-color-on-surface-elevation-3); font-size: 1.6rem; cursor: pointer; }
+.store-detail-comment__name { display: flex; align-items: center; gap: 0.2rem; }
+.store-detail-comment__badge.is-official { color: #3191f0; } /* 시안 헥스 — 시멘틱 없음 */
+.store-detail-comment__badge.is-gm { color: #2b9450; }
+.store-detail-comment__badge.is-my { padding: 0 0.4rem; border-radius: var(--stds-glob-border-radius-md); background: rgba(252, 96, 32, 0.1); color: var(--stds-sem-color-brand-primary); font-size: 1.1rem; line-height: 1.8rem; letter-spacing: -0.02em; }
+.store-detail-comment__meta { display: flex; align-items: center; gap: 0.4rem; color: var(--stds-sem-color-on-surface-elevation-4); }
+.store-detail-comment__meta i { width: 0.2rem; height: 0.2rem; border-radius: 50%; background: var(--stds-sem-color-on-surface-elevation-4); }
+.store-detail-comment__action { margin-top: 0.4rem; display: flex; align-items: center; justify-content: space-between; } /* 본문 ↔ 버튼 8 */
+.store-detail-comment__reply { display: inline-flex; align-items: center; gap: 0.4rem; height: 3.2rem; padding: 0 1.2rem; border: 0; border-radius: var(--stds-glob-border-radius-lg); background: none; box-shadow: inset 0 0 0 0.1rem var(--stds-sem-color-border); color: var(--stds-sem-color-on-surface-elevation-4); font-family: inherit; cursor: pointer; }
+.store-detail-comment__reply i { font-size: 1.6rem; }
+.store-detail-comment__thumbs { display: flex; gap: 1.2rem; color: var(--stds-sem-color-on-surface-elevation-4); }
+.store-detail-comment__thumbs span { display: inline-flex; align-items: center; gap: 0.2rem; }
+.store-detail-comment__thumbs i { font-size: 1.6rem; }
+.store-detail-review > .store-detail-more { margin-top: 2rem; } /* 마지막 댓글 ↔ 더보기 20 */
+
+/* ---- report — 가운데, title8 M elevation-4, '신고하기' 밑줄 ---- */
+.store-detail-report { margin: 0; text-align: center; color: var(--stds-sem-color-on-surface-elevation-4); }
+.store-detail-report a { margin-left: 0.4rem; color: inherit; }
+
+@container page (min-width: 1440px) {
+  .store-detail-awards,
+  .store-detail-etc { gap: 2rem; }
+}
