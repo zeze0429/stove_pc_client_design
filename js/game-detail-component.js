@@ -29,7 +29,7 @@ var GAME_DETAIL_DATA = {
     dir: 'lostark/',
     // 1 백그라운드를 콘텐츠 영역 높이만큼 채우고 고정 — 스크롤하면 콘텐츠만 올라감 (사용자 11-24, 로스트아크 이벤트 페이지 fixed_bg처럼)
     backgroundFixed: true,
-    backgroundGradient: '#30171B', // 고정 배경 아래 50% 그라데이션 색 — 게임별 커스텀(사용자 11-24, 로스트아크 #503DAF → #30171B). 없으면 페이지 바탕(background-variant-1)
+    backgroundGradient: '#2F303A', // 고정 배경 아래 그라데이션 색 — 게임별 커스텀(사용자 11-24, 로스트아크 #503DAF → #30171B → #2F303A). 없으면 페이지 바탕(background-variant-1)
     // 게임명 위 뱃지 (Badge/Left top · Client · Right top) — 시안의 모든 종류
     badges: [
       { label: '점검', kind: 'warning', icon: 'ic-v2-state-warning-circle-fill', inspection: true }, // 점검중일 때만 — 아래 게임 공지(점검) 띠와 한 묶음
