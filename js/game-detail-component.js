@@ -276,7 +276,7 @@ function mountGameDetail(selector, gameId) {
       var thumbs = this.$refs.thumbs, thumbPage = this.thumbPage;
       if (thumbs) {
         thumbPage();
-        if (typeof ResizeObserver === 'function') new ResizeObserver(function () { thumbPage(); }).observe(thumbs);
+        if (typeof ResizeObserver === 'function') new ResizeObserver(function () { thumbPage(); }).observe(thumbs.parentElement); // 줄(왼쪽 열 폭)이 바뀌면 개수 · 쪽 다시
       }
       var self = this;
       // 고정 배경 높이 = 스크롤 영역(.main)의 보이는 높이 — 창 크기가 바뀌면 따라감
@@ -291,12 +291,19 @@ function mountGameDetail(selector, gameId) {
       if (typeof protoSettingsSubscribe === 'function') protoSettingsSubscribe(function (s) { self.inspection = !!s.gameDetailInspection; self.fullBannerOn = !!s.gameDetailFullBanner; });
     },
     methods: {
-      // 고른 썸네일이 있는 쪽으로 줄을 넘김. 한 쪽 = --thumb-count장(CSS, MD 4 · LG 6).
+      // 고른 썸네일이 있는 쪽으로 줄을 넘김. 한 쪽 = 보이는 개수(--thumb-count, 줄 폭에 맞춰 JS가 정함, 최대 6).
       // 마지막 쪽이 덜 차도 같은 칸 단위로 넘기도록 줄 끝에 빈칸(thumbFill개, 흰 4% 상자)을 둔다.
       thumbPage: function () {
         var box = this.$refs.thumbs;
         if (!box || !box.children.length) return;
-        var count = parseInt(getComputedStyle(box).getPropertyValue('--thumb-count'), 10) || 4;
+        // 보이는 개수 = 줄 폭에 들어가는 만큼(최대 6) — 콘텐츠 폭에 따라 4 · 5 · 6 (11-24 "5칸도 나올 수 있어, 사이즈에 따라")
+        var list = box.parentElement, ls = getComputedStyle(list), cs = getComputedStyle(box);
+        var thumbW = box.children[0].offsetWidth, gap = parseFloat(cs.columnGap) || 0;
+        var arrows = 0;
+        for (var a = 0; a < list.children.length; a++) if (list.children[a] !== box) arrows += list.children[a].offsetWidth;
+        var avail = list.clientWidth - arrows - (parseFloat(ls.columnGap) || 0) * (list.children.length - 1);
+        var count = Math.max(1, Math.min(6, Math.floor((avail + gap) / (thumbW + gap))));
+        if (String(count) !== box.style.getPropertyValue('--thumb-count')) box.style.setProperty('--thumb-count', String(count));
         var total = this.d.thumbnailBanner.length;
         var fill = (count - total % count) % count; // 마지막 쪽 빈칸 수 — 빈칸은 흰 4% 상자로 채움(템플릿)
         if (fill !== this.thumbFill) { this.thumbFill = fill; this.$nextTick(this.thumbPage); return; } // 빈칸이 그려진 뒤 다시 넘김
@@ -526,7 +533,7 @@ function mountGameDetail(selector, gameId) {
                 '</div>' +
                 '<div class="game-detail-thumbnail-banner__list">' +
                   '<button class="game-detail-chevron" type="button" aria-label="이전" :disabled="thumbnailIndex === 0" @click="thumbnailIndex--"><i class="ic-v2-control-arrow-left-line"></i></button>' +
-                  '<div ref="thumbs" class="game-detail-thumbnail-banner__thumbs">' + // 보이는 개수 MD 4 · LG 6 (11-24), 넘치면 고른 썸네일이 보이게 옆으로 밀림
+                  '<div ref="thumbs" class="game-detail-thumbnail-banner__thumbs">' + // 보이는 개수 = 줄 폭에 들어가는 만큼(4~6, 11-24), 한 쪽씩 통째로 넘김
                     '<button v-for="(m, i) in d.thumbnailBanner" class="game-detail-thumbnail-banner__thumb" :class="{ \'is-active\': i === thumbnailIndex }" type="button" @click="thumbnailIndex = i">' +
                       '<img :src="img(m.src)" alt="" />' +
                       '<span v-if="m.video" class="game-detail-thumbnail-banner__play"><img :src="img(\'play-24.svg?v=2\')" alt="" /></span>' +

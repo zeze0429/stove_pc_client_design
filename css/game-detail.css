@@ -304,7 +304,7 @@
 .game-detail-thumbnail-banner__main > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
 .game-detail-thumbnail-banner__list { display: flex; align-items: center; justify-content: center; gap: 2rem; height: 5.6rem; }
 .game-detail-thumbnail-banner__thumbs {
-  /* 보이는 썸네일 개수 MD 4 · LG 6 (사용자 11-24) — 넘치는 건 옆으로 숨기고, 고른 썸네일이 다른 쪽이면 JS(thumbPage)가 한 쪽(보이는 개수)씩 통째로 넘김.
+  /* 보이는 썸네일 개수 = 줄 폭에 들어가는 만큼 최대 6 (사용자 11-24 "LG 6까지 · 사이즈에 따라 5도") — JS thumbPage가 --thumb-count를 넣음(기본 4). 넘치는 건 옆으로 숨기고, 고른 썸네일이 다른 쪽이면 JS(thumbPage)가 한 쪽(보이는 개수)씩 통째로 넘김.
      고른 테두리가 바깥 3이라 잘리지 않게 안쪽 여백 0.4 + 바깥 -0.4로 자리 상쇄 */
   --thumb-count: 4;
   display: flex;
@@ -316,9 +316,6 @@
   margin: -0.4rem;
   overflow: hidden;
   scroll-behavior: smooth;
-}
-@container page (min-width: 1440px) {
-  .game-detail-thumbnail-banner__thumbs { --thumb-count: 6; }
 }
 /* 마지막 쪽 빈칸 — 덜 찬 만큼(thumbFill개, JS thumbPage) 썸네일 크기 상자를 흰 4%로 채워 한 쪽씩 통째로 넘김 (11-24 "비워두지 말고 화이트 4로") */
 .game-detail-thumbnail-banner__empty {
