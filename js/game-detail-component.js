@@ -62,7 +62,10 @@ var GAME_DETAIL_DATA = {
       { src: 'video-02.jpg?v=2' },
       { src: 'video-03.jpg?v=2' },
       { src: 'video-04.jpg?v=2' },
-    ],
+    ].concat([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(function (n) {
+      // + 1단 풀배너 이미지 11장도 썸네일형에 (사용자 11-24) — 2600×920이라 16:9 칸엔 가운데 기준으로 양옆이 잘려 보임(cover, 비율 유지)
+      return { src: 'Client3.0_PC게임상세_07_1단풀배너_로스트아크_' + (n < 10 ? '0' : '') + n + '.jpg?v=5' };
+    })),
     // 4 1단배너-배너형 (component/banner/event)
     banner: { src: 'event-01.jpg', video: true, count: 5 },
     // ---- 로스트아크 한정 (15 · 16 · 17) — 다른 게임은 이 키를 넣지 않는다 ----
@@ -243,6 +246,22 @@ function mountGameDetail(selector, gameId) {
         inspection: typeof protoSettingsRead === 'function' ? !!protoSettingsRead().gameDetailInspection : true,
         fullBannerOn: typeof protoSettingsRead === 'function' ? !!protoSettingsRead().gameDetailFullBanner : true,
       };
+    },
+    watch: {
+      // 썸네일형 — 고른 썸네일이 보이는 칸 밖이면 그만큼 옆으로 밀기 (11-24)
+      thumbnailIndex: function () {
+        var self = this;
+        this.$nextTick(function () {
+          var box = self.$refs.thumbs;
+          var t = box && box.children[self.thumbnailIndex];
+          if (!t) return;
+          var pad = parseFloat(getComputedStyle(box).paddingLeft) || 0;
+          var x = t.getBoundingClientRect().left - box.getBoundingClientRect().left + box.scrollLeft; // 줄 안 위치(줄 기준)
+          var left = x - pad, right = x + t.offsetWidth + pad;
+          if (left < box.scrollLeft) box.scrollLeft = left;
+          else if (right > box.scrollLeft + box.clientWidth) box.scrollLeft = right - box.clientWidth;
+        });
+      },
     },
     computed: {
       fullBannerIndex: function () {
@@ -500,7 +519,7 @@ function mountGameDetail(selector, gameId) {
                 '</div>' +
                 '<div class="game-detail-thumbnail-banner__list">' +
                   '<button class="game-detail-chevron" type="button" aria-label="이전" :disabled="thumbnailIndex === 0" @click="thumbnailIndex--"><i class="ic-v2-control-arrow-left-line"></i></button>' +
-                  '<div class="game-detail-thumbnail-banner__thumbs">' +
+                  '<div ref="thumbs" class="game-detail-thumbnail-banner__thumbs">' + // 보이는 개수 MD 4 · LG 6 (11-24), 넘치면 고른 썸네일이 보이게 옆으로 밀림
                     '<button v-for="(m, i) in d.thumbnailBanner" class="game-detail-thumbnail-banner__thumb" :class="{ \'is-active\': i === thumbnailIndex }" type="button" @click="thumbnailIndex = i">' +
                       '<img :src="img(m.src)" alt="" />' +
                       '<span v-if="m.video" class="game-detail-thumbnail-banner__play"><img :src="img(\'play-24.svg?v=2\')" alt="" /></span>' +
