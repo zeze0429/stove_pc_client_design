@@ -29,6 +29,7 @@ var GAME_DETAIL_DATA = {
     dir: 'lostark/',
     // 1 백그라운드를 콘텐츠 영역 높이만큼 채우고 고정 — 스크롤하면 콘텐츠만 올라감 (사용자 11-24, 로스트아크 이벤트 페이지 fixed_bg처럼)
     backgroundFixed: true,
+    backgroundGradient: '#503DAF', // 고정 배경 아래 50% 그라데이션 색 — 게임별 커스텀(사용자 11-24, 로스트아크 보라). 없으면 페이지 바탕(background-variant-1)
     // 게임명 위 뱃지 (Badge/Left top · Client · Right top) — 시안의 모든 종류
     badges: [
       { label: '점검', kind: 'warning', icon: 'ic-v2-state-warning-circle-fill', inspection: true }, // 점검중일 때만 — 아래 게임 공지(점검) 띠와 한 묶음
@@ -438,7 +439,7 @@ function mountGameDetail(selector, gameId) {
       '</div>' +
       '<div v-else class="game-detail">' +
         // 1 백그라운드 (bg 480) — 유틸리티 바 뒤까지 깔리고 아래로 페이지 색에 녹아든다
-        '<div class="game-detail-background" :class="{ \'game-detail-background--fixed\': d.backgroundFixed }" aria-hidden="true"><img :src="img(\'Client3.0_PC게임상세_01_백그라운드_로스트아크.jpg?v=4\')" alt="" /></div>' +
+        '<div class="game-detail-background" :class="{ \'game-detail-background--fixed\': d.backgroundFixed }" :style="d.backgroundGradient ? { \'--game-detail-bg-gradient\': d.backgroundGradient } : null" aria-hidden="true"><img :src="img(\'Client3.0_PC게임상세_01_백그라운드_로스트아크.jpg?v=4\')" alt="" /></div>' +
 
         '<div class="game-detail__contents">' +
           // ---- 게임명 ----
