@@ -33,9 +33,10 @@
   content: "";
   position: absolute;
   inset: 0;
+  /* 테스트(사용자 11-24 "검정 50 잠깐만 꺼볼게" → 로스트아크 · 고스트러너 둘 다): ③ 검정 50% 끔.
+     원복 = 아래 줄 끝에 ',\n    var(--stds-glob-color-black-50)' 다시 붙이기 */
   background:
-    linear-gradient(to top, var(--stds-sem-color-background-variant-1), transparent) left bottom / 100% 70% no-repeat,
-    var(--stds-glob-color-black-50);
+    linear-gradient(to top, var(--stds-sem-color-background-variant-1), transparent) left bottom / 100% 70% no-repeat;
 }
 
 /* 유틸리티 바 — 게임 상세에서만: 맨 위(기본 상태)는 바탕 투명 + 아이콘 · 구분선 · PC방 글자를 흰 톤(다크 테마 값)으로.
