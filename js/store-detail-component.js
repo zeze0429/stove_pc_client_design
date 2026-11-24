@@ -17,6 +17,8 @@ var STORE_DETAIL_DIR = 'assets/game-detail/';
 var STORE_DETAIL_DATA = {
   ghostrunner: {
     dir: 'ghostrunner/',
+    // 1 백그라운드 — 온스토브 스토어 고스트러너 2 상세(store.onstove.com/ko/games/2853) 배경 그림 1920×520 그대로 (사용자 11-24)
+    background: 'Client3.0_PC게임상세_01_백그라운드_고스트러너.jpg',
     breadcrumb: ['전체', '게임', '액션', '고스트러너 (Ghostrunner) 2'],
     // Cover — 첫 장은 영상(재생 아이콘), 나머지는 스크린샷. 그림은 Figma 원본(3840) → 2배수 1720 jpg
     cover: [
@@ -284,6 +286,8 @@ function mountStoreDetail(selector, key) {
     },
     template:
       '<div class="store-detail">' +
+        // 1 백그라운드 — 로아 상세와 같은 부품(css/game-detail.css .game-detail-background: 480 높이, 그림 60% · 검정 50% · 아래 70% 그라데이션)
+        '<div v-if="d.background" class="game-detail-background" aria-hidden="true"><img :src="img(d.background)" alt="" /></div>' +
         // breadcrumb — 전체 > 게임 > 액션 > 상품명
         '<nav class="store-detail-breadcrumb stds-text3" aria-label="위치">' +
           '<template v-for="(b, i) in d.breadcrumb">' +

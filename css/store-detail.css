@@ -13,6 +13,8 @@
   padding: calc(8.8rem + var(--utility-notice-h, 0px)) var(--page-gutter) 10rem; /* 위 = 유틸리티 바 48 + 40 (Figma y 88) */
   color: var(--stds-sem-color-on-surface-elevation-1);
 }
+/* 배경(absolute)보다 위에 — 내용은 모두 위 층 */
+.store-detail > :not(.game-detail-background) { position: relative; }
 
 /* ---- breadcrumb — text3 R, on-surface-elevation-3, 화살표 12 (elevation-4) 간격 2 ---- */
 .store-detail-breadcrumb {
