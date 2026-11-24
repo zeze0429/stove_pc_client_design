@@ -52,6 +52,7 @@ var GAME_DETAIL_DATA = {
     // 2 1단 풀배너 — 이미지 2600×920 (1.5배수), 파일명 Client3.0_PC게임상세_07_1단풀배너_게임명_NN
     //   로스트아크 10장 = 스마일게이트 뉴스룸 로스트아크 갤러리에서 크롭 (사용자 11-19)
     //   첫 장 = 사용자가 준 업데이트 배너(종언의 잔영, 2000×766 → 위는 그대로, 아래 UPDATE · 진행 기간 줄과 좌우 121씩 잘라냄, 사용자 11-20)
+    fullBannerOff: true, // 1단 풀배너 잠깐 끔 (사용자 11-24) — 이 줄 지우면 다시 보임
     fullBanner: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(function (n) {
       return 'Client3.0_PC게임상세_07_1단풀배너_로스트아크_' + (n < 10 ? '0' : '') + n + '.jpg?v=5';
     }),
@@ -474,7 +475,7 @@ function mountGameDetail(selector, gameId) {
           '</div>' +
 
           // ---- 2 1단 풀배너 (component/banner/full) ----
-          '<div class="game-detail-full-banner">' +
+          '<div v-if="!d.fullBannerOff" class="game-detail-full-banner">' + // d.fullBannerOff면 숨김 (11-24 로아 "잠깐 꺼줘")
             '<div class="game-detail-full-banner__banner">' +
               '<div class="game-detail-full-banner__track" :class="{ \'is-moving\': fullBannerAnim }" :style="{ transform: \'translateX(\' + (-100 * fullBannerPos) + \'%)\' }" @transitionend="fullBannerEnd">' +
                 '<img v-for="(src, i) in fullBannerTrack" :key="i" class="game-detail-full-banner__img" :src="img(src)" alt="" />' +
