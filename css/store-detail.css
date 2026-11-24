@@ -13,6 +13,11 @@
   padding: calc(8.8rem + var(--utility-notice-h, 0px)) var(--page-gutter) 10rem; /* 위 = 유틸리티 바 48 + 40 (Figma y 88) */
   color: var(--stds-sem-color-on-surface-elevation-1);
 }
+/* 테스트(사용자 11-24 "검정 50 잠깐만 꺼볼게") — 배경 그림 위 검정 50%만 끄고 아래 70% 그라데이션은 그대로.
+   원복 = 이 규칙만 지우면 로아와 같은 층(css/game-detail.css .game-detail-background::after)으로 돌아감 */
+.store-detail .game-detail-background::after {
+  background: linear-gradient(to top, var(--stds-sem-color-background-variant-1), transparent) left bottom / 100% 70% no-repeat;
+}
 /* 배경(absolute)보다 위에 — 내용은 모두 위 층 */
 .store-detail > :not(.game-detail-background) { position: relative; }
 
