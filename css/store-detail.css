@@ -7,6 +7,7 @@
    색은 Figma 변수 그대로(시멘틱), 시멘틱이 없는 시안 색만 헥스.
    ============================================================= */
 
+/* 모서리 (11-24 사용자 "전체적으로 R값은 20"): 콘텐츠 상자 · 큰 이미지는 3xl 20 — 시안의 28 · 24를 20으로 바꿈. 안쪽 작은 썸네일 · 버튼 · 알약은 그대로 */
 .store-detail {
   position: relative;
   flex: 0 0 auto;
@@ -52,7 +53,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  border-radius: 2.8rem; /* Figma 28 — radius 토큰(20 · 32) 사이 값 */
+  border-radius: var(--stds-glob-border-radius-3xl); /* Figma 28 — radius 토큰(20 · 32) 사이 값 */
   overflow: hidden;
 }
 .store-detail-cover__main > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
@@ -113,7 +114,7 @@
   flex-direction: column;
   gap: 0.8rem;
   padding: 2.4rem;
-  border-radius: 2.8rem;
+  border-radius: var(--stds-glob-border-radius-3xl);
   background: var(--stds-sem-color-surface-variant-2);
   overflow: hidden;
 }
@@ -512,7 +513,7 @@
   flex-direction: column;
   gap: 2.4rem;
   padding: 2.4rem;
-  border-radius: 2.8rem;
+  border-radius: var(--stds-glob-border-radius-3xl);
   background: var(--stds-sem-color-surface-variant-1);
 }
 .store-detail-desc__more { display: flex; flex-direction: column; gap: 0.8rem; }
@@ -570,7 +571,7 @@
 .store-detail-chip--brand:hover { background: rgba(252, 68, 32, 0.12); }
 
 /* ---- 이벤트 — 황금비 50% 높이(3.236:1) · 모서리 28, 오른쪽 아래 20 안쪽 카운터 ---- */
-.store-detail-event { position: relative; aspect-ratio: 3.236 / 1; border-radius: 2.8rem; overflow: hidden; }
+.store-detail-event { position: relative; aspect-ratio: 3.236 / 1; border-radius: var(--stds-glob-border-radius-3xl); overflow: hidden; }
 .store-detail-event > img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .store-detail-event__count {
   position: absolute;
@@ -592,7 +593,7 @@
   flex-direction: column;
   gap: 0.8rem;
   padding: 1.2rem;
-  border-radius: 2.4rem;
+  border-radius: var(--stds-glob-border-radius-3xl);
   background: var(--stds-sem-color-surface-variant-1);
 }
 .store-detail-news__item {
@@ -623,7 +624,7 @@
 
 @container page (min-width: 1440px) {
   .store-detail-news { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; padding: 0; border-radius: 0; background: none; }
-  .store-detail-news__item { align-items: center; gap: 1.6rem; padding: 2rem 2.4rem; border-radius: 2.8rem; background: var(--stds-sem-color-surface-variant-1); }
+  .store-detail-news__item { align-items: center; gap: 1.6rem; padding: 2rem 2.4rem; border-radius: var(--stds-glob-border-radius-3xl); background: var(--stds-sem-color-surface-variant-1); }
   .store-detail-news__img { width: 12rem; height: 12rem; }
   .store-detail-news__con { gap: 0.8rem; }
   .store-detail-news__text { height: 9.6rem; } /* 제목 + 내용 합쳐 4줄 자리 */
@@ -680,7 +681,7 @@
   grid-template-rows: repeat(3, auto);
   column-gap: 0.8rem;
   row-gap: 0.4rem;
-  border-radius: 2.8rem;
+  border-radius: var(--stds-glob-border-radius-3xl);
   background: var(--stds-sem-color-surface-variant-1);
   overflow-x: auto;
   scrollbar-width: none;
@@ -703,7 +704,7 @@
   scrollbar-width: none;
 }
 .store-detail-collections::-webkit-scrollbar { display: none; }
-.store-detail-collection { display: flex; flex-direction: column; gap: 2rem; padding: 2.4rem; border-radius: 2.8rem; background: var(--stds-sem-color-surface-variant-1); min-width: 0; }
+.store-detail-collection { display: flex; flex-direction: column; gap: 2rem; padding: 2.4rem; border-radius: var(--stds-glob-border-radius-3xl); background: var(--stds-sem-color-surface-variant-1); min-width: 0; }
 .store-detail-collection__top { display: flex; flex-direction: column; gap: 1.6rem; }
 .store-detail-collection__img { position: relative; aspect-ratio: 16 / 9; border-radius: var(--stds-glob-border-radius-3xl); overflow: hidden; }
 .store-detail-collection__img > img { display: block; width: 100%; height: 100%; object-fit: cover; }
@@ -838,7 +839,7 @@
   box-sizing: border-box;
   height: 10.2rem; /* Figma Cash 높이 */
   padding: 0 2.4rem;
-  border-radius: 2.8rem;
+  border-radius: var(--stds-glob-border-radius-3xl);
   background: #525f75;
   box-shadow: inset 0.2rem 0.2rem 0.2rem rgba(255, 255, 255, 0.04);
   color: var(--stds-glob-color-white);
@@ -865,7 +866,7 @@
 .store-detail-section__title--icon button { display: grid; place-items: center; padding: 0; border: 0; background: none; color: var(--stds-sem-color-on-surface-elevation-4); font-size: 1.6rem; cursor: pointer; }
 
 /* ---- 도전과제 — surface-variant-1 · 모서리 28 · 안쪽 24, 표지 260×420 + 사이 20 + 목록 ---- */
-.store-detail-ach { display: flex; gap: 2rem; padding: 2.4rem; border-radius: 2.8rem; background: var(--stds-sem-color-surface-variant-1); overflow: hidden; }
+.store-detail-ach { display: flex; gap: 2rem; padding: 2.4rem; border-radius: var(--stds-glob-border-radius-3xl); background: var(--stds-sem-color-surface-variant-1); overflow: hidden; }
 .store-detail-ach__cover { position: relative; flex: none; width: 26rem; height: 42rem; border-radius: var(--stds-glob-border-radius-3xl); overflow: hidden; color: var(--stds-glob-color-white); }
 .store-detail-ach__cover::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 0.1rem var(--stds-sem-color-inverse-elevation-5); pointer-events: none; }
 /* 바탕 그림 + 어두운 빨강 50% · 블러 40(Figma) → CSS 20 */
@@ -912,7 +913,7 @@
 .store-detail-ach__state span { color: var(--stds-sem-color-on-surface-elevation-4); }
 
 /* ---- 랭킹 — surface-variant-1 · 모서리 28 · 안쪽 24 ---- */
-.store-detail-rank { display: flex; flex-direction: column; padding: 2.4rem; border-radius: 2.8rem; background: var(--stds-sem-color-surface-variant-1); }
+.store-detail-rank { display: flex; flex-direction: column; padding: 2.4rem; border-radius: var(--stds-glob-border-radius-3xl); background: var(--stds-sem-color-surface-variant-1); }
 .store-detail-rank__title { align-self: flex-start; display: inline-flex; align-items: center; gap: 0.6rem; padding: 0; border: 0; background: none; color: var(--stds-sem-color-on-surface-elevation-2); font-family: inherit; cursor: pointer; }
 .store-detail-rank__title i { font-size: 2rem; }
 .store-detail-rank__filter { margin-top: 2rem; display: flex; align-items: center; gap: 3.2rem; }
@@ -969,10 +970,10 @@
 
 /* ---- 수상 및 참여 — 16:9 · 모서리 28, 2장(사이 MD 16 · LG 20) ---- */
 .store-detail-awards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem; }
-.store-detail-awards img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: 100% 50%; border-radius: 2.8rem; }
+.store-detail-awards img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: 100% 50%; border-radius: var(--stds-glob-border-radius-3xl); }
 
 /* ---- 관련 링크 — surface-variant-1 · 모서리 28 · 위 24 아래 20 좌우 24, 칸 120 · 사이 8, 가운데 ---- */
-.store-detail-links-wrap { position: relative; border-radius: 2.8rem; background: var(--stds-sem-color-surface-variant-1); overflow: hidden; }
+.store-detail-links-wrap { position: relative; border-radius: var(--stds-glob-border-radius-3xl); background: var(--stds-sem-color-surface-variant-1); overflow: hidden; }
 .store-detail-links { display: flex; gap: 0.8rem; box-sizing: border-box; height: 10.4rem; /* Figma Link 높이 */ padding: 2.4rem 2.4rem 2rem; overflow-x: auto; scrollbar-width: none; }
 .store-detail-links::-webkit-scrollbar { display: none; }
 .store-detail-links > :first-child { margin-left: auto; }
@@ -985,7 +986,7 @@
 .store-detail-links__next { right: 1rem; width: 3.6rem; height: 3.6rem; }
 
 /* ---- 시스템 요구 사항 — surface-variant-1 · 모서리 28 · 안쪽 24, 최소 · 권장 2열(사이 20) ---- */
-.store-detail-req { padding: 2.4rem; border-radius: 2.8rem; background: var(--stds-sem-color-surface-variant-1); }
+.store-detail-req { padding: 2.4rem; border-radius: var(--stds-glob-border-radius-3xl); background: var(--stds-sem-color-surface-variant-1); }
 .store-detail-req__cols { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
 .store-detail-req__col { display: flex; flex-direction: column; gap: 0.8rem; min-width: 0; }
 .store-detail-req__col dl { margin: 0; display: flex; flex-direction: column; gap: 1rem; }
@@ -993,9 +994,9 @@
 .store-detail-req__col dd { margin: 0; }
 .store-detail-req__note { margin: 2.4rem 0 0; color: var(--stds-sem-color-on-surface-elevation-4); }
 
-/* ---- 기타 — 2칸(사이 MD 16 · LG 20), surface-variant-1 · 모서리 24 · 안쪽 24, 화살표 24 ---- */
+/* ---- 기타 — 2칸(사이 MD 16 · LG 20), surface-variant-1 · 모서리 20(시안 24, 11-24 전체 R 20) · 안쪽 24, 화살표 24 ---- */
 .store-detail-etc { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem; }
-.store-detail-etc a { display: flex; align-items: center; gap: 0.8rem; padding: 2.4rem; border-radius: 2.4rem; background: var(--stds-sem-color-surface-variant-1); color: var(--stds-sem-color-on-surface-elevation-1); text-decoration: none; }
+.store-detail-etc a { display: flex; align-items: center; gap: 0.8rem; padding: 2.4rem; border-radius: var(--stds-glob-border-radius-3xl); background: var(--stds-sem-color-surface-variant-1); color: var(--stds-sem-color-on-surface-elevation-1); text-decoration: none; }
 .store-detail-etc a i { margin-left: auto; font-size: 2.4rem; color: var(--stds-sem-color-on-surface-elevation-2); }
 
 /* ---- 상품 후기 ---- */
@@ -1003,7 +1004,7 @@
 .store-detail-section__head--review .store-detail-section__title { flex: none; }
 .store-detail-review__rule { display: inline-flex; align-items: center; gap: 0.2rem; color: var(--stds-sem-color-on-surface-elevation-3); text-decoration: none; }
 .store-detail-review__rule i { font-size: 1.2rem; }
-.store-detail-review { display: flex; flex-direction: column; padding: 2.4rem; border-radius: 2.8rem; background: var(--stds-sem-color-surface-variant-1); }
+.store-detail-review { display: flex; flex-direction: column; padding: 2.4rem; border-radius: var(--stds-glob-border-radius-3xl); background: var(--stds-sem-color-surface-variant-1); }
 /* User Ratings — inverse-elevation-8 · 모서리 16 · 안쪽 32·40, 사이 40 + 세로줄 */
 .store-detail-review__rating { display: flex; align-items: stretch; gap: 4rem; padding: 3.2rem 4rem; border-radius: var(--stds-glob-border-radius-2xl); background: var(--stds-sem-color-inverse-elevation-8); }
 .store-detail-review__score { flex: 1 1 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2rem; text-align: center; }
