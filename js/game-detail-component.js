@@ -248,20 +248,8 @@ function mountGameDetail(selector, gameId) {
       };
     },
     watch: {
-      // 썸네일형 — 고른 썸네일이 보이는 칸 밖이면 그만큼 옆으로 밀기 (11-24)
-      thumbnailIndex: function () {
-        var self = this;
-        this.$nextTick(function () {
-          var box = self.$refs.thumbs;
-          var t = box && box.children[self.thumbnailIndex];
-          if (!t) return;
-          var pad = parseFloat(getComputedStyle(box).paddingLeft) || 0;
-          var x = t.getBoundingClientRect().left - box.getBoundingClientRect().left + box.scrollLeft; // 줄 안 위치(줄 기준)
-          var left = x - pad, right = x + t.offsetWidth + pad;
-          if (left < box.scrollLeft) box.scrollLeft = left;
-          else if (right > box.scrollLeft + box.clientWidth) box.scrollLeft = right - box.clientWidth;
-        });
-      },
+      // 썸네일형 — 보이는 개수(MD 4 · LG 6)씩 한 쪽(페이지)으로 통째로 넘김 (11-24 "6 → 7번째로 갈 때 6장씩 통째로")
+      thumbnailIndex: function () { this.$nextTick(this.thumbPage); },
     },
     computed: {
       fullBannerIndex: function () {
@@ -284,6 +272,11 @@ function mountGameDetail(selector, gameId) {
       },
     },
     mounted: function () {
+      var thumbs = this.$refs.thumbs, thumbPage = this.thumbPage;
+      if (thumbs) {
+        thumbPage();
+        if (typeof ResizeObserver === 'function') new ResizeObserver(function () { thumbPage(); }).observe(thumbs);
+      }
       var self = this;
       // 고정 배경 높이 = 스크롤 영역(.main)의 보이는 높이 — 창 크기가 바뀌면 따라감
       var mount = document.querySelector(selector);
@@ -297,6 +290,18 @@ function mountGameDetail(selector, gameId) {
       if (typeof protoSettingsSubscribe === 'function') protoSettingsSubscribe(function (s) { self.inspection = !!s.gameDetailInspection; self.fullBannerOn = !!s.gameDetailFullBanner; });
     },
     methods: {
+      // 고른 썸네일이 있는 쪽으로 줄을 넘김. 한 쪽 = --thumb-count장(CSS, MD 4 · LG 6).
+      // 마지막 쪽이 덜 차도 같은 칸 단위로 넘기도록 줄 끝에 빈자리(--thumb-fill장)를 둔다.
+      thumbPage: function () {
+        var box = this.$refs.thumbs;
+        if (!box || !box.children.length) return;
+        var count = parseInt(getComputedStyle(box).getPropertyValue('--thumb-count'), 10) || 4;
+        var total = this.d.thumbnailBanner.length;
+        box.style.setProperty('--thumb-fill', String((count - total % count) % count));
+        var first = box.children[0], second = box.children[1];
+        var step = second ? second.offsetLeft - first.offsetLeft : first.offsetWidth; // 썸네일 폭 + 간격
+        box.scrollLeft = Math.floor(this.thumbnailIndex / count) * count * step;
+      },
       img: function (file) { return GAME_DETAIL_DIR + this.d.dir + file; },
       // 2 대표배너 넘김 — 옆으로 밀기 0.4s ease (온스토브 스토어 메인 캐러셀 swiper speed 400, 사용자 11-19).
       // 움직이는 동안 들어온 클릭은 무시, 복제 장에 닿으면 애니메이션 없이 진짜 장으로 바꿔 끝없이 돈다

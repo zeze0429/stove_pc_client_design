@@ -304,7 +304,7 @@
 .game-detail-thumbnail-banner__main > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
 .game-detail-thumbnail-banner__list { display: flex; align-items: center; justify-content: center; gap: 2rem; height: 5.6rem; }
 .game-detail-thumbnail-banner__thumbs {
-  /* 보이는 썸네일 개수 MD 4 · LG 6 (사용자 11-24) — 넘치는 건 옆으로 숨기고, 고른 썸네일이 칸 밖이면 JS(watch thumbnailIndex)가 밀어 보여 줌.
+  /* 보이는 썸네일 개수 MD 4 · LG 6 (사용자 11-24) — 넘치는 건 옆으로 숨기고, 고른 썸네일이 다른 쪽이면 JS(thumbPage)가 한 쪽(보이는 개수)씩 통째로 넘김.
      고른 테두리가 바깥 3이라 잘리지 않게 안쪽 여백 0.4 + 바깥 -0.4로 자리 상쇄 */
   --thumb-count: 4;
   display: flex;
@@ -319,6 +319,12 @@
 }
 @container page (min-width: 1440px) {
   .game-detail-thumbnail-banner__thumbs { --thumb-count: 6; }
+}
+/* 마지막 쪽 빈자리 — 덜 찬 만큼(--thumb-fill장, JS thumbPage가 넣음) 비워서 한 쪽씩 통째로 넘길 수 있게 */
+.game-detail-thumbnail-banner__thumbs::after {
+  content: "";
+  flex: none;
+  width: max(0rem, calc(var(--thumb-fill, 0) * 11.2rem - 1.2rem));
 }
 .game-detail-thumbnail-banner__thumb {
   position: relative;
