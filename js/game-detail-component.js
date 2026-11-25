@@ -124,6 +124,7 @@ var GAME_DETAIL_DATA = {
     // UCC 게시판 = lostark.game.onstove.com/Video 의 '모험가 UCC' 영상 6개 (11-25 사용자 "UCC 게시판도 최신화" — 그 칸은 들어올 때마다 순서가 섞여 11-25 받은 순서).
     // 썸네일 = 유튜브 mqdefault 320×180(ucc-{영상 ID}.jpg). 숫자는 로아 상영관처럼 재생수(play) · 좋아요수(like) — 사용자 11-25 "로아에서는 변경, 다른 게임은 댓글 · 조회수 유지"
     // (play가 없는 게임은 reply · view, 값 없으면 예시 999). 그 전 = ucc-01~06 예시 글(제목만, 닉네임 · 날짜 · 숫자는 템플릿 예시값)
+    communityAlbumWide: true, // 칸 비율 16:9(320:180, 로아 상영관과 같음) — 유튜브 썸네일이 안 잘리게 (11-25 사용자 "비율 바꿔줘"). 다른 게임은 기본 177:136
     communityAlbum: [
       { src: 'ucc-3v60i5sowgc.jpg', video: true, title: '조력사무소 로아팀 미친실력 랜선 라이브연주회', user: 'VG 신선한망치', date: '2022.7.06', play: '1,297', like: '13' },
       { src: 'ucc-cIZjfQvN-5g.jpg', video: true, title: '움직이는 폭풍 속의 베히모스 만들기/【로스트 아크】 Behemoth Figure', user: '체셔 교수 Prof.Cheshire', date: '2024.7.17', play: '941', like: '6' },
@@ -634,7 +635,7 @@ function mountGameDetail(selector, gameId) {
                     '<h2 class="stds-title8 fw-bold">UCC 게시판</h2>' +
                     '<button class="game-detail-more stds-btn2 fw-regular" type="button">전체보기<i class="ic-v2-control-arrow-right-line"></i></button>' +
                   '</div>' +
-                  '<div class="game-detail-community-album">' +
+                  '<div class="game-detail-community-album" :class="{ \'game-detail-community-album--wide\': d.communityAlbumWide }">' + // --wide = 썸네일 16:9 (로아 11-25)
                     '<a v-for="u in d.communityAlbum" class="game-detail-community-album__item" href="#" @click.prevent>' +
                       '<span class="game-detail-community-album__img"><img :src="img(u.src)" alt="" /><img v-if="u.video" class="game-detail-play" :src="img(\'play-56.svg\')" alt="재생" /></span>' +
                       '<span class="game-detail-community-album__name stds-text4 fw-medium">{{ u.title }}</span>' + // 11-25 로아 상영관과 같게 Text4-M 13/22 (전엔 Title7 16/24)
