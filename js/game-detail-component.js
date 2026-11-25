@@ -80,15 +80,28 @@ var GAME_DETAIL_DATA = {
       { streamer: { avatar: 'theater-streamer-avatar-01.png', name: '기백', thumb: 'theater-streamer-thumb-01.png' }, title: '싱글모드를 벗어난 모코코를 위한 레이드 기본 꿀팁 🐝' },
       { streamer: { avatar: 'theater-streamer-avatar-02.png', name: '게임하는인기', thumb: 'theater-streamer-thumb-02.png' }, title: '로생에 도움되는 꿀팁!' },
     ],
-    loaTheater: [
-      { src: 'theater-01.png', title: '열리는 나르가의 문 (The Great Gate of Narga) / LOST ARK Official Soundtrack', author: 'LOST ARK', date: '2025.2.05' },
-      { src: 'theater-02.png', title: '샤 (Sha) / LOST ARK Official Soundtrack', author: 'LOST ARK', date: '2025.1.22' },
-      { src: 'theater-03.png', title: '2025 직업 가이드 서폿 딜 세팅 편 (각인, 아크패시브, 딜 사이클)', author: '삔뿌슈', date: '2025.1.22' },
-      { src: 'theater-04.png', title: '신상입고! MARCH. 2025 네리아의 드레스룸', author: 'LOST ARK', date: '2025.3.05' },
-      { src: 'theater-05.png', title: "신규 클래스 '환수사' 미리보기 | Lost Ark - New Class, Wild Soul", author: 'LOST ARK', date: '2025.1.03' },
-      { src: 'theater-06.png', title: '징벌의 섬광 (Flash of Punishment) / LOST ARK Official Soundtrack', author: 'LOST ARK', date: '2023.07.19' },
-      { src: 'theater-07.png', title: '열리는 나르가의 문 (The Great Gate of Narga) / LOST ARK Official Soundtrack', author: '로마러', date: '2025.2.05' },
-      { src: 'theater-08.png', title: '영상 하나로 끝내는 뉴비&복귀자 가이드!', author: '숫여우', date: '2024.12.24' },
+    // 15-2 BEST · 15-3 NEW — lostark.game.onstove.com/Video 의 BEST 영상 · NEW 영상 앞 8개 (11-25 사용자 "여기에 있는걸로 교체").
+    // 썸네일 = 그 페이지가 쓰는 유튜브 mqdefault 320×180 그대로, 파일명 theater-{영상 ID}.jpg (두 목록이 같이 씀).
+    // 그 전(theater-01~08.png 한 목록을 BEST · NEW에 같이)은 git 기록에 있음
+    loaTheaterBest: [
+      { src: 'theater-R1OhkK6MMUg.jpg', title: '최고 효율의 캐릭터 맞춤 지옥 시뮬레이터 출시!', author: '리연 & LOALAB', date: '2026.9.16' },
+      { src: 'theater-ZqGAeuwnF5o.jpg', title: '태양 아래 군림하는 자, 신화의 사막 패키지', author: 'LOST ARK', date: '2026.9.09' },
+      { src: 'theater-SrRhOio7X4M.jpg', title: '8주년 기념, 변화의 시작 아바타, 탈 것, 펫 출시!', author: 'LOST ARK', date: '2026.11.09' },
+      { src: 'theater-G5Yd4BfblEI.jpg', title: '로스트아크 On Air l 2026.11.6 19:00', author: 'LOST ARK', date: '2026.11.06' },
+      { src: 'theater-MqRIGDaBeQI.jpg', title: '낙원 시즌4 이것만 챙기세요', author: '겜빡이존', date: '2026.9.16' },
+      { src: 'theater-_eH-NBn1LNU.jpg', title: '로스트아크 On Air l 2026.10.29 19:00', author: 'LOST ARK', date: '2026.10.29' },
+      { src: 'theater-CdVTqC0LHdc.jpg', title: '로스트아크《군단장 스토리 총정리》', author: '김토르', date: '2026.9.02' },
+      { src: 'theater-xgjuGnoQl0o.jpg', title: '로스트아크 On Air l 2026.11.20 19:00', author: 'LOST ARK', date: '2026.11.20' },
+    ],
+    loaTheaterNew: [
+      { src: 'theater-xgjuGnoQl0o.jpg', title: '로스트아크 On Air l 2026.11.20 19:00', author: 'LOST ARK', date: '2026.11.20' },
+      { src: 'theater-SrRhOio7X4M.jpg', title: '8주년 기념, 변화의 시작 아바타, 탈 것, 펫 출시!', author: 'LOST ARK', date: '2026.11.09' },
+      { src: 'theater-G5Yd4BfblEI.jpg', title: '로스트아크 On Air l 2026.11.6 19:00', author: 'LOST ARK', date: '2026.11.06' },
+      { src: 'theater-_eH-NBn1LNU.jpg', title: '로스트아크 On Air l 2026.10.29 19:00', author: 'LOST ARK', date: '2026.10.29' },
+      { src: 'theater-wZ0rwJWBLec.jpg', title: '로스트아크 On Air l 2026.10.16 19:00', author: 'LOST ARK', date: '2026.10.16' },
+      { src: 'theater-MqRIGDaBeQI.jpg', title: '낙원 시즌4 이것만 챙기세요', author: '겜빡이존', date: '2026.9.16' },
+      { src: 'theater-R1OhkK6MMUg.jpg', title: '최고 효율의 캐릭터 맞춤 지옥 시뮬레이터 출시!', author: '리연 & LOALAB', date: '2026.9.16' },
+      { src: 'theater-ZqGAeuwnF5o.jpg', title: '태양 아래 군림하는 자, 신화의 사막 패키지', author: 'LOST ARK', date: '2026.9.09' },
     ],
     // 5 커뮤니티-api연동형 (component/board/notice) — 공지사항
     communityApi: [
@@ -577,7 +590,7 @@ function mountGameDetail(selector, gameId) {
                 '</section>' +
 
                 // 15-2 BEST · 15-3 NEW 로아상영관 (4열 2줄) — 로스트아크 한정
-                '<template v-if="d.loaTheater"><section v-for="kind in [\'best\', \'new\']" class="game-detail-board" :class="\'game-detail-board--\' + kind">' +
+                '<template v-if="d.loaTheaterBest"><section v-for="kind in [\'best\', \'new\']" class="game-detail-board" :class="\'game-detail-board--\' + kind">' +
                   '<div class="game-detail-board__title">' +
                     '<h2 class="stds-title8 fw-bold">로아 상영관</h2>' +
                     '<span class="game-detail-board-badge" :class="\'game-detail-board-badge--\' + kind">' +
@@ -586,7 +599,7 @@ function mountGameDetail(selector, gameId) {
                     '<button class="game-detail-more stds-btn2 fw-regular" type="button">전체보기<i class="ic-v2-control-arrow-right-line"></i></button>' +
                   '</div>' +
                   '<div class="game-detail-loa-theater">' +
-                    '<a v-for="t in d.loaTheater" class="game-detail-loa-theater__item" href="#" @click.prevent>' +
+                    '<a v-for="t in (kind === \'best\' ? d.loaTheaterBest : d.loaTheaterNew)" class="game-detail-loa-theater__item" href="#" @click.prevent>' +
                       '<span class="game-detail-loa-theater__img"><img :src="img(t.src)" alt="" /></span>' +
                       '<span class="game-detail-loa-theater__name stds-text4 fw-medium">{{ t.title }}</span>' + // 추천과 같은 Text4-M 13/22 (11-25, 전엔 title7 16)
                       '<span class="game-detail-loa-theater__author stds-text4 fw-bold">{{ t.author }}</span>' +
