@@ -469,10 +469,9 @@ function mountGameDetail(selector, gameId) {
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title8" style="width: 6.8rem"></span>' +
                 '</div>' +
                 // 4줄 · 아이콘은 타이틀과 같은 왼쪽 선 · 이름 막대는 길게 (사용자 11-18)
-                '<ul class="game-detail-shortcut"><li v-for="i in 4"><div class="game-detail-shortcut__row">' +
-                '<span class="game-detail-skeleton game-detail-skeleton--icon"></span>' +
-                '<span class="game-detail-skeleton-fill"><span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" :style="rw(i + 140, 60, 95)"></span></span>' + // 11-25 이름 Text3 따라 text4→text3
-                '</div></li></ul>' +
+                // 11-25 줄 상자 전체를 음영 블록 하나로 (마켓 다운로드와 같게, 사용자 "블록 하나로").
+                // 그 전 = 줄 안에 아이콘(game-detail-skeleton--icon) + 이름 막대(skeleton-fill > bar--text3 rw(i + 140, 60, 95))
+                '<ul class="game-detail-shortcut"><li v-for="i in 4"><div class="game-detail-skeleton game-detail-shortcut__row"></div></li></ul>' +
                 '</section>' +
               '<span class="game-detail-skeleton game-detail-skeleton--sub-banner"></span>' + // 11 서브배너
               // 12 마켓다운로드링크 + QR
