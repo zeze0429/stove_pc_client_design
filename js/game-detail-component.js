@@ -282,15 +282,7 @@ function mountGameDetail(selector, gameId) {
         if (typeof ResizeObserver === 'function') new ResizeObserver(function () { thumbPage(); }).observe(thumbs.parentElement); // 줄(왼쪽 열 폭)이 바뀌면 개수 · 쪽 다시
       }
       var self = this;
-      // 고정 배경 높이 = 스크롤 영역(.main)의 보이는 높이 — 창 크기가 바뀌면 따라감
-      var mount = document.querySelector(selector);
-      var main = mount && mount.closest('.main'); // $el은 v-if 묶음이라 요소가 아닐 수 있어 마운트 자리에서 찾는다
-      if (main) {
-        var setViewH = function () { main.style.setProperty('--game-detail-view-h', main.clientHeight + 'px'); };
-        setViewH(); // 처음 한 번 바로
-        if (typeof ResizeObserver === 'function') new ResizeObserver(setViewH).observe(main);
-        else window.addEventListener('resize', setViewH);
-      }
+      // 고정 배경 높이는 CSS(css/game-detail.css .game-detail-background--fixed)가 100vh - PR영역으로 계산 (11-25 — 전엔 여기서 .main 높이를 재서 넣었는데 PR영역 끄면 갱신이 안 됐음)
       if (typeof protoSettingsSubscribe === 'function') protoSettingsSubscribe(function (s) { self.inspection = !!s.gameDetailInspection; self.fullBannerOn = !!s.gameDetailFullBanner; });
     },
     methods: {

@@ -28,16 +28,19 @@
   background: var(--stds-sem-color-background-variant-1);
 }
 /* --fixed (로스트아크, 사용자 11-24 "링크처럼 height를 채우고 고정, 스크롤하면 콘텐츠만 올라감"):
-   콘텐츠 영역 보이는 높이(--game-detail-view-h, JS가 .main 높이로 넣음)만큼 채우고 sticky로 위에 붙어 있다.
+   콘텐츠 영역 보이는 높이(.main 높이)만큼 채우고 sticky로 위에 붙어 있다.
    흐름에서 차지하는 높이는 음수 여백으로 없앰 → 콘텐츠는 그 위로 지나간다 */
 /* 다크 고정 콘텐츠 영역(스토브게임 상세, .main[data-theme="dark"] — js/game-detail-component.js) (11-24):
    화면 끝에 걸친 카드의 배경 블러(backdrop-filter)가 콘텐츠 영역 밖(라이트 테마의 PR 칸 · body #F0F0F0)까지 읽어
    카드 아래에 밝은 띠가 생김(사용자 제보) → clip-path로 콘텐츠 영역을 블러가 읽는 경계로 만듦(보이는 모양은 그대로) */
 .main[data-theme="dark"] { clip-path: inset(0); }
+/* 높이 = .main 높이 = 앱 높이(100vh - PR영역, css/dashboard.css .app과 같은 식) — CSS로만 계산 (11-25).
+   전엔 JS가 .main 높이를 --game-detail-view-h로 넣었는데, PR영역을 끄면 갱신이 안 돼 720에 멈추고
+   아래 80이 비어 보였음(사용자 제보). */
 .game-detail-background--fixed {
   position: sticky;
-  height: var(--game-detail-view-h, 100vh);
-  margin-bottom: calc(-1 * var(--game-detail-view-h, 100vh));
+  height: calc(100vh - var(--proto-pr-height, 0px));
+  margin-bottom: calc(-1 * (100vh - var(--proto-pr-height, 0px)));
 }
 /* 고정 배경 층 (사용자 11-24): 그라데이션은 화면(콘텐츠 영역 보이는 높이) 맨 아래 70% — 창이 커져도 늘 70% (% 높이라 배경 높이를 따라감),
    검정 30%(11-24 20→30, 원복 20%). ("그라데이션 빼줘" → "밑으로 붙여서" 336 고정 → "화면의 30%, 프레임 커질 때도 30%" → 11-24 "50%로 올릴게" → "70%까지 높일게", 원복 = 30%)
