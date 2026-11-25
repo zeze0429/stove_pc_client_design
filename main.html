@@ -399,6 +399,8 @@
       // 숨긴 옵션(컨테이너 블러 · 패널 스켈레톤)은 꺼진 상태로 — 예전에 켜 둔 값이 남아 있으면 끌 방법이 없어서
       if (protoSettingsRead().containerBlur) protoSettingsWrite({ containerBlur: false });
       if (protoSettingsRead().libraryPanelSkeleton) protoSettingsWrite({ libraryPanelSkeleton: false });
+      // PR영역은 배너(일반 · 전략)가 하나도 안 골라져 있으면 꺼진 상태 (사용자 11-25) — 예전에 그렇게 남은 값도 맞춘다
+      (function () { var s = protoSettingsRead(); if (s.pr && !s.prBasic && !s.prStrategic) protoSettingsWrite({ pr: false }); })();
       panel.querySelectorAll('.proto-switch').forEach(function (el) {
         el.addEventListener('click', function () {
           var patch = {};
@@ -409,6 +411,8 @@
           if (el.dataset.protoKey === 'libraryPanelSkeleton' && patch.libraryPanelSkeleton) { patch.libraryPanelSkeletonAt = Date.now(); patch.libraryPanelSpinner = false; }
           // 패널 로딩 서클도 켤 때마다 처음부터 — 스켈레톤과 둘 중 하나만
           if (el.dataset.protoKey === 'libraryPanelSpinner' && patch.libraryPanelSpinner) { patch.libraryPanelSpinnerAt = Date.now(); patch.libraryPanelSkeleton = false; }
+          // PR영역을 켤 때 배너가 하나도 안 골라져 있으면 기본(전략배너)으로 켠다 — 빈 띠가 나오지 않게 (11-25)
+          if (el.dataset.protoKey === 'pr' && patch.pr) { var cur = protoSettingsRead(); if (!cur.prBasic && !cur.prStrategic) patch.prStrategic = true; }
           protoSettingsWrite(patch);
         });
       });
@@ -423,6 +427,11 @@
           // 메뉴 강조 라디오 — 고른 쪽만 켜고 나머지는 끈다
           if (el.type === 'radio') panel.querySelectorAll('input[name="' + el.name + '"]').forEach(function (o) { patch[o.dataset.protoKey] = o === el; });
           if (el.checked && el.dataset.protoKey === 'prStrategic') patch.prBasic = false;
+          // PR 배너 체크가 둘 다 꺼지면 PR영역 스위치도 끈다 (사용자 11-25)
+          if (!el.checked && (el.dataset.protoKey === 'prBasic' || el.dataset.protoKey === 'prStrategic')) {
+            var now = protoSettingsRead();
+            if (!(el.dataset.protoKey === 'prBasic' ? now.prStrategic : now.prBasic)) patch.pr = false;
+          }
           protoSettingsWrite(patch);
         });
       });
