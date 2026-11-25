@@ -549,8 +549,8 @@
 
 /* ---- 7 커뮤니티-게시판형 (component/board/list) — 자유 게시판 ---- */
 .game-detail-community-board { margin: 0; padding: 0; list-style: none; }
-.game-detail-community-board li + li { margin-top: 1.6rem; padding-top: 1.6rem; border-top: 1px solid var(--stds-sem-color-inverse-elevation-4); }
-.game-detail-community-board__row { display: flex; flex-direction: column; gap: 0.8rem; }
+.game-detail-community-board li + li { margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid var(--stds-sem-color-inverse-elevation-4); } /* 11-25 사용자 "상하 더 촘촘하게" 16 → 12 */
+.game-detail-community-board__row { display: flex; flex-direction: column; gap: 0; } /* 제목 ↔ 정보 줄 = UCC 제목 ↔ 닉네임처럼 붙임 (11-25, 전 8) */
 .game-detail-community-board__title { display: flex; gap: 0.4rem; white-space: nowrap; overflow: hidden; }
 .game-detail-community-board__text { min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--stds-sem-color-on-surface-elevation-1); }
 .game-detail-community-board__reply { flex: none; color: var(--stds-sem-color-brand-primary); }
@@ -821,7 +821,7 @@
 .game-detail--skeleton .game-detail-shortcut__row,
 .game-detail--skeleton .game-detail-market-download__row { display: flex; align-items: center; }
 .game-detail--skeleton .game-detail-community-api__row { padding: 0.1rem 0; }
-.game-detail--skeleton .game-detail-community-board__row { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+.game-detail--skeleton .game-detail-community-board__row { flex-direction: column; align-items: flex-start; gap: 0.4rem; } /* 막대가 붙지 않게 4 (11-25 실제 간격 8→0) */
 .game-detail--skeleton .game-detail-community-board__row > * { margin: 0; }
 .game-detail--skeleton .game-detail-community-album__img { display: block; }
 .game-detail--skeleton .game-detail-community-album__img::after { display: none; }
