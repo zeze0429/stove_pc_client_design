@@ -21,6 +21,14 @@ function mountPageScrollbar(scroller) {
   thumb.className = 'page-scrollbar__thumb';
   track.appendChild(thumb);
   host.appendChild(track);
+  // 콘텐츠 영역(.main)만 테마를 따로 걸면(예: 스토브게임 상세 다크 고정 — js/game-detail-component.js) 썸도 같은 테마 값으로 (11-25).
+  // 트랙은 .main 밖(.app)에 붙어 있어 그대로 두면 전체 테마(라이트) 색이 나온다.
+  function syncTheme() {
+    var t = scroller.getAttribute('data-theme');
+    if (t) track.setAttribute('data-theme', t); else track.removeAttribute('data-theme');
+  }
+  syncTheme();
+  if (window.MutationObserver) new MutationObserver(syncTheme).observe(scroller, { attributes: true, attributeFilter: ['data-theme'] });
 
   var MIN_THUMB = 48; // 웹과 같은 최소 길이(4.8rem)
 
