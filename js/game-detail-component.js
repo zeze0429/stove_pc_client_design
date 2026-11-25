@@ -377,8 +377,8 @@ function mountGameDetail(selector, gameId) {
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--btn2" style="width: 6.4rem"></span>' +
                 '</div>' +
                 '<ul class="game-detail-community-api"><li v-for="i in 10"><div class="game-detail-community-api__row">' +
-                '<span class="game-detail-skeleton-fill"><span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" :style="rw(i + 10, 40, 95)"></span></span>' + // 분류 + 제목을 막대 하나로 (사용자 11-18)
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" style="width: 7.2rem"></span>' +
+                '<span class="game-detail-skeleton-fill"><span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" :style="rw(i + 10, 40, 95)"></span></span>' + // 분류 + 제목을 막대 하나로 (사용자 11-18) · 11-25 글자 크기 따라 title7→text4, 날짜 text4→cap1
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--cap1" style="width: 6.4rem"></span>' +
                 '</div></li></ul>' +
                 '</section>' +
                 // 6 커뮤니티-앨범형
@@ -616,8 +616,8 @@ function mountGameDetail(selector, gameId) {
                   '</div>' +
                   '<ul class="game-detail-community-api">' +
                     '<li v-for="n in d.communityApi"><a class="game-detail-community-api__row" href="#" @click.prevent>' +
-                      '<span class="game-detail-community-api__title stds-title7 fw-medium"><span class="game-detail-community-api__cat">{{ n.cat }}</span><span class="game-detail-community-api__text">{{ n.title }}</span></span>' +
-                      '<span class="game-detail-community-api__date stds-text4 fw-regular">{{ d.communityApiDate }}</span>' +
+                      '<span class="game-detail-community-api__title stds-text4 fw-medium"><span class="game-detail-community-api__cat">{{ n.cat }}</span><span class="game-detail-community-api__text">{{ n.title }}</span></span>' +
+                      '<span class="game-detail-community-api__date stds-cap1 fw-regular">{{ d.communityApiDate }}</span>' + // 11-25 로아 상영관과 같게 — 제목 Text4-M 13/22 · 날짜 Cap1-R 12/18 (전엔 Title7 16/24 · Text4 13/22)
                     '</a></li>' +
                   '</ul>' +
                 '</section>' +
