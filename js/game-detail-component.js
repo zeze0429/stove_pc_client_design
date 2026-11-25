@@ -104,19 +104,20 @@ var GAME_DETAIL_DATA = {
       { src: 'theater-ZqGAeuwnF5o.jpg', title: '태양 아래 군림하는 자, 신화의 사막 패키지', author: 'LOST ARK', date: '2026.9.09' },
     ],
     // 5 커뮤니티-api연동형 (component/board/notice) — 공지사항
+    // 공지사항 = lostark.game.onstove.com/News/Notice/List 일반 목록 앞 10개 (11-25 사용자 "로아에서 텍스트 받아서" — 상단 고정 3개 제외).
+    // 날짜는 글마다("42분 전" · "18시간 전"은 11-25 10:43 기준 날짜로). 그 전 = 예시 글 + 날짜 하나(communityApiDate '2022. 05. 11')
     communityApi: [
-      { cat: '공지', title: '6월 2일 (수) 임시점검 안내' },
-      { cat: '이벤트', title: '베른 대도서관 5월의 우수 사서를 찾아서! 이벤트 당첨자 발표합니다' },
-      { cat: '업데이트', title: '엘가시아 질서의 신 루페온이 빚어낸 라제니스의 낙원' },
-      { cat: '공지', title: '6월 2일 (수) 임시점검 안내' },
-      { cat: '이벤트', title: '베른 대도서관 5월의 우수 사서를 찾아서!' },
-      { cat: '공지', title: '6월 2일 (수) 임시점검 안내' },
-      { cat: '공지', title: '6월 2일 (수) 임시점검 안내' },
-      { cat: '업데이트', title: '엘가시아 질서의 신 루페온이 빚어낸 라제니스의 낙원' },
-      { cat: '공지', title: '6월 2일 (수) 임시점검 안내' },
-      { cat: '업데이트', title: '엘가시아 질서의 신 루페온이 빚어낸 라제니스의 낙원' },
+      { cat: '공지', title: '로스트아크 2부 업데이트에 따른 주요 개편 사항 사전 안내', date: '2026. 11. 25' },
+      { cat: '공지', title: '로스트아크 샵 내 일부 상품 판매 중단 및 종료 안내', date: '2026. 11. 25' },
+      { cat: '공지', title: '11월 25일(수) 로스트아크 정기 점검 완료 안내', date: '2026. 11. 25' },
+      { cat: '공지', title: '알려진 이슈를 안내해 드립니다. (11/25 수정)', date: '2026. 11. 25' },
+      { cat: '점검', title: '11월 25일(수) 정기 점검 안내', date: '2026. 11. 24' },
+      { cat: '공지', title: '11월 20일(금) 로스트아크 임시 점검 완료 안내', date: '2026. 11. 20' },
+      { cat: '점검', title: '11월 20일(금) 로스트아크 임시 점검 안내', date: '2026. 11. 19' },
+      { cat: '공지', title: '11월 19일(목) 로스트아크 임시 점검 완료 안내', date: '2026. 11. 19' },
+      { cat: '점검', title: '11월 19일(목) 로스트아크 임시 점검 안내', date: '2026. 11. 18' },
+      { cat: '공지', title: '2026년 11월 20일(금) 로스트아크 라이브 방송 사전 안내', date: '2026. 11. 18' },
     ],
-    communityApiDate: '2022. 05. 11',
     // 6 커뮤니티-앨범형 (component/board/album) — UCC 게시판
     communityAlbum: [
       { src: 'ucc-01.png', video: true, title: '제목이 들어갑니다. 두줄까지 노출 됩니다.제목이 들어갑니다. 두줄까지 노출 됩니다.' },
@@ -617,7 +618,7 @@ function mountGameDetail(selector, gameId) {
                   '<ul class="game-detail-community-api">' +
                     '<li v-for="n in d.communityApi"><a class="game-detail-community-api__row" href="#" @click.prevent>' +
                       '<span class="game-detail-community-api__title stds-text4 fw-medium"><span class="game-detail-community-api__cat">{{ n.cat }}</span><span class="game-detail-community-api__text">{{ n.title }}</span></span>' +
-                      '<span class="game-detail-community-api__date stds-cap1 fw-regular">{{ d.communityApiDate }}</span>' + // 11-25 로아 상영관과 같게 — 제목 Text4-M 13/22 · 날짜 Cap1-R 12/18 (전엔 Title7 16/24 · Text4 13/22)
+                      '<span class="game-detail-community-api__date stds-cap1 fw-regular">{{ n.date }}</span>' + // 11-25 로아 상영관과 같게 — 제목 Text4-M 13/22 · 날짜 Cap1-R 12/18 (전엔 Title7 16/24 · Text4 13/22)
                     '</a></li>' +
                   '</ul>' +
                 '</section>' +
