@@ -121,13 +121,16 @@ var GAME_DETAIL_DATA = {
       { cat: '이벤트', title: '개천절 & 한글날 핫타임 이벤트 안내', date: '2026. 09. 30' },
     ],
     // 6 커뮤니티-앨범형 (component/board/album) — UCC 게시판
+    // UCC 게시판 = lostark.game.onstove.com/Video 의 '모험가 UCC' 영상 6개 (11-25 사용자 "UCC 게시판도 최신화" — 그 칸은 들어올 때마다 순서가 섞여 11-25 받은 순서).
+    // 썸네일 = 유튜브 mqdefault 320×180(ucc-{영상 ID}.jpg). 숫자는 로아 상영관처럼 재생수(play) · 좋아요수(like) — 사용자 11-25 "로아에서는 변경, 다른 게임은 댓글 · 조회수 유지"
+    // (play가 없는 게임은 reply · view, 값 없으면 예시 999). 그 전 = ucc-01~06 예시 글(제목만, 닉네임 · 날짜 · 숫자는 템플릿 예시값)
     communityAlbum: [
-      { src: 'ucc-01.png', video: true, title: '제목이 들어갑니다. 두줄까지 노출 됩니다.제목이 들어갑니다. 두줄까지 노출 됩니다.' },
-      { src: 'ucc-02.png', title: '모코코야 생일 축하해' },
-      { src: 'ucc-03.jpg', title: '[스크린샷] 예쁘게 찍히는 장소를 소개해드리겠습니다.' },
-      { src: 'ucc-04.jpg', title: '신규 어비스 던전 : 카양' },
-      { src: 'ucc-05.jpg', title: '모코코야 생일 축하해 오늘은 생일이니까 널 위해 준비했엉!!!!!!!' },
-      { src: 'ucc-06.jpg', title: '모코코야 생일 축하해~' },
+      { src: 'ucc-3v60i5sowgc.jpg', video: true, title: '조력사무소 로아팀 미친실력 랜선 라이브연주회', user: 'VG 신선한망치', date: '2022.7.06', play: '1,297', like: '13' },
+      { src: 'ucc-cIZjfQvN-5g.jpg', video: true, title: '움직이는 폭풍 속의 베히모스 만들기/【로스트 아크】 Behemoth Figure', user: '체셔 교수 Prof.Cheshire', date: '2024.7.17', play: '941', like: '6' },
+      { src: 'ucc-zoIIiS-ujNA.jpg', video: true, title: '청각장애 유저분을 위해 고인물들이 뭉쳤습니다', user: '로마러', date: '2024.6.05', play: '5,826', like: '44' },
+      { src: 'ucc-nAvNXdeG120.jpg', video: true, title: '별빛 등대의 섬 국악 편곡버젼 cover. 뉴띵', user: '트위치 뉴띵', date: '2022.7.20', play: '3,480', like: '35' },
+      { src: 'ucc-0hd0tGfUPDw.jpg', video: true, title: '로스트아크 X 무신사 팝업스토어 가이드', user: '김홀앵유튜브', date: '2026.7.25', play: '553', like: '1' },
+      { src: 'ucc-LSVaPWeuuVk.jpg', video: true, title: 'Sweet dream, my dear | 금강선 디렉터님께 보내는 답가', user: '보리 BORI', date: '2022.5.18', play: '3,604', like: '25' },
     ],
     // 9 게임요약
     summary: {
@@ -393,8 +396,8 @@ function mountGameDetail(selector, gameId) {
                 '<div class="game-detail-community-album"><div v-for="n in 6" class="game-detail-community-album__item">' +
                 '<span class="game-detail-skeleton game-detail-community-album__img"></span>' +
                 '<span class="game-detail-community-album__name">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" style="width: 100%"></span>' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" :style="rw(n + 20, 25, 85)"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" style="width: 100%"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" :style="rw(n + 20, 25, 85)"></span>' +
                 '</span>' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" :style="rw(n + 30, 25, 60)"></span>' +
                 '<span class="game-detail-community-album__meta">' +
@@ -634,13 +637,17 @@ function mountGameDetail(selector, gameId) {
                   '<div class="game-detail-community-album">' +
                     '<a v-for="u in d.communityAlbum" class="game-detail-community-album__item" href="#" @click.prevent>' +
                       '<span class="game-detail-community-album__img"><img :src="img(u.src)" alt="" /><img v-if="u.video" class="game-detail-play" :src="img(\'play-56.svg\')" alt="재생" /></span>' +
-                      '<span class="game-detail-community-album__name stds-title7 fw-medium">{{ u.title }}</span>' +
-                      '<span class="game-detail-community-album__user stds-text4 fw-regular">%닉네임%</span>' +
+                      '<span class="game-detail-community-album__name stds-text4 fw-medium">{{ u.title }}</span>' + // 11-25 로아 상영관과 같게 Text4-M 13/22 (전엔 Title7 16/24)
+                      '<span class="game-detail-community-album__user stds-text4 fw-regular">{{ u.user || \'%닉네임%\' }}</span>' +
                       '<span class="game-detail-community-album__meta stds-cap1 fw-medium">' +
-                        '<span>2023.07.19</span>' +
-                        '<span class="game-detail-community-album__counts">' +
-                          '<span><i class="ic-v2-community-reply-line"></i>999</span>' +
-                          '<span><i class="ic-v2-community-number-of-view-line"></i>999</span>' +
+                        '<span>{{ u.date || \'2023.07.19\' }}</span>' +
+                        '<span v-if="u.play" class="game-detail-community-album__counts">' + // 로아: 재생수 · 좋아요수 (로아 상영관과 같은 숫자, 11-25)
+                          '<span><i class="ic-v2-media-av-play-line"></i>{{ u.play }}</span>' +
+                          '<span><i class="ic-v2-community-like-line"></i>{{ u.like }}</span>' +
+                        '</span>' +
+                        '<span v-else class="game-detail-community-album__counts">' + // 다른 게임: 댓글 · 조회수
+                          '<span><i class="ic-v2-community-reply-line"></i>{{ u.reply || 999 }}</span>' +
+                          '<span><i class="ic-v2-community-number-of-view-line"></i>{{ u.view || 999 }}</span>' +
                         '</span>' +
                       '</span>' +
                     '</a>' +
