@@ -195,11 +195,14 @@ var GAME_DETAIL_DATA = {
       icons: ['18', 'violence', 'speculation', 'crime', 'drug', 'inapposite', 'fear'],
     },
     // 7 커뮤니티-게시판형 (component/board/list) — 자유 게시판
+    // = lostark.game.onstove.com/Community/Free/List 최근 글 4개 (11-25 사용자 "자유게시판도 최신화" — 거친 표현 · 닉네임 글은 건너뜀).
+    // 작성자 = 대표 캐릭터 이름, reply = 댓글 수(0이면 안 보임), gm = GM 글이면 true, 날짜는 "N분/시간 전"을 11-25 기준 날짜로.
+    // 그 전 = 예시 글 '이번에 주는 스익 익스 점핑말인데요' × 4 (닉네임 · 날짜 · 숫자는 템플릿 예시값)
     communityBoard: [
-      { title: '이번에 주는 스익 익스 점핑말인데요이번에 주는 스익 익스 점핑말인데요' },
-      { title: '이번에 주는 스익 익스 점핑말인데요' },
-      { title: '이번에 주는 스익 익스 점핑말인데요' },
-      { title: '이번에 주는 스익 익스 점핑말인데요' },
+      { title: '갓운영자님(2부패치 저는 엄청좋음) 그림자레이드등등 싱글이나1인레이드도 돌게 해주세요 어느정도 되야 팟플을하던 자기기량 발휘를....', user: '축대리퍼박', date: '2026.11.25', view: '11' },
+      { title: '2부 언제 업뎃?', user: '알토짱', date: '2026.11.25', view: '50' },
+      { title: '100층..', reply: '1', user: '축대리퍼박', date: '2026.11.24', view: '34' },
+      { title: '[로랜디] 1.1.0 업데이트 — 우편함 · 스피드런 1시즌 마감 · 저장 보호', user: '만다린덕', date: '2026.11.24', view: '34' },
     ],
   },
 };
@@ -414,7 +417,7 @@ function mountGameDetail(selector, gameId) {
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--btn2" style="width: 6.4rem"></span>' +
                 '</div>' +
                 '<ul class="game-detail-community-board"><li v-for="i in 4"><div class="game-detail-community-board__row">' +
-                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--title7" :style="rw(i + 40, 40, 95)"></span>' +
+                '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" :style="rw(i + 40, 40, 95)"></span>' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" :style="rw(i + 50, 25, 55)"></span>' +
                 '</div></li></ul>' +
                 '</section>' +
@@ -663,11 +666,11 @@ function mountGameDetail(selector, gameId) {
                   '</div>' +
                   '<ul class="game-detail-community-board">' +
                     '<li v-for="p in d.communityBoard"><a class="game-detail-community-board__row" href="#" @click.prevent>' +
-                      '<span class="game-detail-community-board__title stds-title7 fw-medium"><span class="game-detail-community-board__text">{{ p.title }}</span><span class="game-detail-community-board__reply">[999]</span></span>' +
+                      '<span class="game-detail-community-board__title stds-text4 fw-medium"><span class="game-detail-community-board__text">{{ p.title }}</span><span v-if="p.reply" class="game-detail-community-board__reply">[{{ p.reply }}]</span></span>' + // 11-25 로아 상영관과 같게 Text4-M 13/22 (전 Title7 16/24)
                       '<span class="game-detail-community-board__info">' +
-                        '<span class="stds-text4"><span class="game-detail-community-board__gm fw-medium">GM</span> <span class="fw-regular">닉네임</span></span>' +
-                        '<span class="game-detail-community-board__date stds-cap1 fw-medium">2023.07.19</span>' +
-                        '<span class="game-detail-community-board__date stds-cap1 fw-medium"><i class="ic-v2-community-number-of-view-line"></i>999</span>' +
+                        '<span class="stds-text4"><template v-if="p.gm"><span class="game-detail-community-board__gm fw-medium">GM</span> </template><span class="fw-regular">{{ p.user }}</span></span>' +
+                        '<span class="game-detail-community-board__date stds-cap1 fw-medium">{{ p.date }}</span>' +
+                        '<span class="game-detail-community-board__date stds-cap1 fw-medium"><i class="ic-v2-community-number-of-view-line"></i>{{ p.view }}</span>' +
                       '</span>' +
                     '</a></li>' +
                   '</ul>' +
