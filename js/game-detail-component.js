@@ -137,8 +137,10 @@ var GAME_DETAIL_DATA = {
     summary: {
       tagline: '심연의 끝을 마주한 자',
       rows: [
-        ['장르', 'MMORPG'], ['이용등급', '청소년이용불가'], ['출시일', '2018.11.07'], ['개발사', 'Smilegate RPG'],
-        ['배급사', 'Smilegate RPG'], ['마지막 플레이', '2023.08.09'], ['총 플레이 시간', '3일 2시간 24분'],
+        // 11-25 Figma 68479:481606 — 5줄, 출시일 하이픈 · 개발사/배급사 표기 변경.
+        // 그 전 = 2018.11.07 · Smilegate RPG · Smilegate RPG + ['마지막 플레이', '2023.08.09'], ['총 플레이 시간', '3일 2시간 24분']
+        ['장르', 'MMORPG'], ['이용등급', '청소년이용불가'], ['출시일', '2018-11-07'], ['개발사', '주식회사 스마일게이트'],
+        ['배급사', '주식회사 스마일게이트'],
       ],
     },
     // 16 쿠폰 (로스트아크 한정)
@@ -154,10 +156,10 @@ var GAME_DETAIL_DATA = {
       { icon: 'ic-v2-navigation-home-fill', label: '공식 홈페이지', dot: true },
       { icon: 'ic-v2-navigation-community-fill', label: '커뮤니티' },
       { icon: 'ic-v2-object-help-center-fill', label: '고객센터', dot: true },
-      { icon: 'ic-v2-logo-facebook-fill', label: '공식 Facebook', dot: true },
+      { icon: 'ic-v2-logo-facebook-fill', label: '공식 Facebook', dot: true, hidden: true }, // hidden = 11-25 Figma 68479:481650에서 숨김(지우지 않음)
       { svg: 'shortcut-logo-x.svg', label: '공식 X', dot: true }, // 아이콘 폰트에 X 로고가 없어 Figma SVG
       { icon: 'ic-v2-logo-youtube-fill', label: '공식 Youtube' },
-      { icon: 'ic-v2-navigation-message-fill', label: '리사의 편지' },
+      { icon: 'ic-v2-navigation-message-fill', label: '리사의 편지', hidden: true },
     ],
     // 11 서브배너
     subBanner: { src: 'subbanner-01.jpg', count: 5 },
@@ -729,8 +731,8 @@ function mountGameDetail(selector, gameId) {
                   '<h2 class="stds-title8 fw-bold">공지사항</h2>' +
                   '<button class="game-detail-more stds-btn2 fw-regular" type="button">전체보기<i class="ic-v2-control-arrow-right-line"></i></button>' +
                 '</div>' +
-                '<div class="game-detail-notice-compact stds-title7 fw-medium">' +
-                  '<div class="game-detail-notice-compact__pinned">' +
+                '<div class="game-detail-notice-compact stds-text3 fw-regular">' + // 11-25 Figma: 일반 줄 Text3-R 14/24, 강조 묶음 Text3-M (그 전 = 전부 stds-title7 fw-medium)
+                  '<div class="game-detail-notice-compact__pinned fw-medium">' +
                     '<a v-for="t in d.noticeCompact.pinned" href="#" @click.prevent><i class="ic-v2-community-star-fill"></i><span>{{ t }}</span></a>' +
                   '</div>' +
                   '<a v-for="t in d.noticeCompact.rows" href="#" @click.prevent><span>{{ t }}</span></a>' +
@@ -741,9 +743,10 @@ function mountGameDetail(selector, gameId) {
               '<section class="game-detail-board">' +
                 '<div class="game-detail-board__head"><h2 class="stds-title8 fw-bold">바로가기</h2></div>' +
                 '<ul class="game-detail-shortcut">' +
-                  '<li v-for="s in d.shortcuts"><a href="#" @click.prevent>' +
-                    '<img v-if="s.svg" class="game-detail-shortcut__svg" :src="img(s.svg)" alt="" /><i v-else :class="s.icon"></i>' +
-                    '<span class="game-detail-shortcut__label stds-text4 fw-regular">{{ s.label }}<img v-if="s.dot" class="game-detail-shortcut__dot" :src="img(\'shortcut-badge-new.svg\')" alt="" /></span>' +
+                  '<li v-for="s in d.shortcuts.filter(x => !x.hidden)"><a href="#" @click.prevent>' +
+                    // X 로고 SVG는 마스크로 — 아이콘 폰트처럼 글자색(currentColor = 흰 50)을 따라감 (11-25, 그 전 = <img> · SVG 안 #EBEBEB)
+                    '<span v-if="s.svg" class="game-detail-shortcut__svg" :style="{ \'--icon-url\': \'url(\' + img(s.svg) + \')\' }" aria-hidden="true"></span><i v-else :class="s.icon"></i>' +
+                    '<span class="game-detail-shortcut__label stds-text3 fw-regular">{{ s.label }}<img v-if="s.dot" class="game-detail-shortcut__dot" :src="img(\'shortcut-badge-new.svg\')" alt="" /></span>' +
                     '<i class="game-detail-shortcut__arrow ic-v2-control-arrow-right-line"></i>' +
                   '</a></li>' +
                 '</ul>' +
@@ -760,7 +763,7 @@ function mountGameDetail(selector, gameId) {
                 '<div class="game-detail-board__head"><h2 class="stds-title8 fw-bold">마켓 다운로드</h2></div>' +
                 '<ul class="game-detail-market-download">' +
                   '<li v-for="m in d.marketDownload"><a href="#" @click.prevent>' +
-                    '<i :class="m.icon"></i><span class="stds-text4 fw-medium">{{ m.label }}</span>' +
+                    '<i :class="m.icon"></i><span class="stds-text3 fw-regular">{{ m.label }}</span>' +
                     '<button v-if="m.qr" class="game-detail-market-download__qr stds-btn3 fw-medium" type="button" @click.stop.prevent><i class="ic-v2-hardware-qr-code-fill"></i>QR</button>' +
                   '</a></li>' +
                 '</ul>' +

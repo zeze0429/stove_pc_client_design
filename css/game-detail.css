@@ -585,11 +585,15 @@
 .game-detail-rating-sexual .is-shape-2 { left: 1.247rem; top: 6.104rem; width: 3.8531rem; height: 0.9162rem; }
 .game-detail-rating-sexual [class*="is-clip"] { left: 0.366rem; top: 0.349rem; width: 5.6674rem; height: 5.526rem; }
 
-/* ---- 9 게임요약 — 바탕은 카드 공통(11-24부터 50%) ---- */
-.game-detail-summary { display: flex; flex-direction: column; gap: 2rem; }
-.game-detail-summary__tagline { margin: 0; color: var(--stds-sem-color-on-surface-elevation-3); }
-.game-detail-summary__rows > div { gap: 2.8rem; }
-.game-detail-summary__rows dt { width: 10.4rem; }
+/* ---- 9 게임요약 — 바탕은 카드 공통(11-24부터 50%) ----
+   11-25 Figma 68479:481606: 소개 ↔ 표 12, 소개 글자 elevation-1, 항목 칸은 가장 긴 항목 폭(hug) + 32, 줄 사이 6, 항목 글자 elevation-4.
+   그 전 = 간격 20 · 소개 elevation-3 · 항목 칸 104 + 28 · 줄 사이 8 · 항목 elevation-3 */
+.game-detail-summary { display: flex; flex-direction: column; gap: 1.2rem; }
+.game-detail-summary__tagline { margin: 0; color: var(--stds-sem-color-on-surface-elevation-1); }
+.game-detail-summary__rows { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: 3.2rem; row-gap: 0.6rem; }
+.game-detail-summary__rows > div { display: contents; }
+.game-detail-summary__rows dt { width: auto; color: var(--stds-sem-color-on-surface-elevation-4); }
+.game-detail--skeleton .game-detail-summary__rows { grid-template-columns: 5.2rem minmax(0, 1fr); } /* 음영 화면: 막대 길이로 칸이 줄지 않게 실제 항목 칸 폭(이용등급 51)으로 고정 */
 
 /* ---- 16 쿠폰 · 로스트아크 한정 — 운영가이드 쿠폰 68325:412091 (사용자 11-19) ----
    카드 = 티켓(contents) + 오른쪽 로고 탭 48 고정, 높이 100. MD는 티켓 가변(시안 272), LG(열 420)는 372.
@@ -690,6 +694,9 @@
 }
 
 /* ---- 17 공지사항 축소형 · 로스트아크 한정 (1103:11493) ---- */
+/* 11-25 Figma 68436:427767: 제목 줄 높이 26 — 카드 높이 455가 시안과 같아짐. 원복 = 아래 두 줄 삭제(제목 줄 20) */
+.game-detail-board__title:has(+ .game-detail-notice-compact) { min-height: 4.3rem; } /* border-box = 줄 26 + 아래 여백 16 + 선 1 */
+.game-detail-board__title:has(+ .game-detail-notice-compact) h2 { align-self: flex-start; } /* 시안: 제목은 줄 맨 위(0), 전체보기만 가운데 */
 .game-detail-notice-compact { display: flex; flex-direction: column; gap: 1.2rem; color: var(--stds-sem-color-on-surface-elevation-3); }
 .game-detail-notice-compact a,
 .game-detail-notice-compact__pinned a { display: flex; align-items: center; gap: 0.8rem; min-width: 0; }
@@ -701,25 +708,29 @@
   gap: 0.6rem;
   padding: 0.6rem 1rem;
   border-radius: 0.6rem;
-  background: var(--stds-glob-color-white-6);
+  background: var(--stds-sem-color-inverse-elevation-8); /* 11-25 Figma(흰 2%), 그 전 = white-6 */
 }
 .game-detail-notice-compact__pinned i { flex: none; font-size: 1.2rem; color: #e74ca2; } /* 시안 헥스 — 시멘틱 없음 */
 
-/* ---- 10 바로가기 (1100:15088) ---- */
-.game-detail-shortcut {
-  margin: 0;
-  padding: 1.2rem 0;
-  list-style: none;
-  border: 1px solid var(--stds-sem-color-inverse-elevation-4);
+/* ---- 10 바로가기 (1100:15088 → 11-25 Figma 68479:481650) ----
+   11-25: 테두리 상자 + 구분선 목록 → 줄마다 흰 2% 상자(위아래 8 · 좌우 12, 모서리 8, 높이 40), 줄 사이 8.
+   아이콘 18 흰 50, 이름 Text3-R 14/24 elevation-1, 화살표 16 흰 20(이름과 12).
+   그 전 = 목록 padding 12 0 · 테두리 1 inverse-elevation-4 · 모서리 lg, 줄 사이 12+선+12, 줄 좌우 16, 아이콘 20, 화살표 margin 20 · 글자색 */
+.game-detail-shortcut { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
+.game-detail-shortcut a {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 1.2rem;
   border-radius: var(--stds-glob-border-radius-lg);
+  background: var(--stds-sem-color-inverse-elevation-8);
+  color: var(--stds-glob-color-white-50); /* 아이콘 색 — Figma on-surface/white(not in system)/secondary = 흰 50 */
 }
-.game-detail-shortcut li + li { margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid var(--stds-sem-color-inverse-elevation-4); }
-.game-detail-shortcut a { display: flex; align-items: center; gap: 0.8rem; padding: 0 1.6rem; color: var(--stds-sem-color-on-surface-elevation-1); }
-.game-detail-shortcut a > i:first-child { font-size: 2rem; }
-.game-detail-shortcut__svg { width: 2rem; height: 2rem; display: block; }
-.game-detail-shortcut__label { flex: 1 1 0; display: flex; align-items: flex-start; gap: 0.4rem; }
+.game-detail-shortcut a > i:first-child { font-size: 1.8rem; }
+.game-detail-shortcut__svg { flex: none; width: 1.8rem; height: 1.8rem; display: block; background: currentColor; -webkit-mask: var(--icon-url) center / contain no-repeat; mask: var(--icon-url) center / contain no-repeat; }
+.game-detail-shortcut__label { flex: 1 1 0; display: flex; align-items: flex-start; gap: 0.4rem; color: var(--stds-sem-color-on-surface-elevation-1); }
 .game-detail-shortcut__dot { width: 0.4rem; height: 0.4rem; display: block; }
-.game-detail-shortcut__arrow { margin-left: 2rem; font-size: 1.6rem; }
+.game-detail-shortcut__arrow { margin-left: 0.4rem; font-size: 1.6rem; color: var(--stds-glob-color-white-20); } /* 이름 칸과 12 = a gap 8 + 4 */
 
 /* ---- 11 서브배너 (1100:15089) 300 × 133 ---- */
 .game-detail-sub-banner { position: relative; overflow: hidden; aspect-ratio: 300 / 133.006; border-radius: var(--stds-glob-border-radius-3xl); }
@@ -727,29 +738,32 @@
 .game-detail-sub-banner .game-detail-indicator { position: absolute; left: 50%; bottom: 1.6rem; transform: translateX(-50%); }
 
 /* ---- 12 마켓다운로드링크 + QR (component/marketdownload 1100:15090) ---- */
-.game-detail-market-download { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 1.2rem; }
+/* 11-25 Figma 68479:481800: 줄 사이 8, 줄 = 흰 2% 상자 패딩 12(높이 48), 아이콘 20 흰 50, 이름 Text3-R elevation-1,
+   QR = 바탕 없는 글자 버튼(아이콘 16 + Button3-M, 흰 50).
+   그 전 = 줄 사이 12 · 높이 56 · 좌우 16 · 바탕 gray840 · 이름 text4 medium · QR 알약(neutral-variant-2, 7 12, elevation-2) */
+.game-detail-market-download { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
 .game-detail-market-download a {
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  height: 5.6rem;
-  padding: 1.2rem 1.6rem;
+  height: 4.8rem;
+  padding: 1.2rem;
   border-radius: var(--stds-glob-border-radius-lg);
-  background: var(--stds-glob-color-gray840);
+  background: var(--stds-sem-color-inverse-elevation-8);
   color: var(--stds-sem-color-on-surface-elevation-1);
 }
-.game-detail-market-download a > i { font-size: 2rem; }
+.game-detail-market-download a > i { font-size: 2rem; color: var(--stds-glob-color-white-50); }
 .game-detail-market-download a > span { flex: 1 1 0; min-width: 0; }
 .game-detail-market-download__qr {
   flex: none;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.7rem 1.2rem;
+  padding: 0;
   border: 0;
   border-radius: var(--stds-glob-border-radius-full);
-  background: var(--stds-sem-color-neutral-variant-2);
-  color: var(--stds-sem-color-on-surface-elevation-2);
+  background: none;
+  color: var(--stds-glob-color-white-50);
   cursor: pointer;
 }
 .game-detail-market-download__qr i { font-size: 1.6rem; }
@@ -861,11 +875,11 @@
 /* 10 바로가기 — 목록 테두리 · 구분선 · 오른쪽 화살표 없이, 아이콘이 타이틀과 같은 왼쪽 선 (사용자 11-18).
    줄 간격은 실제(12 + 선 1 + 12)와 같은 25 */
 .game-detail--skeleton .game-detail-shortcut { padding: 0; border: 0; }
-.game-detail--skeleton .game-detail-shortcut li + li { margin-top: 2.5rem; padding-top: 0; border: 0; }
+.game-detail--skeleton .game-detail-shortcut__row { height: 4rem; } /* 11-25 실제 줄 높이 40 · 줄 사이 8(목록 gap)과 같게 — 그 전 = li + li margin-top 2.5rem */
 .game-detail--skeleton .game-detail-market-download__row {
   gap: 0.8rem;
-  height: 5.6rem;
-  padding: 1.2rem 1.6rem;
+  height: 4.8rem; /* 11-25 실제 줄과 같게(그 전 5.6rem · 패딩 12 16) */
+  padding: 1.2rem;
   border-radius: var(--stds-glob-border-radius-lg); /* 줄 카드 = 음영 블록(웨이브) — 사용자 11-18 */
 }
 .game-detail-skeleton--rating { flex: none; width: 6.4rem; height: 7.4rem; border-radius: var(--stds-glob-border-radius-sm); }
