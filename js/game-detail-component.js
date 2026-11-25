@@ -456,7 +456,7 @@ function mountGameDetail(selector, gameId) {
                 '</div>' +
                 '<div class="game-detail-summary">' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" style="width: 50%"></span>' +
-                '<dl class="game-detail-summary__rows"><div v-for="n in 7"><dt>' +
+                '<dl class="game-detail-summary__rows"><div v-for="n in 5"><dt>' + // 11-25 실제 5줄과 같게(그 전 7)
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" :style="rw(n + 100, 40, 90)"></span>' +
                 '</dt><dd>' +
                 '<span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" :style="rw(n + 110, 30, 95)"></span>' +
@@ -471,7 +471,7 @@ function mountGameDetail(selector, gameId) {
                 // 4줄 · 아이콘은 타이틀과 같은 왼쪽 선 · 이름 막대는 길게 (사용자 11-18)
                 '<ul class="game-detail-shortcut"><li v-for="i in 4"><div class="game-detail-shortcut__row">' +
                 '<span class="game-detail-skeleton game-detail-skeleton--icon"></span>' +
-                '<span class="game-detail-skeleton-fill"><span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text4" :style="rw(i + 140, 60, 95)"></span></span>' +
+                '<span class="game-detail-skeleton-fill"><span class="game-detail-skeleton game-detail-skeleton-bar game-detail-skeleton-bar--text3" :style="rw(i + 140, 60, 95)"></span></span>' + // 11-25 이름 Text3 따라 text4→text3
                 '</div></li></ul>' +
                 '</section>' +
               '<span class="game-detail-skeleton game-detail-skeleton--sub-banner"></span>' + // 11 서브배너
