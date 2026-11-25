@@ -510,7 +510,7 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: var(--stds-glob-color-white-50); /* 11-25 사용자 "날짜도" → 전체보기와 같은 흰 50. 그 전 = on-surface-elevation-4 */
+  color: var(--stds-glob-color-white-30); /* 11-25 사용자 "날짜도" → 흰 50 → "화이트 30". 그 전 = on-surface-elevation-4 */
 }
 
 /* ---- 5 커뮤니티-api연동형 (component/board/notice) — 공지사항 ---- */
