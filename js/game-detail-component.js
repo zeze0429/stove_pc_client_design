@@ -157,7 +157,7 @@ var GAME_DETAIL_DATA = {
       { icon: 'ic-v2-navigation-community-fill', label: '커뮤니티' },
       { icon: 'ic-v2-object-help-center-fill', label: '고객센터', dot: true },
       { icon: 'ic-v2-logo-facebook-fill', label: '공식 Facebook', dot: true, hidden: true }, // hidden = 11-25 Figma 68479:481650에서 숨김(지우지 않음)
-      { svg: 'shortcut-logo-x.svg', label: '공식 X', dot: true }, // 아이콘 폰트에 X 로고가 없어 Figma SVG
+      { icon: 'ic-v2-logo-twitter-X-fill', label: '공식 X', dot: true }, // 11-25 아이콘 폰트 X 로고(이름에 대문자 X — 전에 못 찾아 Figma SVG shortcut-logo-x.svg를 썼음, 원복 = svg: 'shortcut-logo-x.svg')
       { icon: 'ic-v2-logo-youtube-fill', label: '공식 Youtube' },
       { icon: 'ic-v2-navigation-message-fill', label: '리사의 편지', hidden: true },
     ],
