@@ -95,6 +95,7 @@
 }
 .game-detail-thumb::after,
 .game-detail-community-album__img::after,
+.game-detail-loa-theater__img::after,
 .game-detail-link-badge::after {
   content: "";
   position: absolute;
@@ -103,7 +104,8 @@
   border-radius: inherit;
   pointer-events: none;
 }
-.game-detail-community-album__img::after { border-color: var(--stds-sem-color-inverse-elevation-4); } /* 앨범은 Figma inverse-elevation-4 */
+.game-detail-community-album__img::after,
+.game-detail-loa-theater__img::after { border-color: var(--stds-sem-color-inverse-elevation-4); } /* 앨범은 Figma inverse-elevation-4 · 로아 상영관 BEST · NEW도 같은 안쪽 테두리 (11-25) */
 /* 13 · 18 아이콘배너 — 다크 흰 10% · 라이트 흰 20% (사용자 11-19) */
 .game-detail-link-badge::after { border-color: var(--stds-glob-color-white-10); }
 :root[data-theme="light"] .main:not([data-theme="dark"]) .game-detail-link-badge::after { border-color: var(--stds-glob-color-white-20); }
@@ -505,7 +507,7 @@
 /* 15-2 BEST · 15-3 NEW — 320:180 4열 2줄 */
 .game-detail-loa-theater { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem 1.6rem; }
 .game-detail-loa-theater__item { display: flex; flex-direction: column; }
-.game-detail-loa-theater__img { aspect-ratio: 320 / 180; overflow: hidden; }
+.game-detail-loa-theater__img { position: relative; aspect-ratio: 320 / 180; overflow: hidden; border-radius: var(--stds-glob-border-radius-md); } /* 11-25 사용자 "보더랑 R값 추가" — 모서리 4 + 안쪽 테두리(위 ::after), UCC와 같게 */
 .game-detail-loa-theater__img img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .game-detail-loa-theater__name { margin-top: 1rem; }
 .game-detail-loa-theater__author { margin-top: 0.2rem; color: #8b78e9; } /* 시안 헥스 — 시멘틱 없음 */
@@ -531,9 +533,10 @@
   position: relative;
   overflow: hidden;
   aspect-ratio: 177.33 / 135.695;
-  border-radius: var(--stds-glob-border-radius-lg);
+  border-radius: var(--stds-glob-border-radius-md); /* 11-25 사용자 "R값 줄여줘" 8 → 4 (원복 = lg) */
 }
 .game-detail-community-album--wide .game-detail-community-album__img { aspect-ratio: 320 / 180; } /* 로아(데이터 communityAlbumWide) — 영상 썸네일 16:9, 11-25. 원복 = 이 줄 삭제 */
+.game-detail-community-album .game-detail-play { width: 3.2rem; height: 3.2rem; } /* UCC 썸네일 위 재생 아이콘 56 → 32 (11-25 사용자 "좀 더 작게") */
 .game-detail-community-album__img > img:first-child { display: block; width: 100%; height: 100%; object-fit: cover; }
 .game-detail-community-album__name { margin-top: 1.4rem; min-height: 4.4rem; } /* 제목은 늘 두 줄 자리 — 11-25 Text4 22×2 (전 Title7 24×2 = 4.8rem) */
 .game-detail-community-album__user { color: var(--stds-sem-color-on-surface-elevation-3); }
