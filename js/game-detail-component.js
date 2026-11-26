@@ -29,7 +29,7 @@ var GAME_DETAIL_DATA = {
     dir: 'lostark/',
     // 1 백그라운드를 콘텐츠 영역 높이만큼 채우고 고정 — 스크롤하면 콘텐츠만 올라감 (사용자 11-24, 로스트아크 이벤트 페이지 fixed_bg처럼)
     backgroundFixed: true,
-    backgroundGradient: '#2C2D42', // 고정 배경 아래 그라데이션 · 카드 덧댐 색 — 게임별 커스텀(사용자 11-24, 로스트아크 #503DAF → #30171B → #2F303A → #21222F → 11-25 #2C2D42(덧댐 · 그라데이션 둘 다, 원복 #21222F), #191919로 바꿔 봤다가 "원래대로"). 없으면 페이지 바탕(background-variant-1)
+    backgroundGradient: '#2D333A', // 11-26 새 배경(Figma 68494:503320)과 함께 #2C2D42 → #2D333A (사용자).  고정 배경 아래 그라데이션 · 카드 덧댐 색 — 게임별 커스텀(사용자 11-24, 로스트아크 #503DAF → #30171B → #2F303A → #21222F → 11-25 #2C2D42(덧댐 · 그라데이션 둘 다, 원복 #21222F), #191919로 바꿔 봤다가 "원래대로"). 없으면 페이지 바탕(background-variant-1)
     // 게임명 위 뱃지 (Badge/Left top · Client · Right top) — 시안의 모든 종류
     badges: [
       { label: '점검', kind: 'warning', icon: 'ic-v2-state-warning-circle-fill', inspection: true }, // 점검중일 때만 — 아래 게임 공지(점검) 띠와 한 묶음
@@ -492,7 +492,7 @@ function mountGameDetail(selector, gameId) {
       '</div>' +
       '<div v-else class="game-detail" :style="d.backgroundGradient ? { \'--game-detail-bg-gradient\': d.backgroundGradient } : null">' + // 게임 색(backgroundGradient)은 최상위에 — 배경 그라데이션 · 카드 바탕이 같이 씀 (11-24)
         // 1 백그라운드 (bg 480) — 유틸리티 바 뒤까지 깔리고 아래로 페이지 색에 녹아든다
-        '<div class="game-detail-background" :class="{ \'game-detail-background--fixed\': d.backgroundFixed }" aria-hidden="true"><img :src="img(\'Client3.0_PC게임상세_01_백그라운드_로스트아크.jpg?v=4\')" alt="" /></div>' +
+        '<div class="game-detail-background" :class="{ \'game-detail-background--fixed\': d.backgroundFixed }" aria-hidden="true"><img :src="img(\'Client3.0_PC게임상세_01_백그라운드_로스트아크.jpg?v=5\')" alt="" /></div>' + // v=5 = 11-26 Figma 68494:503320 bg 2790×720(png → jpg 92). 그 전 v=4 = 벨가르딘 정복전 2560×1080 (git 이력)
 
         '<div class="game-detail__contents">' +
           // ---- 게임명 ----
