@@ -98,6 +98,7 @@
 .game-detail-thumb::after,
 .game-detail-community-album__img::after,
 .game-detail-loa-theater__img::after,
+.game-detail-loa-theater-rec__img::after,
 .game-detail-link-badge::after {
   content: "";
   position: absolute;
@@ -107,7 +108,8 @@
   pointer-events: none;
 }
 .game-detail-community-album__img::after,
-.game-detail-loa-theater__img::after { border-color: var(--stds-sem-color-inverse-elevation-4); } /* 앨범은 Figma inverse-elevation-4 · 로아 상영관 BEST · NEW도 같은 안쪽 테두리 (11-25) */
+.game-detail-loa-theater__img::after,
+.game-detail-loa-theater-rec__img::after { border-color: var(--stds-sem-color-inverse-elevation-4); } /* 앨범은 Figma inverse-elevation-4 · 로아 상영관 BEST · NEW도 같은 안쪽 테두리 (11-25) · 11-26 추천(포스터 · 스트리머 카드)도 전부 (사용자 "전체적으로 보더") */
 /* 13 · 18 아이콘배너 — 다크 흰 10% · 라이트 흰 20% (사용자 11-19) */
 .game-detail-link-badge::after { border-color: var(--stds-glob-color-white-10); }
 :root[data-theme="light"] .main:not([data-theme="dark"]) .game-detail-link-badge::after { border-color: var(--stds-glob-color-white-20); }
@@ -470,7 +472,7 @@
 /* 15-1 추천 — 포스터(260:380) 5열 */
 .game-detail-loa-theater-rec { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1.6rem; }
 .game-detail-loa-theater-rec__item { display: flex; flex-direction: column; }
-.game-detail-loa-theater-rec__img { aspect-ratio: 260 / 380; overflow: hidden; border-radius: var(--stds-glob-border-radius-lg); }
+.game-detail-loa-theater-rec__img { position: relative; aspect-ratio: 260 / 380; overflow: hidden; border-radius: var(--stds-glob-border-radius-lg); } /* relative = 안쪽 테두리(::after) 기준 (11-26) */
 .game-detail-loa-theater-rec__img img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .game-detail-loa-theater-rec__name { padding-top: 1rem; }
 /* 스트리머 카드 — Figma 68449:481543 (사용자 11-24 "스트리머 쪽이 달라"). 칸 크기(260:380)는 포스터와 같고, 안쪽은 칸 폭에 비례(LG 149.5 기준 · MD 101.6이면 그만큼 작게):
@@ -480,7 +482,7 @@
   position: relative;
   container-type: inline-size;
   background: var(--stds-glob-color-black-10); /* 11-26 검정 10% (사용자) — 직전 rgba(234, 51, 153, 0.2)(추천 컴포넌트와 같은 색), 그 전 = #2e1e27(시안) */
-  box-shadow: inset 0 0 0 1px var(--stds-glob-color-white-4); /* 11-26 카드 공통 테두리와 같은 1px white-4 — 원복 = 이 줄 삭제 */
+  /* 테두리 = 포스터와 같은 안쪽 테두리(::after, inverse-elevation-4) — 11-26 잠깐 box-shadow inset 1px white-4였음 */
 }
 .game-detail-loa-theater-rec__streamer {
   position: absolute;
