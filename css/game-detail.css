@@ -50,7 +50,21 @@
      CSS 여러 배경은 앞에 쓴 게 위 — 검정을 맨 앞에(색 한 겹은 단색 그라데이션으로). 원복(검정이 그라데이션 아래) = 아래 두 줄 순서 바꾸고 검정을 var(--stds-glob-color-black-30) 단색으로 맨 뒤에 */
   background:
     linear-gradient(var(--stds-glob-color-black-30), var(--stds-glob-color-black-30)),
-    linear-gradient(transparent 14.4rem, var(--game-detail-bg-gradient, var(--stds-sem-color-background-variant-1)) 48rem);
+    linear-gradient(
+      color-mix(in srgb, var(--game-detail-bg-fade) 0%, transparent) 14.40rem,
+      color-mix(in srgb, var(--game-detail-bg-fade) 2.8%, transparent) 17.76rem,
+      color-mix(in srgb, var(--game-detail-bg-fade) 10.4%, transparent) 21.12rem,
+      color-mix(in srgb, var(--game-detail-bg-fade) 21.6%, transparent) 24.48rem,
+      color-mix(in srgb, var(--game-detail-bg-fade) 35.2%, transparent) 27.84rem,
+      color-mix(in srgb, var(--game-detail-bg-fade) 50%, transparent) 31.20rem,
+      color-mix(in srgb, var(--game-detail-bg-fade) 64.8%, transparent) 34.56rem,
+      color-mix(in srgb, var(--game-detail-bg-fade) 78.4%, transparent) 37.92rem,
+      color-mix(in srgb, var(--game-detail-bg-fade) 89.6%, transparent) 41.28rem,
+      color-mix(in srgb, var(--game-detail-bg-fade) 97.2%, transparent) 44.64rem,
+      color-mix(in srgb, var(--game-detail-bg-fade) 100%, transparent) 48.00rem);
+  --game-detail-bg-fade: var(--game-detail-bg-gradient, var(--stds-sem-color-background-variant-1));
+  /* 11-26 그라데이션을 부드럽게(smoothstep 3t²-2t³, 11단계) — 직선 그라데이션은 끝(480)에서 단색으로 꺾이는 자리가 줄처럼 보임(사용자 "경계가 있는 것 같아").
+     직전 = linear-gradient(transparent 14.4rem, var(--game-detail-bg-gradient, …) 48rem) */
   /* 11-26 그림 높이 = 480(기존 시안 높이, 사용자 "창 전체가 아니라 기존처럼") — 그라데이션은 그림 아래 70%(144 → 480)에서 게임 색으로, 그 아래는 게임 색 단색.
      직전(11-24~26) = 그림이 화면 높이를 채우고 그라데이션은 화면 아래 70%:
      linear-gradient(to top, var(--game-detail-bg-gradient, …), transparent) left bottom / 100% 70% no-repeat */
