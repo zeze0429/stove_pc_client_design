@@ -428,9 +428,9 @@
 .game-detail-more i { font-size: 1.6rem; }
 
 /* 15 로아상영관 — 로스트아크 한정 (15 · 16 · 17 모두 로스트아크 한정). 카드 바탕에 색 10%를 얹는다 */
-.game-detail-board--rec { background: rgba(234, 51, 153, 0.2); } /* 로아용 컴포넌트는 색 20%만(11-24 10→20) — 게임 색 덧댐 · 흰 4% 없음 (11-24 "덧대는 색 빼줘" → "배경 흰 4%도 빼줘") */
+.game-detail-board--rec { background: rgba(234, 51, 153, 0.15); } /* 로아용 컴포넌트는 색 15%만(11-24 10→20, 11-26 20→15) — 게임 색 덧댐 · 흰 4% 없음 (11-24 "덧대는 색 빼줘" → "배경 흰 4%도 빼줘") */
 .game-detail-board--best,
-.game-detail-board--new { background: rgba(80, 61, 175, 0.2); } /* 바탕 = 색 20%만(11-24 10→20)(11-24 로아용 — 게임 색 덧댐 · 흰 4% 뺌). 그 전 = 카드 공통 --game-detail-board-bg(테스트 11-24 흰4 + 게임 색 30%; 그 전 white 20→10, 직전 surface-variant-1 40% · 원복 50%)은 카드 공통과 같게 */
+.game-detail-board--new { background: rgba(80, 61, 175, 0.15); } /* 바탕 = 색 15%만(11-24 10→20, 11-26 20→15)(11-24 로아용 — 게임 색 덧댐 · 흰 4% 뺌). 그 전 = 카드 공통 --game-detail-board-bg(테스트 11-24 흰4 + 게임 색 30%; 그 전 white 20→10, 직전 surface-variant-1 40% · 원복 50%)은 카드 공통과 같게 */
 /* 로아 상영관 타이틀 · 전체보기 색 (11-25 사용자) — 타이틀 흰 100, 전체보기 흰 50. 그 전 = 카드 공통(타이틀 on-surface-elevation-1, 전체보기 on-surface-elevation-3) */
 :is(.game-detail-board--rec, .game-detail-board--best, .game-detail-board--new) .game-detail-board__title h2 { color: var(--stds-glob-color-white); }
 :is(.game-detail-board--rec, .game-detail-board--best, .game-detail-board--new) .game-detail-more { color: var(--stds-glob-color-white-50); }
