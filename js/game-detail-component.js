@@ -243,6 +243,7 @@ GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
     return m.label === 'Google Play' || m.label === 'App Store' ? m : Object.assign({}, m, { hidden: true });
   }),
   pcbangBanner: null,
+  linkBadges: [], // 11-26 사용자 "상단 PC방 혜택 버튼 제거" — 게임명 줄 13 PC방 혜택 아이콘형 뺌(원복 = 이 줄 삭제, 로아 것 물려받음)
   // 로아용 빼기
   loaTheaterRec: null, loaTheaterBest: null, loaTheaterNew: null, coupon: null, noticeCompact: null,
 });
