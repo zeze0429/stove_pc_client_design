@@ -246,9 +246,8 @@ GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
     { images: ['Client3.0_pc게임상세_2.jpg', 'Client3.0_pc게임상세_1.jpg', 'Client3.0_pc게임상세_서브배너_01.jpg'] },
     { images: ['PC상세_서브배너_kr_1728274569642.png'] },
   ],
-  // 10 바로가기 — 로아 것을 11-26 캡처대로 바꾸기 전 상태 그대로 (로아 변경은 로아에만: X 보임 · 커뮤니티 · Youtube 점 없음)
+  // 10 바로가기 — 로아 것을 11-26 캡처대로 바꾸기 전 상태(커뮤니티 · Youtube 점 없음). 공식 X는 로아처럼 숨김(11-26 사용자 "로드나인에서도 X 숨겨줘")
   shortcuts: GAME_DETAIL_DATA.lostark.shortcuts.map(function (x) {
-    if (x.label === '공식 X') return Object.assign({}, x, { hidden: false });
     if (x.label === '커뮤니티' || x.label === '공식 Youtube') return Object.assign({}, x, { dot: false });
     return x;
   }),
