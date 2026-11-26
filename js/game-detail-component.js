@@ -28,6 +28,7 @@ var GAME_DETAIL_DATA = {
   lostark: {
     dir: 'lostark/',
     // 1 백그라운드를 콘텐츠 영역 높이만큼 채우고 고정 — 스크롤하면 콘텐츠만 올라감 (사용자 11-24, 로스트아크 이벤트 페이지 fixed_bg처럼)
+    background: 'Client3.0_PC게임상세_01_백그라운드_로스트아크.jpg?v=5', // v=5 = 11-26 Figma 68494:503320 bg 2790×720(png → jpg 92)
     backgroundFixed: true,
     backgroundGradient: '#36414D', // 11-26 테마 색 #36414D (사용자) — 직전 #2D333A(새 배경 Figma 68494:503320과 함께), 그 전 #2C2D42.  고정 배경 아래 그라데이션 · 카드 덧댐 색 — 게임별 커스텀(사용자 11-24, 로스트아크 #503DAF → #30171B → #2F303A → #21222F → 11-25 #2C2D42(덧댐 · 그라데이션 둘 다, 원복 #21222F), #191919로 바꿔 봤다가 "원래대로"). 없으면 페이지 바탕(background-variant-1)
     // 게임명 위 뱃지 (Badge/Left top · Client · Right top) — 시안의 모든 종류
@@ -209,6 +210,38 @@ var GAME_DETAIL_DATA = {
   },
 };
 
+// 로드나인 (11-26 사용자 "로스트아크 컴포넌트 똑같이, 로아용(15 로아상영관 · 16 쿠폰 · 17 공지사항 축소형)은 빼고, 이미지는 변경").
+// 그림 = Figma 클라이언트_v3.1 68494:503323 (WIC_pc game_MD) — 배경 · 1단배너-배너형(크리에이터 모집) · 서브배너(게임 소개) · UCC 6장.
+// 글(공지 · 게시판 · 게임 정보 · 시스템 요구 사항 등)은 로스트아크 것 그대로 — 사용자 "콘텐츠 최신화는 내가 진행하면서 알려줄게".
+// Figma에 로드나인 그림이 없는 칸: 2 1단 풀배너 · 3 썸네일형은 위 그림을 임시로 돌려 씀, 13 PC방 혜택 배너형은 그림이 없어 뺌(pcbangBanner 없음).
+GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
+  dir: 'rodnine/',
+  background: 'Client3.0_PC게임상세_01_백그라운드_로드나인.jpg', // Figma bg 'image 878' 2790×720 (png → jpg 90)
+  backgroundGradient: '#191919', // Figma bg 'gradation' 끝 색
+  badges: GAME_DETAIL_DATA.lostark.badges.map(function (b) { // Figma: NEW만 보임
+    if (b.label === 'NEW') return Object.assign({}, b, { hidden: false });
+    if (b.label === 'UPDATE') return Object.assign({}, b, { hidden: true });
+    return b;
+  }),
+  fullBanner: ['event-01.jpg', 'subbanner-01.jpg'], // 임시 — 로드나인 풀배너 그림 받으면 교체
+  thumbnailBanner: [{ src: 'event-01.jpg' }, { src: 'subbanner-01.jpg' }, { src: 'Client3.0_PC게임상세_01_백그라운드_로드나인.jpg' }], // 임시
+  banner: { src: 'event-01.jpg', count: 5 }, // Figma 1_이벤트배너 1290×540 (재생 아이콘 없음)
+  subBanner: { src: 'subbanner-01.jpg', count: 5 }, // Figma 3_서브배너 630×279
+  // UCC = Figma 3_앨범형 게시판 그림 · 제목 그대로, 숫자는 다른 게임 기본(댓글 · 조회수 999)
+  communityAlbumWide: false,
+  communityAlbum: [
+    { src: 'ucc-01.jpg', video: true, title: '제목이 들어갑니다. 두줄까지 노출 됩니다.제목이 들어갑니다. 두줄까지 노출 됩니다.' },
+    { src: 'ucc-02.jpg', title: '모코코야 생일 축하해' },
+    { src: 'ucc-03.jpg', title: '[스크린샷] 예쁘게 찍히는 장소를 소개해드리겠습니다.' },
+    { src: 'ucc-04.jpg', title: '신규 어비스 던전 : 카양' },
+    { src: 'ucc-05.jpg', title: '모코코야 생일 축하해 오늘은 생일이니까 널 위해 준비했엉!!!!!!!' },
+    { src: 'ucc-06.jpg', title: '모코코야 생일 축하해~' },
+  ],
+  pcbangBanner: null,
+  // 로아용 빼기
+  loaTheaterRec: null, loaTheaterBest: null, loaTheaterNew: null, coupon: null, noticeCompact: null,
+});
+
 // 사이드바 항목 id(즐겨찾기는 'fav-lostark' 같은 별도 id) → 게임 카탈로그 id
 function gameDetailKey(id) {
   var entry = typeof gnbFindGameById === 'function' ? gnbFindGameById(id) : null;
@@ -238,7 +271,7 @@ function gameDetailHasListBadge(key, badge) {
 function gameDetailLinkBadges(key, data) {
   var list = gameDetailHasListBadge(key, 'link') ? [GAME_DETAIL_LINK_BADGE] : [];
   (data && data.linkBadges || []).forEach(function (l) {
-    list.push({ kind: l.kind, label: l.label, src: GAME_DETAIL_DIR + data.dir + l.icon });
+    list.push({ kind: l.kind, label: l.label, src: GAME_DETAIL_DIR + 'common/' + l.icon }); // 아이콘은 게임 공용(common/, 11-26 — 그 전 data.dir)
   });
   return list;
 }
@@ -332,6 +365,8 @@ function mountGameDetail(selector, gameId) {
         box.scrollLeft = Math.floor(this.thumbnailIndex / count) * count * step;
       },
       img: function (file) { return GAME_DETAIL_DIR + this.d.dir + file; },
+      // 게임마다 같은 UI 그림(재생 · 새 소식 점 · 이용 등급 아이콘 · 아이콘배너 아이콘)은 common/ 한 곳 (11-26 로드나인 추가하며 lostark/에서 옮김)
+      ui: function (file) { return GAME_DETAIL_DIR + 'common/' + file; },
       // 2 대표배너 넘김 — 옆으로 밀기 0.4s ease (온스토브 스토어 메인 캐러셀 swiper speed 400, 사용자 11-19).
       // 움직이는 동안 들어온 클릭은 무시, 복제 장에 닿으면 애니메이션 없이 진짜 장으로 바꿔 끝없이 돈다
       fullBannerGo: function (pos) {
@@ -492,7 +527,7 @@ function mountGameDetail(selector, gameId) {
       '</div>' +
       '<div v-else class="game-detail" :style="d.backgroundGradient ? { \'--game-detail-bg-gradient\': d.backgroundGradient } : null">' + // 게임 색(backgroundGradient)은 최상위에 — 배경 그라데이션 · 카드 바탕이 같이 씀 (11-24)
         // 1 백그라운드 (bg 480) — 유틸리티 바 뒤까지 깔리고 아래로 페이지 색에 녹아든다
-        '<div class="game-detail-background" :class="{ \'game-detail-background--fixed\': d.backgroundFixed }" aria-hidden="true"><img :src="img(\'Client3.0_PC게임상세_01_백그라운드_로스트아크.jpg?v=5\')" alt="" /></div>' + // v=5 = 11-26 Figma 68494:503320 bg 2790×720(png → jpg 92). 그 전 v=4 = 벨가르딘 정복전 2560×1080 (git 이력)
+        '<div class="game-detail-background" :class="{ \'game-detail-background--fixed\': d.backgroundFixed }" aria-hidden="true"><img :src="img(d.background)" alt="" /></div>' + // 그림 = 게임 데이터 background (11-26 로드나인 추가하며 데이터로 — 그 전 로스트아크 파일명 고정). 그 전 v=4 = 벨가르딘 정복전 2560×1080 (git 이력)
 
         '<div class="game-detail__contents">' +
           // ---- 게임명 ----
@@ -555,7 +590,7 @@ function mountGameDetail(selector, gameId) {
                   '<div ref="thumbs" class="game-detail-thumbnail-banner__thumbs">' + // 보이는 개수 = 줄 폭에 들어가는 만큼(4~6, 11-24), 한 쪽씩 통째로 넘김
                     '<button v-for="(m, i) in d.thumbnailBanner" class="game-detail-thumbnail-banner__thumb" :class="{ \'is-active\': i === thumbnailIndex }" type="button" @click="thumbnailIndex = i">' +
                       '<img :src="img(m.src)" alt="" />' +
-                      '<span v-if="m.video" class="game-detail-thumbnail-banner__play"><img :src="img(\'play-24.svg?v=2\')" alt="" /></span>' +
+                      '<span v-if="m.video" class="game-detail-thumbnail-banner__play"><img :src="ui(\'play-24.svg?v=2\')" alt="" /></span>' +
                     '</button>' +
                     '<span v-for="n in thumbFill" :key="\'fill\' + n" class="game-detail-thumbnail-banner__empty" aria-hidden="true"></span>' + // 마지막 쪽 빈칸 (11-24 "비워두지 말고 화이트 4로")
                   '</div>' +
@@ -568,7 +603,7 @@ function mountGameDetail(selector, gameId) {
                 '<div class="game-detail-banner">' +
                   '<div class="game-detail-banner__img">' +
                     '<img :src="img(d.banner.src)" alt="" />' +
-                    '<img v-if="d.banner.video" class="game-detail-play" :src="img(\'play-56.svg\')" alt="재생" />' +
+                    '<img v-if="d.banner.video" class="game-detail-play" :src="ui(\'play-56.svg\')" alt="재생" />' +
                   '</div>' +
                   '<div class="game-detail-banner__control">' +
                     '<button class="game-detail-chevron" type="button" aria-label="이전"><i class="ic-v2-control-arrow-left-line"></i></button>' +
@@ -641,7 +676,7 @@ function mountGameDetail(selector, gameId) {
                   '</div>' +
                   '<div class="game-detail-community-album" :class="{ \'game-detail-community-album--wide\': d.communityAlbumWide }">' + // --wide = 썸네일 16:9 (로아 11-25)
                     '<a v-for="u in d.communityAlbum" class="game-detail-community-album__item" href="#" @click.prevent>' +
-                      '<span class="game-detail-community-album__img"><img :src="img(u.src)" alt="" /><img v-if="u.video" class="game-detail-play" :src="img(\'play-56.svg\')" alt="재생" /></span>' +
+                      '<span class="game-detail-community-album__img"><img :src="img(u.src)" alt="" /><img v-if="u.video" class="game-detail-play" :src="ui(\'play-56.svg\')" alt="재생" /></span>' +
                       '<span class="game-detail-community-album__name stds-text4 fw-medium">{{ u.title }}</span>' + // 11-25 로아 상영관과 같게 Text4-M 13/22 (전엔 Title7 16/24)
                       '<span class="game-detail-community-album__user stds-text4 fw-regular">{{ u.user || \'%닉네임%\' }}</span>' +
                       '<span class="game-detail-community-album__meta stds-cap1 fw-medium">' +
@@ -690,10 +725,10 @@ function mountGameDetail(selector, gameId) {
                       '<div v-if="sec.rating" class="game-detail-rating">' + // 20 등급 및 게임물 내용 정보
                         '<p class="game-detail-rating__text stds-text3 fw-regular">{{ d.rating.text }}</p>' +
                         '<div class="game-detail-rating__icons">' +
-                          '<img v-for="r in d.rating.icons" :src="img(\'sysreq-rating-\' + r + \'.svg\')" alt="" />' +
+                          '<img v-for="r in d.rating.icons" :src="ui(\'sysreq-rating-\' + r + \'.svg\')" alt="" />' +
                           // 선정성 — Figma에서 레이어 6장으로만 나와 겹쳐 그린다
                           '<span class="game-detail-rating-sexual">' +
-                            '<img v-for="l in [\'shape\', \'path\', \'shape-2\', \'clip-1\', \'clip-2\', \'clip-3\']" :class="\'is-\' + l" :src="img(\'sysreq-rating-sexual-\' + l + \'.svg\')" alt="" />' +
+                            '<img v-for="l in [\'shape\', \'path\', \'shape-2\', \'clip-1\', \'clip-2\', \'clip-3\']" :class="\'is-\' + l" :src="ui(\'sysreq-rating-sexual-\' + l + \'.svg\')" alt="" />' +
                           '</span>' +
                         '</div>' +
                       '</div>' +
@@ -745,7 +780,7 @@ function mountGameDetail(selector, gameId) {
                   '<li v-for="s in d.shortcuts.filter(x => !x.hidden)"><a href="#" @click.prevent>' +
                     // X 로고 SVG는 마스크로 — 아이콘 폰트처럼 글자색(currentColor = 흰 50)을 따라감 (11-25, 그 전 = <img> · SVG 안 #EBEBEB)
                     '<span v-if="s.svg" class="game-detail-shortcut__svg" :style="{ \'--icon-url\': \'url(\' + img(s.svg) + \')\' }" aria-hidden="true"></span><i v-else :class="s.icon"></i>' +
-                    '<span class="game-detail-shortcut__label stds-text3 fw-regular">{{ s.label }}<img v-if="s.dot" class="game-detail-shortcut__dot" :src="img(\'shortcut-badge-new.svg\')" alt="" /></span>' +
+                    '<span class="game-detail-shortcut__label stds-text3 fw-regular">{{ s.label }}<img v-if="s.dot" class="game-detail-shortcut__dot" :src="ui(\'shortcut-badge-new.svg\')" alt="" /></span>' +
                     '<i class="game-detail-shortcut__arrow ic-v2-control-arrow-right-line"></i>' +
                   '</a></li>' +
                 '</ul>' +
@@ -769,7 +804,7 @@ function mountGameDetail(selector, gameId) {
               '</section>' +
 
               // 13 PC방 혜택 배너형 (component/banner/pcbang) — 아이콘형은 게임명 줄 link-badge--pcbang
-              '<a class="game-detail-pcbang-banner" href="#" @click.prevent><img :src="img(d.pcbangBanner)" alt="" /></a>' +
+              '<a v-if="d.pcbangBanner" class="game-detail-pcbang-banner" href="#" @click.prevent><img :src="img(d.pcbangBanner)" alt="" /></a>' + // 배너 그림이 있는 게임만 (11-26)
             '</div>' +
           '</div>' +
         '</div>' +
