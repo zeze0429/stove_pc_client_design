@@ -243,7 +243,7 @@ GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
     return m.label === 'Google Play' || m.label === 'App Store' ? m : Object.assign({}, m, { hidden: true });
   }),
   pcbangBanner: null,
-  linkBadges: [],
+  linkBadges: [], // 11-26 사용자 "상단 PC방 혜택 버튼 제거" — 게임명 줄 13 PC방 혜택 아이콘형 뺌(원복 = 이 줄 삭제, 로아 것 물려받음)
   // 8 시스템 요구사항 · 20 이용 등급 — 사용자 캡처(로드나인 사양) 그대로 (11-26). 제목도 캡처대로 '최소 사양' · '권장 사양' · '지원언어' · '이용등급'
   systemRequirements: [
     { title: '최소 사양', rows: [
@@ -269,7 +269,7 @@ GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
     { title: '[이벤트] 하칸의 특별 미션 이벤트', reply: '22', badge: 'OFFICIAL', user: 'GM Jubar', date: '2026-11-18', view: '1076' },
     { title: '[이벤트] 황금 달빛의 숲 던전 출석 이벤트', reply: '22', badge: 'OFFICIAL', user: 'GM Jubar', date: '2026-11-18', view: '1124' },
     { title: '[이벤트] 복귀 유저 소환 출석 이벤트', reply: '22', badge: 'OFFICIAL', user: 'GM Jubar', date: '2026-11-18', view: '677' },
-  ], // 11-26 사용자 "상단 PC방 혜택 버튼 제거" — 게임명 줄 13 PC방 혜택 아이콘형 뺌(원복 = 이 줄 삭제, 로아 것 물려받음)
+  ],
   // 로아용 빼기
   loaTheaterRec: null, loaTheaterBest: null, loaTheaterNew: null, coupon: null, noticeCompact: null,
 });
