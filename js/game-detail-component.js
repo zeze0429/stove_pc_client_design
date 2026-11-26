@@ -238,6 +238,10 @@ GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
     { src: 'ucc-05.jpg', title: '모코코야 생일 축하해 오늘은 생일이니까 널 위해 준비했엉!!!!!!!' },
     { src: 'ucc-06.jpg', title: '모코코야 생일 축하해~' },
   ],
+  // 마켓 다운로드 — Google Play · App Store만 보이고 나머지는 숨김(데이터 유지, 11-26 사용자)
+  marketDownload: GAME_DETAIL_DATA.lostark.marketDownload.map(function (m) {
+    return m.label === 'Google Play' || m.label === 'App Store' ? m : Object.assign({}, m, { hidden: true });
+  }),
   pcbangBanner: null,
   // 로아용 빼기
   loaTheaterRec: null, loaTheaterBest: null, loaTheaterNew: null, coupon: null, noticeCompact: null,
@@ -797,7 +801,7 @@ function mountGameDetail(selector, gameId) {
               '<section class="game-detail-board">' +
                 '<div class="game-detail-board__head"><h2 class="stds-title8 fw-bold">마켓 다운로드</h2></div>' +
                 '<ul class="game-detail-market-download">' +
-                  '<li v-for="m in d.marketDownload"><a href="#" @click.prevent>' +
+                  '<li v-for="m in d.marketDownload.filter(x => !x.hidden)"><a href="#" @click.prevent>' + // hidden = 화면에서만 숨김 (11-26)
                     '<i :class="m.icon"></i><span class="stds-text3 fw-regular">{{ m.label }}</span>' +
                     '<button v-if="m.qr" class="game-detail-market-download__qr stds-btn3 fw-medium" type="button" @click.stop.prevent><i class="ic-v2-hardware-qr-code-fill"></i>QR</button>' +
                   '</a></li>' +
