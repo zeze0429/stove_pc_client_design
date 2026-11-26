@@ -70,7 +70,9 @@ var GAME_DETAIL_DATA = {
       return { src: 'Client3.0_PC게임상세_07_1단풀배너_로스트아크_' + (n < 10 ? '0' : '') + n + '.jpg?v=5' };
     })),
     // 4 1단배너-배너형 (component/banner/event)
-    banner: { src: 'event-01.jpg', video: true, count: 5 },
+    // 11-26 사용자 그림 5장(다운로드 > 새 폴더 > 로스트아크, 파일명 그대로 · 이름 속 숫자 큰 = 최신 먼저). 넘김 · 점 누르기 됨.
+    //   영상 아님 → 재생 아이콘 뺌(video 없음). 그 전 = { src: 'event-01.jpg', video: true, count: 5 }
+    banner: { images: ['Client배너_1794957267691.jpg', 'Promotion_Banner_1793748617020.jpg', '스토브_클라이언트_신버전_1793747646593.jpg', 'Client배너_1793747557521.jpg', 'Client배너_1792538287005.jpg'] },
     // ---- 로스트아크 한정 (15 · 16 · 17) — 다른 게임은 이 키를 넣지 않는다 ----
     // 15 로아상영관 (15-1 추천 · 15-2 BEST · 15-3 NEW)
     loaTheaterRec: [
@@ -162,8 +164,11 @@ var GAME_DETAIL_DATA = {
       { icon: 'ic-v2-logo-youtube-fill', label: '공식 Youtube' },
       { icon: 'ic-v2-navigation-message-fill', label: '리사의 편지', hidden: true },
     ],
-    // 11 서브배너
-    subBanner: { src: 'subbanner-01.jpg', count: 5 },
+    // 11 서브배너 — 묶음마다 서브배너 한 개(여러 장이면 점으로 넘김, 한 장이면 점 없음). 11-26 사용자 그림 4장(파일명 그대로, 번호 순 · 전투정보실 끝)
+    //   그 전 = subBanner: { src: 'subbanner-01.jpg', count: 5 }
+    subBanners: [
+      { images: ['01_핵심가이드.png', '03_신규복귀전용혜택.png', '04_스토브서브배너.jpg', '서브배너_.전투정보실.jpg'] },
+    ],
     // 12 마켓다운로드링크 + QR (component/marketdownload)
     marketDownload: [
       { icon: 'ic-v2-logo-google-playstore-fill', label: 'Google Play', qr: true },
@@ -226,8 +231,17 @@ GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
   fullBanner: ['event-01.jpg', 'subbanner-01.jpg'], // 임시 — 로드나인 풀배너 그림 받으면 교체
   thumbnailBannerHidden: true, // 11-26 사용자 "로드나인은 썸네일형 배너 숨겨줘" — 줄만 지우면 다시 보임
   thumbnailBanner: [{ src: 'event-01.jpg' }, { src: 'subbanner-01.jpg' }, { src: 'Client3.0_PC게임상세_01_백그라운드_로드나인.jpg' }], // 임시
-  banner: { src: 'event-01.jpg', count: 5 }, // Figma 1_이벤트배너 1290×540 (재생 아이콘 없음)
-  subBanner: { src: 'subbanner-01.jpg', count: 5 }, // Figma 3_서브배너 630×279
+  // 4 1단배너 — 11-26 사용자 그림 4장(다운로드 > 새 폴더 > 로드나인, 파일명 그대로). 그 전 = Figma 1_이벤트배너 event-01.jpg 1290×540
+  banner: { images: ['1290x540_KR_1794963102180.jpg', 'LN_B_1290x540_KR.jpg', '클라3_PC상세_1단배너(배너형)_1290x540_복귀_kr_1789986286852.png', '클라3_PC상세_1단배너(배너형)_1290x540_1723199353520.jpg'] },
+  // 11 서브배너 2개 (11-26 사용자) — ① 길드 모집 · 이벤트 · 게임 소개 ② 카카오톡 한 장. 그 전 = Figma 3_서브배너 subbanner-01.jpg 630×279
+  subBanners: [
+    { images: ['Client3.0_pc게임상세_2.jpg', 'Client3.0_pc게임상세_1.jpg', 'Client3.0_pc게임상세_서브배너_01.jpg'] },
+    { images: ['PC상세_서브배너_kr_1728274569642.png'] },
+  ],
+  // 오른쪽 열 = 서브배너 · 서브배너 · 바로가기만 (11-26 사용자) — 게임 정보 · 마켓 다운로드 숨김, 서브배너를 바로가기 위로. 원복 = 이 3줄 삭제
+  summaryHidden: true,
+  marketDownloadHidden: true,
+  subBannerTop: true,
   // UCC = Figma 3_앨범형 게시판 그림 · 제목 그대로, 숫자는 다른 게임 기본(댓글 · 조회수 999)
   communityAlbumWide: false,
   communityAlbum: [
@@ -324,6 +338,18 @@ function gameDetailBoardListTpl(cond) {
   );
 }
 
+// 11 서브배너 — d.subBanners 묶음마다 하나씩. 여러 장이면 아래 점(누르면 그 장), 한 장이면 점 없음 (11-26). cond = 보일 조건
+function gameDetailSubBannerTpl(cond) {
+  return (
+    '<template v-if="' + cond + '"><div v-for="(b, bi) in d.subBanners" class="game-detail-sub-banner">' +
+      '<img :src="img(b.images[subBannerIndex[bi]])" alt="" />' +
+      '<span v-if="b.images.length > 1" class="game-detail-indicator game-detail-indicator--sm">' +
+        '<span v-for="(m, i) in b.images" role="button" :aria-label="(i + 1) + \'번째 배너\'" :class="{ \'is-active\': i === subBannerIndex[bi] }" @click="subBannerIndex[bi] = i"></span>' +
+      '</span>' +
+    '</div></template>'
+  );
+}
+
 // 게임명 줄 오른쪽 아이콘배너 — [18 링크 지원(뱃지 있을 때)] + 게임 데이터의 아이콘배너(13 PC방 혜택 등)
 function gameDetailLinkBadges(key, data) {
   var list = gameDetailHasListBadge(key, 'link') ? [GAME_DETAIL_LINK_BADGE] : [];
@@ -360,6 +386,8 @@ function mountGameDetail(selector, gameId) {
         fullBannerPos: 1,
         fullBannerAnim: false,
         thumbnailIndex: 0,
+        bannerIndex: 0, // 4 1단배너 지금 장 (11-26 넘김 · 점 누르기)
+        subBannerIndex: data && data.subBanners ? data.subBanners.map(function () { return 0; }) : [], // 11 서브배너 묶음마다 지금 장
         thumbFill: 0,
         // 점검중 — '점검' 뱃지 + 게임 공지(점검) 띠를 한 묶음으로 (하단 설정 패널 '게임 상세 설정 > 점검중', 사용자 11-19)
         inspection: typeof protoSettingsRead === 'function' ? !!protoSettingsRead().gameDetailInspection : true,
@@ -401,6 +429,7 @@ function mountGameDetail(selector, gameId) {
       if (typeof protoSettingsSubscribe === 'function') protoSettingsSubscribe(function (s) { self.inspection = !!s.gameDetailInspection; self.fullBannerOn = !!s.gameDetailFullBanner; });
     },
     methods: {
+      bannerStep: function (dir) { var n = this.d.banner.images.length; this.bannerIndex = (this.bannerIndex + dir + n) % n; }, // 끝에서 처음으로 돌아감
       openLink: function (url) { if (url) window.open(url, '_blank', 'noopener'); }, // 전체보기 등 바깥 링크 (11-26)
       // 고른 썸네일이 있는 쪽으로 줄을 넘김. 한 쪽 = 보이는 개수(--thumb-count, 줄 폭에 맞춰 JS가 정함, 최대 6).
       // 마지막 쪽이 덜 차도 같은 칸 단위로 넘기도록 줄 끝에 빈칸(thumbFill개, 흰 4% 상자)을 둔다.
@@ -660,13 +689,13 @@ function mountGameDetail(selector, gameId) {
                 // 4 1단배너-배너형 (component/banner/event)
                 '<div class="game-detail-banner">' +
                   '<div class="game-detail-banner__img">' +
-                    '<img :src="img(d.banner.src)" alt="" />' +
+                    '<img :src="img(d.banner.images[bannerIndex])" alt="" />' +
                     '<img v-if="d.banner.video" class="game-detail-play" :src="ui(\'play-56.svg\')" alt="재생" />' +
                   '</div>' +
                   '<div class="game-detail-banner__control">' +
-                    '<button class="game-detail-chevron" type="button" aria-label="이전"><i class="ic-v2-control-arrow-left-line"></i></button>' +
-                    '<span class="game-detail-indicator"><span v-for="n in d.banner.count" :class="{ \'is-active\': n === 1 }"></span></span>' +
-                    '<button class="game-detail-chevron" type="button" aria-label="다음"><i class="ic-v2-control-arrow-right-line"></i></button>' +
+                    '<button class="game-detail-chevron" type="button" aria-label="이전" @click="bannerStep(-1)"><i class="ic-v2-control-arrow-left-line"></i></button>' +
+                    '<span class="game-detail-indicator"><span v-for="(m, i) in d.banner.images" role="button" :aria-label="(i + 1) + \'번째 배너\'" :class="{ \'is-active\': i === bannerIndex }" @click="bannerIndex = i"></span></span>' +
+                    '<button class="game-detail-chevron" type="button" aria-label="다음" @click="bannerStep(1)"><i class="ic-v2-control-arrow-right-line"></i></button>' +
                   '</div>' +
                 '</div>' +
 
@@ -787,7 +816,7 @@ function mountGameDetail(selector, gameId) {
             // ================= right =================
             '<div class="game-detail__right">' +
               // 9 게임요약 — 이 카드만 바탕 70%
-              '<section class="game-detail-board game-detail-board--summary">' +
+              '<section v-if="!d.summaryHidden" class="game-detail-board game-detail-board--summary">' + // 숨김 = summaryHidden (11-26)
                 '<div class="game-detail-board__head"><h2 class="stds-title8 fw-bold">게임 정보</h2></div>' +
                 '<div class="game-detail-summary stds-text3 fw-regular">' +
                   '<p class="game-detail-summary__tagline">{{ d.summary.tagline }}</p>' +
@@ -819,6 +848,9 @@ function mountGameDetail(selector, gameId) {
                 '</div>' +
               '</section>' +
 
+              // 11 서브배너 — 바로가기 위 자리 (subBannerTop 게임, 로드나인 11-26)
+              gameDetailSubBannerTpl('d.subBannerTop') +
+
               // 10 바로가기
               '<section class="game-detail-board">' +
                 '<div class="game-detail-board__head"><h2 class="stds-title8 fw-bold">바로가기</h2></div>' +
@@ -832,14 +864,11 @@ function mountGameDetail(selector, gameId) {
                 '</ul>' +
               '</section>' +
 
-              // 11 서브배너
-              '<div class="game-detail-sub-banner">' +
-                '<img :src="img(d.subBanner.src)" alt="" />' +
-                '<span class="game-detail-indicator game-detail-indicator--sm"><span v-for="n in d.subBanner.count" :class="{ \'is-active\': n === 1 }"></span></span>' +
-              '</div>' +
+              // 11 서브배너 — 기본 자리 (바로가기 아래)
+              gameDetailSubBannerTpl('!d.subBannerTop') +
 
               // 12 마켓다운로드링크 + QR (component/marketdownload)
-              '<section class="game-detail-board">' +
+              '<section v-if="!d.marketDownloadHidden" class="game-detail-board">' + // 숨김 = marketDownloadHidden (11-26)
                 '<div class="game-detail-board__head"><h2 class="stds-title8 fw-bold">마켓 다운로드</h2></div>' +
                 '<ul class="game-detail-market-download">' +
                   '<li v-for="m in d.marketDownload.filter(x => !x.hidden)"><a href="#" @click.prevent>' + // hidden = 화면에서만 숨김 (11-26)
