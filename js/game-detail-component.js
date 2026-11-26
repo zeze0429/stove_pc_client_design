@@ -243,7 +243,33 @@ GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
     return m.label === 'Google Play' || m.label === 'App Store' ? m : Object.assign({}, m, { hidden: true });
   }),
   pcbangBanner: null,
-  linkBadges: [], // 11-26 사용자 "상단 PC방 혜택 버튼 제거" — 게임명 줄 13 PC방 혜택 아이콘형 뺌(원복 = 이 줄 삭제, 로아 것 물려받음)
+  linkBadges: [],
+  // 8 시스템 요구사항 · 20 이용 등급 — 사용자 캡처(로드나인 사양) 그대로 (11-26). 제목도 캡처대로 '최소 사양' · '권장 사양' · '지원언어' · '이용등급'
+  systemRequirements: [
+    { title: '최소 사양', rows: [
+      ['OS', 'Windows 10 64-bit 이상 (최신 Windows 권장)'], ['Processor', 'IntelCore i5-6500 2.6Ghz 이상'], ['Memory', '8GB 이상'],
+      ['Graphics', 'NVIDIA GeForce GTX 960 4GB 이상'], ['DirectX', 'DirectX11 이상'], ['Hard Drive', '50GB SSD 이상'],
+    ] },
+    { title: '권장 사양', rows: [
+      ['OS', 'Windows 10 64-bit 이상'], ['Processor', 'IntelCore i5-11600K 이상'], ['Memory', '16GB 이상'],
+      ['Graphics', 'NVIDIA GeForce GTX 1660 6GB 이상'], ['DirectX', 'DirectX11 이상'], ['Hard Drive', '50GB SSD 이상'],
+    ] },
+    { title: '지원언어', text: '한국어  중국어(번체)' },
+    { title: '이용등급', rating: true },
+  ],
+  rating: { text: '청소년이용불가', icons: ['18', 'violence', 'speculation'], sexual: false }, // 청소년이용불가 · 폭력성 · 사행성
+  // 7 커뮤니티-게시판형 → 이벤트 게시판, 배너 밑으로 (11-26 사용자) — page.onstove.com/L9/global/list/128075 이벤트(KR) 말머리 [이벤트] 최근 5개
+  //   조회수는 사용자 캡처의 정확한 숫자(목록은 1.8K처럼 줄여 보임). 원복 = 이 4줄 삭제(로아 자유 게시판 · 원래 자리)
+  communityBoardTop: true,
+  communityBoardTitle: '이벤트',
+  communityBoardLink: 'https://page.onstove.com/L9/global/list/128075?page=1',
+  communityBoard: [
+    { title: '[이벤트] 라엘의 특별 출석 이벤트', reply: '10', badge: 'OFFICIAL', user: 'GM Jubar', date: '2026-11-24', view: '1818' },
+    { title: '[이벤트] 하칸의 기백 출석 이벤트', reply: '25', badge: 'OFFICIAL', user: 'GM Jubar', date: '2026-11-18', view: '1919' },
+    { title: '[이벤트] 하칸의 특별 미션 이벤트', reply: '22', badge: 'OFFICIAL', user: 'GM Jubar', date: '2026-11-18', view: '1076' },
+    { title: '[이벤트] 황금 달빛의 숲 던전 출석 이벤트', reply: '22', badge: 'OFFICIAL', user: 'GM Jubar', date: '2026-11-18', view: '1124' },
+    { title: '[이벤트] 복귀 유저 소환 출석 이벤트', reply: '22', badge: 'OFFICIAL', user: 'GM Jubar', date: '2026-11-18', view: '677' },
+  ], // 11-26 사용자 "상단 PC방 혜택 버튼 제거" — 게임명 줄 13 PC방 혜택 아이콘형 뺌(원복 = 이 줄 삭제, 로아 것 물려받음)
   // 로아용 빼기
   loaTheaterRec: null, loaTheaterBest: null, loaTheaterNew: null, coupon: null, noticeCompact: null,
 });
@@ -271,6 +297,29 @@ var GAME_DETAIL_LINK_BADGE = { kind: 'link', label: '링크 지원 게임', src:
 function gameDetailHasListBadge(key, badge) {
   var info = typeof gameInfo === 'function' ? gameInfo(key) : null;
   return !!info && info.badges.indexOf(badge) !== -1;
+}
+
+// 7 커뮤니티-게시판형 (component/board/list) — 자유 게시판이 기본. 게임 데이터로 제목(communityBoardTitle) · 자리(communityBoardTop = 배너 밑) ·
+// 전체보기 링크(communityBoardLink) · 작성자 앞 말(badge, 없으면 gm일 때 'GM')을 바꾼다 (11-26 로드나인 이벤트 게시판). cond = 보일 조건
+function gameDetailBoardListTpl(cond) {
+  return (
+                '<section v-if="' + cond + '" class="game-detail-board">' +
+                  '<div class="game-detail-board__title">' +
+                    '<h2 class="stds-title8 fw-bold">{{ d.communityBoardTitle || \'자유 게시판\' }}</h2>' +
+                    '<button class="game-detail-more stds-btn2 fw-regular" type="button" @click="openLink(d.communityBoardLink)">전체보기<i class="ic-v2-control-arrow-right-line"></i></button>' + // 링크 있는 게임만 새 창
+                  '</div>' +
+                  '<ul class="game-detail-community-board">' +
+                    '<li v-for="p in d.communityBoard"><a class="game-detail-community-board__row" href="#" @click.prevent>' +
+                      '<span class="game-detail-community-board__title stds-text4 fw-medium"><span class="game-detail-community-board__text">{{ p.title }}</span><span v-if="p.reply" class="game-detail-community-board__reply">[{{ p.reply }}]</span></span>' + // 11-25 로아 상영관과 같게 Text4-M 13/22 (전 Title7 16/24)
+                      '<span class="game-detail-community-board__info">' +
+                        '<span class="stds-text4"><span v-if="p.gm || p.badge" class="game-detail-community-board__gm fw-medium">{{ (p.badge || \'GM\') + \' \' }}</span><span class="fw-regular">{{ p.user }}</span></span>' +
+                        '<span class="game-detail-community-board__date stds-cap1 fw-medium">{{ p.date }}</span>' +
+                        '<span class="game-detail-community-board__date stds-cap1 fw-medium"><i class="ic-v2-community-number-of-view-line"></i>{{ p.view }}</span>' +
+                      '</span>' +
+                    '</a></li>' +
+                  '</ul>' +
+                '</section>'
+  );
 }
 
 // 게임명 줄 오른쪽 아이콘배너 — [18 링크 지원(뱃지 있을 때)] + 게임 데이터의 아이콘배너(13 PC방 혜택 등)
@@ -350,6 +399,7 @@ function mountGameDetail(selector, gameId) {
       if (typeof protoSettingsSubscribe === 'function') protoSettingsSubscribe(function (s) { self.inspection = !!s.gameDetailInspection; self.fullBannerOn = !!s.gameDetailFullBanner; });
     },
     methods: {
+      openLink: function (url) { if (url) window.open(url, '_blank', 'noopener'); }, // 전체보기 등 바깥 링크 (11-26)
       // 고른 썸네일이 있는 쪽으로 줄을 넘김. 한 쪽 = 보이는 개수(--thumb-count, 줄 폭에 맞춰 JS가 정함, 최대 6).
       // 마지막 쪽이 덜 차도 같은 칸 단위로 넘기도록 줄 끝에 빈칸(thumbFill개, 흰 4% 상자)을 둔다.
       thumbPage: function () {
@@ -618,6 +668,9 @@ function mountGameDetail(selector, gameId) {
                   '</div>' +
                 '</div>' +
 
+                // 7 커뮤니티-게시판형 — 배너 밑 자리 (로드나인 이벤트 게시판, 11-26 사용자 "자유게시판을 배너 밑에")
+                gameDetailBoardListTpl('d.communityBoardTop') +
+
                 // 15-1 로아상영관 추천 (포스터 5열) — 로스트아크 한정
                 '<section v-if="d.loaTheaterRec" class="game-detail-board game-detail-board--rec">' +
                   '<div class="game-detail-board__title">' +
@@ -700,23 +753,8 @@ function mountGameDetail(selector, gameId) {
                   '</div>' +
                 '</section>' +
 
-                // 7 커뮤니티-게시판형 (component/board/list) — 자유 게시판
-                '<section class="game-detail-board">' +
-                  '<div class="game-detail-board__title">' +
-                    '<h2 class="stds-title8 fw-bold">자유 게시판</h2>' +
-                    '<button class="game-detail-more stds-btn2 fw-regular" type="button">전체보기<i class="ic-v2-control-arrow-right-line"></i></button>' +
-                  '</div>' +
-                  '<ul class="game-detail-community-board">' +
-                    '<li v-for="p in d.communityBoard"><a class="game-detail-community-board__row" href="#" @click.prevent>' +
-                      '<span class="game-detail-community-board__title stds-text4 fw-medium"><span class="game-detail-community-board__text">{{ p.title }}</span><span v-if="p.reply" class="game-detail-community-board__reply">[{{ p.reply }}]</span></span>' + // 11-25 로아 상영관과 같게 Text4-M 13/22 (전 Title7 16/24)
-                      '<span class="game-detail-community-board__info">' +
-                        '<span class="stds-text4"><template v-if="p.gm"><span class="game-detail-community-board__gm fw-medium">GM</span> </template><span class="fw-regular">{{ p.user }}</span></span>' +
-                        '<span class="game-detail-community-board__date stds-cap1 fw-medium">{{ p.date }}</span>' +
-                        '<span class="game-detail-community-board__date stds-cap1 fw-medium"><i class="ic-v2-community-number-of-view-line"></i>{{ p.view }}</span>' +
-                      '</span>' +
-                    '</a></li>' +
-                  '</ul>' +
-                '</section>' +
+                // 7 커뮤니티-게시판형 — 기본 자리 (communityBoardTop 게임은 배너 밑으로 옮김, 11-26)
+                gameDetailBoardListTpl('!d.communityBoardTop') +
 
                 // 8 시스템 요구사항 (component/additional info)
                 '<section class="game-detail-board">' +
@@ -733,7 +771,7 @@ function mountGameDetail(selector, gameId) {
                         '<div class="game-detail-rating__icons">' +
                           '<img v-for="r in d.rating.icons" :src="ui(\'sysreq-rating-\' + r + \'.svg\')" alt="" />' +
                           // 선정성 — Figma에서 레이어 6장으로만 나와 겹쳐 그린다
-                          '<span class="game-detail-rating-sexual">' +
+                          '<span v-if="d.rating.sexual !== false" class="game-detail-rating-sexual">' + // sexual: false 게임은 뺌 (로드나인 11-26)
                             '<img v-for="l in [\'shape\', \'path\', \'shape-2\', \'clip-1\', \'clip-2\', \'clip-3\']" :class="\'is-\' + l" :src="ui(\'sysreq-rating-sexual-\' + l + \'.svg\')" alt="" />' +
                           '</span>' +
                         '</div>' +
