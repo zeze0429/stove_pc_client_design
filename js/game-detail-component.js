@@ -258,6 +258,8 @@ GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
     { title: '이용등급', rating: true },
   ],
   rating: { text: '청소년이용불가', icons: ['18', 'violence', 'speculation'], sexual: false }, // 청소년이용불가 · 폭력성 · 사행성
+  communityApiHidden: true, // 11-26 사용자 "공지사항, UCC는 숨겨줘" — 줄만 지우면 다시 보임
+  communityAlbumHidden: true, // 〃 UCC 게시판
   // 7 커뮤니티-게시판형 → 이벤트 게시판, 배너 밑으로 (11-26 사용자) — page.onstove.com/L9/global/list/128075 이벤트(KR) 말머리 [이벤트] 최근 5개
   //   조회수는 사용자 캡처의 정확한 숫자(목록은 1.8K처럼 줄여 보임). 원복 = 이 4줄 삭제(로아 자유 게시판 · 원래 자리)
   communityBoardTop: true,
@@ -714,7 +716,7 @@ function mountGameDetail(selector, gameId) {
                 '</section></template>' +
 
                 // 5 커뮤니티-api연동형 (component/board/notice) — 공지사항
-                '<section class="game-detail-board">' +
+                '<section v-if="!d.communityApiHidden" class="game-detail-board">' + // 숨김 = communityApiHidden (11-26)
                   '<div class="game-detail-board__title">' +
                     '<h2 class="stds-title8 fw-bold">공지사항</h2>' +
                     '<button class="game-detail-more stds-btn2 fw-regular" type="button">전체보기<i class="ic-v2-control-arrow-right-line"></i></button>' +
@@ -728,7 +730,7 @@ function mountGameDetail(selector, gameId) {
                 '</section>' +
 
                 // 6 커뮤니티-앨범형 (component/board/album) — UCC 게시판
-                '<section class="game-detail-board">' +
+                '<section v-if="!d.communityAlbumHidden" class="game-detail-board">' + // 숨김 = communityAlbumHidden (11-26)
                   '<div class="game-detail-board__title">' +
                     '<h2 class="stds-title8 fw-bold">UCC 게시판</h2>' +
                     '<button class="game-detail-more stds-btn2 fw-regular" type="button">전체보기<i class="ic-v2-control-arrow-right-line"></i></button>' +
