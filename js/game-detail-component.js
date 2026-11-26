@@ -179,6 +179,10 @@ var GAME_DETAIL_DATA = {
       { icon: 'ic-v2-logo-galaxystore-fill', label: 'Galaxy Store' },
       { icon: 'ic-v2-control-long-arrow-up-circle-fill', label: '마켓다운로드링크' },
     ],
+    // 오른쪽 열 순서 — 이 목록 순서대로, 없는 부품은 숨김 (11-26 사용자 "서브배너/쿠폰/공지사항/바로가기/게임정보, 나머지 숨기기" → 마켓 다운로드 · PC방 혜택 배너 숨김)
+    //   이름: summary 게임 정보 · coupon 쿠폰 · noticeCompact 공지사항 축소형 · shortcuts 바로가기 · subBanner 서브배너 · marketDownload 마켓 다운로드 · pcbangBanner PC방 혜택 배너
+    //   원복 = 이 줄 삭제(그 전 순서: 게임 정보 · 쿠폰 · 공지사항 · 바로가기 · 서브배너 · 마켓 다운로드 · PC방 혜택 배너, 전부 보임)
+    rightOrder: ['subBanner', 'coupon', 'noticeCompact', 'shortcuts', 'summary'],
     // 13 PC방 혜택 배너형 — 이미지 600×200(2배수 → 300×100), 파일명 Client3.0_PC게임상세_06_PC방혜택배너_게임명 (사용자 11-19)
     pcbangBanner: 'Client3.0_PC게임상세_06_PC방혜택배너_로스트아크.png',
     // 8 시스템 요구사항 — Figma 원문 그대로 (두 번째 제목도 시안대로 "최소 요구 사항")
@@ -238,10 +242,8 @@ GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
     { images: ['Client3.0_pc게임상세_2.jpg', 'Client3.0_pc게임상세_1.jpg', 'Client3.0_pc게임상세_서브배너_01.jpg'] },
     { images: ['PC상세_서브배너_kr_1728274569642.png'] },
   ],
-  // 오른쪽 열 = 서브배너 · 서브배너 · 바로가기만 (11-26 사용자) — 게임 정보 · 마켓 다운로드 숨김, 서브배너를 바로가기 위로. 원복 = 이 3줄 삭제
-  summaryHidden: true,
-  marketDownloadHidden: true,
-  subBannerTop: true,
+  // 오른쪽 열 = 서브배너 · 서브배너 · 바로가기만 (11-26 사용자) — 나머지(게임 정보 · 마켓 다운로드 등) 숨김. 원복 = 이 줄 삭제(로아 순서 물려받음)
+  rightOrder: ['subBanner', 'shortcuts'],
   // UCC = Figma 3_앨범형 게시판 그림 · 제목 그대로, 숫자는 다른 게임 기본(댓글 · 조회수 999)
   communityAlbumWide: false,
   communityAlbum: [
@@ -338,10 +340,10 @@ function gameDetailBoardListTpl(cond) {
   );
 }
 
-// 11 서브배너 — d.subBanners 묶음마다 하나씩. 여러 장이면 아래 점(누르면 그 장), 한 장이면 점 없음 (11-26). cond = 보일 조건
-function gameDetailSubBannerTpl(cond) {
+// 11 서브배너 — d.subBanners 묶음마다 하나씩. 여러 장이면 아래 점(누르면 그 장), 한 장이면 점 없음 (11-26). 자리 · 숨김은 rightOrder
+function gameDetailSubBannerTpl() {
   return (
-    '<template v-if="' + cond + '"><div v-for="(b, bi) in d.subBanners" class="game-detail-sub-banner">' +
+    '<template v-if="rv(\'subBanner\')"><div v-for="(b, bi) in d.subBanners" :style="rs(\'subBanner\')" class="game-detail-sub-banner">' +
       '<img :src="img(b.images[subBannerIndex[bi]])" alt="" />' +
       '<span v-if="b.images.length > 1" class="game-detail-indicator game-detail-indicator--sm">' +
         '<span v-for="(m, i) in b.images" role="button" :aria-label="(i + 1) + \'번째 배너\'" :class="{ \'is-active\': i === subBannerIndex[bi] }" @click="subBannerIndex[bi] = i"></span>' +
@@ -429,6 +431,9 @@ function mountGameDetail(selector, gameId) {
       if (typeof protoSettingsSubscribe === 'function') protoSettingsSubscribe(function (s) { self.inspection = !!s.gameDetailInspection; self.fullBannerOn = !!s.gameDetailFullBanner; });
     },
     methods: {
+      // 오른쪽 열 — d.rightOrder 있으면 그 순서(flex order)로, 목록에 없는 부품은 숨김. 없으면 템플릿 순서 그대로 다 보임 (11-26)
+      rv: function (name) { return !this.d.rightOrder || this.d.rightOrder.indexOf(name) !== -1; },
+      rs: function (name) { return this.d.rightOrder ? { order: this.d.rightOrder.indexOf(name) } : null; },
       bannerStep: function (dir) { var n = this.d.banner.images.length; this.bannerIndex = (this.bannerIndex + dir + n) % n; }, // 끝에서 처음으로 돌아감
       openLink: function (url) { if (url) window.open(url, '_blank', 'noopener'); }, // 전체보기 등 바깥 링크 (11-26)
       // 고른 썸네일이 있는 쪽으로 줄을 넘김. 한 쪽 = 보이는 개수(--thumb-count, 줄 폭에 맞춰 JS가 정함, 최대 6).
@@ -816,7 +821,7 @@ function mountGameDetail(selector, gameId) {
             // ================= right =================
             '<div class="game-detail__right">' +
               // 9 게임요약 — 이 카드만 바탕 70%
-              '<section v-if="!d.summaryHidden" class="game-detail-board game-detail-board--summary">' + // 숨김 = summaryHidden (11-26)
+              '<section v-if="rv(\'summary\')" :style="rs(\'summary\')" class="game-detail-board game-detail-board--summary">' +
                 '<div class="game-detail-board__head"><h2 class="stds-title8 fw-bold">게임 정보</h2></div>' +
                 '<div class="game-detail-summary stds-text3 fw-regular">' +
                   '<p class="game-detail-summary__tagline">{{ d.summary.tagline }}</p>' +
@@ -825,7 +830,7 @@ function mountGameDetail(selector, gameId) {
               '</section>' +
 
               // 16 쿠폰 (MD — 티켓 모양 + 로고 탭 + NEW 리본) — 로스트아크 한정
-              '<a v-if="d.coupon" class="game-detail-coupon" href="#" @click.prevent>' +
+              '<a v-if="d.coupon && rv(\'coupon\')" :style="rs(\'coupon\')" class="game-detail-coupon" href="#" @click.prevent>' +
                 '<span class="game-detail-coupon__ticket" :style="couponMask"><img :src="img(\'right-md-img.png\')" alt="" /></span>' +
                 '<span class="game-detail-coupon__border"><span class="game-detail-coupon__border-start" :style="{ backgroundImage: \'url(\' + img(\'right-md-border.svg\') + \')\' }"></span></span>' +
                 '<span class="game-detail-coupon__title stds-title8 fw-bold">{{ d.coupon.title }}</span>' +
@@ -835,7 +840,7 @@ function mountGameDetail(selector, gameId) {
               '</a>' +
 
               // 17 공지사항 축소형 — 로스트아크 한정
-              '<section v-if="d.noticeCompact" class="game-detail-board">' +
+              '<section v-if="d.noticeCompact && rv(\'noticeCompact\')" :style="rs(\'noticeCompact\')" class="game-detail-board">' +
                 '<div class="game-detail-board__title">' +
                   '<h2 class="stds-title8 fw-bold">공지사항</h2>' +
                   '<button class="game-detail-more stds-btn2 fw-regular" type="button">전체보기<i class="ic-v2-control-arrow-right-line"></i></button>' +
@@ -848,11 +853,8 @@ function mountGameDetail(selector, gameId) {
                 '</div>' +
               '</section>' +
 
-              // 11 서브배너 — 바로가기 위 자리 (subBannerTop 게임, 로드나인 11-26)
-              gameDetailSubBannerTpl('d.subBannerTop') +
-
               // 10 바로가기
-              '<section class="game-detail-board">' +
+              '<section v-if="rv(\'shortcuts\')" :style="rs(\'shortcuts\')" class="game-detail-board">' +
                 '<div class="game-detail-board__head"><h2 class="stds-title8 fw-bold">바로가기</h2></div>' +
                 '<ul class="game-detail-shortcut">' +
                   '<li v-for="s in d.shortcuts.filter(x => !x.hidden)"><a href="#" @click.prevent>' +
@@ -864,11 +866,11 @@ function mountGameDetail(selector, gameId) {
                 '</ul>' +
               '</section>' +
 
-              // 11 서브배너 — 기본 자리 (바로가기 아래)
-              gameDetailSubBannerTpl('!d.subBannerTop') +
+              // 11 서브배너
+              gameDetailSubBannerTpl() +
 
               // 12 마켓다운로드링크 + QR (component/marketdownload)
-              '<section v-if="!d.marketDownloadHidden" class="game-detail-board">' + // 숨김 = marketDownloadHidden (11-26)
+              '<section v-if="rv(\'marketDownload\')" :style="rs(\'marketDownload\')" class="game-detail-board">' +
                 '<div class="game-detail-board__head"><h2 class="stds-title8 fw-bold">마켓 다운로드</h2></div>' +
                 '<ul class="game-detail-market-download">' +
                   '<li v-for="m in d.marketDownload.filter(x => !x.hidden)"><a href="#" @click.prevent>' + // hidden = 화면에서만 숨김 (11-26)
@@ -879,7 +881,7 @@ function mountGameDetail(selector, gameId) {
               '</section>' +
 
               // 13 PC방 혜택 배너형 (component/banner/pcbang) — 아이콘형은 게임명 줄 link-badge--pcbang
-              '<a v-if="d.pcbangBanner" class="game-detail-pcbang-banner" href="#" @click.prevent><img :src="img(d.pcbangBanner)" alt="" /></a>' + // 배너 그림이 있는 게임만 (11-26)
+              '<a v-if="d.pcbangBanner && rv(\'pcbangBanner\')" :style="rs(\'pcbangBanner\')" class="game-detail-pcbang-banner" href="#" @click.prevent><img :src="img(d.pcbangBanner)" alt="" /></a>' + // 배너 그림이 있는 게임만 (11-26)
             '</div>' +
           '</div>' +
         '</div>' +
