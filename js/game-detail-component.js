@@ -224,6 +224,7 @@ GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
     return b;
   }),
   fullBanner: ['event-01.jpg', 'subbanner-01.jpg'], // 임시 — 로드나인 풀배너 그림 받으면 교체
+  thumbnailBannerHidden: true, // 11-26 사용자 "로드나인은 썸네일형 배너 숨겨줘" — 줄만 지우면 다시 보임
   thumbnailBanner: [{ src: 'event-01.jpg' }, { src: 'subbanner-01.jpg' }, { src: 'Client3.0_PC게임상세_01_백그라운드_로드나인.jpg' }], // 임시
   banner: { src: 'event-01.jpg', count: 5 }, // Figma 1_이벤트배너 1290×540 (재생 아이콘 없음)
   subBanner: { src: 'subbanner-01.jpg', count: 5 }, // Figma 3_서브배너 630×279
@@ -580,7 +581,7 @@ function mountGameDetail(selector, gameId) {
             // ================= left =================
             '<div class="game-detail__left">' +
               // 3 1단배너-썸네일형 (pattern/banner/multi)
-              '<div class="game-detail-thumbnail-banner">' +
+              '<div v-if="!d.thumbnailBannerHidden" class="game-detail-thumbnail-banner">' + // thumbnailBannerHidden = 데이터는 두고 화면에서만 숨김 (11-26 로드나인)
                 '<div class="game-detail-thumbnail-banner__main">' +
                   // 큰 화면엔 재생 아이콘 없음 — 가이드 68345:428349 (사용자 11-20), 영상 표시는 썸네일에만
                   '<img :src="img(d.thumbnailBanner[thumbnailIndex].src)" alt="" />' +
