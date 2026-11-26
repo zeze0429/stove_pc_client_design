@@ -217,7 +217,7 @@ var GAME_DETAIL_DATA = {
 GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
   dir: 'rodnine/',
   background: 'Client3.0_PC게임상세_01_백그라운드_로드나인.jpg', // Figma bg 'image 878' 2790×720 (png → jpg 90)
-  backgroundGradient: '#3A3231', // 11-26 테마 색 (사용자) — 직전 #4C4841, 그 전 #191919(Figma bg 'gradation' 끝 색)
+  backgroundGradient: '#263C47', // 11-26 테마 색 (사용자) — 직전 #3A3231, 그 전 #4C4841, 처음 #191919(Figma bg 'gradation' 끝 색)
   badges: GAME_DETAIL_DATA.lostark.badges.map(function (b) { // Figma: NEW만 보임
     if (b.label === 'NEW') return Object.assign({}, b, { hidden: false });
     if (b.label === 'UPDATE') return Object.assign({}, b, { hidden: true });
