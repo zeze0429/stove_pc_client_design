@@ -148,20 +148,24 @@ var GAME_DETAIL_DATA = {
     },
     // 16 쿠폰 (로스트아크 한정)
     coupon: { title: '쿠폰', desc: '등록 가능한 쿠폰이 있어요.\n지금 확인해 보세요!' },
-    // 17 공지사항 축소형 (로스트아크 한정) — 위 3개는 강조 묶음(별 아이콘)
+    // 17 공지사항 축소형 (로스트아크 한정) — pinned = 강조 묶음(별 아이콘)
+    //   11-26 사용자 캡처대로 강조 6 + 일반 4 (말줄임 뒤 글은 왼쪽 5 공지사항 · 로아 공지 목록 제목으로 채움)
+    //   그 전 = 강조 3('6월 2일 (수) 임시점검 안내' · '베른 대도서관 5월의 우수 사서를 찾아서! 이벤트 당첨자 발표합니다' · '엘가시아 질서의 신 루페온이 빚어낸 라제니스의 낙원')
+    //          + 일반 7(같은 시안 예시 글 반복)
     noticeCompact: {
-      pinned: ['6월 2일 (수) 임시점검 안내', '베른 대도서관 5월의 우수 사서를 찾아서! 이벤트 당첨자 발표합니다', '엘가시아 질서의 신 루페온이 빚어낸 라제니스의 낙원'],
-      rows: ['6월 2일 (수) 임시점검 안내', '베른 대도서관 5월의 우수 사서를 찾아서! ', '6월 2일 (수) 임시점검 안내', '6월 2일 (수) 임시점검 안내',
-        '엘가시아 질서의 신 루페온이 빚어낸 라제니스의 낙원', '엘가시아 질서의 신 루페온이 빚어낸 라제니스의 낙원', '엘가시아 질서의 신 루페온이 빚어낸 라제니스의 낙원'],
+      pinned: ['로스트아크 2부 업데이트에 따른 주요 개편 사항 사전 안내', '로스트아크 샵 내 일부 상품 판매 중단 및 종료 안내', '11월 25일(수) 로스트아크 정기 점검 완료 안내',
+        '알려진 이슈를 안내해 드립니다. (11/25 수정)', '11월 25일(수) 정기 점검 안내', '11월 20일(금) 로스트아크 임시 점검 완료 안내'],
+      rows: ['11월 20일(금) 로스트아크 임시 점검 안내', '11월 19일(목) 로스트아크 임시 점검 완료 안내', '11월 19일(목) 로스트아크 임시 점검 안내',
+        '2026년 11월 20일(금) 로스트아크 라이브 방송 사전 안내'],
     },
     // 10 바로가기 — dot: 빨간 점(새 소식)
     shortcuts: [
       { icon: 'ic-v2-navigation-home-fill', label: '공식 홈페이지', dot: true },
-      { icon: 'ic-v2-navigation-community-fill', label: '커뮤니티' },
+      { icon: 'ic-v2-navigation-community-fill', label: '커뮤니티', dot: true }, // 11-26 캡처: 4개 모두 점 (그 전 점 없음)
       { icon: 'ic-v2-object-help-center-fill', label: '고객센터', dot: true },
       { icon: 'ic-v2-logo-facebook-fill', label: '공식 Facebook', dot: true, hidden: true }, // hidden = 11-25 Figma 68479:481650에서 숨김(지우지 않음)
-      { icon: 'ic-v2-logo-twitter-X-fill', label: '공식 X', dot: true }, // 11-25 아이콘 폰트 X 로고(이름에 대문자 X — 전에 못 찾아 Figma SVG shortcut-logo-x.svg를 썼음, 원복 = svg: 'shortcut-logo-x.svg')
-      { icon: 'ic-v2-logo-youtube-fill', label: '공식 Youtube' },
+      { icon: 'ic-v2-logo-twitter-X-fill', label: '공식 X', dot: true, hidden: true }, // 11-26 캡처에 없어 숨김. // 11-25 아이콘 폰트 X 로고(이름에 대문자 X — 전에 못 찾아 Figma SVG shortcut-logo-x.svg를 썼음, 원복 = svg: 'shortcut-logo-x.svg')
+      { icon: 'ic-v2-logo-youtube-fill', label: '공식 Youtube', dot: true }, // 11-26 캡처: 점 (그 전 없음)
       { icon: 'ic-v2-navigation-message-fill', label: '리사의 편지', hidden: true },
     ],
     // 11 서브배너 — 묶음마다 서브배너 한 개(여러 장이면 점으로 넘김, 한 장이면 점 없음). 11-26 사용자 그림 4장(파일명 그대로, 번호 순 · 전투정보실 끝)
@@ -242,6 +246,12 @@ GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
     { images: ['Client3.0_pc게임상세_2.jpg', 'Client3.0_pc게임상세_1.jpg', 'Client3.0_pc게임상세_서브배너_01.jpg'] },
     { images: ['PC상세_서브배너_kr_1728274569642.png'] },
   ],
+  // 10 바로가기 — 로아 것을 11-26 캡처대로 바꾸기 전 상태 그대로 (로아 변경은 로아에만: X 보임 · 커뮤니티 · Youtube 점 없음)
+  shortcuts: GAME_DETAIL_DATA.lostark.shortcuts.map(function (x) {
+    if (x.label === '공식 X') return Object.assign({}, x, { hidden: false });
+    if (x.label === '커뮤니티' || x.label === '공식 Youtube') return Object.assign({}, x, { dot: false });
+    return x;
+  }),
   // 오른쪽 열 = 서브배너 · 서브배너 · 바로가기만 (11-26 사용자) — 나머지(게임 정보 · 마켓 다운로드 등) 숨김. 원복 = 이 줄 삭제(로아 순서 물려받음)
   rightOrder: ['subBanner', 'shortcuts'],
   // UCC = Figma 3_앨범형 게시판 그림 · 제목 그대로, 숫자는 다른 게임 기본(댓글 · 조회수 999)
