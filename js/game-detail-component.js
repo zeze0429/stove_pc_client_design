@@ -316,8 +316,9 @@ GAME_DETAIL_DATA['lostark-test'] = Object.assign({}, GAME_DETAIL_DATA.lostark, G
   //   (그 전 = 벨가르딘 4f07791f… · 구미호 636597238262683499.jpg · 붙여 준 우주 바위 webp — 교체하며 파일 삭제, git 이력)
   background: '18f03215bc3f44d7b2a0630a6c7e70ce.jpg',
   // 11-27 테마 색 = 이미지에서 자동 추출: 화면에 보이는 영역(1280 기준 가운데 82% · 높이 전체) 아래 20% 띠 평균 #226171(밝기 29%)
-  //   → 밝기 한도 20~28%로 보정 = #215E6E. 직전(벨가르딘) #2D2640 · (구미호) #30383E · (우주 바위) #2B2E64. 원본(lostark) 값 #36414D로 돌리려면 이 줄 삭제
-  backgroundGradient: '#215E6E',
+  //   → 밝기 한도 20~28%로 보정 = #215E6E(색상 192 청록) → 사용자 "청록보단 좀 더 파란색쪽으로" = 색상만 192 → 210, 채도 54 · 밝기 28 그대로 = #21476E.
+  //   직전(벨가르딘) #2D2640 · (구미호) #30383E · (우주 바위) #2B2E64. 원본(lostark) 값 #36414D로 돌리려면 이 줄 삭제
+  backgroundGradient: '#21476E',
 });
 GAME_DETAIL_DATA['rodnine-test'] = Object.assign({}, GAME_DETAIL_DATA.rodnine, GAME_DETAIL_TEST_LAYOUT, {
   // 11-27 배경 = 로드나인 공식 홈(l9.onstove.com/ko/home) 상단 영상 (PC용 assets/images/pc/home/video_home.mp4 원본 그대로) — 그림(background) 대신 영상. 원복 = 이 줄 삭제
