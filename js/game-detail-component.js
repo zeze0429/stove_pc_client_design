@@ -313,7 +313,7 @@ GAME_DETAIL_DATA['rodnine-test'] = Object.assign({}, GAME_DETAIL_DATA.rodnine, {
   //   → 밝기 한도 20~28%로 보정 = #574138. 원본(rodnine) 값 #263447 상속으로 돌리려면 이 줄 삭제
   backgroundGradient: '#574138',
   titleThumbHidden: true, // 11-27 사용자 "로드나인 게임 썸네일은 제거" — 게임명 왼쪽 썸네일(60) 숨김. 원복 = 이 줄 삭제
-  contentsAtFadeStart: true, // 11-27 사용자 "콘텐츠 위치를 그라디언트 시작부분으로" — 게임명 위치 88 → 144(그라데이션 시작 14.4rem). 원복 = 이 줄 삭제
+  contentsAtFadeStart: true, // 11-27 사용자 "콘텐츠 위치를 그라디언트 시작부분으로" — 게임명 위치 88 → 144(그라데이션 시작) → 480("영상이 끝나는 시점으로 더", 48rem). 원복 = 이 줄 삭제
 });
 
 // 사이드바 항목 id(즐겨찾기는 'fav-lostark' 같은 별도 id) → 게임 카탈로그 id
