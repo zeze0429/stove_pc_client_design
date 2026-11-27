@@ -305,6 +305,11 @@ GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
 // 디자인 시험용 복제 (11-27 사용자 "로스트아크랑 로드나인 지금껀 두고 듀플리케이트해서 스토브게임 메뉴에 … 디자인을 더 바꿔보는건 test 메뉴에서").
 // 지금 상태를 그대로 복사 — 시험할 값은 아래 객체에만 덮어써서 원본(lostark · rodnine)은 안 바뀌게. 사이드바 · 이름 · 썸네일 = js/gnb-component.js · js/game-catalog.js
 GAME_DETAIL_DATA['lostark-test'] = Object.assign({}, GAME_DETAIL_DATA.lostark, {
+  // 11-27 배경 = 사용자가 준 이미지 원본 그대로(webp 1890×620, 변환 · 크기 조정 없음 — 사용자 "원본으로 넣어야해"). 파일명은 받은 이름이 없어 임시로 붙임. 원복 = 이 줄 삭제
+  background: 'Client3.0_PC게임상세_01_백그라운드_로스트아크_test.webp',
+  // 11-27 테마 색 = 이미지에서 자동 추출: 화면에 보이는 영역(1280 기준 가운데 71%) 아래 20% 띠 평균 #2F336F(밝기 31%)
+  //   → 밝기 한도 20~28%로 보정 = #2B2E64. 원본(lostark) 값 #36414D로 돌리려면 이 줄 삭제
+  backgroundGradient: '#2B2E64',
 });
 GAME_DETAIL_DATA['rodnine-test'] = Object.assign({}, GAME_DETAIL_DATA.rodnine, {
   // 11-27 배경 = 로드나인 공식 홈(l9.onstove.com/ko/home) 상단 영상 (PC용 assets/images/pc/home/video_home.mp4 원본 그대로) — 그림(background) 대신 영상. 원복 = 이 줄 삭제
