@@ -308,6 +308,7 @@ GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
 var GAME_DETAIL_TEST_LAYOUT = {
   titleThumbHidden: true, // 게임명 왼쪽 썸네일(60) 숨김 ("게임 썸네일은 제거")
   contentsAtFadeStart: true, // 콘텐츠 시작 88 → 312(그라데이션 절반 31.2rem, css .game-detail__contents--fade-start) — 거쳐 온 값 144 → 480 → 240 → 312
+  utilityBarThemed: true, // 스크롤된 유틸리티 바 바탕 = 게임 테마 색 70% + 블러, 아이콘 흰 톤 — 다크 · 라이트 공통 ("스크롤할때 유틸컬러 같은 테마색으로", 11-27)
   titleBadgesAbove: true, // 뱃지(NEW · UPDATE · 점검)를 게임명 오른쪽 → 위 줄로 ("옆에 붙은 뉴, 업데이트 뱃지는 위로") = 게임명 줄 --inline 빼기(11-23 전 원래 배치)
 };
 GAME_DETAIL_DATA['lostark-test'] = Object.assign({}, GAME_DETAIL_DATA.lostark, GAME_DETAIL_TEST_LAYOUT, {
@@ -410,6 +411,12 @@ function mountGameDetail(selector, gameId) {
     var themeMain = document.querySelector(selector);
     themeMain = themeMain && themeMain.closest('.main');
     if (themeMain) themeMain.setAttribute('data-theme', 'dark');
+  }
+  // 11-27 test(데이터 utilityBarThemed): 스크롤된 유틸리티 바 바탕 = 게임 테마 색(backgroundGradient) — 바는 .main 밖이라 <html>에 색 · 클래스를 건다.
+  // 페이지 이동은 새로 불러오기라 따로 지우지 않음. 스타일 = css/game-detail.css .game-detail-utility-themed
+  if (data && data.utilityBarThemed && data.backgroundGradient) {
+    document.documentElement.style.setProperty('--game-detail-utility-bg', data.backgroundGradient);
+    document.documentElement.classList.add('game-detail-utility-themed');
   }
 
   var app = Vue.createApp({
