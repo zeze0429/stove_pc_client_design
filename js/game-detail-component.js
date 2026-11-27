@@ -305,11 +305,13 @@ GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
 // 디자인 시험용 복제 (11-27 사용자 "로스트아크랑 로드나인 지금껀 두고 듀플리케이트해서 스토브게임 메뉴에 … 디자인을 더 바꿔보는건 test 메뉴에서").
 // 지금 상태를 그대로 복사 — 시험할 값은 아래 객체에만 덮어써서 원본(lostark · rodnine)은 안 바뀌게. 사이드바 · 이름 · 썸네일 = js/gnb-component.js · js/game-catalog.js
 GAME_DETAIL_DATA['lostark-test'] = Object.assign({}, GAME_DETAIL_DATA.lostark, {
-  // 11-27 배경 = 사용자가 준 이미지 원본 그대로(webp 1890×620, 변환 · 크기 조정 없음 — 사용자 "원본으로 넣어야해"). 파일명은 받은 이름이 없어 임시로 붙임. 원복 = 이 줄 삭제
-  background: 'Client3.0_PC게임상세_01_백그라운드_로스트아크_test.webp',
-  // 11-27 테마 색 = 이미지에서 자동 추출: 화면에 보이는 영역(1280 기준 가운데 71%) 아래 20% 띠 평균 #2F336F(밝기 31%)
-  //   → 밝기 한도 20~28%로 보정 = #2B2E64. 원본(lostark) 값 #36414D로 돌리려면 이 줄 삭제
-  backgroundGradient: '#2B2E64',
+  // 11-27 배경 = 로스트아크 공식 Artwork(lostark.game.onstove.com/Artwork?page=6 '레이드') 원본 3840×2160 다운로드 파일명 그대로.
+  //   위 LOSTARK 로고 · 아래 Smilegate/TRIPOD 로고는 잘라냄(사용자 "아래 위 로고는 크롭") → 3840×1800(위 190 · 아래 170 제거). 원복 = 이 줄 삭제
+  //   (직전 = 채팅에 붙여 준 우주 바위 그림 webp — 사용자 "로스트아크 사이트에서 깨끗한 이미지로" 해서 교체 · 파일 삭제)
+  background: '636597238262683499.jpg',
+  // 11-27 테마 색 = 이미지에서 자동 추출: 화면에 보이는 영역(1280 기준 폭 전체 · 위 98.5%) 아래 20% 띠 평균 #30383E(밝기 22% — 한도 20~28% 안이라 보정 없음).
+  //   직전(우주 바위 그림) = #2B2E64. 원본(lostark) 값 #36414D로 돌리려면 이 줄 삭제
+  backgroundGradient: '#30383E',
   contentsAtFadeStart: true, // 11-27 사용자 "콘텐츠 위치도 로드나인테스트처럼" — 게임명 88 → 312(그라데이션 절반, css .game-detail__contents--fade-start). 원복 = 이 줄 삭제
 });
 GAME_DETAIL_DATA['rodnine-test'] = Object.assign({}, GAME_DETAIL_DATA.rodnine, {
