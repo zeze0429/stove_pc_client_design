@@ -19,6 +19,9 @@ var GAME_CATALOG = {
   eclipse: { name: '이클립스: 더 어웨이크닝', genre: '', badges: ['link'] }, // 출시 전 — 스토어 장르 미등록
   lostark: { name: 'LOST ARK', genre: 'MMORPG', ext: 'jpg' },
   rodnine: { name: '로드나인', genre: 'MMORPG', ext: 'jpg', badges: ['link', 'multiplay'] },
+  // 디자인 시험용 복제(11-27 사용자 "지금껀 두고 듀플리케이트해서 스토브게임 메뉴에") — 썸네일은 원본 게임 것(thumbOf), 상세 데이터는 js/game-detail-component.js에서 복제
+  'lostark-test': { name: 'LOST ARK(test)', genre: 'MMORPG', ext: 'jpg', thumbOf: 'lostark' },
+  'rodnine-test': { name: '로드나인(test)', genre: 'MMORPG', ext: 'jpg', badges: ['link', 'multiplay'], thumbOf: 'rodnine' },
   chaos: { name: '카오스 제로 나이트메어', genre: '로그라이트 RPG' },
   e7: { name: '에픽세븐', genre: '턴제RPG' },
   bts: { name: 'BTS 쿠킹온 STOVE : 타이니탄 레스토랑', genre: '캐주얼' },
@@ -141,5 +144,5 @@ var GAME_CATALOG = {
 function gameInfo(id) {
   var g = GAME_CATALOG[id];
   if (!g) return null;
-  return { id: id, name: g.name, genre: g.genre, type: g.type || 'game', thumb: 'assets/games/' + id + '.' + (g.ext || 'png'), badges: g.badges || [] };
+  return { id: id, name: g.name, genre: g.genre, type: g.type || 'game', thumb: 'assets/games/' + (g.thumbOf || id) + '.' + (g.ext || 'png'), badges: g.badges || [] };
 }

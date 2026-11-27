@@ -50,7 +50,7 @@ var GNB_GAME_GROUPS = [
   {
     id: 'stove-games',
     title: '스토브게임',
-    count: 7,
+    count: 9, // 11-27 test 2개 추가 — 직전 7
     collapsed: false,
     games: [
       { id: 'lostark', game: 'lostark' }, // 순서: 로스트아크 · 로드나인 · 이클립스 (사용자 11-18)
@@ -60,6 +60,8 @@ var GNB_GAME_GROUPS = [
       { id: 'e7', game: 'e7' },
       { id: 'bts', game: 'bts' },
       { id: 'tales', game: 'tales' },
+      { id: 'lostark-test', game: 'lostark-test' }, // 11-27 디자인 시험용 복제 (원복 = 이 두 줄 + count 7)
+      { id: 'rodnine-test', game: 'rodnine-test' },
     ].map(gnbGroupGame),
   },
   {

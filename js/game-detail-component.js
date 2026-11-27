@@ -302,6 +302,13 @@ GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
   loaTheaterRec: null, loaTheaterBest: null, loaTheaterNew: null, coupon: null, noticeCompact: null,
 });
 
+// 디자인 시험용 복제 (11-27 사용자 "로스트아크랑 로드나인 지금껀 두고 듀플리케이트해서 스토브게임 메뉴에 … 디자인을 더 바꿔보는건 test 메뉴에서").
+// 지금 상태를 그대로 복사 — 시험할 값은 아래 객체에만 덮어써서 원본(lostark · rodnine)은 안 바뀌게. 사이드바 · 이름 · 썸네일 = js/gnb-component.js · js/game-catalog.js
+GAME_DETAIL_DATA['lostark-test'] = Object.assign({}, GAME_DETAIL_DATA.lostark, {
+});
+GAME_DETAIL_DATA['rodnine-test'] = Object.assign({}, GAME_DETAIL_DATA.rodnine, {
+});
+
 // 사이드바 항목 id(즐겨찾기는 'fav-lostark' 같은 별도 id) → 게임 카탈로그 id
 function gameDetailKey(id) {
   var entry = typeof gnbFindGameById === 'function' ? gnbFindGameById(id) : null;
