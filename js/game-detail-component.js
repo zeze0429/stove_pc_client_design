@@ -312,6 +312,8 @@ GAME_DETAIL_DATA['rodnine-test'] = Object.assign({}, GAME_DETAIL_DATA.rodnine, {
   // 11-27 테마 색 = 영상에서 자동 추출(사용자 "컬러 추출해줘"): 화면에 보이는 영역 아래 20% 띠 평균을 영상 전체(1초 간격 24장)로 낸 값 #5A433A(밝기 29%)
   //   → 밝기 한도 20~28%로 보정 = #574138. 원본(rodnine) 값 #263447 상속으로 돌리려면 이 줄 삭제
   backgroundGradient: '#574138',
+  titleThumbHidden: true, // 11-27 사용자 "로드나인 게임 썸네일은 제거" — 게임명 왼쪽 썸네일(60) 숨김. 원복 = 이 줄 삭제
+  contentsAtFadeStart: true, // 11-27 사용자 "콘텐츠 위치를 그라디언트 시작부분으로" — 게임명 위치 88 → 144(그라데이션 시작 14.4rem). 원복 = 이 줄 삭제
 });
 
 // 사이드바 항목 id(즐겨찾기는 'fav-lostark' 같은 별도 id) → 게임 카탈로그 id
@@ -659,13 +661,13 @@ function mountGameDetail(selector, gameId) {
         // 1 백그라운드 (bg 480) — 유틸리티 바 뒤까지 깔리고 아래로 페이지 색에 녹아든다
         '<div class="game-detail-background" :class="{ \'game-detail-background--fixed\': d.backgroundFixed, \'game-detail-background--scroll-blur\': d.backgroundFixed && d.backgroundScrollBlur }" aria-hidden="true"><video v-if="d.backgroundVideo" :src="img(d.backgroundVideo)" autoplay muted loop playsinline></video><img v-else :src="img(d.background)" alt="" /><div v-if="d.backgroundFixed && d.backgroundScrollBlur" ref="bgFade" class="game-detail-background__fade"></div></div>' + // 그림 = 게임 데이터 background (11-26 로드나인 추가하며 데이터로 — 그 전 로스트아크 파일명 고정). 그 전 v=4 = 벨가르딘 정복전 2560×1080 (git 이력)
 
-        '<div class="game-detail__contents">' +
+        '<div class="game-detail__contents" :class="{ \'game-detail__contents--fade-start\': d.contentsAtFadeStart }">' + // --fade-start = 11-27 test(데이터 contentsAtFadeStart)
           // ---- 게임명 ----
           //   테스트 버전(사용자 11-23) --inline: 썸네일 ↔ 게임명 세로 가운데, 뱃지는 게임명 오른쪽 · 위 정렬, 뱃지 크기 = 사이드바 챌린지 뱃지.
           //   원복 = --inline 클래스만 빼면 원래(뱃지가 게임명 위 줄)로 돌아간다.
           '<div class="game-detail-title game-detail-title--inline">' +
             '<div class="game-detail-title__info">' +
-              '<span class="game-detail-thumb"><img v-if="thumb" :src="thumb" alt="" /></span>' +
+              '<span v-if="!d.titleThumbHidden" class="game-detail-thumb"><img v-if="thumb" :src="thumb" alt="" /></span>' + // titleThumbHidden = 11-27 test 썸네일 숨김
               '<div class="game-detail-title__text">' +
                 '<div class="game-detail-title__badges">' +
                   '<span v-for="b in titleBadges" class="game-detail-badge stds-cap2 fw-bold" :class="\'game-detail-badge--\' + b.kind">' +
