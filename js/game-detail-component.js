@@ -30,6 +30,7 @@ var GAME_DETAIL_DATA = {
     // 1 백그라운드를 콘텐츠 영역 높이만큼 채우고 고정 — 스크롤하면 콘텐츠만 올라감 (사용자 11-24, 로스트아크 이벤트 페이지 fixed_bg처럼)
     background: 'Client3.0_PC게임상세_01_백그라운드_로스트아크.jpg?v=5', // v=5 = 11-26 Figma 68494:503320 bg 2790×720(png → jpg 92)
     backgroundFixed: true,
+    backgroundScrollBlur: true, // 11-27 테스트(사용자): 그림은 고정, 그라데이션 층만 콘텐츠와 같이 스크롤 + 스크롤한 만큼 그 아래 그림 블러(0 → 22px, 그림 높이 절반 240 스크롤에서 최대). 검정 30%는 그림과 같이 고정. 원복 = 이 줄 삭제(로드나인도 상속)
     backgroundGradient: '#36414D', // 11-26 테마 색 #36414D (사용자) — 직전 #2D333A(새 배경 Figma 68494:503320과 함께), 그 전 #2C2D42.  고정 배경 아래 그라데이션 · 카드 덧댐 색 — 게임별 커스텀(사용자 11-24, 로스트아크 #503DAF → #30171B → #2F303A → #21222F → 11-25 #2C2D42(덧댐 · 그라데이션 둘 다, 원복 #21222F), #191919로 바꿔 봤다가 "원래대로"). 없으면 페이지 바탕(background-variant-1)
     // 게임명 위 뱃지 (Badge/Left top · Client · Right top) — 시안의 모든 종류
     badges: [
@@ -438,7 +439,21 @@ function mountGameDetail(selector, gameId) {
       var self = this;
       // 고정 배경 높이는 CSS(css/game-detail.css .game-detail-background--fixed)가 100vh - PR영역으로 계산 (11-25 — 전엔 여기서 .main 높이를 재서 넣었는데 PR영역 끄면 갱신이 안 됐음)
       if (typeof protoSettingsSubscribe === 'function') protoSettingsSubscribe(function (s) { self.inspection = !!s.gameDetailInspection; self.fullBannerOn = !!s.gameDetailFullBanner; });
+      // 11-27 테스트(backgroundScrollBlur): 그라데이션 층(.game-detail-background__fade)을 스크롤만큼 위로 올리고, 스크롤한 만큼 블러를 키움.
+      // 스크롤 컨테이너 = .app > .main (유틸리티 바와 같은 방식). 그림 높이(480)를 넘으면 그림이 전부 단색에 덮이므로 그 이상은 안 올림
+      this.bgScroller = document.querySelector('.app > .main');
+      this.bgOnScroll = function () {
+        var fade = self.$refs.bgFade, sc = self.bgScroller;
+        if (!fade || !sc) return;
+        var imgEl = fade.previousElementSibling, h = imgEl ? imgEl.offsetHeight : 480;
+        var y = Math.min(sc.scrollTop, h);
+        var blur = 22 * Math.min(1, y / (h / 2)); // 최대 22px = 카드 배경 블러(2.2rem)와 같은 값, 그림 높이 절반에서 최대
+        fade.style.transform = 'translateY(' + (-y) + 'px)';
+        fade.style.backdropFilter = fade.style.webkitBackdropFilter = blur > 0 ? 'blur(' + blur.toFixed(1) + 'px)' : 'none';
+      };
+      if (this.bgScroller) { this.bgScroller.addEventListener('scroll', this.bgOnScroll, { passive: true }); this.$nextTick(this.bgOnScroll); }
     },
+    beforeUnmount: function () { if (this.bgScroller) this.bgScroller.removeEventListener('scroll', this.bgOnScroll); },
     methods: {
       // 오른쪽 열 — d.rightOrder 있으면 그 순서(flex order)로, 목록에 없는 부품은 숨김. 없으면 템플릿 순서 그대로 다 보임 (11-26)
       rv: function (name) { return !this.d.rightOrder || this.d.rightOrder.indexOf(name) !== -1; },
@@ -628,7 +643,7 @@ function mountGameDetail(selector, gameId) {
       '</div>' +
       '<div v-else class="game-detail" :style="d.backgroundGradient ? { \'--game-detail-bg-gradient\': d.backgroundGradient } : null">' + // 게임 색(backgroundGradient)은 최상위에 — 배경 그라데이션 · 카드 바탕이 같이 씀 (11-24)
         // 1 백그라운드 (bg 480) — 유틸리티 바 뒤까지 깔리고 아래로 페이지 색에 녹아든다
-        '<div class="game-detail-background" :class="{ \'game-detail-background--fixed\': d.backgroundFixed }" aria-hidden="true"><img :src="img(d.background)" alt="" /></div>' + // 그림 = 게임 데이터 background (11-26 로드나인 추가하며 데이터로 — 그 전 로스트아크 파일명 고정). 그 전 v=4 = 벨가르딘 정복전 2560×1080 (git 이력)
+        '<div class="game-detail-background" :class="{ \'game-detail-background--fixed\': d.backgroundFixed, \'game-detail-background--scroll-blur\': d.backgroundFixed && d.backgroundScrollBlur }" aria-hidden="true"><img :src="img(d.background)" alt="" /><div v-if="d.backgroundFixed && d.backgroundScrollBlur" ref="bgFade" class="game-detail-background__fade"></div></div>' + // 그림 = 게임 데이터 background (11-26 로드나인 추가하며 데이터로 — 그 전 로스트아크 파일명 고정). 그 전 v=4 = 벨가르딘 정복전 2560×1080 (git 이력)
 
         '<div class="game-detail__contents">' +
           // ---- 게임명 ----

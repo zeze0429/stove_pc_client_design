@@ -72,6 +72,31 @@
 /* 11-26 고정 배경의 그림은 위 480만, 그 아래 상자 바탕 = 게임 색 (원복 = 아래 두 규칙 삭제) */
 .game-detail-background.game-detail-background--fixed { background: var(--game-detail-bg-gradient, var(--stds-sem-color-background-variant-1)); }
 .game-detail-background.game-detail-background--fixed img { height: 48rem; }
+/* 11-27 테스트(사용자, 데이터 backgroundScrollBlur): 그림 · 검정 30%는 고정, 그라데이션만 따로 층(__fade)으로 빼서 콘텐츠와 같이 스크롤.
+   스크롤한 만큼 그 층의 배경 블러(backdrop-filter, JS가 0 → 22px)가 아래 그림을 흐리게 함. 쌓는 순서 = 그림 → 그라데이션(블러) → 검정 30%(::after, 맨 위 그대로).
+   층 높이 = 화면 + 그림 높이 — 최대 480까지 올라가도 아래가 비지 않게. 원복 = 이 두 규칙 삭제(+ 데이터 줄) */
+.game-detail-background.game-detail-background--scroll-blur::after { background: var(--stds-glob-color-black-30); }
+.game-detail-background__fade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(100% + 48rem);
+  will-change: transform;
+  --game-detail-bg-fade: var(--game-detail-bg-gradient, var(--stds-sem-color-background-variant-1));
+  background: linear-gradient(
+    color-mix(in srgb, var(--game-detail-bg-fade) 0%, transparent) 14.40rem,
+    color-mix(in srgb, var(--game-detail-bg-fade) 2.8%, transparent) 17.76rem,
+    color-mix(in srgb, var(--game-detail-bg-fade) 10.4%, transparent) 21.12rem,
+    color-mix(in srgb, var(--game-detail-bg-fade) 21.6%, transparent) 24.48rem,
+    color-mix(in srgb, var(--game-detail-bg-fade) 35.2%, transparent) 27.84rem,
+    color-mix(in srgb, var(--game-detail-bg-fade) 50%, transparent) 31.20rem,
+    color-mix(in srgb, var(--game-detail-bg-fade) 64.8%, transparent) 34.56rem,
+    color-mix(in srgb, var(--game-detail-bg-fade) 78.4%, transparent) 37.92rem,
+    color-mix(in srgb, var(--game-detail-bg-fade) 89.6%, transparent) 41.28rem,
+    color-mix(in srgb, var(--game-detail-bg-fade) 97.2%, transparent) 44.64rem,
+    color-mix(in srgb, var(--game-detail-bg-fade) 100%, transparent) 48.00rem); /* 위 고정 배경 ::after 그라데이션과 같은 값 */
+}
 /* 그림은 비율 그대로 꽉 채우고(cover) 위 가운데 기준으로 넘치는 쪽만 자름 — 로스트아크 11-24 교체 2560×1080 = 벨가르딘 정복전 이벤트 상단 배경(lostark.game.onstove.com/Promotion/Mission/260805 bg_index) 원본 그대로 */
 .game-detail-background img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; opacity: 1; } /* 테스트(사용자 11-24 "이미지 100프로로") — 원복 = opacity 0.6 */
 .game-detail-background::after {
