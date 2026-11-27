@@ -30,7 +30,7 @@ var GAME_DETAIL_DATA = {
     // 1 백그라운드를 콘텐츠 영역 높이만큼 채우고 고정 — 스크롤하면 콘텐츠만 올라감 (사용자 11-24, 로스트아크 이벤트 페이지 fixed_bg처럼)
     background: 'Client3.0_PC게임상세_01_백그라운드_로스트아크.jpg?v=5', // v=5 = 11-26 Figma 68494:503320 bg 2790×720(png → jpg 92)
     backgroundFixed: true,
-    backgroundScrollBlur: true, // 11-27 테스트(사용자): 그림은 고정, 그라데이션 층만 콘텐츠와 같이 스크롤 + 스크롤한 만큼 그 아래 그림 블러(160 스크롤까지 0 → 480에서 22px 최대, 11-27 늦춤 — 처음엔 0부터 240에서 최대). 검정 30%는 그림과 같이 고정. 원복 = 이 줄 삭제(로드나인도 상속)
+    backgroundScrollBlur: true, // 11-27 테스트(사용자): 그림은 고정, 그라데이션 층만 콘텐츠와 같이 스크롤 + 스크롤한 만큼 그 아래 그림 블러(100 스크롤까지 0 → 480에서 22px 최대, 11-27 늦춤 — 처음엔 0부터 240에서 최대, 그다음 160부터). 검정 30%는 그림과 같이 고정. 원복 = 이 줄 삭제(로드나인도 상속)
     backgroundGradient: '#36414D', // 11-26 테마 색 #36414D (사용자) — 직전 #2D333A(새 배경 Figma 68494:503320과 함께), 그 전 #2C2D42.  고정 배경 아래 그라데이션 · 카드 덧댐 색 — 게임별 커스텀(사용자 11-24, 로스트아크 #503DAF → #30171B → #2F303A → #21222F → 11-25 #2C2D42(덧댐 · 그라데이션 둘 다, 원복 #21222F), #191919로 바꿔 봤다가 "원래대로"). 없으면 페이지 바탕(background-variant-1)
     // 게임명 위 뱃지 (Badge/Left top · Client · Right top) — 시안의 모든 종류
     badges: [
@@ -447,9 +447,9 @@ function mountGameDetail(selector, gameId) {
         if (!fade || !sc) return;
         var imgEl = fade.previousElementSibling, h = imgEl ? imgEl.offsetHeight : 480;
         var y = Math.min(sc.scrollTop, h);
-        // 블러 = 그림 높이 1/3(160) 스크롤까지 0 → 그 뒤 점점 → 그림이 다 덮이는 480에서 최대 22px(카드 배경 블러 2.2rem과 같은 값)
+        // 블러 = 100 스크롤까지 0(11-27 사용자 "100 이후에 흐려지게" — 직전 = 그림 높이 1/3 = h / 3 = 160) → 그 뒤 점점 → 그림이 다 덮이는 480에서 최대 22px(카드 배경 블러 2.2rem과 같은 값)
         // (11-27 사용자 "이미지가 좀 더 오래 보였으면, 블러 시점 늦춰줘" — 직전 = 0부터 시작해 그림 높이 절반 240에서 최대: 22 * Math.min(1, y / (h / 2)))
-        var blurStart = h / 3, blur = 22 * Math.max(0, Math.min(1, (y - blurStart) / (h - blurStart)));
+        var blurStart = 100, blur = 22 * Math.max(0, Math.min(1, (y - blurStart) / (h - blurStart)));
         fade.style.transform = 'translateY(' + (-y) + 'px)';
         fade.style.backdropFilter = fade.style.webkitBackdropFilter = blur > 0 ? 'blur(' + blur.toFixed(1) + 'px)' : 'none';
       };
