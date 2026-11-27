@@ -310,6 +310,7 @@ GAME_DETAIL_DATA['lostark-test'] = Object.assign({}, GAME_DETAIL_DATA.lostark, {
   // 11-27 테마 색 = 이미지에서 자동 추출: 화면에 보이는 영역(1280 기준 가운데 71%) 아래 20% 띠 평균 #2F336F(밝기 31%)
   //   → 밝기 한도 20~28%로 보정 = #2B2E64. 원본(lostark) 값 #36414D로 돌리려면 이 줄 삭제
   backgroundGradient: '#2B2E64',
+  contentsAtFadeStart: true, // 11-27 사용자 "콘텐츠 위치도 로드나인테스트처럼" — 게임명 88 → 312(그라데이션 절반, css .game-detail__contents--fade-start). 원복 = 이 줄 삭제
 });
 GAME_DETAIL_DATA['rodnine-test'] = Object.assign({}, GAME_DETAIL_DATA.rodnine, {
   // 11-27 배경 = 로드나인 공식 홈(l9.onstove.com/ko/home) 상단 영상 (PC용 assets/images/pc/home/video_home.mp4 원본 그대로) — 그림(background) 대신 영상. 원복 = 이 줄 삭제
