@@ -311,13 +311,13 @@ var GAME_DETAIL_TEST_LAYOUT = {
   titleBadgesAbove: true, // 뱃지(NEW · UPDATE · 점검)를 게임명 오른쪽 → 위 줄로 ("옆에 붙은 뉴, 업데이트 뱃지는 위로") = 게임명 줄 --inline 빼기(11-23 전 원래 배치)
 };
 GAME_DETAIL_DATA['lostark-test'] = Object.assign({}, GAME_DETAIL_DATA.lostark, GAME_DETAIL_TEST_LAYOUT, {
-  // 11-27 배경 = 로스트아크 공식 Artwork(lostark.game.onstove.com/Artwork?page=1 '벨가르딘' 2026.08.05) 원본 3840×2160 다운로드 파일명 그대로.
-  //   오른쪽 위 SEASON3 LOSTARK 로고 · 아래 © Smilegate 글자는 잘라냄("아래 위 로고는 크롭") → 3840×1915(위 160 · 아래 85 제거). 원복 = 이 줄 삭제
-  //   (그 전 = Artwork 6쪽 '레이드' 구미호 636597238262683499.jpg · 붙여 준 우주 바위 webp — 둘 다 교체하며 파일 삭제, git 이력)
-  background: '4f07791fbc79447391c1cabe71b0f3ed.jpg',
-  // 11-27 테마 색 = 이미지에서 자동 추출: 화면에 보이는 영역(1280 기준 폭 전체 · 위 92.5%) 아래 20% 띠 평균 #100E17(밝기 7%)
-  //   → 밝기 한도 20~28%로 보정 = #2D2640. 직전(구미호) #30383E · (우주 바위) #2B2E64. 원본(lostark) 값 #36414D로 돌리려면 이 줄 삭제
-  backgroundGradient: '#2D2640',
+  // 11-27 배경 = 로스트아크 공식 Artwork(lostark.game.onstove.com/Artwork?page=1 '카다룸 제도' 2026.03.18) 원본 3840×2160 다운로드 파일명 그대로.
+  //   하단 위주로 자름(사용자 "이미지 하단위주로 잘라") — 위 640(하늘 · 오른쪽 위 SEASON3 로고) · 아래 75(© Smilegate 글자) 제거 → 3840×1445. 원복 = 이 줄 삭제
+  //   (그 전 = 벨가르딘 4f07791f… · 구미호 636597238262683499.jpg · 붙여 준 우주 바위 webp — 교체하며 파일 삭제, git 이력)
+  background: '18f03215bc3f44d7b2a0630a6c7e70ce.jpg',
+  // 11-27 테마 색 = 이미지에서 자동 추출: 화면에 보이는 영역(1280 기준 가운데 82% · 높이 전체) 아래 20% 띠 평균 #226171(밝기 29%)
+  //   → 밝기 한도 20~28%로 보정 = #215E6E. 직전(벨가르딘) #2D2640 · (구미호) #30383E · (우주 바위) #2B2E64. 원본(lostark) 값 #36414D로 돌리려면 이 줄 삭제
+  backgroundGradient: '#215E6E',
 });
 GAME_DETAIL_DATA['rodnine-test'] = Object.assign({}, GAME_DETAIL_DATA.rodnine, GAME_DETAIL_TEST_LAYOUT, {
   // 11-27 배경 = 로드나인 공식 홈(l9.onstove.com/ko/home) 상단 영상 (PC용 assets/images/pc/home/video_home.mp4 원본 그대로) — 그림(background) 대신 영상. 원복 = 이 줄 삭제
