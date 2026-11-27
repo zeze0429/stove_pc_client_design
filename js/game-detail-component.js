@@ -304,7 +304,13 @@ GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
 
 // 디자인 시험용 복제 (11-27 사용자 "로스트아크랑 로드나인 지금껀 두고 듀플리케이트해서 스토브게임 메뉴에 … 디자인을 더 바꿔보는건 test 메뉴에서").
 // 지금 상태를 그대로 복사 — 시험할 값은 아래 객체에만 덮어써서 원본(lostark · rodnine)은 안 바뀌게. 사이드바 · 이름 · 썸네일 = js/gnb-component.js · js/game-catalog.js
-GAME_DETAIL_DATA['lostark-test'] = Object.assign({}, GAME_DETAIL_DATA.lostark, {
+// test 공통 레이아웃 — 두 test 메뉴에 똑같이 (11-27 사용자 "똑같이 적용되어야해"). 게임별로 다른 건 그림 · 색만 각 객체에.
+var GAME_DETAIL_TEST_LAYOUT = {
+  titleThumbHidden: true, // 게임명 왼쪽 썸네일(60) 숨김 ("게임 썸네일은 제거")
+  contentsAtFadeStart: true, // 콘텐츠 시작 88 → 312(그라데이션 절반 31.2rem, css .game-detail__contents--fade-start) — 거쳐 온 값 144 → 480 → 240 → 312
+  titleBadgesAbove: true, // 뱃지(NEW · UPDATE · 점검)를 게임명 오른쪽 → 위 줄로 ("옆에 붙은 뉴, 업데이트 뱃지는 위로") = 게임명 줄 --inline 빼기(11-23 전 원래 배치)
+};
+GAME_DETAIL_DATA['lostark-test'] = Object.assign({}, GAME_DETAIL_DATA.lostark, GAME_DETAIL_TEST_LAYOUT, {
   // 11-27 배경 = 로스트아크 공식 Artwork(lostark.game.onstove.com/Artwork?page=1 '벨가르딘' 2026.08.05) 원본 3840×2160 다운로드 파일명 그대로.
   //   오른쪽 위 SEASON3 LOSTARK 로고 · 아래 © Smilegate 글자는 잘라냄("아래 위 로고는 크롭") → 3840×1915(위 160 · 아래 85 제거). 원복 = 이 줄 삭제
   //   (그 전 = Artwork 6쪽 '레이드' 구미호 636597238262683499.jpg · 붙여 준 우주 바위 webp — 둘 다 교체하며 파일 삭제, git 이력)
@@ -312,16 +318,13 @@ GAME_DETAIL_DATA['lostark-test'] = Object.assign({}, GAME_DETAIL_DATA.lostark, {
   // 11-27 테마 색 = 이미지에서 자동 추출: 화면에 보이는 영역(1280 기준 폭 전체 · 위 92.5%) 아래 20% 띠 평균 #100E17(밝기 7%)
   //   → 밝기 한도 20~28%로 보정 = #2D2640. 직전(구미호) #30383E · (우주 바위) #2B2E64. 원본(lostark) 값 #36414D로 돌리려면 이 줄 삭제
   backgroundGradient: '#2D2640',
-  contentsAtFadeStart: true, // 11-27 사용자 "콘텐츠 위치도 로드나인테스트처럼" — 게임명 88 → 312(그라데이션 절반, css .game-detail__contents--fade-start). 원복 = 이 줄 삭제
 });
-GAME_DETAIL_DATA['rodnine-test'] = Object.assign({}, GAME_DETAIL_DATA.rodnine, {
+GAME_DETAIL_DATA['rodnine-test'] = Object.assign({}, GAME_DETAIL_DATA.rodnine, GAME_DETAIL_TEST_LAYOUT, {
   // 11-27 배경 = 로드나인 공식 홈(l9.onstove.com/ko/home) 상단 영상 (PC용 assets/images/pc/home/video_home.mp4 원본 그대로) — 그림(background) 대신 영상. 원복 = 이 줄 삭제
   backgroundVideo: 'video_home.mp4',
   // 11-27 테마 색 = 영상에서 자동 추출(사용자 "컬러 추출해줘"): 화면에 보이는 영역 아래 20% 띠 평균을 영상 전체(1초 간격 24장)로 낸 값 #5A433A(밝기 29%)
   //   → 밝기 한도 20~28%로 보정 = #574138. 원본(rodnine) 값 #263447 상속으로 돌리려면 이 줄 삭제
   backgroundGradient: '#574138',
-  titleThumbHidden: true, // 11-27 사용자 "로드나인 게임 썸네일은 제거" — 게임명 왼쪽 썸네일(60) 숨김. 원복 = 이 줄 삭제
-  contentsAtFadeStart: true, // 11-27 사용자 "콘텐츠 위치를 그라디언트 시작부분으로" — 게임명 위치 88 → 144(그라데이션 시작) → 480("영상이 끝나는 시점으로 더") → 240("그라데이션이 본격적으로 시작하는 위치로") → 312(그라데이션 절반, 31.2rem). 원복 = 이 줄 삭제
 });
 
 // 사이드바 항목 id(즐겨찾기는 'fav-lostark' 같은 별도 id) → 게임 카탈로그 id
@@ -673,7 +676,7 @@ function mountGameDetail(selector, gameId) {
           // ---- 게임명 ----
           //   테스트 버전(사용자 11-23) --inline: 썸네일 ↔ 게임명 세로 가운데, 뱃지는 게임명 오른쪽 · 위 정렬, 뱃지 크기 = 사이드바 챌린지 뱃지.
           //   원복 = --inline 클래스만 빼면 원래(뱃지가 게임명 위 줄)로 돌아간다.
-          '<div class="game-detail-title game-detail-title--inline">' +
+          '<div class="game-detail-title" :class="{ \'game-detail-title--inline\': !d.titleBadgesAbove }">' + // titleBadgesAbove(11-27 test) = --inline 빼서 뱃지를 게임명 위 줄로
             '<div class="game-detail-title__info">' +
               '<span v-if="!d.titleThumbHidden" class="game-detail-thumb"><img v-if="thumb" :src="thumb" alt="" /></span>' + // titleThumbHidden = 11-27 test 썸네일 숨김
               '<div class="game-detail-title__text">' +
