@@ -307,6 +307,11 @@ GAME_DETAIL_DATA.rodnine = Object.assign({}, GAME_DETAIL_DATA.lostark, {
 GAME_DETAIL_DATA['lostark-test'] = Object.assign({}, GAME_DETAIL_DATA.lostark, {
 });
 GAME_DETAIL_DATA['rodnine-test'] = Object.assign({}, GAME_DETAIL_DATA.rodnine, {
+  // 11-27 배경 = 로드나인 공식 홈(l9.onstove.com/ko/home) 상단 영상 (PC용 assets/images/pc/home/video_home.mp4 원본 그대로) — 그림(background) 대신 영상. 원복 = 이 줄 삭제
+  backgroundVideo: 'video_home.mp4',
+  // 11-27 테마 색 = 영상에서 자동 추출(사용자 "컬러 추출해줘"): 화면에 보이는 영역 아래 20% 띠 평균을 영상 전체(1초 간격 24장)로 낸 값 #5A433A(밝기 29%)
+  //   → 밝기 한도 20~28%로 보정 = #574138. 원본(rodnine) 값 #263447 상속으로 돌리려면 이 줄 삭제
+  backgroundGradient: '#574138',
 });
 
 // 사이드바 항목 id(즐겨찾기는 'fav-lostark' 같은 별도 id) → 게임 카탈로그 id
@@ -652,7 +657,7 @@ function mountGameDetail(selector, gameId) {
       '</div>' +
       '<div v-else class="game-detail" :style="d.backgroundGradient ? { \'--game-detail-bg-gradient\': d.backgroundGradient } : null">' + // 게임 색(backgroundGradient)은 최상위에 — 배경 그라데이션 · 카드 바탕이 같이 씀 (11-24)
         // 1 백그라운드 (bg 480) — 유틸리티 바 뒤까지 깔리고 아래로 페이지 색에 녹아든다
-        '<div class="game-detail-background" :class="{ \'game-detail-background--fixed\': d.backgroundFixed, \'game-detail-background--scroll-blur\': d.backgroundFixed && d.backgroundScrollBlur }" aria-hidden="true"><img :src="img(d.background)" alt="" /><div v-if="d.backgroundFixed && d.backgroundScrollBlur" ref="bgFade" class="game-detail-background__fade"></div></div>' + // 그림 = 게임 데이터 background (11-26 로드나인 추가하며 데이터로 — 그 전 로스트아크 파일명 고정). 그 전 v=4 = 벨가르딘 정복전 2560×1080 (git 이력)
+        '<div class="game-detail-background" :class="{ \'game-detail-background--fixed\': d.backgroundFixed, \'game-detail-background--scroll-blur\': d.backgroundFixed && d.backgroundScrollBlur }" aria-hidden="true"><video v-if="d.backgroundVideo" :src="img(d.backgroundVideo)" autoplay muted loop playsinline></video><img v-else :src="img(d.background)" alt="" /><div v-if="d.backgroundFixed && d.backgroundScrollBlur" ref="bgFade" class="game-detail-background__fade"></div></div>' + // 그림 = 게임 데이터 background (11-26 로드나인 추가하며 데이터로 — 그 전 로스트아크 파일명 고정). 그 전 v=4 = 벨가르딘 정복전 2560×1080 (git 이력)
 
         '<div class="game-detail__contents">' +
           // ---- 게임명 ----
